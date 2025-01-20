@@ -1,7 +1,6 @@
 import "@workspace/ui/globals.css"
 
 import {
-  ClerkProvider,
   SignInButton,
   SignUpButton,
   SignedIn,
