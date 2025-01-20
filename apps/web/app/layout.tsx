@@ -1,9 +1,17 @@
-import "@workspace/ui/globals.css"
+import { ClerkProvider } from "@clerk/nextjs"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return <section>{children}</section>
+  return (
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body>
+          <main>{children}</main>
+        </body>
+      </html>
+    </ClerkProvider>
+  )
 }

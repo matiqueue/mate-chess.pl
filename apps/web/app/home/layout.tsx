@@ -1,3 +1,5 @@
+import "@workspace/ui/globals.css"
+
 import {
   ClerkProvider,
   SignInButton,
@@ -27,21 +29,19 @@ export default function HomeLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
-        >
-          <SignedOut>
-            <SignInButton />
+      <section
+        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+      >
+        <SignedOut>
+          <SignInButton />
 
-            <SignUpButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          <Providers>{children}</Providers>
-        </body>
-      </html>
+          <SignUpButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <Providers>{children}</Providers>
+      </section>
     </ClerkProvider>
   )
 }
