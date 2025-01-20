@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.9.14",
     "@prisma/client": "6.2.1",
     "@workspace/ui": "workspace:*",
     "lucide-react": "0.456.0",
