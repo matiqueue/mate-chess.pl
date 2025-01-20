@@ -28,20 +28,18 @@ export default function HomeLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <section
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
-      >
-        <SignedOut>
-          <SignInButton />
+    <section
+      className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+    >
+      <SignedOut>
+        <SignInButton />
 
-          <SignUpButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-        <Providers>{children}</Providers>
-      </section>
-    </ClerkProvider>
+        <SignUpButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+      <Providers>{children}</Providers>
+    </section>
   )
 }
