@@ -28,8 +28,6 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
 
-  apps/engine: {}
-
   apps/web:
     dependencies:
       '@clerk/nextjs':
