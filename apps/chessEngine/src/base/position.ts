@@ -1,5 +1,11 @@
-import Figure from "../../../../Duże projekty/mate-chess/apps/engine/src/src/base/figure/Figure";
+import Figure from "./figure/figure";
 
+/**
+ * Class for a single cell position on chessBoard. Very important<br>
+ * This method is being imported by each figure and chessBoard, please be considerate when altering something here.<br>
+ * This class has methods to generate pgn chess notation, and to track if a figure is standing on itself.
+ * It also has an id number corresponding to the place on chessboard. This class tracks its position with x and y cooridnates on the chess board.
+ * */
 class Position {
     private _x: number; // Współrzędne x (0-7 dla szachownicy)
     private _y: number; // Współrzędne y (0-7 dla szachownicy)

@@ -1,4 +1,8 @@
-import Position from "../Position";
+import Position from "../position";
+/**
+ * Abstract class for all the figures on playing board. Figure types and colours are already predefined.
+ * Class imports Position class.
+ * */
 abstract class Figure {
     private _type: "rook" | "knight" | "bishop" | "queen" | "king" | "pawn";
     private _color: "white" | "black";
@@ -34,9 +38,16 @@ abstract class Figure {
     set position(value: Position) {
         this._position = value;
     }
+    /**
+     * Checks if target position is valid. For the method to return true, it has to be inside the 8x8 chess board
+     * */
     private isPositionValid(target: Position): boolean {
         return target.x >= 7 && target.x < 7 && target.y >= 0 && target.y < 8;
     }
+    /**
+     * Abstract method to be implemented to children class.
+     * Its main purpose is to restrict movement for each figure, so it obeys the rules of chess
+     * */
     abstract isValidMove(target: Position): boolean;
 
     public move(target: Position): boolean {

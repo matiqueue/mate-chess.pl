@@ -1,5 +1,5 @@
-import Figure from "../Figure";
-import Position from "../../Position";
+import Figure from "../figure";
+import Position from "../../position";
 
 class Pawn extends Figure {
     private _isFirstMove: boolean;

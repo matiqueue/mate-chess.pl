@@ -1,4 +1,4 @@
-import ChessEngine from "./base/ChessEngine";
+import ChessEngine from "./base/chessEngine";
 
 class ChessGame extends ChessEngine{
 

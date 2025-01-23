@@ -1,13 +1,20 @@
-import Position from "../Position";
-import Figure from "../figure/Figure";
-import Pawn from "../figure/figures/Pawn";
-import Rook from "../figure/figures/Rook";
-import Knight from "../figure/figures/Knight";
-import King from "../figure/figures/King";
-import Bishop from "../figure/figures/Bishop";
-import Queen from "../figure/figures/Queen";
+import Position from "../position";
+import Figure from "../figure/figure";
+import Pawn from "../figure/figures/pawn";
+import Rook from "../figure/figures/rook";
+import Knight from "../figure/figures/knight";
+import King from "../figure/figures/king";
+import Bishop from "../figure/figures/bishop";
+import Queen from "../figure/figures/queen";
 
-
+/**
+ * Main playing board. very important.<br>
+ * Class imports all figures and position.
+ * The board consists of 64 individual Positions, which are stored in a "positions" Map.
+ * Figures are stored in an array with preallocated 32 indexes, each for one figure
+ * constructor only creates a map and allocates memory for arrays.
+ * in order to actually create positions, call method setupBoard()
+ * */
 class Board {
     private positions: Map<string, Position>;
     private letters = "abcdefgh";
@@ -19,13 +26,16 @@ class Board {
     }
 
     // Inicjalizacja pozycji na planszy
-    /**DEPRECATED*/
+    /**@DEPRECATED*/
     public init() {
         this.setupBoard();
         this.placeFigures(); //chyba nie działa ? edit: działa :)
 
         console.log("board initialized")
     }
+    /**
+     * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>
+     * @TODO id for each position*/
     private setupBoard() {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
@@ -95,7 +105,7 @@ class Board {
             console.log(row.trim());
         }
     }
-    /**DEPRECATED*/
+    /**@DEPRECATED*/
     public update() {
         // Placeholder dla innych operacji na szachownicy
         this.printBoard()

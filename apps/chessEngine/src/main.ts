@@ -1,3 +1,3 @@
-import ChessGame from './ChessGame';
+import ChessGame from './chessGame';
 
 const game = new ChessGame();

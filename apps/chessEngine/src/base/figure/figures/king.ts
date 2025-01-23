@@ -1,13 +1,12 @@
-import Figure from "../Figure";
-import Position from "../../Position";
+import Figure from "../figure";
+import Position from "../../position";
 
-class Rook extends Figure {
+class King extends Figure {
     constructor(color: "white" | "black", position: Position) {
-        super("rook", color, position);
+        super("king", color, position);
     }
-
     isValidMove(target: Position): boolean {
-        if (this.position.x === target.x || this.position.y === target.y){
+        if (Math.abs(target.x - this.position.x) <= 1 && Math.abs(target.y - this.position.y) <= 1){
             return true;
         }
         return false;
@@ -17,4 +16,4 @@ class Rook extends Figure {
     }
 }
 
-export default Rook;
+export default King;
