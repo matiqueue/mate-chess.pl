@@ -12,6 +12,8 @@
   "dependencies": {
     "@clerk/nextjs": "^6.9.14",
     "@prisma/client": "6.2.1",
+    "@react-three/drei": "^9.121.3",
+    "@react-three/fiber": "^8.17.12",
     "@workspace/ui": "workspace:*",
     "gsap": "^3.12.7",
     "lucide-react": "0.456.0",
