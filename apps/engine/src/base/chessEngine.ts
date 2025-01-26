@@ -14,7 +14,7 @@ import Board from "./board/board"
 class ChessEngine {
     private _board: any
     constructor() {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 1; i++) {
             this.start()
         }
         this.update()
@@ -28,6 +28,14 @@ class ChessEngine {
         if (!this._board) {
             this._board = new Board()
         }
+        this._board.setupBoard()
+        this._board.setupFigures()
+
+        this._board.printBoard()
+        this._board.printFigures()
+        this._board.printIds()
+
+        this._board.getValidMovesForPosition(this._board.getPositionById(16))
     }
     /**
      * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -39,7 +47,7 @@ class ChessEngine {
      *     </ul>
      * */
     public update(): void {
-        this._board.update()
+        // this._board.update() //nonexistent right now
         this.checkForCheck()
         if (this.checkForMate()) {
             this.onGameOver()
@@ -51,6 +59,7 @@ class ChessEngine {
         // const { from, to } = await this.awaitPlayer()
 
         // this.awaitPlayer()
+        return //instead of await player
         this.update()
     }
     private checkForCheck() {

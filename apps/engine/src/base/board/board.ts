@@ -30,7 +30,7 @@ class Board {
         this.setupBoard()
         this.setupFigures() //chyba nie działa ? edit: działa :)
 
-        console.log("board initialized")
+        console.debug("board initialized")
     }
     /**
      * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>*/
@@ -54,38 +54,14 @@ class Board {
                 position.figure = new Pawn("white", position)
             }
         }
-        this.positions.get("a1")!.figure = new Rook(
-            "white",
-            this.positions.get("a1")!,
-        )
-        this.positions.get("h1")!.figure = new Rook(
-            "white",
-            this.positions.get("h1")!,
-        )
-        this.positions.get("b1")!.figure = new Knight(
-            "white",
-            this.positions.get("b1")!,
-        )
-        this.positions.get("g1")!.figure = new Knight(
-            "white",
-            this.positions.get("g1")!,
-        )
-        this.positions.get("c1")!.figure = new Bishop(
-            "white",
-            this.positions.get("c1")!,
-        )
-        this.positions.get("f1")!.figure = new Bishop(
-            "white",
-            this.positions.get("f1")!,
-        )
-        this.positions.get("d1")!.figure = new Queen(
-            "white",
-            this.positions.get("d1")!,
-        )
-        this.positions.get("e1")!.figure = new King(
-            "white",
-            this.positions.get("e1")!,
-        )
+        this.positions.get("a1")!.figure = new Rook("white", this.positions.get("a1")!)
+        this.positions.get("h1")!.figure = new Rook("white", this.positions.get("h1")!)
+        this.positions.get("b1")!.figure = new Knight("white", this.positions.get("b1")!)
+        this.positions.get("g1")!.figure = new Knight("white", this.positions.get("g1")!)
+        this.positions.get("c1")!.figure = new Bishop("white", this.positions.get("c1")!)
+        this.positions.get("f1")!.figure = new Bishop("white", this.positions.get("f1")!)
+        this.positions.get("d1")!.figure = new Queen("white", this.positions.get("d1")!)
+        this.positions.get("e1")!.figure = new King("white", this.positions.get("e1")!)
 
         // Czarne figury
         for (let i = 0; i < 8; i++) {
@@ -94,78 +70,64 @@ class Board {
                 position.figure = new Pawn("black", position)
             }
         }
-        this.positions.get("a8")!.figure = new Rook(
-            "black",
-            this.positions.get("a8")!,
-        )
-        this.positions.get("h8")!.figure = new Rook(
-            "black",
-            this.positions.get("h8")!,
-        )
-        this.positions.get("b8")!.figure = new Knight(
-            "black",
-            this.positions.get("b8")!,
-        )
-        this.positions.get("g8")!.figure = new Knight(
-            "black",
-            this.positions.get("g8")!,
-        )
-        this.positions.get("c8")!.figure = new Bishop(
-            "black",
-            this.positions.get("c8")!,
-        )
-        this.positions.get("f8")!.figure = new Bishop(
-            "black",
-            this.positions.get("f8")!,
-        )
-        this.positions.get("d8")!.figure = new Queen(
-            "black",
-            this.positions.get("d8")!,
-        )
-        this.positions.get("e8")!.figure = new King(
-            "black",
-            this.positions.get("e8")!,
-        )
+        this.positions.get("a8")!.figure = new Rook("black", this.positions.get("a8")!)
+        this.positions.get("h8")!.figure = new Rook("black", this.positions.get("h8")!)
+        this.positions.get("b8")!.figure = new Knight("black", this.positions.get("b8")!)
+        this.positions.get("g8")!.figure = new Knight("black", this.positions.get("g8")!)
+        this.positions.get("c8")!.figure = new Bishop("black", this.positions.get("c8")!)
+        this.positions.get("f8")!.figure = new Bishop("black", this.positions.get("f8")!)
+        this.positions.get("d8")!.figure = new Queen("black", this.positions.get("d8")!)
+        this.positions.get("e8")!.figure = new King("black", this.positions.get("e8")!)
 
         console.log("figures placed on the board.")
     }
 
     // Wyświetlenie szachownicy w formacie [literka cyferka] DEBUG
     public printBoard() {
+        console.debug("\n \nPrinting chessboard by notation: \n")
         for (let y = 7; y >= 0; y--) {
             let row = ""
             for (let x = 0; x < 8; x++) {
                 const notation = this.letters[x] + (8 - y)
                 row += "[" + notation + "] "
             }
-            console.log(row.trim())
+            console.debug(row.trim())
         }
     }
 
     // Wyświetlenie szachownicy z figurami DEBUG
     public printFigures() {
+        console.debug("\n \nPrinting chessboard by figures: \n")
         for (let y = 7; y >= 0; y--) {
             let row = ""
             for (let x = 0; x < 8; x++) {
-                const figure = this.positions.get(this.letters[x] + (8 - y))
-                    ?.figure?.type
+                const figure = this.positions.get(this.letters[x] + (8 - y))?.figure?.type
                 row += "[" + figure + "] "
             }
-            console.log(row.trim())
+            console.debug(row.trim())
         }
     }
     public printIds() {
+        console.debug("\n \nPrinting chessboard by ids: \n")
         for (let y = 7; y >= 0; y--) {
             let row = ""
             for (let x = 0; x < 8; x++) {
                 const id = this.positions.get(this.letters[x] + (8 - y))?.id
-                row += `[${id !== undefined ? id : " "}] `
+                row += `[${id !== undefined ? id : " undfd "}] `
             }
-            console.log(row.trim())
+            console.debug(row.trim())
         }
     }
-
-    public getValidMovesForPosition(position: Position) {}
+    /**@TODO Make this method return array of positions, then use that array to validate smth idk
+     * */
+    public getValidMovesForPosition(position: Position) {
+        for (let i = 0; i < this.positions.size; i++) {
+            const targetPosition = this.getPositionById(i)
+            if (targetPosition && position.figure?.isValidMove(targetPosition)) {
+                console.debug(`${targetPosition.notation} is a valid position for: ${position.figure.type}`)
+            }
+        }
+    }
 
     public getPositionByNotation(notation: string): Position | null {
         const position = this.positions.get(notation)
@@ -175,7 +137,7 @@ class Board {
         }
         return position
     }
-
+    /**@ERROR ZWRACA UNDEFINED Z JAKIEGOŚ POWODU W "const position = this.positions.get(notation)*/
     public getPositionById(id: number): Position | null {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
@@ -189,13 +151,8 @@ class Board {
         return null
     }
 
-    public getPositionByCords(
-        positionX: number,
-        positionY: number,
-    ): Position | null {
-        return this.getPositionByNotation(
-            this.letters[positionX] + positionY.toString(),
-        )
+    public getPositionByCords(positionX: number, positionY: number): Position | null {
+        return this.getPositionByNotation(this.letters[positionX] + positionY.toString())
     }
 
     public getFigureAtPosition(position: Position): Figure | null {
