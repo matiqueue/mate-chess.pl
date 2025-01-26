@@ -193,13 +193,21 @@ class Board {
     public getFigureAtPosition(position: Position): Figure | null {
         return position.figure || null
     }
-    /**
+    /***
+     * returns true if succesfully placed a figure on board
      * @debug*/
     public addFigureAtPosition(position: Position, figure: Figure): boolean {
-        if (position.figure == null) {
-            position.figure = figure
+        const existingPosition = this.positions.get(position.notation)
+
+        if (!existingPosition) {
+            console.error(`Position "${position.notation}" does not exist on the board.`)
+            return false
+        }
+        if (existingPosition.figure === null) {
+            existingPosition.figure = figure
             return true
         }
+        console.warn(`Position "${position.notation}" already has a figure.`)
         return false
     }
 }
