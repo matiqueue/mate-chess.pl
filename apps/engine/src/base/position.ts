@@ -13,12 +13,7 @@ class Position {
     private _figure: Figure | null // Figura na pozycji, lub null jeśli brak figury
     private _id: number
 
-    constructor(
-        x: number,
-        y: number,
-        figure: Figure | null = null,
-        id: number = 0,
-    ) {
+    constructor(x: number, y: number, figure: Figure | null = null, id: number = 0) {
         this._x = x
         this._y = y
         this._figure = figure
@@ -72,7 +67,7 @@ class Position {
         if (x < 0 || x > 7 || y < 0 || y > 7) {
             throw new Error("Współrzędne muszą być w zakresie od 0 do 7.")
         }
-        return letters[x] + rows[8 - y]
+        return letters[x] + rows[7 - y]
     }
 }
 
