@@ -28,24 +28,25 @@ class Board {
     /**@DEPRECATED*/
     public init() {
         this.setupBoard()
-        this.placeFigures() //chyba nie działa ? edit: działa :)
+        this.setupFigures() //chyba nie działa ? edit: działa :)
 
         console.log("board initialized")
     }
     /**
-     * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>
-     * @TODO id for each position*/
-    private setupBoard() {
+     * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>*/
+    public setupBoard() {
+        let id = 0
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const notation = this.letters[x] + (8 - y)
-                const position = new Position(x, y)
+                const position = new Position(x, y, null, id)
                 this.positions.set(notation, position)
+                id++
             }
         }
     }
     // Wstawianie figur na szachownicę w standardowej pozycji
-    private placeFigures() {
+    public setupFigures() {
         // Białe figury
         for (let i = 0; i < 8; i++) {
             const position = this.positions.get(this.letters[i] + "2")
@@ -129,7 +130,7 @@ class Board {
         console.log("figures placed on the board.")
     }
 
-    // Wyświetlenie szachownicy w formacie [literka cyferka]
+    // Wyświetlenie szachownicy w formacie [literka cyferka] DEBUG
     public printBoard() {
         for (let y = 7; y >= 0; y--) {
             let row = ""
@@ -141,7 +142,7 @@ class Board {
         }
     }
 
-    // Wyświetlenie szachownicy z figurami
+    // Wyświetlenie szachownicy z figurami DEBUG
     public printFigures() {
         for (let y = 7; y >= 0; y--) {
             let row = ""
@@ -153,11 +154,52 @@ class Board {
             console.log(row.trim())
         }
     }
-    /**@DEPRECATED*/
-    public update() {
-        // Placeholder dla innych operacji na szachownicy
-        this.printBoard()
-        this.printFigures()
+    public printIds() {
+        for (let y = 7; y >= 0; y--) {
+            let row = ""
+            for (let x = 0; x < 8; x++) {
+                const id = this.positions.get(this.letters[x] + (8 - y))?.id
+                row += `[${id !== undefined ? id : " "}] `
+            }
+            console.log(row.trim())
+        }
+    }
+
+    public getValidMovesForPosition(position: Position) {}
+
+    public getPositionByNotation(notation: string): Position | null {
+        const position = this.positions.get(notation)
+        if (!position) {
+            console.error(`Position "${notation}" does not exist on the board.`)
+            return null
+        }
+        return position
+    }
+
+    public getPositionById(id: number): Position | null {
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                const notation = this.letters[x] + (8 - y)
+                const position = this.positions.get(notation)
+                if (position?.id === id) {
+                    return position
+                }
+            }
+        }
+        return null
+    }
+
+    public getPositionByCords(
+        positionX: number,
+        positionY: number,
+    ): Position | null {
+        return this.getPositionByNotation(
+            this.letters[positionX] + positionY.toString(),
+        )
+    }
+
+    public getFigureAtPosition(position: Position): Figure | null {
+        return position.figure || null
     }
 }
 export default Board
