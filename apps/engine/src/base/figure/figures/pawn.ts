@@ -5,7 +5,9 @@ class Pawn extends Figure {
     private _isFirstMove: boolean
     constructor(color: "white" | "black", position: Position) {
         super("pawn", color, position)
-        this._isFirstMove = true
+        if (position.y === 7 || position.y === 2) {
+            this._isFirstMove = true
+        } else this._isFirstMove = false
     }
 
     isValidMove(target: Position): boolean {

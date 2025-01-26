@@ -47,40 +47,41 @@ class Board {
     }
     // Wstawianie figur na szachownicę w standardowej pozycji
     public setupFigures() {
-        // Białe figury
+        // Białe figury (White pieces)
         for (let i = 0; i < 8; i++) {
             const position = this.positions.get(this.letters[i] + "2")
             if (position) {
-                position.figure = new Pawn("white", position)
+                this.addFigureAtPosition(position, new Pawn("white", position))
             }
         }
-        this.positions.get("a1")!.figure = new Rook("white", this.positions.get("a1")!)
-        this.positions.get("h1")!.figure = new Rook("white", this.positions.get("h1")!)
-        this.positions.get("b1")!.figure = new Knight("white", this.positions.get("b1")!)
-        this.positions.get("g1")!.figure = new Knight("white", this.positions.get("g1")!)
-        this.positions.get("c1")!.figure = new Bishop("white", this.positions.get("c1")!)
-        this.positions.get("f1")!.figure = new Bishop("white", this.positions.get("f1")!)
-        this.positions.get("d1")!.figure = new Queen("white", this.positions.get("d1")!)
-        this.positions.get("e1")!.figure = new King("white", this.positions.get("e1")!)
+        this.addFigureAtPosition(this.positions.get("a1")!, new Rook("white", this.positions.get("a1")!))
+        this.addFigureAtPosition(this.positions.get("h1")!, new Rook("white", this.positions.get("h1")!))
+        this.addFigureAtPosition(this.positions.get("b1")!, new Knight("white", this.positions.get("b1")!))
+        this.addFigureAtPosition(this.positions.get("g1")!, new Knight("white", this.positions.get("g1")!))
+        this.addFigureAtPosition(this.positions.get("c1")!, new Bishop("white", this.positions.get("c1")!))
+        this.addFigureAtPosition(this.positions.get("f1")!, new Bishop("white", this.positions.get("f1")!))
+        this.addFigureAtPosition(this.positions.get("d1")!, new Queen("white", this.positions.get("d1")!))
+        this.addFigureAtPosition(this.positions.get("e1")!, new King("white", this.positions.get("e1")!))
 
-        // Czarne figury
+        // Czarne figury (Black pieces)
         for (let i = 0; i < 8; i++) {
             const position = this.positions.get(this.letters[i] + "7")
             if (position) {
-                position.figure = new Pawn("black", position)
+                this.addFigureAtPosition(position, new Pawn("black", position))
             }
         }
-        this.positions.get("a8")!.figure = new Rook("black", this.positions.get("a8")!)
-        this.positions.get("h8")!.figure = new Rook("black", this.positions.get("h8")!)
-        this.positions.get("b8")!.figure = new Knight("black", this.positions.get("b8")!)
-        this.positions.get("g8")!.figure = new Knight("black", this.positions.get("g8")!)
-        this.positions.get("c8")!.figure = new Bishop("black", this.positions.get("c8")!)
-        this.positions.get("f8")!.figure = new Bishop("black", this.positions.get("f8")!)
-        this.positions.get("d8")!.figure = new Queen("black", this.positions.get("d8")!)
-        this.positions.get("e8")!.figure = new King("black", this.positions.get("e8")!)
+        this.addFigureAtPosition(this.positions.get("a8")!, new Rook("black", this.positions.get("a8")!))
+        this.addFigureAtPosition(this.positions.get("h8")!, new Rook("black", this.positions.get("h8")!))
+        this.addFigureAtPosition(this.positions.get("b8")!, new Knight("black", this.positions.get("b8")!))
+        this.addFigureAtPosition(this.positions.get("g8")!, new Knight("black", this.positions.get("g8")!))
+        this.addFigureAtPosition(this.positions.get("c8")!, new Bishop("black", this.positions.get("c8")!))
+        this.addFigureAtPosition(this.positions.get("f8")!, new Bishop("black", this.positions.get("f8")!))
+        this.addFigureAtPosition(this.positions.get("d8")!, new Queen("black", this.positions.get("d8")!))
+        this.addFigureAtPosition(this.positions.get("e8")!, new King("black", this.positions.get("e8")!))
 
-        console.log("figures placed on the board.")
+        console.log("Figures placed on the board.")
     }
+
     public printBoard() {
         console.debug("\nPrinting chessboard with notations: \n")
         for (let y = 7; y >= 0; y--) {
@@ -151,12 +152,12 @@ class Board {
                     continue
                 }
                 if (targetPosition === position) {
-                    row += "[o] " //starting pos
+                    row += "[ooo] " //starting pos
                 } else if (position.figure?.isValidMove(targetPosition)) {
-                    row += "[&] " //valid
+                    row += "[&&&] " //valid
                     validMoves.push(targetPosition)
                 } else {
-                    row += "[ ] " //invalid
+                    row += `[${targetPosition.notation}] ` //invalid
                 }
             }
             console.debug(row.trim())
