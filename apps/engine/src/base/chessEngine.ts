@@ -1,4 +1,9 @@
 import Board from "./board/board"
+import Pawn from "./figure/figures/pawn"
+import Queen from "./figure/figures/queen"
+import King from "./figure/figures/king"
+import Bishop from "./figure/figures/bishop"
+import Position from "./position"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>
@@ -74,6 +79,12 @@ class ChessEngine {
         // this.awaitPlayer()
         return //instead of await player
         this.update()
+    }
+    public customFigureSetup() {
+        console.log("customFigureSetup called. Clearing the chessboard.")
+        this._board.positions.forEach((position: Position) => {
+            position.figure = null
+        })
     }
     private checkForCheck() {
         return
