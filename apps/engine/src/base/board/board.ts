@@ -81,9 +81,25 @@ class Board {
 
         console.log("figures placed on the board.")
     }
-
-    // Wyświetlenie szachownicy w formacie [literka cyferka] DEBUG
     public printBoard() {
+        console.debug("\nPrinting chessboard with notations: \n")
+        for (let y = 7; y >= 0; y--) {
+            let row = ""
+            for (let x = 0; x < 8; x++) {
+                const notation = this.letters[x] + (8 - y)
+                const position = this.positions.get(notation)
+                if (position) {
+                    row += `[${position.notation}] `
+                } else {
+                    row += `[ undfd ] `
+                }
+            }
+            console.debug(row.trim())
+        }
+    }
+    /**@deprecated*/
+    // Wyświetlenie szachownicy w formacie [literka cyferka] DEBUG
+    public printBoardOld() {
         console.debug("\n \nPrinting chessboard by notation: \n")
         for (let y = 7; y >= 0; y--) {
             let row = ""
@@ -109,7 +125,7 @@ class Board {
     }
     public printIds() {
         console.debug("\n \nPrinting chessboard by ids: \n")
-        for (let y = 7; y >= 0; y--) {
+        for (let y = 0; y < 8; y++) {
             let row = ""
             for (let x = 0; x < 8; x++) {
                 const id = this.positions.get(this.letters[x] + (8 - y))?.id
