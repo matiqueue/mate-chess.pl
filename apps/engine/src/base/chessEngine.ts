@@ -1,4 +1,4 @@
-import Board from "./board/board";
+import Board from "./board/board"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>
@@ -12,10 +12,11 @@ import Board from "./board/board";
  *       </ul>
  * */
 class ChessEngine {
-    private _board: any;
+    private _board: any
     constructor() {
-        this.start()
-
+        for (let i = 0; i < 4; i++) {
+            this.start()
+        }
         this.update()
     }
     /**
@@ -23,8 +24,10 @@ class ChessEngine {
      * It needs to check if it didn't allocate nemory few times for the same thing - because it is being called few times
      * , and this method is used to allocate and declare all variables and memory<br>
      * I think it should be called few times before the game, in case something goes wrong and e.g faills to allocate memory or player id*/
-    public start(){
-        this._board = new Board();
+    public start() {
+        if (!this._board) {
+            this._board = new Board()
+        }
     }
     /**
      * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -35,16 +38,45 @@ class ChessEngine {
      *     <li> main game loop
      *     </ul>
      * */
-    public update(){
-        this.checkForMate();
-        this._board.printBoard();
+    public update(): void {
+        this._board.update()
+        this.checkForCheck()
+        if (this.checkForMate()) {
+            this.onGameOver()
+            return
+        }
+
+        this._board.printBoard() //debug
+
+        // const { from, to } = await this.awaitPlayer()
+
+        // this.awaitPlayer()
+        this.update()
+    }
+    private checkForCheck() {
+        return
     }
     /**
      * @todo implement logic for checking for mate
      * */
-    private checkForMate() {
-        return;
+    private checkForMate(): boolean {
+        return false
     }
+    /**
+     * @warning need to look into promises to make sure this code is sufficient
+     * AI GENERATED CODE
+     * @todo implement logic for awaiting the player actions
+     * */
+    // private async awaitPlayer(): Promise<{ from: String; to: String }> {
+    //     return new Promise((resolve) => {
+    //         // Nasłuchiwanie ruchu gracza, np. przez callback lub event
+    //         const onPlayerMove = (move: { from: string; to: string }) => {
+    //             // Tutaj możesz dodać walidację ruchu, jeśli chcesz
+    //             resolve(move)
+    //         }
+    //     })
+    // }
+    private onGameOver() {}
 }
 
-export default ChessEngine;
+export default ChessEngine
