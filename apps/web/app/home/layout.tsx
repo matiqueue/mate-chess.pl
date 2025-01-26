@@ -1,25 +1,9 @@
+import { MobileHeader } from "@/components/mobile-header"
+import { Navbar } from "@/components/navbar"
+import { Sidebar } from "@/components/sidebar"
+import { SidebarProvider } from "@workspace/ui/components/sidebar"
+
 import "@workspace/ui/globals.css"
-
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs"
-import { Geist, Geist_Mono } from "next/font/google"
-
-import { Providers } from "@/components/providers"
-
-const fontSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
 
 export default function HomeLayout({
   children,
@@ -27,18 +11,17 @@ export default function HomeLayout({
   children: React.ReactNode
 }) {
   return (
-    <section
-      className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
-    >
-      <SignedOut>
-        <SignInButton />
-
-        <SignUpButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <Providers>{children}</Providers>
-    </section>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <MobileHeader className="md:hidden" />
+          <Navbar className="hidden md:flex" />
+          <main className="flex-1 overflow-y-auto">
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-8">{children}</div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   )
 }
