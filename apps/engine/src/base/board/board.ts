@@ -134,15 +134,34 @@ class Board {
             console.debug(row.trim())
         }
     }
-    /**@TODO Make this method return array of positions, then use that array to validate smth idk
+    /**
+     * returns an array of positions, on which a move is possible to be made from given position
+     * debug: shows in console a chessboard with possible moves
      * */
-    public getValidMovesForPosition(position: Position) {
-        for (let i = 0; i < this.positions.size; i++) {
-            const targetPosition = this.getPositionById(i)
-            if (targetPosition && position.figure?.isValidMove(targetPosition)) {
-                console.debug(`${targetPosition.notation} is a valid position for: ${position.figure.type}`)
+    public getValidMovesForPosition(position: Position): Position[] {
+        const validMoves: Position[] = []
+        console.debug("\nValidating moves for position: ", position.notation)
+        console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
+        for (let y = 0; y < 8; y++) {
+            let row = ""
+            for (let x = 0; x < 8; x++) {
+                const targetPosition = this.getPositionByNotation(this.letters[x] + (8 - y))
+                if (!targetPosition) {
+                    row += "[null]"
+                    continue
+                }
+                if (targetPosition === position) {
+                    row += "[o] " //starting pos
+                } else if (position.figure?.isValidMove(targetPosition)) {
+                    row += "[&] " //valid
+                    validMoves.push(targetPosition)
+                } else {
+                    row += "[ ] " //invalid
+                }
             }
+            console.debug(row.trim())
         }
+        return validMoves
     }
 
     public getPositionByNotation(notation: string): Position | null {
@@ -173,6 +192,15 @@ class Board {
 
     public getFigureAtPosition(position: Position): Figure | null {
         return position.figure || null
+    }
+    /**
+     * @debug*/
+    public addFigureAtPosition(position: Position, figure: Figure): boolean {
+        if (position.figure == null) {
+            position.figure = figure
+            return true
+        }
+        return false
     }
 }
 export default Board
