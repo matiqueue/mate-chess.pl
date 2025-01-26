@@ -19,14 +19,14 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-sidebar">
       <section className="relative rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background">
         <div className="absolute inset-0 mix-blend-overlay">
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hOTh4KGZPvw2G79nkgDaouAgt4UNsH.png"
             alt="Chess board"
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-30"
           />
         </div>
         <div className="relative p-8 md:p-12 lg:p-16">

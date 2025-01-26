@@ -12,7 +12,7 @@ export default function HomeLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full bg-sidebar">
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <MobileHeader className="md:hidden" />

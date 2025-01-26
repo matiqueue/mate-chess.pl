@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import {
   Home,
@@ -20,6 +22,30 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@workspace/ui/components/sidebar"
+import { cn } from "@workspace/ui/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
+import { Input } from "@workspace/ui/components/input"
+import { Button } from "@workspace/ui/components/button"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  useUser,
+  useClerk,
+  UserProfile,
+} from "@clerk/nextjs"
 
 interface NavItemProps {
   href: string
@@ -48,6 +74,9 @@ function NavItem({ href, icon: Icon, children, badge }: NavItemProps) {
 }
 
 export function Sidebar() {
+  const { user } = useUser()
+  const clerk = useClerk()
+
   return (
     <ShadcnSidebar>
       <SidebarHeader className="p-6">
@@ -56,6 +85,7 @@ export function Sidebar() {
           <h1 className="text-xl font-bold">Mate Chess</h1>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
         <ScrollArea className="flex-1">
           <div className="space-y-4">
@@ -123,14 +153,75 @@ export function Sidebar() {
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter className="p-6 border-t">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span className="text-sm text-muted-foreground">Online</span>
+
+      <SidebarFooter className="p-4 border-t">
+        <SignedOut>
+          <div className="flex items-center gap-4 justify-items-start">
+            <SignInButton>
+              <Button variant="outline">Login</Button>
+            </SignInButton>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+              <span className="text-sm text-muted-foreground">Offline</span>
+            </div>
           </div>
-          <ModeToggle />
-        </div>
+        </SignedOut>
+
+        <SignedIn>
+          <div className="flex items-center gap-4 justify-items-start">
+            {/* DropdownMenu w stylu shadcn, ale z danymi pobranymi z Clerk */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    {/* Avatar: zdjęcie z Clerka, fallback z inicjałami */}
+                    <AvatarImage
+                      src={user?.imageUrl || "/placeholder.svg"}
+                      alt={user?.fullName || "User"}
+                    />
+                    <AvatarFallback>
+                      {user?.firstName?.[0]}
+                      {user?.lastName?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="start" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user?.fullName}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.primaryEmailAddress?.emailAddress}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>Stats</DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem onClick={() => clerk.signOut()}>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="text-sm text-muted-foreground">Online</span>
+            </div>
+          </div>
+        </SignedIn>
       </SidebarFooter>
     </ShadcnSidebar>
   )
