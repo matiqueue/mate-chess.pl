@@ -31,15 +31,15 @@ class ChessEngine {
         this._board.setupBoard()
         this._board.setupFigures()
 
-        this._board.printBoard()
-        this._board.printFigures()
-        this._board.printIds()
-
-        console.log("DEBUG: example check of valid moves: ")
-        this._board.getValidMovesForPosition(this._board.getPositionById(3))
-        this._board.getValidMovesForPosition(this._board.getPositionById(16))
-        this._board.getValidMovesForPosition(this._board.getPositionById(54))
-        this._board.getValidMovesForPosition(this._board.getPositionById(9))
+        // this._board.printBoard()
+        // this._board.printFigures()
+        // this._board.printIds()
+        //
+        // console.log("DEBUG: example check of valid moves: ")
+        // this._board.getValidMovesForPosition(this._board.getPositionById(3))
+        // this._board.getValidMovesForPosition(this._board.getPositionById(16))
+        // this._board.getValidMovesForPosition(this._board.getPositionById(54))
+        // this._board.getValidMovesForPosition(this._board.getPositionById(9))
     }
     /**
      * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -57,8 +57,17 @@ class ChessEngine {
             this.onGameOver()
             return
         }
+        //debug
+        this._board.printBoard()
+        this._board.printFigures()
+        this._board.printIds()
 
-        this._board.printBoard() //debug
+        console.log("DEBUG: example check of valid moves: ")
+        this._board.getValidMovesForPosition(this._board.getPositionById(3))
+        this._board.getValidMovesForPosition(this._board.getPositionById(16))
+        this._board.getValidMovesForPosition(this._board.getPositionById(54))
+        this._board.getValidMovesForPosition(this._board.getPositionById(9))
+        //debug
 
         // const { from, to } = await this.awaitPlayer()
 

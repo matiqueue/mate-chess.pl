@@ -1,9 +1,10 @@
 import ChessEngine from "./base/chessEngine"
 import board from "./base/board/board"
+import Figure from "./base/figure/figure"
+import Pawn from "./base/figure/figures/pawn"
 
 class ChessGame extends ChessEngine {
-    // protected _board: any
-    constructor(board: any) {
+    constructor() {
         super()
     }
 
@@ -11,7 +12,12 @@ class ChessGame extends ChessEngine {
         super.start()
         //ur code here
         //example: add another pawn at specific position:
-        // this._board.addFigureAtPosition(this._board.getPositionByNotation("a3"))
+        console.debug("CHESS GAME LAYER CODE OUTPUT BELOW")
+        let position = this._board.getPositionByNotation("a3")
+        this._board.addFigureAtPosition(position, new Pawn("white", position))
+
+        this._board.getValidMovesForPosition(position)
+        this._board.printFigures()
     }
 
     update() {
