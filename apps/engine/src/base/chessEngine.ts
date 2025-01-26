@@ -12,7 +12,7 @@ import Board from "./board/board"
  *       </ul>
  * */
 class ChessEngine {
-    private _board: any
+    protected _board: any
     constructor() {
         for (let i = 0; i < 1; i++) {
             this.start()
@@ -35,7 +35,11 @@ class ChessEngine {
         this._board.printFigures()
         this._board.printIds()
 
+        console.log("DEBUG: example check of valid moves: ")
+        this._board.getValidMovesForPosition(this._board.getPositionById(3))
         this._board.getValidMovesForPosition(this._board.getPositionById(16))
+        this._board.getValidMovesForPosition(this._board.getPositionById(54))
+        this._board.getValidMovesForPosition(this._board.getPositionById(9))
     }
     /**
      * This method will be called every "playerInput" action. It will proceed with regenerating and updating
