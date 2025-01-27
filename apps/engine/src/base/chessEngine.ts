@@ -1,8 +1,4 @@
 import Board from "./board/board"
-import Pawn from "./figure/figures/pawn"
-import Queen from "./figure/figures/queen"
-import King from "./figure/figures/king"
-import Bishop from "./figure/figures/bishop"
 import Position from "./position"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
@@ -35,16 +31,6 @@ class ChessEngine {
         }
         this._board.setupBoard()
         this._board.setupFigures()
-
-        // this._board.printBoard()
-        // this._board.printFigures()
-        // this._board.printIds()
-        //
-        // console.log("DEBUG: example check of valid moves: ")
-        // this._board.getValidMovesForPosition(this._board.getPositionById(3))
-        // this._board.getValidMovesForPosition(this._board.getPositionById(16))
-        // this._board.getValidMovesForPosition(this._board.getPositionById(54))
-        // this._board.getValidMovesForPosition(this._board.getPositionById(9))
     }
     /**
      * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -62,17 +48,6 @@ class ChessEngine {
             this.onGameOver()
             return
         }
-        //debug
-        this._board.printBoard()
-        this._board.printFigures()
-        this._board.printIds()
-
-        console.log("DEBUG: example check of valid moves: ")
-        this._board.getValidMovesForPosition(this._board.getPositionById(3))
-        this._board.getValidMovesForPosition(this._board.getPositionById(16))
-        this._board.getValidMovesForPosition(this._board.getPositionById(54))
-        this._board.getValidMovesForPosition(this._board.getPositionById(9))
-        //debug
 
         // const { from, to } = await this.awaitPlayer()
 
