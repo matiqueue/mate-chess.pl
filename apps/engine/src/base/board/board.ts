@@ -115,11 +115,19 @@ class Board {
     // Wyświetlenie szachownicy z figurami DEBUG
     public printFigures() {
         console.debug("\n \nPrinting chessboard by figures: \n")
-        for (let y = 7; y >= 0; y--) {
+        for (let y = 0; y < 8; y++) {
             let row = ""
             for (let x = 0; x < 8; x++) {
                 const figure = this.positions.get(this.letters[x] + (8 - y))?.figure?.type
-                row += "[" + figure + "] "
+                if (figure === undefined) {
+                    row += `[-] `
+                    continue
+                }
+                if (figure === "knight") {
+                    row += "[" + figure?.charAt(1) + "] " //since King and Knight have the same first letter, in english chess notation the King is K and a Knight is N
+                    continue
+                }
+                row += "[" + figure?.charAt(0) + "] "
             }
             console.debug(row.trim())
         }
@@ -152,9 +160,9 @@ class Board {
                     continue
                 }
                 if (targetPosition === position) {
-                    row += "[ooo] " //starting pos
+                    row += "[&&] " //starting pos
                 } else if (position.figure?.isValidMove(targetPosition)) {
-                    row += "[&&&] " //valid
+                    row += "[--] " //valid
                     validMoves.push(targetPosition)
                 } else {
                     row += `[${targetPosition.notation}] ` //invalid
