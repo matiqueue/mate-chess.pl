@@ -1,5 +1,6 @@
 import { Providers } from "@/components/providers"
 import { ClerkProvider } from "@clerk/nextjs"
+import "@workspace/ui/styles/globals.css"
 
 export default function RootLayout({
   children,

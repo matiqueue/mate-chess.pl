@@ -3,8 +3,6 @@ import { Navbar } from "@/components/navbar"
 import { Sidebar } from "@/components/sidebar"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
-import "@workspace/ui/globals.css"
-
 export default function HomeLayout({
   children,
 }: {

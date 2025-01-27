@@ -45,6 +45,7 @@ import {
   useUser,
   useClerk,
   UserProfile,
+  SignUpButton,
 } from "@clerk/nextjs"
 
 interface NavItemProps {
@@ -169,7 +170,6 @@ export function Sidebar() {
 
         <SignedIn>
           <div className="flex items-center gap-4 justify-items-start">
-            {/* DropdownMenu w stylu shadcn, ale z danymi pobranymi z Clerk */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -177,7 +177,6 @@ export function Sidebar() {
                   className="relative h-8 w-8 rounded-full"
                 >
                   <Avatar className="h-8 w-8">
-                    {/* Avatar: zdjęcie z Clerka, fallback z inicjałami */}
                     <AvatarImage
                       src={user?.imageUrl || "/placeholder.svg"}
                       alt={user?.fullName || "User"}
