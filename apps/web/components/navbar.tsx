@@ -2,20 +2,7 @@
 
 import { Bell, MessageSquare, Search } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
 import { Input } from "@workspace/ui/components/input"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar"
 
 import { cn } from "@workspace/ui/lib/utils"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"

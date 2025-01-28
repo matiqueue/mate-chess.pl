@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from "react";
-import "@/styles/navbar.css";
-import { Fraunces } from "next/font/google";
+import React, { useEffect, useState } from "react"
+import "@/styles/navbar.css"
+import { Fraunces } from "next/font/google"
 
 const fraunces = Fraunces({
   subsets: ["latin"],
   weight: "300",
-});
+})
 
 const Navbar: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   // Funkcja do sprawdzania rozmiaru ekranu
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Sprawdzamy, czy ekran jest mały (<= 768px)
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
+      setIsMobile(window.innerWidth <= 768) // Sprawdzamy, czy ekran jest mały (<= 768px)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
     return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <nav className="bg-transparent">
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
         </ul>
       )}
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

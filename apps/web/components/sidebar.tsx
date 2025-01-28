@@ -13,7 +13,7 @@ import {
   Activity,
   Settings,
 } from "lucide-react"
-import { ModeToggle } from "@workspace/ui/components/mode-toggle"
+
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { Separator } from "@workspace/ui/components/separator"
 import {
@@ -22,7 +22,7 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@workspace/ui/components/sidebar"
-import { cn } from "@workspace/ui/lib/utils"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { Input } from "@workspace/ui/components/input"
+
 import { Button } from "@workspace/ui/components/button"
 import {
   Avatar,
@@ -44,8 +44,6 @@ import {
   SignInButton,
   useUser,
   useClerk,
-  UserProfile,
-  SignUpButton,
 } from "@clerk/nextjs"
 
 interface NavItemProps {

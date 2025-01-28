@@ -1,37 +1,47 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { Loading } from "@/components/landing-page/loading-animation";
+import React, { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
+import { Loading } from "@/components/landing-page/loading-animation"
 
 // Dynamiczny import Chessboard
-const Chessboard = dynamic(() => import("@/components/landing-page/Chessboard"), { ssr: false });
+const Chessboard = dynamic(
+  () => import("@/components/landing-page/Chessboard"),
+  { ssr: false },
+)
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState(true); // Czy trwa ładowanie?
-  const [isChessboardVisible, setIsChessboardVisible] = useState(false); // Widoczność Chessboard
+  const [isLoading, setIsLoading] = useState(true) // Czy trwa ładowanie?
+  const [isChessboardVisible, setIsChessboardVisible] = useState(false) // Widoczność Chessboard
 
   useEffect(() => {
     // Symulacja minimalnego czasu ładowania (np. 5 sekund)
     const timer = setTimeout(() => {
-      setIsLoading(false); // Wyłącz ekran ładowania po 5 sekundach
-    }, 5000);
+      setIsLoading(false) // Wyłącz ekran ładowania po 5 sekundach
+    }, 5000)
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (!isLoading) {
       // Delay dla animacji Chessboard (opcjonalne)
       const fadeTimer = setTimeout(() => {
-        setIsChessboardVisible(true);
-      }, 200); // Czas oczekiwania na pojawienie się Chessboard
-      return () => clearTimeout(fadeTimer);
+        setIsChessboardVisible(true)
+      }, 200) // Czas oczekiwania na pojawienie się Chessboard
+      return () => clearTimeout(fadeTimer)
     }
-  }, [isLoading]);
+  }, [isLoading])
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
       {isLoading && <Loading />} {/* Ekran ładowania */}
       <div className={`content ${!isLoading ? "visible" : "hidden"}`}>
         <div
@@ -39,12 +49,11 @@ export default function Page() {
             isChessboardVisible ? "fade-in" : "fade-out"
           }`}
         >
-        <div style={{ display: isChessboardVisible ? "block" : "none" }}>
+          <div style={{ display: isChessboardVisible ? "block" : "none" }}>
             <Chessboard />
-        </div>
+          </div>
         </div>
       </div>
-
       <style jsx>{`
         .content {
           opacity: 0;
@@ -57,7 +66,9 @@ export default function Page() {
         .chessboard-container {
           opacity: 0;
           transform: translateY(20px); /* Początkowa pozycja */
-          transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+          transition:
+            opacity 1s ease-in-out,
+            transform 1s ease-in-out;
         }
         .chessboard-container.fade-in {
           opacity: 1;
@@ -69,5 +80,5 @@ export default function Page() {
         }
       `}</style>
     </div>
-  );
+  )
 }

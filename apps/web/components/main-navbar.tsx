@@ -3,15 +3,10 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { PuzzleIcon as Chess, Menu, Moon, Sun, User } from "lucide-react"
+import { PuzzleIcon as Chess, Menu } from "lucide-react"
 
 import { Button } from "@workspace/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+
 import {
   Sheet,
   SheetContent,

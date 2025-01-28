@@ -1,11 +1,11 @@
-import React from 'react';
-import '@/styles/scrollAnimation.css'
+import React from "react"
+import "@/styles/scrollAnimation.css"
 
 const ScrollAnimation = () => {
-    return (
-       <>
-       <button></button>
-       </>
-    )
+  return (
+    <>
+      <button></button>
+    </>
+  )
 }
-export default ScrollAnimation;
+export default ScrollAnimation
