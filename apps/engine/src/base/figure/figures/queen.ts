@@ -1,19 +1,20 @@
-import Figure from "../figure";
-import Position from "../../position";
+import Figure from "../figure"
+import Position from "../../position"
+import Board from "../../board/board"
 
 class Queen extends Figure {
-    constructor(color: "white" | "black", position: Position) {
-        super("queen", color, position);
+  constructor(color: "white" | "black", position: Position, board: Board) {
+    super("queen", color, position, board)
+  }
+  isValidMove(target: Position): boolean {
+    if (Math.abs(target.x - this.position.x) === Math.abs(target.y - this.position.y) || this.position.x === target.x || this.position.y === target.y) {
+      return true
     }
-    isValidMove(target: Position): boolean {
-        if (Math.abs(target.x - this.position.x) === Math.abs(target.y - this.position.y) || (this.position.x === target.x || this.position.y === target.y)){
-            return true;
-        }
-        return false;
-    }
-    move(target: Position): boolean {
-        return super.move(target);
-    }
+    return false
+  }
+  move(target: Position): boolean {
+    return super.move(target)
+  }
 }
 
-export default Queen;
+export default Queen
