@@ -56,15 +56,36 @@ class ChessGame extends ChessEngine {
     // }
 
     //en passant test:
-    let blackPawnPosition = this._board.getPositionByNotation("d4")
-    let whitePawnPosition = this._board.getPositionByNotation("c4")
-    if (this._board.addFigureAtPosition(whitePawnPosition, new Pawn("white", whitePawnPosition, this._board))) {
-      console.log("valid moves for white pawn: \n")
-      this._board.getValidMovesForPosition(whitePawnPosition)
+    // let blackPawnPosition = this._board.getPositionByNotation("d4")
+    // let whitePawnPosition = this._board.getPositionByNotation("c4")
+    // if (this._board.addFigureAtPosition(whitePawnPosition, new Pawn("white", whitePawnPosition, this._board))) {
+    //   console.log("valid moves for white pawn: \n")
+    //   this._board.getValidMovesForPosition(whitePawnPosition)
+    // }
+    // if (this._board.addFigureAtPosition(blackPawnPosition, new Pawn("black", blackPawnPosition, this._board))) {
+    //   console.log("valid moves for black pawn: \nshould include en passant -> swipe to c3 position. \n")
+    //   this._board.getValidMovesForPosition(blackPawnPosition)
+    // }
+    //
+    // //queen collision test
+    let blackQueenPos = this._board.getPositionByNotation("d6")
+    if (this._board.addFigureAtPosition(blackQueenPos, new Queen("black", blackQueenPos, this._board))) {
+      console.log("setup valid")
+      this._board.getValidMovesForPosition(blackQueenPos)
     }
-    if (this._board.addFigureAtPosition(blackPawnPosition, new Pawn("black", blackPawnPosition, this._board))) {
-      console.log("valid moves for black pawn: \nshould include en passant -> swipe to c3 position. \n")
-      this._board.getValidMovesForPosition(blackPawnPosition)
+
+    // rook collision test
+    let blackRookPos = this._board.getPositionByNotation("e5")
+    if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
+      console.log("Black Rook placed at", blackRookPos.notation)
+      this._board.getValidMovesForPosition(blackRookPos)
+    }
+
+    // bishop collision test
+    let blackBishopPos = this._board.getPositionByNotation("b6")
+    if (blackBishopPos && this._board.addFigureAtPosition(blackBishopPos, new Bishop("black", blackBishopPos, this._board))) {
+      console.log("Black Queen placed at", blackBishopPos.notation)
+      this._board.getValidMovesForPosition(blackBishopPos)
     }
 
     this._board.printFigures()

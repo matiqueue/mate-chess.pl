@@ -8,6 +8,8 @@ class Queen extends Figure {
   }
   isValidMove(target: Position): boolean {
     if (Math.abs(target.x - this.position.x) === Math.abs(target.y - this.position.y) || this.position.x === target.x || this.position.y === target.y) {
+      if (target.figure && target.figure.color === this.color) return false
+      if (this.isPathBlocked(target)) return false
       return true
     }
     return false
