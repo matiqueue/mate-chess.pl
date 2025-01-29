@@ -19,6 +19,7 @@ class Board {
   private positions: Map<string, Position>
   private letters: any = "abcdefgh"
   private figures: Figure[]
+  private positionsById: Position[] = []
 
   constructor() {
     this.positions = new Map()
@@ -41,6 +42,7 @@ class Board {
         const notation = this.letters[x] + (8 - y)
         const position = new Position(x, y, null, id, this)
         this.positions.set(notation, position)
+        this.positionsById[id] = position
         id++
       }
     }
@@ -98,20 +100,6 @@ class Board {
       console.debug(row.trim())
     }
   }
-  /**@deprecated*/
-  // Wyświetlenie szachownicy w formacie [literka cyferka] DEBUG
-  public printBoardOld() {
-    console.debug("\n \nPrinting chessboard by notation: \n")
-    for (let y = 7; y >= 0; y--) {
-      let row = ""
-      for (let x = 0; x < 8; x++) {
-        const notation = this.letters[x] + (8 - y)
-        row += "[" + notation + "] "
-      }
-      console.debug(row.trim())
-    }
-  }
-
   // Wyświetlenie szachownicy z figurami DEBUG
   public printFigures() {
     console.debug("\n \nPrinting chessboard by figures: \n")
@@ -181,20 +169,9 @@ class Board {
     }
     return position
   }
-  /**@ERROR ZWRACA UNDEFINED Z JAKIEGOŚ POWODU W "const position = this.positions.get(notation)*/
   public getPositionById(id: number): Position | null {
-    for (let y = 0; y < 8; y++) {
-      for (let x = 0; x < 8; x++) {
-        const notation = this.letters[x] + (8 - y)
-        const position = this.positions.get(notation)
-        if (position?.id === id) {
-          return position
-        }
-      }
-    }
-    return null
+    return this.positionsById[id] || null // Dostęp w O(1)
   }
-
   public getPositionByCords(positionX: number, positionY: number): Position | null {
     return this.getPositionByNotation(this.letters[positionX] + positionY.toString())
   }
