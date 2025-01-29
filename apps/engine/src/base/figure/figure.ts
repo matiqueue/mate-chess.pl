@@ -52,7 +52,34 @@ abstract class Figure {
    * Its main purpose is to restrict movement for each figure, so it obeys the rules of chess
    * */
   abstract isValidMove(target: Position): boolean
+  protected isPathBlocked(target: Position): boolean {
+    const directionX = Math.sign(target.x - this.position.x)
+    const directionY = Math.sign(target.y - this.position.y)
 
+    let currentX = this.position.x + directionX
+    let currentY = this.position.y + directionY
+
+    while (currentX !== target.x || currentY !== target.y) {
+      if (currentX < 0 || currentX > 7 || currentY < 0 || currentY > 7) {
+        return true
+      }
+      const currentPosition = this._board.getPositionByCords(currentX, currentY)
+      if (!currentPosition) {
+        console.error(`Position (${currentX}, ${currentY}) is undefined.`)
+        return true
+      }
+
+      if (currentPosition.figure) {
+        return true
+      }
+
+      // Move one step further
+      currentX += directionX
+      currentY += directionY
+    }
+
+    return false
+  }
   public move(target: Position): boolean {
     // Sprawdź, czy docelowa pozycja jest na planszy
     if (!this.isPositionValid(target)) {

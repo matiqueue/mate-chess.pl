@@ -3,6 +3,7 @@ import Position from "../../position"
 import Board from "../../board/board"
 
 class King extends Figure {
+  private isCheck: boolean = false
   constructor(color: "white" | "black", position: Position, board: Board) {
     super("king", color, position, board)
   }

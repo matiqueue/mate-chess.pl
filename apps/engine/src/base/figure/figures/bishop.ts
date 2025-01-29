@@ -7,6 +7,7 @@ class Bishop extends Figure {
     super("bishop", color, position, board)
   }
   isValidMove(target: Position): boolean {
+    if (this.isPathBlocked(target)) return false
     if (Math.abs(target.x - this.position.x) === Math.abs(target.y - this.position.y)) {
       return true
     }

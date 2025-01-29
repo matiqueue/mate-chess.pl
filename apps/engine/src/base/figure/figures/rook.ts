@@ -8,7 +8,11 @@ class Rook extends Figure {
   }
 
   isValidMove(target: Position): boolean {
+    if (this.isPathBlocked(target)) return false
     if (this.position.x === target.x || this.position.y === target.y) {
+      if (target.figure && target.figure.color === this.color) {
+        return false
+      }
       return true
     }
     return false
