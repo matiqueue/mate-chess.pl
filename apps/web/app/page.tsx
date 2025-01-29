@@ -5,10 +5,7 @@ import dynamic from "next/dynamic"
 import { Loading } from "@/components/landing-page/loading-animation"
 
 // Dynamiczny import Chessboard
-const Chessboard = dynamic(
-  () => import("@/components/landing-page/Chessboard"),
-  { ssr: false },
-)
+const Chessboard = dynamic(() => import("@/components/landing-page/Chessboard"), { ssr: false })
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true) // Czy trwa ładowanie?
@@ -42,13 +39,9 @@ export default function Page() {
         overflow: "hidden",
       }}
     >
-      {isLoading && <Loading />} {/* Ekran ładowania */}
+      {isLoading && <Loading />}
       <div className={`content ${!isLoading ? "visible" : "hidden"}`}>
-        <div
-          className={`chessboard-container ${
-            isChessboardVisible ? "fade-in" : "fade-out"
-          }`}
-        >
+        <div className={`chessboard-container ${isChessboardVisible ? "fade-in" : "fade-out"}`}>
           <div style={{ display: isChessboardVisible ? "block" : "none" }}>
             <Chessboard />
           </div>

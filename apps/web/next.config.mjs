@@ -4,7 +4,10 @@ const nextConfig = {
   images: {
     domains: ["hebbkx1anhila5yf.public.blob.vercel-storage.com"],
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  experimental: {
+    appDir: true,
+  },
 }
 
 export default nextConfig
