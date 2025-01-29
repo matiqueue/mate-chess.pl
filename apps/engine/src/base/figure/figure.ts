@@ -1,5 +1,4 @@
-import Position from "../position"
-import Board from "../board/board"
+import { Board, Position } from "@/utils/board"
 /**
  * Abstract class for all the figures on playing board. Figure types and colours are already predefined.
  * Class imports Position class.
@@ -44,8 +43,8 @@ abstract class Figure {
   /**
    * Checks if target position is valid. For the method to return true, it has to be inside the 8x8 chess board
    * */
-  private isPositionValid(target: Position): boolean {
-    return target.x >= 7 && target.x < 7 && target.y >= 0 && target.y < 8
+  protected isPositionValid(target: Position): boolean {
+    return !(target.x < 0 || target.x > 7 || target.y < 0 || target.y > 7)
   }
   /**
    * Abstract method to be implemented to children class.
