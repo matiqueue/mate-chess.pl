@@ -1,11 +1,5 @@
-import Position from "../position"
-import Figure from "../figure/figure"
-import Pawn from "../figure/figures/pawn"
-import Rook from "../figure/figures/rook"
-import Knight from "../figure/figures/knight"
-import King from "../figure/figures/king"
-import Bishop from "../figure/figures/bishop"
-import Queen from "../figure/figures/queen"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@/utils/figures"
+import { Position } from "@/utils/board"
 
 /**
  * Main playing board. very important.<br>
@@ -178,7 +172,7 @@ class Board {
   }
 
   public getFigureAtPosition(position: Position): Figure | null {
-    return position.figure || null
+    return position.figure
   }
   /***
    * returns true if succesfully placed a figure on board

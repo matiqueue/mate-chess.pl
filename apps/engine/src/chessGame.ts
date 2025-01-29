@@ -1,19 +1,12 @@
+import { Knight, Bishop, Rook, Queen, King, Pawn } from "@/utils/figures"
 import ChessEngine from "./base/chessEngine"
-import board from "./base/board/board"
-import Figure from "./base/figure/figure"
-import Pawn from "./base/figure/figures/pawn"
-import Queen from "./base/figure/figures/queen"
-import King from "./base/figure/figures/king"
-import Bishop from "./base/figure/figures/bishop"
-import Knight from "./base/figure/figures/knight"
-import Rook from "./base/figure/figures/rook"
 
 class ChessGame extends ChessEngine {
   constructor() {
     super()
   }
 
-  start() {
+  override start() {
     super.start()
     //ur code here
 
@@ -75,29 +68,41 @@ class ChessGame extends ChessEngine {
     }
 
     // rook collision test
-    let blackRookPos = this._board.getPositionByNotation("e5")
-    if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
-      console.log("Black Rook placed at", blackRookPos.notation)
-      this._board.getValidMovesForPosition(blackRookPos)
-    }
+    // let blackRookPos = this._board.getPositionByNotation("e5")
+    // if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
+    //   console.log("Black Rook placed at", blackRookPos.notation)
+    //   this._board.getValidMovesForPosition(blackRookPos)
+    //
+    //   this._board.getFigureAtPosition(blackRookPos).isValidMove(this._board.getPositionByNotation("e2"))
+    // }
 
     // bishop collision test
     let blackBishopPos = this._board.getPositionByNotation("b6")
     if (blackBishopPos && this._board.addFigureAtPosition(blackBishopPos, new Bishop("black", blackBishopPos, this._board))) {
       console.log("Black Queen placed at", blackBishopPos.notation)
+      this._board.printFigures()
       this._board.getValidMovesForPosition(blackBishopPos)
+      this._board.getFigureAtPosition(blackBishopPos).isValidMove(this._board.getPositionByNotation("g1"))
     }
+
+    console.log("TYPEOF OF EMPTY FIGURE")
+    console.log(typeof this._board.getFigureAtPosition(this._board.getPositionByNotation("b7")))
+    //test all rook movement
+    // this._board.getValidMovesForPosition(this._board.getPositionByNotation("a1"))
+    // this._board.getValidMovesForPosition(this._board.getPositionByNotation("a8"))
+    // this._board.getValidMovesForPosition(this._board.getPositionByNotation("h1"))
+    // this._board.getValidMovesForPosition(this._board.getPositionByNotation("h8"))
 
     this._board.printFigures()
   }
 
-  update() {
+  override update() {
     super.update()
     //ur code here
   }
   /**@TODO Ujednolicone ustawianie figur. póki co jest kilka metod od tego. chciałbym zrobić to tak, że jeżeli nic tutaj nie zostało zapisane a metoda nie została wywołana
    * to wtedy występuje standardowe ustawienie figur*/
-  customFigureSetup() {
+  override customFigureSetup() {
     // super.customFigureSetup() //call
     // //example party
     // this._board.addFigureAtPosition(this._board.positions.get("g2")!, new Pawn("white", this._board.positions.get("g2")!)) // White Pawn

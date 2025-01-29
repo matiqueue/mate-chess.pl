@@ -1,6 +1,5 @@
-import Figure from "../figure"
-import Position from "../../position"
-import Board from "../../board/board"
+import { Figure } from "@/utils/figures"
+import { Board, Position } from "@/utils/board"
 
 class King extends Figure {
   private isCheck: boolean = false
@@ -13,7 +12,7 @@ class King extends Figure {
     }
     return false
   }
-  move(target: Position): boolean {
+  override move(target: Position): boolean {
     return super.move(target)
   }
 }

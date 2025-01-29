@@ -1,14 +1,21 @@
 {
-  "name": "ChessEngine",
+  "name": "chess-engine",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "npx tsx src/main.ts"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^22.12.0",
     "typescript": "^5.5.3"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  },
+  "_moduleAliases": {
+    "@": "./src"
+  }
 }
