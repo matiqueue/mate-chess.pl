@@ -165,6 +165,7 @@ class Board {
     const position = this.positions.get(notation)
     if (!position) {
       console.error(`Position "${notation}" does not exist on the board.`)
+      process.kill(1)
       return null
     }
     return position
