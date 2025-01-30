@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -28,13 +30,14 @@ export default function GameSessionPage() {
 
   const [joined, setJoined] = useState(false)
   const [gameState, setGameState] = useState<GameState | null>(null)
-  const [localBoard, setLocalBoard] = useState<string[][] | null>(null)
+
+  const [localBoard, setLocalBoard] = useState<any>(null)
   const [selected, setSelected] = useState<{ row: number; col: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   // Funkcja do tworzenia lokalnej planszy (dla host=player)
   function createLocalBoard(): string[][] {
-    const board: string[][] = Array.from({ length: 8 }, () => Array(8).fill(null))
+    const board: any = Array.from({ length: 8 }, () => Array(8).fill(null))
     // Przykładowe ustawienie jednej figury
     board[0][0] = "P" // Pawn na (0,0)
     return board
@@ -77,9 +80,9 @@ export default function GameSessionPage() {
         console.log("Ruch gracza:", move)
         if (host === "player") {
           // Aktualizacja lokalnej planszy
-          setLocalBoard((prev) => {
+          setLocalBoard((prev: any) => {
             if (!prev) return null
-            const newBoard = structuredClone(prev)
+            const newBoard: any = structuredClone(prev)
             newBoard[move.to.row][move.to.col] = newBoard[move.from.row][move.from.col]
             newBoard[move.from.row][move.from.col] = null
             return newBoard
@@ -166,7 +169,7 @@ export default function GameSessionPage() {
         const cols = []
         for (let c = 0; c < 8; c++) {
           const idx = r * 8 + c
-          const pos = board[idx]
+          const pos: any = board[idx]
           const piece = pos.figure || ""
 
           cols.push(
@@ -198,9 +201,9 @@ export default function GameSessionPage() {
     } else if (host === "player") {
       if (!localBoard) return <p>Ładowanie lokalnej planszy...</p>
 
-      const rows = localBoard.map((rowArr, r) => (
+      const rows = localBoard.map((rowArr: any, r: any) => (
         <tr key={r}>
-          {rowArr.map((val, c) => (
+          {rowArr.map((val: any, c: any) => (
             <td
               key={c}
               onClick={() => handleCellClick(r, c)}
