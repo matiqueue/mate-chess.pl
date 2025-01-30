@@ -11,8 +11,11 @@ class ChessGame extends ChessEngine {
     //ur code here
 
     console.debug("CHESS GAME LAYER CODE OUTPUT BELOW")
-    // this._board.printBoard() //debug
-    // this._board.printFigures() // debug
+    this._board.printBoard() //debug
+    this._board.printFigures() // debug
+    this._board.printIds() //debug
+    this._board.printCords() //debug
+    console.log(this._board.getPositionByNotation("a8").notation)
     //example: add figutes at specific location
     // let position = this._board.getPositionByNotation("a3")
     // if (
@@ -68,13 +71,13 @@ class ChessGame extends ChessEngine {
     }
 
     // rook collision test
-    // let blackRookPos = this._board.getPositionByNotation("e5")
-    // if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
-    //   console.log("Black Rook placed at", blackRookPos.notation)
-    //   this._board.getValidMovesForPosition(blackRookPos)
-    //
-    //   this._board.getFigureAtPosition(blackRookPos).isValidMove(this._board.getPositionByNotation("e2"))
-    // }
+    let blackRookPos = this._board.getPositionByNotation("e5")
+    if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
+      console.log("Black Rook placed at", blackRookPos.notation)
+      this._board.getValidMovesForPosition(blackRookPos)
+
+      this._board.getFigureAtPosition(blackRookPos).isValidMove(this._board.getPositionByNotation("e2"))
+    }
 
     // bishop collision test
     let blackBishopPos = this._board.getPositionByNotation("b6")
@@ -82,11 +85,7 @@ class ChessGame extends ChessEngine {
       console.log("Black Queen placed at", blackBishopPos.notation)
       this._board.printFigures()
       this._board.getValidMovesForPosition(blackBishopPos)
-      this._board.getFigureAtPosition(blackBishopPos).isValidMove(this._board.getPositionByNotation("g1"))
     }
-
-    console.log("TYPEOF OF EMPTY FIGURE")
-    console.log(typeof this._board.getFigureAtPosition(this._board.getPositionByNotation("b7")))
     //test all rook movement
     // this._board.getValidMovesForPosition(this._board.getPositionByNotation("a1"))
     // this._board.getValidMovesForPosition(this._board.getPositionByNotation("a8"))

@@ -7,50 +7,36 @@ class Bishop extends Figure {
   }
   isValidMove(target: Position): boolean {
     if (!this.isPositionValid(target)) return false
-    if (Math.abs(target.x - this.position.x) !== Math.abs(target.y - this.position.y)) {
-      return false
-    }
-    if (target.figure && target.figure.color === this.color) return false
+    if (target.figure?.color === this.color) return false
 
     const deltaX = target.x - this.position.x
     const deltaY = target.y - this.position.y
 
-    // Sprawdzenie, czy ruch jest na ukos
     if (Math.abs(deltaX) !== Math.abs(deltaY)) {
       return false
     }
+    const signX = deltaX > 0 ? 1 : -1
+    const signY = deltaY > 0 ? 1 : -1
 
-    const stepX = deltaX > 0 ? 1 : -1
-    const stepY = deltaY > 0 ? 1 : -1
-
-    let currentX = this.position.x + stepX
-    let currentY = this.position.y + stepY
-
-    while (currentX !== target.x && currentY !== target.y) {
-      const currentPosition = this._board.getPositionByCords(currentX, currentY)
-      if (!currentPosition) {
-        console.error(`Invalid position encountered: (${currentX}, ${currentY})`)
-        return false
-      }
-
-      if (currentPosition.figure) {
-        console.log(`Path blocked by ${currentPosition.figure.type} at ${currentPosition.notation}`)
-        return false
-      }
-
-      currentX += stepX
-      currentY += stepY
-    }
-
-    // Opcjonalnie: Sprawdzenie, czy na pozycji docelowej znajduje się figura tej samej koloru
-    if (target.figure && target.figure.color === this.color) {
-      console.log(`Cannot capture your own piece at ${target.notation}`)
+    let currentX = target.x - signX
+    let currentY = target.y - signY
+    if (currentX > 7 || currentX < 0 || currentY > 7 || currentY < 0) {
       return false
     }
-
+    while (currentX !== this.position.x || currentY !== this.position.y) {
+      let currentPosition = this._board.getPositionByCords(currentX, currentY)
+      if (!currentPosition) {
+        return false
+      }
+      if (this._board.getPositionByCords(currentX, currentY)?.figure) {
+        // console.log("path blocked at: " + this._board.getPositionByCords(currentX, currentY)?.notation) //debug
+        return false
+      }
+      currentX -= signX
+      currentY -= signY
+    }
     return true
   }
-
   override move(target: Position): boolean {
     return super.move(target)
   }
