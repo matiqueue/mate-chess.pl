@@ -15,7 +15,7 @@ class Knight extends Figure {
     }
     return false
   }
-  move(target: Position): boolean {
+  override move(target: Position): boolean {
     return super.move(target)
   }
 }

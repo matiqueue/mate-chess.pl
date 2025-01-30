@@ -11,8 +11,10 @@ import { Position } from "@/utils/board"
  * */
 class Board {
   private positions: Map<string, Position>
-  private letters: any = "abcdefgh"
+  private letters: string = "abcdefgh"
   private figures: Figure[]
+  private blackFigures: Figure[] = []
+  private whiteFigures: Figure[] = []
   private positionsById: Position[] = []
 
   constructor() {

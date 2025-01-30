@@ -82,7 +82,7 @@ class Pawn extends Figure {
     }
   }
 
-  move(target: Position): boolean {
+  override move(target: Position): boolean {
     if (this._isFirstMove) {
       this.isEnPassantPossible = true
       return super.move(target)
