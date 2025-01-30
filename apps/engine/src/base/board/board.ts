@@ -19,14 +19,6 @@ class Board {
     this.positions = new Map()
     this.figures = Array(32)
   }
-  // Inicjalizacja pozycji na planszy
-  /**@DEPRECATED*/
-  public init() {
-    this.setupBoard()
-    this.setupFigures() //chyba nie działa ? edit: działa :)
-
-    console.debug("board initialized")
-  }
   /**
    * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>*/
   public setupBoard() {
@@ -80,16 +72,12 @@ class Board {
 
   public printBoard() {
     console.debug("\nPrinting chessboard with notations: \n")
-    for (let y = 7; y >= 0; y--) {
+    for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
         const notation = this.letters[x] + (8 - y)
         const position = this.positions.get(notation)
-        if (position) {
-          row += `[${position.notation}] `
-        } else {
-          row += `[ undfd ] `
-        }
+        row += position ? `[${position.notation}] ` : `[ undfd ] `
       }
       console.debug(row.trim())
     }
@@ -121,6 +109,24 @@ class Board {
       for (let x = 0; x < 8; x++) {
         const id = this.positions.get(this.letters[x] + (8 - y))?.id
         row += `[${id !== undefined ? id : " undfd "}] `
+      }
+      console.debug(row.trim())
+    }
+  }
+  public printCords() {
+    console.debug("\n \nPrinting chessboard by cords: \n")
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const currentPos = this.positions.get(this.letters[x] + (8 - y))
+        if (currentPos === undefined) {
+          console.log("undefined!!!")
+          continue
+        }
+        const cordsY = currentPos.y
+        const cordsX = currentPos.x
+        row += `[${cordsX}, ${cordsY}] `
+        // row += `[${id !== undefined ? id : " undfd "}] `
       }
       console.debug(row.trim())
     }
@@ -168,7 +174,8 @@ class Board {
     return this.positionsById[id] || null // Dostęp w O(1)
   }
   public getPositionByCords(positionX: number, positionY: number): Position | null {
-    return this.getPositionByNotation(this.letters[positionX] + positionY.toString())
+    const notation = this.letters[positionX] + (8 - positionY) // Adjust rank mapping
+    return this.getPositionByNotation(notation)
   }
 
   public getFigureAtPosition(position: Position): Figure | null {
