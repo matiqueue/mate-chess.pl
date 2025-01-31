@@ -1,6 +1,6 @@
 import { gsap } from "gsap"
 import { useRef } from "react"
-import "@/styles/button.css"
+import styles from "@/styles/button.module.css"
 import { useRouter } from "next/navigation"
 import { Smooch_Sans } from "next/font/google"
 
@@ -58,13 +58,10 @@ const Button = () => {
       })
       .then(() => {
         router.push("/home")
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
       })
   }
   return (
-    <div ref={buttonRef} onClick={handleClick} className="button">
+    <div ref={buttonRef} onClick={handleClick} className={styles.button}>
       <p className={`${smooch_sans.className} button-text`}>PLAY MATE-CHESS</p>
     </div>
   )

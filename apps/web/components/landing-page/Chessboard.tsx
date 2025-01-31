@@ -19,9 +19,7 @@ const Chessboard: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0) // Aktualny indeks pozycji kamery
   const [lastPosition, setLastPosition] = useState(5)
   const [showButton, setShowButton] = useState(false)
-  const cameraPositions = useRef<
-    { position: THREE.Vector3; lookAt: THREE.Vector3 }[]
-  >([
+  const cameraPositions = useRef<{ position: THREE.Vector3; lookAt: THREE.Vector3 }[]>([
     {
       position: new THREE.Vector3(0, 8, 8), // Widok z przodu
       lookAt: new THREE.Vector3(0, 0, 0),
@@ -81,12 +79,7 @@ const Chessboard: React.FC = () => {
   ])
   const handleDotClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const index = Number(e.currentTarget.getAttribute("data-index"))
-    if (
-      index === currentPositionIndex.current ||
-      transitioning.current ||
-      !cameraRef.current
-    )
-      return
+    if (index === currentPositionIndex.current || transitioning.current || !cameraRef.current) return
 
     const newPosition = cameraPositions.current[index]
     if (!newPosition) return
@@ -135,17 +128,11 @@ const Chessboard: React.FC = () => {
     return (
       <div
         key={currentPositionIndex.current} // Klucz wymuszający odświeżenie
-        className={`text-container ${
-          currentPositionIndex.current % 2 === 0 ? "text-left" : "text-right"
-        } animate-text`} // Dodano klasę animacji
+        className={`text-container ${currentPositionIndex.current % 2 === 0 ? "text-left" : "text-right"} animate-text`} // Dodano klasę animacji
         style={{ top: `${topPosition}%` }} // Dynamiczna pozycja `top`
       >
-        <h1 className={`${fraunces.className} text-title`}>
-          {currentText.title}
-        </h1>
-        <p className={`${fraunces.className} text-description`}>
-          {currentText.description}
-        </p>
+        <h1 className={`${fraunces.className} text-title`}>{currentText.title}</h1>
+        <p className={`${fraunces.className} text-description`}>{currentText.description}</p>
       </div>
     )
   }
@@ -156,12 +143,7 @@ const Chessboard: React.FC = () => {
     }
 
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    )
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000)
     cameraRef.current = camera
 
     // Ustaw początkową pozycję kamery
@@ -187,25 +169,19 @@ const Chessboard: React.FC = () => {
     window.addEventListener("resize", handleResize)
 
     const textureLoader = new RGBELoader()
-    textureLoader.load(
-      "/backgrounds/finalBackground.hdr",
-      (texture: THREE.Texture) => {
-        texture.mapping = THREE.EquirectangularReflectionMapping
-        const backgroundGeometry = new THREE.SphereGeometry(500, 32, 32)
-        const backgroundMaterial = new THREE.MeshBasicMaterial({
-          map: texture,
-          side: THREE.BackSide,
-        })
+    textureLoader.load("/backgrounds/finalBackground.hdr", (texture: THREE.Texture) => {
+      texture.mapping = THREE.EquirectangularReflectionMapping
+      const backgroundGeometry = new THREE.SphereGeometry(500, 32, 32)
+      const backgroundMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide,
+      })
 
-        const backgroundMesh = new THREE.Mesh(
-          backgroundGeometry,
-          backgroundMaterial,
-        )
-        scene.add(backgroundMesh)
+      const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial)
+      scene.add(backgroundMesh)
 
-        scene.environment = texture
-      },
-    )
+      scene.environment = texture
+    })
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
@@ -269,11 +245,7 @@ const Chessboard: React.FC = () => {
         if (transitioning.current || !cameraPositions.current.length) return
 
         const direction = event.deltaY > 0 ? 1 : -1
-        const newIndex =
-          (currentPositionIndex.current +
-            direction +
-            cameraPositions.current.length) %
-          cameraPositions.current.length
+        const newIndex = (currentPositionIndex.current + direction + cameraPositions.current.length) % cameraPositions.current.length
 
         const newPosition = cameraPositions.current[newIndex]
         if (!newPosition) return
@@ -318,22 +290,13 @@ const Chessboard: React.FC = () => {
     }
 
     const handleTouchEnd = () => {
-      if (
-        transitioning.current ||
-        !cameraPositions.current.length ||
-        !cameraRef.current
-      )
-        return
+      if (transitioning.current || !cameraPositions.current.length || !cameraRef.current) return
 
       const deltaY = touchStartY - touchEndY
 
       // Przesunięcie w dół (deltaY > 0) lub w górę (deltaY < 0)
       const direction = deltaY > 0 ? 1 : -1
-      const newIndex =
-        (currentPositionIndex.current +
-          direction +
-          cameraPositions.current.length) %
-        cameraPositions.current.length
+      const newIndex = (currentPositionIndex.current + direction + cameraPositions.current.length) % cameraPositions.current.length
 
       const newPosition = cameraPositions.current[newIndex]
       if (!newPosition) return
@@ -377,27 +340,19 @@ const Chessboard: React.FC = () => {
       if (transitioning.current && startTransitionTime.current !== null) {
         const elapsedTime = performance.now() - startTransitionTime.current
         const rawProgress = Math.min(elapsedTime / animationDuration, 1)
-        const easeInOutQuad = (t: number): number =>
-          t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+        const easeInOutQuad = (t: number): number => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t)
         const progress = easeInOutQuad(rawProgress) // Ogranicz progress do 0-1
 
         // Interpolacja pozycji kamery
-        camera.position.lerpVectors(
-          startPosition.current,
-          targetPosition.current,
-          progress,
-        )
+        camera.position.lerpVectors(startPosition.current, targetPosition.current, progress)
 
         // Rotacja szachownicy
         if (chessModel.current) {
-          chessModel.current.rotation.y =
-            startRotation.current +
-            (targetRotation.current - startRotation.current) * progress
+          chessModel.current.rotation.y = startRotation.current + (targetRotation.current - startRotation.current) * progress
         }
 
         // Ustaw `lookAt` kamery
-        const currentLookAt =
-          cameraPositions.current[currentPositionIndex.current]?.lookAt
+        const currentLookAt = cameraPositions.current[currentPositionIndex.current]?.lookAt
         if (currentLookAt) camera.lookAt(currentLookAt)
 
         if (rawProgress === 1) {
@@ -430,12 +385,7 @@ const Chessboard: React.FC = () => {
       {RenderText()}
       <div className="dots-container">
         {cameraPositions.current.map((_, index) => (
-          <div
-            onClick={handleDotClick}
-            data-index={index}
-            key={index}
-            className={`dot ${currentIndex === index ? "active" : ""}`}
-          ></div>
+          <div onClick={handleDotClick} data-index={index} key={index} className={`dot ${currentIndex === index ? "active" : ""}`}></div>
         ))}
       </div>
       <div className="scroll-containter">
