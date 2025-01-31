@@ -2,6 +2,10 @@
   "name": "@workspace/chess-engine",
   "version": "1.0.0",
   "description": "",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx tsx src/main.ts"
+  },
   "devDependencies": {
     "@types/node": "^22.12.0",
     "typescript": "^5.5.3"
