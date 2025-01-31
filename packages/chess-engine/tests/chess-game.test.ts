@@ -1,5 +1,5 @@
-import { Knight, Bishop, Rook, Queen, King, Pawn } from "@/utils/figures"
-import ChessEngine from "./base/chessEngine"
+import { Bishop, Rook, Queen } from "../src/utils/figures"
+import ChessEngine from "../src/base/chessEngine"
 
 class ChessGame extends ChessEngine {
   constructor() {
@@ -64,19 +64,19 @@ class ChessGame extends ChessEngine {
     // }
     //
     // //queen collision test
-    let blackQueenPos = this._board.getPositionByNotation("d6")
+    const blackQueenPos = this._board.getPositionByNotation("d6")
     if (this._board.addFigureAtPosition(blackQueenPos, new Queen("black", blackQueenPos, this._board))) {
       console.log("setup valid")
     }
 
     // rook collision test
-    let blackRookPos = this._board.getPositionByNotation("e5")
+    const blackRookPos = this._board.getPositionByNotation("e5")
     if (blackRookPos && this._board.addFigureAtPosition(blackRookPos, new Rook("black", blackRookPos, this._board))) {
       console.log("Black Rook placed at", blackRookPos.notation)
     }
 
     // bishop collision test
-    let blackBishopPos = this._board.getPositionByNotation("b6")
+    const blackBishopPos = this._board.getPositionByNotation("b6")
     if (blackBishopPos && this._board.addFigureAtPosition(blackBishopPos, new Bishop("black", blackBishopPos, this._board))) {
       console.log("Black bishop placed at", blackBishopPos.notation)
     }

@@ -25,15 +25,34 @@ class Board {
    * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>*/
   public setupBoard() {
     let id = 0
+
+    // To jest moj kod {matique}
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
-        const notation = this.letters[x] + (8 - y)
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          continue
+        }
+        const notation = letter + (8 - y)
         const position = new Position(x, y, null, id, this)
         this.positions.set(notation, position)
         this.positionsById[id] = position
         id++
       }
     }
+
+    // To jest twoj kod ktory mial bledy wiec go przerobilem ale nie wiem czy dobrze ;(
+
+    // for (let y = 0; y < 8; y++) {
+    //   for (let x = 0; x < 8; x++) {
+    //     const notation = this.letters[x] + (8 - y)
+    //     const position = new Position(x, y, null, id, this)
+    //     this.positions.set(notation, position)
+    //     this.positionsById[id] = position
+    //     id++
+    //   }
+    // }
   }
   // Wstawianie figur na szachownicę w standardowej pozycji
   public setupFigures() {
@@ -74,15 +93,34 @@ class Board {
 
   public printBoard() {
     console.debug("\nPrinting chessboard with notations: \n")
+
+    // To jest moj kod {matique}
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
-        const notation = this.letters[x] + (8 - y)
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          continue
+        }
+        const notation = letter + (8 - y)
         const position = this.positions.get(notation)
         row += position ? `[${position.notation}] ` : `[ undfd ] `
       }
       console.debug(row.trim())
     }
+
+    // Tak samo jak w poprzednim przypadku zmienilem kod, twoj kod:
+
+    // for (let y = 0; y < 8; y++) {
+    //   let row = ""
+    //   for (let x = 0; x < 8; x++) {
+    //     const notation = this.letters[x] + (8 - y)
+    //     const position = this.positions.get(notation)
+    //     row += position ? `[${position.notation}] ` : `[ undfd ] `
+    //   }
+    //   console.debug(row.trim())
+    // }
   }
   // Wyświetlenie szachownicy z figurami DEBUG
   public printFigures() {

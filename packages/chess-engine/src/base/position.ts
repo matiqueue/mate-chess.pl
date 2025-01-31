@@ -1,7 +1,5 @@
 import Figure from "./figure/figure"
 import Board from "./board/board"
-import figure from "./figure/figure"
-import board from "./board/board"
 
 /**
  * Class for a single cell position on chessBoard. Very important<br>
@@ -68,10 +66,13 @@ class Position {
 
   // Prywatna metoda do obliczania notacji szachowej na podstawie współrzędnych
   private calculateNotation(x: number, y: number): string {
-    const letters: any = "abcdefgh" // Y cords
+    const letters: string = "abcdefgh" // Y cords
     const rows = "12345678" // X cords
     if (x < 0 || x > 7 || y < 0 || y > 7) {
       throw new Error("Współrzędne muszą być w zakresie od 0 do 7.")
+    }
+    if (letters[x] === undefined || rows[7 - y] === undefined) {
+      throw new Error("Invalid coordinates for chess notation.")
     }
     return letters[x] + rows[7 - y]
   }

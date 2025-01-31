@@ -30,7 +30,7 @@ class Queen extends Figure {
     }
 
     while (currentX !== this.position.x || currentY !== this.position.y) {
-      let currentPosition = this._board.getPositionByCords(currentX, currentY)
+      const currentPosition = this._board.getPositionByCords(currentX, currentY)
       if (!currentPosition) {
         return false
       }
