@@ -2,17 +2,19 @@
   "name": "@workspace/chess-engine",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "@types/node": "^22.12.0",
+    "typescript": "^5.5.3"
+  },
+  "private": true,
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "uuid": "^11.0.5"
+  },
+  "_moduleAliases": {
+    "@": "./src"
   },
   "exports": {
-    "./index": "./index.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "uuid": "^11.0.5"
+    "./functions": "./index.ts"
   }
 }

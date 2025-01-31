@@ -5,21 +5,25 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "node --loader ts-node/esm server.ts"
+    "dev": "npx tsx src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@clerk/backend": "^1.23.9",
+    "@clerk/clerk-sdk-node": "^5.1.6",
+    "@workspace/chess-engine": "workspace:*",
+    "clerk-sdk-node": "link:@types/@clerk/clerk-sdk-node",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "socket.io": "^4.8.1",
-    "@workspace/chess-engine": "workspace:*"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "ts-node": "^10.9.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
 }

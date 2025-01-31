@@ -47,31 +47,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <style jsx>{`
-        .content {
-          opacity: 0;
-          transition: opacity 1s ease-in-out; /* Płynne przejście całej zawartości */
-        }
-        .content.visible {
-          opacity: 1; /* Widoczne po zakończeniu ładowania */
-        }
-
-        .chessboard-container {
-          opacity: 0;
-          transform: translateY(20px); /* Początkowa pozycja */
-          transition:
-            opacity 1s ease-in-out,
-            transform 1s ease-in-out;
-        }
-        .chessboard-container.fade-in {
-          opacity: 1;
-          transform: translateY(0); /* Przesunięcie w miejsce docelowe */
-        }
-        .chessboard-container.fade-out {
-          opacity: 0;
-          transform: translateY(20px); /* Wartość na wypadek ukrywania */
-        }
-      `}</style>
     </div>
   )
 }

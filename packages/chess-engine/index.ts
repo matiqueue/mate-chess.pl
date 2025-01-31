@@ -1,15 +1,8 @@
-import ChessEngine from "./src/chessEngine.js"
+import ChessGame from "@/chessGame"
 
-/**
- * Tworzy nową instancję gry szachowej i ją inicjuje.
- */
-export function createNewGame() {
-  const engine = new ChessEngine()
-  engine.startGame()
-  return engine
+const startNewGame = () => {
+  console.log("Trying to initialize game...")
+  const game = new ChessGame()
 }
 
-/**
- * Eksport klasy ChessEngine
- */
-export { ChessEngine }
+export { startNewGame }
