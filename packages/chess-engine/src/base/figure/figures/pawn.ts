@@ -34,8 +34,6 @@ class Pawn extends Figure {
           return true
         }
         //en passant below
-        //podejście 1
-
         if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible) {
           if (target.x === this.position.x - 1 && target.y === this.position.y + 1) {
             return true
@@ -45,13 +43,6 @@ class Pawn extends Figure {
             return true
           }
         }
-        //podejście 2 (nie będzie potrzebne thought)
-        /*Musze sobie rozpisać co co mam tu zrobić
-         * 1. Sprawdzam czy po lewo lub po prawo jest pion
-         * 2. jeśli jest pion, sprawdź, czy ma flagę isEnPassantPossible
-         * 3. jeśli tak, sprawdź czy target to pozycja 1 pole za pionem
-         * 4. zaimplementuj lustrzane odbicie tego kodu dla białych
-         * */
         return false
       case "white":
         //standard fwd
@@ -69,12 +60,10 @@ class Pawn extends Figure {
         //en passant below
         if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible) {
           if (target.x === this.position.x - 1 && target.y === this.position.y - 1) {
-            // Biały pion porusza się "w górę"
             return true
           }
         } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible) {
           if (target.x === this.position.x + 1 && target.y === this.position.y - 1) {
-            // Biały pion porusza się "w górę"
             return true
           }
         }

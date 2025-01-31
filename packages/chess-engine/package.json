@@ -6,7 +6,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "chess": "npx tsx tests/main.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

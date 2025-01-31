@@ -41,18 +41,6 @@ class Board {
         id++
       }
     }
-
-    // To jest twoj kod ktory mial bledy wiec go przerobilem ale nie wiem czy dobrze ;(
-
-    // for (let y = 0; y < 8; y++) {
-    //   for (let x = 0; x < 8; x++) {
-    //     const notation = this.letters[x] + (8 - y)
-    //     const position = new Position(x, y, null, id, this)
-    //     this.positions.set(notation, position)
-    //     this.positionsById[id] = position
-    //     id++
-    //   }
-    // }
   }
   // Wstawianie figur na szachownicę w standardowej pozycji
   public setupFigures() {
@@ -109,18 +97,6 @@ class Board {
       }
       console.debug(row.trim())
     }
-
-    // Tak samo jak w poprzednim przypadku zmienilem kod, twoj kod:
-
-    // for (let y = 0; y < 8; y++) {
-    //   let row = ""
-    //   for (let x = 0; x < 8; x++) {
-    //     const notation = this.letters[x] + (8 - y)
-    //     const position = this.positions.get(notation)
-    //     row += position ? `[${position.notation}] ` : `[ undfd ] `
-    //   }
-    //   console.debug(row.trim())
-    // }
   }
   // Wyświetlenie szachownicy z figurami DEBUG
   public printFigures() {
@@ -128,7 +104,12 @@ class Board {
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
-        const figure = this.positions.get(this.letters[x] + (8 - y))?.figure?.type
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const figure = this.positions.get(letter + (8 - y))?.figure?.type
         if (figure === undefined) {
           row += `[-] `
           continue
@@ -147,7 +128,12 @@ class Board {
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
-        const id = this.positions.get(this.letters[x] + (8 - y))?.id
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const id = this.positions.get(letter + (8 - y))?.id
         row += `[${id !== undefined ? id : " undfd "}] `
       }
       console.debug(row.trim())
@@ -158,7 +144,12 @@ class Board {
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
-        const currentPos = this.positions.get(this.letters[x] + (8 - y))
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const currentPos = this.positions.get(letter + (8 - y))
         if (currentPos === undefined) {
           console.log("undefined!!!")
           continue
@@ -182,10 +173,15 @@ class Board {
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
-        const targetPosition = this.getPositionByNotation(this.letters[x] + (8 - y))
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const targetPosition = this.getPositionByNotation(letter + (8 - y))
         if (!targetPosition) {
           row += "[null]"
-          continue
+          break
         }
         if (targetPosition === position) {
           row += "[&&] " //starting pos
@@ -214,7 +210,12 @@ class Board {
     return this.positionsById[id] || null // Dostęp w O(1)
   }
   public getPositionByCords(positionX: number, positionY: number): Position | null {
-    const notation = this.letters[positionX] + (8 - positionY) // Adjust rank mapping
+    const posX = this.letters[positionX]
+    if (!posX) {
+      console.error(`Position "${positionX}" does not exist on the board.`)
+      return null
+    }
+    const notation = posX + (8 - positionY) // Adjust rank mapping
     return this.getPositionByNotation(notation)
   }
 

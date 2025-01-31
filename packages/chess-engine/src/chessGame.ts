@@ -1,5 +1,5 @@
-import { Bishop, Rook, Queen } from "../src/utils/figures"
-import ChessEngine from "../src/base/chessEngine"
+import { Bishop, Rook, Queen } from "./utils/figures"
+import ChessEngine from "./base/chessEngine"
 
 class ChessGame extends ChessEngine {
   constructor() {

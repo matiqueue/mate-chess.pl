@@ -1,5 +1,3 @@
-import ChessGame from "./chess-game.test"
+import ChessGame from "@/chessGame"
 
 const game = new ChessGame()
-
-game.start()
