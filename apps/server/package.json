@@ -11,10 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/backend": "^1.23.9",
-    "@clerk/clerk-sdk-node": "^5.1.6",
     "@workspace/chess-engine": "workspace:*",
-    "clerk-sdk-node": "link:@types/@clerk/clerk-sdk-node",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -23,7 +20,8 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "ts-node": "^10.9.2",
+    "@types/tailwindcss": "^3.1.0",
+    "tailwindcss": "^4.0.2",
     "typescript": "^5.7.3"
   }
 }
