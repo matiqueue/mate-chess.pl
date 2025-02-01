@@ -9,20 +9,13 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@types/tailwindcss": "^3.1.0",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "prettier": "^3.4.2",
-    "turbo": "^2.3.4",
-    "typescript": "5.5.4"
+    "turbo": "^2.3.0"
   },
   "packageManager": "pnpm@9.12.3",
   "engines": {
     "node": ">=20"
-  },
-  "dependencies": {
-    "autoprefixer": "^10.4.20",
-    "google": "link:next\\font\\google",
-    "next-themes": "^0.4.4"
   }
 }
