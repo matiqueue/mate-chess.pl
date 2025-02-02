@@ -5,6 +5,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { PuzzleIcon as PuzzlePiece, GraduationCap, Users, PlayCircle, Trophy, Timer, Zap, Bot } from "lucide-react"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 // Warianty animacji
 const fadeInUp = {
@@ -78,14 +79,18 @@ export default function HomePage() {
           </motion.div>
           <motion.div className="flex flex-col sm:flex-row gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
             <motion.div whileHover={{ scale: 1.05 }}>
-              <Button size="lg" className="w-full sm:w-auto">
-                Play Online
-              </Button>
+              <Link href="/play">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Play Online
+                </Button>
+              </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }}>
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                Play vs Bot
-              </Button>
+              <Link href="/bot">
+                <Button size="lg" variant="secondary" className="w-full sm:w-auto">
+                  Play vs Bot
+                </Button>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
@@ -131,7 +136,7 @@ export default function HomePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-muted-foreground">Train your tactical skills with our curated collection of chess puzzles.</p>
+              <p className="text-muted-foreground">Train your tactical skills with our curated collection puzzles.</p>
               <motion.div whileHover={{ scale: 1.05 }}>
                 <Button className="w-full">Start Solving</Button>
               </motion.div>
@@ -165,7 +170,9 @@ export default function HomePage() {
         transition={{ duration: 0.8, delay: 1 }}
       >
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-          <Bot className="h-10 w-10 text-primary" />
+          <Link href="/">
+            <Bot className="h-10 w-10 text-primary" />
+          </Link>
         </motion.div>
       </motion.div>
     </div>
