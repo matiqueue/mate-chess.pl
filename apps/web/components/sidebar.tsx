@@ -1,27 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import {
-  Home,
-  PlayCircle,
-  PuzzleIcon as PuzzlePiece,
-  Bot,
-  GraduationCap,
-  Trophy,
-  Users,
-  BookOpen,
-  Activity,
-  Settings,
-} from "lucide-react"
+import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings } from "lucide-react"
 
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { Separator } from "@workspace/ui/components/separator"
-import {
-  Sidebar as ShadcnSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@workspace/ui/components/sidebar"
+import { Sidebar as ShadcnSidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@workspace/ui/components/sidebar"
 
 import {
   DropdownMenu,
@@ -33,18 +17,8 @@ import {
 } from "@workspace/ui/components/dropdown-menu"
 
 import { Button } from "@workspace/ui/components/button"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar"
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  useUser,
-  useClerk,
-} from "@clerk/nextjs"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { SignedIn, SignedOut, SignInButton, useUser, useClerk } from "@clerk/nextjs"
 
 interface NavItemProps {
   href: string
@@ -55,19 +29,12 @@ interface NavItemProps {
 
 function NavItem({ href, icon: Icon, children, badge }: NavItemProps) {
   return (
-    <Link
-      href={href}
-      className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-    >
+    <Link href={href} className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-2">
         <Icon size={20} />
         <span>{children}</span>
       </div>
-      {badge && (
-        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-          {badge}
-        </span>
-      )}
+      {badge && <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{badge}</span>}
     </Link>
   )
 }
@@ -89,16 +56,14 @@ export function Sidebar() {
         <ScrollArea className="flex-1">
           <div className="space-y-4">
             <div>
-              <NavItem href="/" icon={Home}>
+              <NavItem href="/home" icon={Home}>
                 Home
               </NavItem>
             </div>
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  PLAY
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">PLAY</h2>
               </div>
               <NavItem href="/play" icon={PlayCircle} badge="Live">
                 Play Online
@@ -113,9 +78,7 @@ export function Sidebar() {
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  LEARN
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">LEARN</h2>
               </div>
               <NavItem href="/puzzles" icon={PuzzlePiece} badge="Daily">
                 Puzzles
@@ -130,9 +93,7 @@ export function Sidebar() {
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  COMMUNITY
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">COMMUNITY</h2>
               </div>
               <NavItem href="/players" icon={Users}>
                 Players
@@ -170,15 +131,9 @@ export function Sidebar() {
           <div className="flex items-center gap-4 justify-items-start">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={user?.imageUrl || "/placeholder.svg"}
-                      alt={user?.fullName || "User"}
-                    />
+                    <AvatarImage src={user?.imageUrl || "/placeholder.svg"} alt={user?.fullName || "User"} />
                     <AvatarFallback>
                       {user?.firstName?.[0]}
                       {user?.lastName?.[0]}
@@ -189,12 +144,8 @@ export function Sidebar() {
               <DropdownMenuContent className="w-56" align="start" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {user?.fullName}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.primaryEmailAddress?.emailAddress}
-                    </p>
+                    <p className="text-sm font-medium leading-none">{user?.fullName}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
                   </div>
                 </DropdownMenuLabel>
 
@@ -207,9 +158,7 @@ export function Sidebar() {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => clerk.signOut()}>
-                  Log out
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => clerk.signOut()}>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
