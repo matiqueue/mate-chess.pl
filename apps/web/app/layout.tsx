@@ -1,15 +1,21 @@
-import "@workspace/ui/globals.css"
+import { Providers } from "@/components/providers"
+import { ClerkProvider } from "@clerk/nextjs"
+import "@workspace/ui/styles/globals.css"
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Mate Chess",
+  description: "A chess application",
+}
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <main>{children}</main>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body>
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

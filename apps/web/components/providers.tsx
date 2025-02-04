@@ -1,18 +1,29 @@
 "use client"
 
-import * as React from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { ReactNode } from "react"
+import { ThemeProvider } from "next-themes"
+import { usePathname } from "next/navigation"
 
-export function Providers({ children }: { children: React.ReactNode }) {
+type ProvidersProps = {
+  children: ReactNode
+}
+
+export function Providers({ children }: ProvidersProps) {
+  const pathname = usePathname()
+
+  if (pathname === "/") {
+    return <>{children}</>
+  }
+
   return (
-    <NextThemesProvider
+    <ThemeProvider
       attribute="class"
       defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
+      enableSystem={true}
       enableColorScheme
+      disableTransitionOnChange
     >
       {children}
-    </NextThemesProvider>
+    </ThemeProvider>
   )
 }

@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background-color: black;
+  color: #fff;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Michroma", sans-serif;
+}
+
+.container {
+  background-color: black;
+  color: #fff;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-page {
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right, #3f3f46, #0b0b0e);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+}
+
+
+@keyframes draw {
+  from {
+    stroke-dasharray: 4500;
+    stroke-dashoffset: 4500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.svg-path {
+  stroke-dasharray: 4500;
+  stroke-dashoffset: 4500;
+  animation: draw 4s ease-in-out forwards;
+}
+
+.name-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-name {
+  margin-top: 100px;
+  text-align: center;
+  color: #fff;
+  font-size: 35px;
+  letter-spacing: 12px;
+  text-transform: uppercase;
+  margin-left: 20px;
+  opacity: 0;
+  transform: translateY(50px);
+  animation: fadeInUp 3s ease-out forwards;
+  animation-delay: 0.5s;
+  font-family: "Merienda", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 2s ease-out forwards;
+}
+
+.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-out, visibility 1s ease-out;
+  }
+  
+  .progress-bar {
+    text-align: center;
+    width: 70%;  
+    max-width: 1000px; 
+    height: 1.5em;
+    background-color: #111;
+    border-radius: 1.5em;
+    overflow: hidden;
+    position: relative;
+    font-family: "Merienda", serif;
+    font-optical-sizing: auto;
+    display: flex;
+  }
+  
+  .progress-bar-inner {
+    content: "";
+    display: block;
+    height: 100%;
+    background-color: #fafafa;
+    border-radius: 1em;
+    transition: width 0.1s ease-out;
+  }
+  
+  .status {
+    margin-top: 20px;
+    text-align: center;
+    color: white;
+  }
+  .loading-page {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .svg-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    will-change: transform;
+  }
+  svg {
+    max-width: 100%;
+    max-height: 100%;
+    will-change: transform;
+  }
