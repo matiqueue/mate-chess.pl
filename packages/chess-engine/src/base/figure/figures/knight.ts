@@ -7,6 +7,9 @@ class Knight extends Figure {
     super("knight", color, position, board)
   }
   isValidMove(target: Position): boolean {
+    if (target.figure && target.figure.color === this.color){
+      return false
+    }
     if (Math.abs(target.x - this.position.x) === 2 && Math.abs(target.y - this.position.y) === 1) {
       return true
     }

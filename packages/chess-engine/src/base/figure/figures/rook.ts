@@ -2,6 +2,7 @@ import { Figure } from "@/utils/figures"
 import { Board, Position } from "@/utils/board"
 
 class Rook extends Figure {
+  public wasRoszadeMade: boolean = false
   constructor(color: "white" | "black", position: Position, board: Board) {
     super("rook", color, position, board)
   }
