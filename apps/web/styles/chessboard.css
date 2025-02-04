@@ -1,0 +1,132 @@
+.chessboard-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.dots-container {
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  cursor: pointer;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: transform 0.3s, background 0.3s, height 0.3s, width 0.3s;
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 7px; /* Wąska linia */
+  height: 35px; /* Wysoka kreska */
+  background: #9d9dac; /* Biała kreska */
+  border-radius: 5px; /* Usunięcie zaokrąglenia */
+  cursor: pointer;
+}
+.text-container {
+  position: absolute;
+  left: 20%;
+  color: white;
+  text-align: center;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.text-container.text-left {
+  left: 10%; /* Tekst po lewej stronie */
+  text-align: left;
+  width: 30%;
+}
+
+.text-container.text-right {
+  left: auto;
+  right: 10%; /* Tekst po prawej stronie */
+  text-align: right;
+  width: 30%;
+}
+
+.animate-text {
+  animation: fadeIn 1.5s cubic-bezier(0.42, 0, 0.58, 1) forwards; /* Wolniejsza i płynniejsza animacja */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.text-title {
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.text-description {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  font-weight: lighter;
+  letter-spacing: 2px;
+}
+.scroll-containter{
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+
+@media (max-width: 768px) {
+  .dots-container {
+    right: 10px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3f3f46;
+    transition: transform 0.3s, background 0.3s, height 0.3s, width 0.3s;
+    cursor: pointer;
+  }
+  .dot.active {
+    width: 3px; /* Wąska linia */
+    height: 15px; /* Wysoka kreska */
+    background: #9d9dac; /* Biała kreska */
+    border-radius: 5px; /* Usunięcie zaokrąglenia */
+    cursor: pointer;
+  }
+
+  .text-container {
+    top: 10%; /* Mniejszy odstęp od góry */
+    left: 50%;
+    transform: translate(-50%, 0);
+    text-align: center;
+  }
+
+  .text-title {
+    font-size: 1.5rem; /* Mniejszy tytuł na małych ekranach */
+  }
+
+  .text-description {
+    font-size: 1rem; /* Mniejszy tekst opisu na małych ekranach */
+  }
+  .scroll-containter{
+    visibility: hidden;
+  }
+}
