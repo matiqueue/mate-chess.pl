@@ -6,6 +6,10 @@ import { castleMove } from "@/shared/specialMovesFunctions/castlingFunctions"
 import { enPassantMove } from "@/shared/specialMovesFunctions/enPassantFunctions"
 import ChessGame from "@/chessGame"
 
-const game = new ChessGame()
+const setupGame = () => {
+  const game = new ChessGame()
 
-export { startGame, printCords, printIds, printFigures, printBoard, isMoveValid, makeMove, castleMove, enPassantMove }
+  return game
+}
+
+export { startGame, setupGame, printCords, printIds, printFigures, printBoard, isMoveValid, makeMove, castleMove, enPassantMove }
