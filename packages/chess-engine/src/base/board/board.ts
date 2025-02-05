@@ -212,7 +212,7 @@ class Board {
   public getPositionByCords(positionX: number, positionY: number): Position | null {
     const posX = this.letters[positionX]
     if (!posX) {
-      console.error(`Position "${positionX}" does not exist on the board.`)
+      // console.error(`Position "${positionX}" does not exist on the board.`)
       return null
     }
     const notation = posX + (8 - positionY) // Adjust rank mapping

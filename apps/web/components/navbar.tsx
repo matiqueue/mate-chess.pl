@@ -7,9 +7,8 @@ import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { ModeToggle } from "@workspace/ui/components/mode-toggle"
-import { usePathname } from "next/navigation"
 
-interface NavbarProps extends React.HTMLAttributes<HTMLElement> {}
+type NavbarProps = React.HTMLAttributes<HTMLElement>
 
 export function Navbar({ className }: NavbarProps) {
   return (

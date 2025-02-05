@@ -7,7 +7,7 @@ import { Input } from "@workspace/ui/components/input"
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { usePathname } from "next/navigation"
 
-interface MobileHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+type MobileHeaderProps = React.HTMLAttributes<HTMLDivElement>
 
 export function MobileHeader({ className }: MobileHeaderProps) {
   const pathname = usePathname()
