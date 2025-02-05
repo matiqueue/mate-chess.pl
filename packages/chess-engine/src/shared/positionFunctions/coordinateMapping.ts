@@ -1,13 +1,13 @@
 import ChessGame from "@modules/chessGame"
 import Board from "@modules/base/board/board"
 
-const getBoard = (game: ChessGame) => {
+export const getBoard = (game: ChessGame) => {
   return game.board
 }
-const getPositionByCords = (board: Board, cords: { x: number; y: number }) => {
-  return board.getPositionByCords(cords.x, cords.y)
+export const getPositionByCords = (board: Board, x: number, y: number) => {
+  return board.getPositionByCords(x, y)
 }
-const getPositionByNotation = (board: Board, notation: string) => {
+export const getPositionByNotation = (board: Board, notation: string) => {
   if (notation.length !== 2) {
     return null
   }
@@ -19,6 +19,6 @@ const getPositionByNotation = (board: Board, notation: string) => {
   }
   return board.getPositionByNotation(notation)
 }
-const getPositionById = (board: Board, id: number) => {
+export const getPositionById = (board: Board, id: number) => {
   return board.getPositionById(id)
 }
