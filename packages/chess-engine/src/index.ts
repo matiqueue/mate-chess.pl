@@ -1,8 +1,11 @@
+import { startGame } from "@/shared/rootFunctions"
+import { printFigures, printBoard, printCords, printIds } from "@/shared/utilities/boardPrinter"
+import { makeMove } from "@/shared/moveFunctions/moveExecution"
+import { isMoveValid } from "@/shared/moveFunctions/moveValidation"
+import { castleMove } from "@/shared/specialMovesFunctions/castlingFunctions"
+import { enPassantMove } from "@/shared/specialMovesFunctions/enPassantFunctions"
 import ChessGame from "@/chessGame"
 
-const startNewGame = () => {
-  console.log("Trying to initialize game...")
-  const game = new ChessGame()
-}
+const game = new ChessGame()
 
-export { startNewGame }
+export { startGame, printCords, printIds, printFigures, printBoard, isMoveValid, makeMove, castleMove, enPassantMove }

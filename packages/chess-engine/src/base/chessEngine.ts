@@ -13,19 +13,20 @@ import { Board, Position } from "@/utils/board"
  *       </ul>
  * */
 class ChessEngine {
-  protected _board: any
-  constructor() {
-    for (let i = 0; i < 1; i++) {
-      this.start()
-    }
-    this.update()
-  }
+  protected _board: Board | undefined
+  constructor() {}
   /**
    * This method will be called four times in the first frame.<br>
    * It needs to check if it didn't allocate nemory few times for the same thing - because it is being called few times
    * , and this method is used to allocate and declare all variables and memory<br>
    * I think it should be called few times before the game, in case something goes wrong and e.g faills to allocate memory or player id*/
   public start() {
+    for (let i = 0; i < 1; i++) {
+      this.setupBoard()
+    }
+    this.update()
+  }
+  private setupBoard() {
     if (!this._board) {
       this._board = new Board()
     }
@@ -55,12 +56,12 @@ class ChessEngine {
     return //instead of await player
     this.update()
   }
-  public customFigureSetup() {
-    console.log("customFigureSetup called. Clearing the chessboard.")
-    this._board.positions.forEach((position: Position) => {
-      position.figure = null
-    })
-  }
+  // public customFigureSetup() {
+  //   console.log("customFigureSetup called. Clearing the chessboard.")
+  //   this._board.positions.forEach((position: Position) => {
+  //     position.figure = null
+  //   })
+  // }
   private checkForCheck() {
     return
   }
@@ -85,6 +86,10 @@ class ChessEngine {
   //     })
   // }
   private onGameOver() {}
+
+  get board(): Board | undefined {
+    return this._board
+  }
 }
 
 export default ChessEngine

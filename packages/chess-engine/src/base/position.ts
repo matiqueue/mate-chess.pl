@@ -23,48 +23,35 @@ class Position {
     this._id = id
     this._board = board
   }
-
-  // Getter i setter dla x
   get x(): number {
     return this._x
   }
-
   set x(value: number) {
     this._x = value
     this._notation = this.calculateNotation(value, this._y)
   }
-
-  // Getter i setter dla y
   get y(): number {
     return this._y
   }
-
   set y(value: number) {
     this._y = value
     this._notation = this.calculateNotation(this._x, value)
   }
-
-  // Getter dla notacji szachowej
   get notation(): string {
     return this._notation
   }
-
-  // Getter i setter dla figury
   get figure(): Figure | null {
     return this._figure
   }
   set figure(value: Figure | null) {
     this._figure = value
   }
-
   get id(): number {
     return this._id
   }
   get board(): Board {
     return this._board
   }
-
-  // Prywatna metoda do obliczania notacji szachowej na podstawie współrzędnych
   private calculateNotation(x: number, y: number): string {
     const letters: string = "abcdefgh" // Y cords
     const rows = "12345678" // X cords
