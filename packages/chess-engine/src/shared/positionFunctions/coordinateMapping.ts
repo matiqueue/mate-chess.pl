@@ -1,5 +1,5 @@
-import ChessGame from "@/chessGame"
-import Board from "@/base/board/board"
+import ChessGame from "@modules/chessGame"
+import Board from "@modules/base/board/board"
 
 const getBoard = (game: ChessGame) => {
   return game.board

@@ -1,10 +1,10 @@
-import { startGame } from "@/shared/rootFunctions"
-import { printFigures, printBoard, printCords, printIds } from "@/shared/utilities/boardPrinter"
-import { makeMove } from "@/shared/moveFunctions/moveExecution"
-import { isMoveValid } from "@/shared/moveFunctions/moveValidation"
-import { castleMove } from "@/shared/specialMovesFunctions/castlingFunctions"
-import { enPassantMove } from "@/shared/specialMovesFunctions/enPassantFunctions"
-import ChessGame from "@/chessGame"
+import { startGame } from "@modules/shared/rootFunctions"
+import { printFigures, printBoard, printCords, printIds } from "@modules/shared/utilities/boardPrinter"
+import { makeMove } from "@modules/shared/moveFunctions/moveExecution"
+import { isMoveValid } from "@modules/shared/moveFunctions/moveValidation"
+import { castleMove } from "@modules/shared/specialMovesFunctions/castlingFunctions"
+import { enPassantMove } from "@modules/shared/specialMovesFunctions/enPassantFunctions"
+import ChessGame from "@modules/chessGame"
 
 const setupGame = () => {
   const game = new ChessGame()

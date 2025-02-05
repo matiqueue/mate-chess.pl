@@ -1,5 +1,5 @@
-import { Figure, Rook } from "@/utils/figures"
-import { Board, Position } from "@/utils/board"
+import { Figure, Rook } from "@modules/utils/figures"
+import { Board, Position } from "@modules/utils/board"
 
 class King extends Figure {
   private isCheck: boolean = false

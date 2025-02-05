@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Board, Position } from "@/utils/board"
+import { Board, Position } from "@modules/utils/board"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>

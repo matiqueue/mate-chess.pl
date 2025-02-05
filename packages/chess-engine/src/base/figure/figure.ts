@@ -1,4 +1,4 @@
-import { Board, Position } from "@/utils/board"
+import { Board, Position } from "@modules/utils/board"
 /**
  * Abstract class for all the figures on playing board. Figure types and colours are already predefined.
  * Class imports Position class.

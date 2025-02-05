@@ -1,4 +1,4 @@
-import ChessGame from "@/chessGame"
+import ChessGame from "@modules/chessGame"
 
 export function printBoard(game: ChessGame) {
   game.board?.printBoard()

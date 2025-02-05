@@ -1,5 +1,5 @@
-import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@/utils/figures"
-import { Position } from "@/utils/board"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@modules/utils/figures"
+import { Position } from "@modules/utils/board"
 
 /**
  * Main playing board. very important.<br>

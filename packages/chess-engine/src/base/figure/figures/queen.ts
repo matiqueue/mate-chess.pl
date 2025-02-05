@@ -1,5 +1,5 @@
-import { Figure } from "@/utils/figures"
-import { Board, Position } from "@/utils/board"
+import { Figure } from "@modules/utils/figures"
+import { Board, Position } from "@modules/utils/board"
 
 class Queen extends Figure {
   constructor(color: "white" | "black", position: Position, board: Board) {
