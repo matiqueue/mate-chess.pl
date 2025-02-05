@@ -34,11 +34,11 @@ class Pawn extends Figure {
           return true
         }
         //en passant below
-        if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible) {
+        if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
           if (target.x === this.position.x - 1 && target.y === this.position.y + 1) {
             return true
           }
-        } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible) {
+        } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
           if (target.x === this.position.x + 1 && target.y === this.position.y + 1) {
             return true
           }
@@ -58,11 +58,11 @@ class Pawn extends Figure {
           return true
         }
         //en passant below
-        if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible) {
+        if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
           if (target.x === this.position.x - 1 && target.y === this.position.y - 1) {
             return true
           }
-        } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible) {
+        } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
           if (target.x === this.position.x + 1 && target.y === this.position.y - 1) {
             return true
           }
@@ -74,10 +74,12 @@ class Pawn extends Figure {
   override move(target: Position): boolean {
     if (this._isFirstMove) {
       this.isEnPassantPossible = true
-      return super.move(target)
     }
-    this._isFirstMove = false
-    return super.move(target)
+    if (super.move(target)) {
+      this._isFirstMove = false
+      return true
+    }
+    return false
   }
 }
 export default Pawn

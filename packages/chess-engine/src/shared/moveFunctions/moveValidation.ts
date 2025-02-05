@@ -1,6 +1,9 @@
 import ChessGame from "@modules/chessGame"
 import { Position, Board } from "@modules/utils/board"
 
-export const isMoveValid = (game: ChessGame, move: { from: Position; to: Position }): boolean => {
-  return !!game.board?.getFigureAtPosition(move.from)?.isValidMove(move.to)
+export const isMoveValid = (board: Board, move: { from: Position; to: Position }): boolean => {
+  return !!board?.getFigureAtPosition(move.from)?.isValidMove(move.to)
+}
+export const getValidMovesForPosition = (board: Board, from: Position): Position[] => {
+  return board.getValidMovesForPosition(from)
 }

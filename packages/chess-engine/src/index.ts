@@ -1,7 +1,7 @@
 import { startGame } from "@modules/shared/rootFunctions"
 import { printFigures, printBoard, printCords, printIds } from "@modules/shared/utilities/boardPrinter"
 import { makeMove } from "@modules/shared/moveFunctions/moveExecution"
-import { isMoveValid } from "@modules/shared/moveFunctions/moveValidation"
+import { isMoveValid, getValidMovesForPosition } from "@modules/shared/moveFunctions/moveValidation"
 import { castleMove } from "@modules/shared/specialMovesFunctions/castlingFunctions"
 import { enPassantMove } from "@modules/shared/specialMovesFunctions/enPassantFunctions"
 import ChessGame from "@modules/chessGame"
@@ -28,4 +28,5 @@ export {
   makeMove,
   castleMove,
   enPassantMove,
+  getValidMovesForPosition,
 }

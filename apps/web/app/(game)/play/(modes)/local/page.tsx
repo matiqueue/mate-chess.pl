@@ -1,18 +1,28 @@
 "use client"
 import React, { useState, useEffect, useRef } from "react"
-import { setupGame, startGame, getBoard, getPositionByCords, makeMove } from "@workspace/chess-engine/functions"
+import {
+  setupGame,
+  startGame,
+  getBoard,
+  getPositionByCords,
+  makeMove,
+  getValidMovesForPosition, // Upewnij się, że ta metoda jest dostępna w silniku
+} from "@workspace/chess-engine/functions"
 
 import Board from "@modules/base/board/board"
 import Position from "@modules/base/position"
 
+// Import ikon z react-icons z pakietu FontAwesome
+import { FaChessPawn, FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
+
 const Page = () => {
-  // Stan planszy zaktualizowany po każdym ruchu
+  // Stan planszy, zaznaczonej pozycji oraz dostępnych ruchów
   const [board, setBoard] = useState<Board>()
-  // Stan do przechowywania pierwszego kliknięcia (wybranej pozycji)
   const [selectedPos, setSelectedPos] = useState<Position | null>(null)
+  const [validMoves, setValidMoves] = useState<Position[]>([])
   const gameInstanceRef = useRef<any>(null)
 
-  // Inicjalizujemy grę tylko raz
+  // Inicjalizacja gry tylko raz
   useEffect(() => {
     if (!gameInstanceRef.current) {
       gameInstanceRef.current = setupGame()
@@ -29,17 +39,22 @@ const Page = () => {
     const clickedPos = getPositionByCords(board, x, y)
     if (!clickedPos) return
 
-    // Jeśli nie wybraliśmy jeszcze pierwszej pozycji, ustaw ją
+    // Jeśli nie mamy jeszcze wybranej pozycji, ustaw ją i pobierz dostępne ruchy
     if (!selectedPos) {
       setSelectedPos(clickedPos)
+      // Zakładamy, że metoda getValidMovesForPosition przyjmuje board i wybraną pozycję
+      const moves = getValidMovesForPosition(board, clickedPos)
+      setValidMoves(moves)
     } else {
-      // Mamy już pierwszą pozycję, więc próbujemy wykonać ruch
+      // Jeśli klikamy kolejne pole, próbujemy wykonać ruch
       console.log("Trying to make move from " + selectedPos.notation + " to " + clickedPos.notation)
       makeMove(board, { from: selectedPos, to: clickedPos })
-      // Po wykonaniu ruchu pobieramy zaktualizowaną planszę
+      // Aktualizujemy planszę po wykonanym ruchu
       const updatedBoard = getBoard(gameInstanceRef.current)
       setBoard(updatedBoard)
+      // Czyscimy zaznaczenie i dostępne ruchy
       setSelectedPos(null)
+      setValidMoves([])
     }
   }
 
@@ -47,22 +62,27 @@ const Page = () => {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="grid grid-cols-8 border border-gray-800">
         {Array.from({ length: 64 }).map((_, index) => {
-          // Indeksujemy pola od 0 do 7:
+          // Indeksowanie pól od 0 do 7:
           const x = index % 8
           const y = Math.floor(index / 8)
           const position: Position | null = board ? getPositionByCords(board, x, y) : null
           const figure = position?.figure || null
+
+          // Sprawdzamy, czy to pole jest zaznaczone lub czy jest wśród dostępnych ruchów
           const isSelected = selectedPos && position && selectedPos.notation === position.notation
+          const isValidMove = validMoves.some((move) => move.notation === position?.notation)
+
+          // Ustalamy kolor tła: domyślny kolor zależny od szachownicy, ale jeżeli to dostępny ruch lub wybrana pozycja – zmieniamy kolor
+          const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
+          const bgColor = isSelected ? "bg-blue-300" : isValidMove ? "bg-green-300" : defaultBg
 
           return (
             <div
               key={index}
-              className={`w-16 h-16 flex items-center justify-center border text-lg font-bold ${
-                (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
-              } ${isSelected ? "border-blue-500" : ""}`}
+              className={`w-16 h-16 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
               onClick={() => handleClick(x, y)}
             >
-              {figure ? getFigureSymbol(figure.type, figure.color) : ""}
+              {figure ? getFigureIcon(figure.type, figure.color) : null}
             </div>
           )
         })}
@@ -71,21 +91,32 @@ const Page = () => {
   )
 }
 
-// Funkcja pomocnicza do wyświetlania symbolu figury
-const getFigureSymbol = (type?: string, color?: string) => {
-  if (!type) return ""
+// Funkcja pomocnicza do wyświetlania ikony figury za pomocą react-icons
+const getFigureIcon = (type?: string, color?: string) => {
+  if (!type) return null
 
-  const symbols: Record<string, string> = {
-    pawn: "P",
-    knight: "N",
-    bishop: "B",
-    rook: "R",
-    queen: "Q",
-    king: "K",
+  // Ustalamy wspólne propsy dla ikon; możesz je dowolnie modyfikować
+  const commonProps = {
+    size: 24,
+    color: color === "black" ? "black" : "white",
   }
 
-  const letter = symbols[type] || "?"
-  return color === "black" ? letter.toLowerCase() : letter.toUpperCase()
+  switch (type) {
+    case "pawn":
+      return <FaChessPawn {...commonProps} />
+    case "knight":
+      return <FaChessKnight {...commonProps} />
+    case "bishop":
+      return <FaChessBishop {...commonProps} />
+    case "rook":
+      return <FaChessRook {...commonProps} />
+    case "queen":
+      return <FaChessQueen {...commonProps} />
+    case "king":
+      return <FaChessKing {...commonProps} />
+    default:
+      return null
+  }
 }
 
 export default Page
