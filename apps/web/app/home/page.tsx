@@ -34,12 +34,7 @@ export default function HomePage() {
         transition={{ duration: 0.6 }}
       >
         <div className="absolute inset-0 mix-blend-overlay">
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hOTh4KGZPvw2G79nkgDaouAgt4UNsH.png"
-            alt="Chess board"
-            fill
-            className="object-cover opacity-30"
-          />
+          <Image src="/backgrounds/homeBgImage.png" alt="Chess board" fill className="object-cover opacity-30" />
         </div>
         <div className="relative p-8 md:p-12 lg:p-16">
           <motion.h1
