@@ -14,7 +14,7 @@ import Position from "@modules/base/position"
 
 // Import ikon z react-icons z pakietu FontAwesome
 import { FaChessPawn, FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
-
+import { SiChessdotcom } from "react-icons/si"
 const Page = () => {
   // Stan planszy, zaznaczonej pozycji oraz dostępnych ruchów
   const [board, setBoard] = useState<Board>()
@@ -103,7 +103,7 @@ const getFigureIcon = (type?: string, color?: string) => {
 
   switch (type) {
     case "pawn":
-      return <FaChessPawn {...commonProps} />
+      return <SiChessdotcom {...commonProps} />
     case "knight":
       return <FaChessKnight {...commonProps} />
     case "bishop":
