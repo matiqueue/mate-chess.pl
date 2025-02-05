@@ -1,0 +1,57 @@
+// Engine
+
+export class ChessEngine {
+  constructor() {
+    // Initialize the chess engine
+  }
+
+  initializeBoard(): void {
+    // Initialize the chess board
+  }
+
+  makeMove(move: string): void {
+    // Make a move on the chess board
+  }
+
+  isCheckmate(): boolean {
+    // Check if the current position is checkmate
+    return false
+  }
+
+  isStalemate(): boolean {
+    // Check if the current position is stalemate
+    return false
+  }
+
+  evaluateBoard(): number {
+    // Evaluate the current board position
+    return 0
+  }
+}
+
+// Index
+const engine = new ChessEngine()
+
+export const initDashobard = () => {
+  engine.initializeBoard()
+}
+
+export const makeMove = (move: string) => {
+  engine.makeMove(move)
+}
+
+export const isCheckmate = () => {
+  return engine.isCheckmate()
+}
+
+export const isStalemate = () => {
+  return engine.isStalemate()
+}
+
+export const evaluateBoard = () => {
+  return engine.evaluateBoard()
+}
+// Server
+
+initDashobard()
+makeMove("e4")
