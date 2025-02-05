@@ -32,6 +32,6 @@
     "@": "./src"
   },
   "exports": {
-    "./functions": "./src/ChessGame.ts"
+    "./functions": "./src/index.ts"
   }
 }
