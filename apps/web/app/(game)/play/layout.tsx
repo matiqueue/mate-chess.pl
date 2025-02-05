@@ -9,7 +9,7 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar"
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   // Jeśli ścieżka zaczyna się od /play/online lub /play/link, nie pokazujemy Navbar
-  const hideNavbar = pathname.startsWith("/play/online") || pathname.startsWith("/play/link")
+  const hideNavbar = pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname.startsWith("/play/local")
 
   return (
     <SidebarProvider>
