@@ -1,3 +1,4 @@
+// middleware.ts
 import { clerkMiddleware } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
@@ -5,13 +6,26 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
   const { pathname } = req.nextUrl
 
-  // Zawsze przekierowujemy ze ścieżki głównej "/" na "/home"
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/home", req.url))
+  // Gdy użytkownik odwiedza "/home", ustaw ciasteczko "visitedHome" (jeśli jeszcze nie istnieje)
+  if (pathname === "/home") {
+    const response = NextResponse.next()
+    if (!req.cookies.has("visitedHome")) {
+      response.cookies.set("visitedHome", "true", {
+        maxAge: 60 * 60 * 24 * 7, // ważne przez 7 dni
+        path: "/",
+      })
+    }
+    return response
   }
 
-  // Ochrona ścieżek /play/online i dowolnych podścieżek:
-  // Jeśli użytkownik nie jest zalogowany, zostanie przekierowany na stronę logowania.
+  // Na stronie głównej "/" – jeśli ciasteczko "visitedHome" istnieje, przekieruj na "/home"
+  if (pathname === "/") {
+    if (req.cookies.has("visitedHome")) {
+      return NextResponse.redirect(new URL("/home", req.url))
+    }
+  }
+
+  // Ochrona ścieżek /play/online oraz podścieżek: jeśli użytkownik nie jest zalogowany, przekieruj na "/sign-in"
   if (pathname.startsWith("/play/online") && !userId) {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
