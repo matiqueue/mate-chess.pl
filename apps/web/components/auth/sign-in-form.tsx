@@ -2,14 +2,14 @@
 "use client"
 
 import { useState } from "react"
-import { useSignIn } from "@clerk/nextjs"
+import { SignUpButton, useSignIn } from "@clerk/nextjs"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
+import {CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function SignInForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   // Upewniamy się, że hook zwraca dane – jeżeli nie, można np. zwrócić null
   const signInData = useSignIn()
   if (!signInData) return null
@@ -128,9 +128,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </div>
         <div className="text-center text-sm p-3">
           Don&apos;t have an account?{" "}
-          <a href="#" className="underline underline-offset-4">
-            Sign up
-          </a>
+          <SignUpButton>
+            <div className="underline underline-offset-4">Sign Up</div>
+          </SignUpButton>
+
         </div>
       </form>
     </div>
