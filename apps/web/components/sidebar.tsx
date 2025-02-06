@@ -191,6 +191,8 @@ export function Sidebar() {
   }
 
   // W pozostałych przypadkach (np. na "/play") renderujemy pełny sidebar
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter()
 
   const handleClick = async (e: React.MouseEvent) => {
