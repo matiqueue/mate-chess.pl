@@ -6,7 +6,8 @@ import {
   getBoard,
   getPositionByCords,
   makeMove,
-  getValidMovesForPosition, // Upewnij się, że ta metoda jest dostępna w silniku
+  getValidMovesForPosition,
+  whosTurn, // Upewnij się, że ta metoda jest dostępna w silniku
 } from "@workspace/chess-engine/functions"
 
 import Board from "@modules/base/board/board"
@@ -49,6 +50,7 @@ const Page = () => {
       // Jeśli klikamy kolejne pole, próbujemy wykonać ruch
       console.log("Trying to make move from " + selectedPos.notation + " to " + clickedPos.notation)
       makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
+      console.log("Turn: " + whosTurn(gameInstanceRef.current))
       // Aktualizujemy planszę po wykonanym ruchu
       const updatedBoard = getBoard(gameInstanceRef.current)
       setBoard(updatedBoard)
@@ -59,35 +61,40 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="grid grid-cols-8 border border-gray-800">
-        {Array.from({ length: 64 }).map((_, index) => {
-          // Indeksowanie pól od 0 do 7:
-          const x = index % 8
-          const y = Math.floor(index / 8)
-          const position: Position | null = board ? getPositionByCords(board, x, y) : null
-          const figure = position?.figure || null
-
-          // Sprawdzamy, czy to pole jest zaznaczone lub czy jest wśród dostępnych ruchów
-          const isSelected = selectedPos && position && selectedPos.notation === position.notation
-          const isValidMove = validMoves.some((move) => move.notation === position?.notation)
-
-          // Ustalamy kolor tła: domyślny kolor zależny od szachownicy, ale jeżeli to dostępny ruch lub wybrana pozycja – zmieniamy kolor
-          const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
-          const bgColor = isSelected ? "bg-blue-300" : isValidMove ? "bg-green-300" : defaultBg
-
-          return (
-            <div
-              key={index}
-              className={`w-16 h-16 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
-              onClick={() => handleClick(x, y)}
-            >
-              {figure ? getFigureIcon(figure.type, figure.color) : null}
-            </div>
-          )
-        })}
+    <>
+      <div>
+        <h1>Turn: {whosTurn(gameInstanceRef.current)}</h1>
       </div>
-    </div>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="grid grid-cols-8 border border-gray-800">
+          {Array.from({ length: 64 }).map((_, index) => {
+            // Indeksowanie pól od 0 do 7:
+            const x = index % 8
+            const y = Math.floor(index / 8)
+            const position: Position | null = board ? getPositionByCords(board, x, y) : null
+            const figure = position?.figure || null
+
+            // Sprawdzamy, czy to pole jest zaznaczone lub czy jest wśród dostępnych ruchów
+            const isSelected = selectedPos && position && selectedPos.notation === position.notation
+            const isValidMove = validMoves.some((move) => move.notation === position?.notation)
+
+            // Ustalamy kolor tła: domyślny kolor zależny od szachownicy, ale jeżeli to dostępny ruch lub wybrana pozycja – zmieniamy kolor
+            const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
+            const bgColor = isSelected ? "bg-blue-300" : isValidMove ? "bg-green-300" : defaultBg
+
+            return (
+              <div
+                key={index}
+                className={`w-16 h-16 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
+                onClick={() => handleClick(x, y)}
+              >
+                {figure ? getFigureIcon(figure.type, figure.color) : null}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </>
   )
 }
 
