@@ -1,8 +1,8 @@
-import { SignInForm } from "@/components/auth/sign-in-form"
 import { Navbar } from "@/components/main-navbar"
 import { Footer } from "@/components/main-footer"
+import { SignUpForm } from "@/components/auth/sign-up-form"
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-shrink-0">
@@ -13,7 +13,7 @@ export default function SignInPage() {
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-[23rem]">
-            <SignInForm />
+              <SignUpForm/>
           </div>
         </div>
       </div>
