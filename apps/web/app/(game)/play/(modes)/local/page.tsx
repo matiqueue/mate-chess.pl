@@ -48,7 +48,7 @@ const Page = () => {
     } else {
       // Jeśli klikamy kolejne pole, próbujemy wykonać ruch
       console.log("Trying to make move from " + selectedPos.notation + " to " + clickedPos.notation)
-      makeMove(board, { from: selectedPos, to: clickedPos })
+      makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
       // Aktualizujemy planszę po wykonanym ruchu
       const updatedBoard = getBoard(gameInstanceRef.current)
       setBoard(updatedBoard)

@@ -14,6 +14,7 @@ import { Board, Position } from "@modules/utils/board"
  * */
 class ChessEngine {
   protected _board: Board | undefined
+  private _currentPlayer: "white" | "black" = "white"
   constructor() {}
   /**
    * This method will be called four times in the first frame.<br>
@@ -89,6 +90,28 @@ class ChessEngine {
 
   get board(): Board | undefined {
     return this._board
+  }
+  public makeFigureMove(move: { from: Position; to: Position }): boolean {
+    if (move.from.figure?.color === this.currentPlayer) {
+      if (this.board?.moveFigureToPosition(move)) {
+        this.switchCurrentPlayer()
+      }
+    }
+    return false
+  }
+  private switchCurrentPlayer() {
+    if (this.currentPlayer === "white") {
+      this.currentPlayer = "black"
+    } else if (this.currentPlayer === "black") {
+      this.currentPlayer = "white"
+    }
+  }
+  get currentPlayer(): "white" | "black" {
+    return this._currentPlayer
+  }
+
+  set currentPlayer(value: "white" | "black") {
+    this._currentPlayer = value
   }
 }
 

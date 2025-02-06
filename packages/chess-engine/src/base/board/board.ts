@@ -240,5 +240,10 @@ class Board {
     console.warn(`Position "${position.notation}" already has a figure.`)
     return false
   }
+  public moveFigureToPosition(move: { from: Position; to: Position }): boolean {
+    if (!move.from.figure) return false
+
+    return move.from.figure.move(move.to)
+  }
 }
 export default Board
