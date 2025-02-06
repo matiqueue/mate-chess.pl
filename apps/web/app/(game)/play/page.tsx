@@ -23,7 +23,7 @@ const item = {
 
 const floatingAnimation = {
   y: [0, 5, 0],
-  transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" },
+  transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse" as const, ease: "easeInOut" },
 }
 
 const MotionButton = motion.create(Button)
@@ -161,7 +161,7 @@ export default function GameModeSelector() {
                       exit={{ opacity: 0, y: -10 }}
                       className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-primary-foreground text-foreground  rounded py-2 px-3 shadow-lg"
                     >
-                      You must be Logged In to play Online 😶‍🌫️
+                      You must be Logged In to play Online
                     </motion.div>
                   )}
                 </CardContent>
