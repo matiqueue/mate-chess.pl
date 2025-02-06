@@ -165,7 +165,7 @@ export default function HomePage() {
         transition={{ duration: 0.8, delay: 1 }}
       >
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-          <Link href="/">
+          <Link href="/easter-egg">
             <Bot className="h-10 w-10 text-primary" />
           </Link>
         </motion.div>
