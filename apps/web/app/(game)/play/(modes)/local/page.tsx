@@ -74,7 +74,7 @@ const Page = () => {
   return (
     <>
       <div>
-        <h1>Turn: {gameInstanceRef ? whosTurn(gameInstanceRef.current) : "An error occured"}</h1>
+        <h1 className={"text-5xl"}>Turn: {gameInstanceRef ? whosTurn(gameInstanceRef.current) : "An error occured"}</h1>
       </div>
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="grid grid-cols-8 border border-gray-800">
@@ -105,7 +105,7 @@ const Page = () => {
             return (
               <div
                 key={index}
-                className={`w-16 h-16 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
+                className={`w-24 h-24 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
                 onClick={() => handleClick(x, y)}
               >
                 {figure ? getFigureIcon(figure.type, figure.color) : null}
@@ -130,17 +130,17 @@ const getFigureIcon = (type?: string, color?: string) => {
 
   switch (type) {
     case "pawn":
-      return <SiChessdotcom {...commonProps} />
+      return <SiChessdotcom {...commonProps} className={"size-16"} />
     case "knight":
-      return <FaChessKnight {...commonProps} />
+      return <FaChessKnight {...commonProps} className={"size-16"} />
     case "bishop":
-      return <FaChessBishop {...commonProps} />
+      return <FaChessBishop {...commonProps} className={"size-16"} />
     case "rook":
-      return <FaChessRook {...commonProps} />
+      return <FaChessRook {...commonProps} className={"size-16"} />
     case "queen":
-      return <FaChessQueen {...commonProps} />
+      return <FaChessQueen {...commonProps} className={"size-16"} />
     case "king":
-      return <FaChessKing {...commonProps} />
+      return <FaChessKing {...commonProps} className={"size-16"} />
     default:
       return null
   }
