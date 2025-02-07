@@ -22,7 +22,7 @@ class Pawn extends Figure {
     switch (this.color) {
       case "black":
         //standard fwd
-        if (target.x === this.position.x && target.y === this.position.y + 1) {
+        if (target.x === this.position.x && target.y === this.position.y + 1 && !target.figure) {
           return true
         }
         //aggression
@@ -30,7 +30,7 @@ class Pawn extends Figure {
           return true
         }
         //first pawn move fwd
-        if (this._isFirstMove && target.x === this.position.x && target.y === this.position.y + 2) {
+        if (this._isFirstMove && target.x === this.position.x && target.y === this.position.y + 2 && !target.figure) {
           return true
         }
         //en passant below
@@ -46,7 +46,7 @@ class Pawn extends Figure {
         return false
       case "white":
         //standard fwd
-        if (target.x === this.position.x && target.y === this.position.y - 1) {
+        if (target.x === this.position.x && target.y === this.position.y - 1 && !target.figure) {
           return true
         }
         //standard attack
@@ -54,7 +54,7 @@ class Pawn extends Figure {
           return true
         }
         //first pawn move fwd
-        if (this._isFirstMove && target.x === this.position.x && target.y === this.position.y - 2) {
+        if (this._isFirstMove && target.x === this.position.x && target.y === this.position.y - 2 && !target.figure) {
           return true
         }
         //en passant below
