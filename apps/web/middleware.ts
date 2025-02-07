@@ -6,6 +6,12 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
   const { pathname } = req.nextUrl
 
+  // Jeśli użytkownik jest zalogowany i próbuje wejść na "/sign-in" lub "/sign-up",
+  // przekierowujemy go na "/home"
+  if ((pathname === "/sign-in" || pathname === "/sign-up") && userId) {
+    return NextResponse.redirect(new URL("/home", req.url))
+  }
+
   // Gdy użytkownik odwiedza "/home", ustaw ciasteczko "visitedHome" (jeśli jeszcze nie istnieje)
   if (pathname === "/home") {
     const response = NextResponse.next()

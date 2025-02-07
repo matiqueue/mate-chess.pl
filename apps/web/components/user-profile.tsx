@@ -1,15 +1,5 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  useClerk,
-  useUser,
-} from "@clerk/nextjs"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/avatar"
+import { SignedIn, SignedOut, SignInButton, useClerk, useUser } from "@clerk/nextjs"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -30,9 +20,9 @@ export const UserProfile = () => {
     <div>
       <SignedOut>
         <div className="flex items-center gap-4 justify-items-start">
-          <SignInButton>
+          <Link href="/sign-in">
             <Button variant="outline">Login</Button>
-          </SignInButton>
+          </Link>
         </div>
       </SignedOut>
 
@@ -49,18 +39,11 @@ export const UserProfile = () => {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {user?.fullName}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.primaryEmailAddress?.emailAddress}
-                    </p>
+                    <p className="text-sm font-medium leading-none">{user?.fullName}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
                   </div>
                   <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={user?.imageUrl || "/placeholder.svg"}
-                      alt={user?.fullName || "User"}
-                    />
+                    <AvatarImage src={user?.imageUrl || "/placeholder.svg"} alt={user?.fullName || "User"} />
                     <AvatarFallback>
                       {user?.firstName?.[0]}
                       {user?.lastName?.[0]}
@@ -78,9 +61,7 @@ export const UserProfile = () => {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem onClick={() => clerk.signOut()}>
-                Log out
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => clerk.signOut()}>Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -7,11 +7,7 @@ import { PuzzleIcon as Chess, Menu } from "lucide-react"
 
 import { Button } from "@workspace/ui/components/button"
 
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@workspace/ui/components/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@workspace/ui/components/sheet"
 import { ModeToggle } from "@workspace/ui/components/mode-toggle"
 import { UserProfile } from "@/components/user-profile"
 
@@ -32,9 +28,7 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/home" className="flex items-center space-x-2">
               <Chess className="h-6 w-6" />
-              <span className="hidden font-bold sm:inline-block">
-                Mate Chess
-              </span>
+              <span className="hidden font-bold sm:inline-block">Mate Chess</span>
             </Link>
             <nav className="hidden md:ml-6 md:flex md:space-x-6">
               {navItems.map((item) => (
@@ -42,9 +36,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`text-sm font-medium transition-colors hover:text-foreground/80 ${
-                    pathname === item.href
-                      ? "text-foreground"
-                      : "text-foreground/60"
+                    pathname === item.href ? "text-foreground" : "text-foreground/60"
                   }`}
                 >
                   {item.name}
@@ -79,11 +71,7 @@ export function Navbar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`transition-colors hover:text-foreground/80 ${
-                        pathname === item.href
-                          ? "text-foreground"
-                          : "text-foreground/60"
-                      }`}
+                      className={`transition-colors hover:text-foreground/80 ${pathname === item.href ? "text-foreground" : "text-foreground/60"}`}
                     >
                       {item.name}
                     </Link>
