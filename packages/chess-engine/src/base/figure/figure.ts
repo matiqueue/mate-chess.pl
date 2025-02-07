@@ -1,4 +1,6 @@
 import { Board, Position } from "@modules/utils/board"
+import { King } from "@modules/utils/figures"
+
 /**
  * Abstract class for all the figures on playing board. Figure types and colours are already predefined.
  * Class imports Position class.
@@ -7,6 +9,7 @@ abstract class Figure {
   private _type: "rook" | "knight" | "bishop" | "queen" | "king" | "pawn"
   private _color: "white" | "black"
   private _position: Position
+  private _id: number = 0
   protected _board: Board
 
   constructor(type: "rook" | "knight" | "bishop" | "queen" | "king" | "pawn", color: "white" | "black", position: Position, board: Board) {
@@ -40,6 +43,13 @@ abstract class Figure {
   set position(value: Position) {
     this._position = value
   }
+  set id(value: number) {
+    this._id = value
+  }
+
+  get id(): number {
+    return this._id
+  }
   /**
    * Checks if target position is valid. For the method to return true, it has to be inside the 8x8 chess board
    * */
@@ -69,20 +79,32 @@ abstract class Figure {
       console.log("Cannot move to a square occupied by your own piece.")
       return false
     }
+    console.log(this._board.figures)
 
-    // Atak na figurę przeciwnika
-    if (target.figure) {
-      console.log(`Capturing enemy piece at ${target.notation}.`)
-    } else {
-      console.log(`Moving to empty square at ${target.notation}.`)
-    }
+    this.capturePiece(target)
 
-    // Przenieś figurę na nową pozycję
-    this.position.figure = null // Usuń figurę z bieżącej pozycji
-    target.figure = this // Ustaw figurę na nowej pozycji
-    this.position = target // Zaktualizuj pozycję figury
+    this._board.clearPosition(this.position)
+    target.figure = this
+    this.position = target
+    // // Atak na figurę przeciwnika
+    // if (target.figure) {
+    //   console.log(`Capturing enemy piece at ${target.notation}.`)
+    // } else {
+    //   console.log(`Moving to empty square at ${target.notation}.`)
+    // }
+    //
+    // // Przenieś figurę na nową pozycję
+    // this.position.figure = null // Usuń figurę z bieżącej pozycji
+    // target.figure = this // Ustaw figurę na nowej pozycji
+    // this.position = target // Zaktualizuj pozycję figury
 
     return true
+  }
+  private capturePiece(target: Position): boolean {
+    if (target.figure) {
+      return this._board.clearPosition(target)
+    }
+    return false
   }
 }
 export default Figure

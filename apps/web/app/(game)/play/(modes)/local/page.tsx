@@ -16,17 +16,17 @@ import Position from "@modules/base/position"
 // Import ikon z react-icons z pakietu FontAwesome
 import { FaChessPawn, FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
 import { SiChessdotcom } from "react-icons/si"
-import ChessEngine from "@modules/base/chessEngine"
 import chessGame from "@modules/chessGame"
+import { King } from "@modules/utils/figures"
+
 const Page = () => {
-  // Stan planszy, zaznaczonej pozycji oraz dostępnych ruchów
   const [board, setBoard] = useState<Board>()
   const [selectedPos, setSelectedPos] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
   const gameInstanceRef = useRef<chessGame>(setupGame())
   const [turn, setTurn] = useState<"white" | "black">(whosTurn(gameInstanceRef.current))
 
-  // Inicjalizacja gry tylko raz
+  // ODPALA SIE TYLKO RAZ, NA POCZĄTKU GRY
   useEffect(() => {
     if (!gameInstanceRef.current) {
       return
@@ -55,9 +55,10 @@ const Page = () => {
       setSelectedPos(clickedPos)
       setValidMoves(getValidMovesForPosition(board, clickedPos))
       return
+    } else {
+      makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
     }
     // Jeśli klikamy kolejne pole, próbujemy wykonać ruch
-    makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
 
     // Aktualizujemy planszę po wykonanym ruchu
     const updatedBoard = getBoard(gameInstanceRef.current)
@@ -90,8 +91,17 @@ const Page = () => {
             const isOpponentMove = selectedPos?.figure?.color !== turn
 
             const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
-            const bgColor = isSelected ? "bg-blue-300" : isValidMove ? (isOpponentMove ? "bg-gray-500" : "bg-green-300") : defaultBg
-
+            //Z góry przepraszam za taki kod tutaj xD
+            const isKingInCheck = figure?.type === "king" && (figure as King).isCheck
+            const bgColor = isKingInCheck
+              ? "bg-red-500"
+              : isSelected
+                ? "bg-blue-300"
+                : isValidMove
+                  ? isOpponentMove
+                    ? "bg-gray-500"
+                    : "bg-green-300"
+                  : defaultBg
             return (
               <div
                 key={index}

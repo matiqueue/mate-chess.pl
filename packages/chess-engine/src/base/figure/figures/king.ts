@@ -3,7 +3,7 @@ import { Board, Position } from "@modules/utils/board"
 import rook from "@modules/base/figure/figures/rook"
 /**refactoring needed*/
 class King extends Figure {
-  private isCheck: boolean = false
+  isCheck: boolean = false
   public canCastle: boolean = true
   constructor(color: "white" | "black", position: Position, board: Board) {
     super("king", color, position, board)

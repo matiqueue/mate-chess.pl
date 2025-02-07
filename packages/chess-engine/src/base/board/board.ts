@@ -12,14 +12,14 @@ import { Position } from "@modules/utils/board"
 class Board {
   private positions: Map<string, Position>
   private letters: string = "abcdefgh"
-  private figures: Figure[]
+  figures: (Figure | null)[] = []
   private blackFigures: Figure[] = []
   private whiteFigures: Figure[] = []
   private positionsById: Position[] = []
 
   constructor() {
     this.positions = new Map()
-    this.figures = Array(32)
+    // this.figures = Array(32)
   }
   /**
    * Sets up 64 positions in a twodimensional space of 8 height and 8 width. <br>*/
@@ -77,12 +77,12 @@ class Board {
     this.addFigureAtPosition(this.positions.get("e8")!, new King("black", this.positions.get("e8")!, this))
 
     console.log("Figures placed on the board.")
+    console.log(this.figures)
   }
 
   public printBoard() {
     console.debug("\nPrinting chessboard with notations: \n")
 
-    // To jest moj kod {matique}
     for (let y = 0; y < 8; y++) {
       let row = ""
       for (let x = 0; x < 8; x++) {
@@ -188,6 +188,10 @@ class Board {
         } else if (position.figure?.isValidMove(targetPosition)) {
           row += "[--] " //valid
           validMoves.push(targetPosition)
+          //to be refactored
+          // if (targetPosition?.figure?.type === "king" && targetPosition.figure?.color !== position.figure?.color) {
+          //   ;(targetPosition.figure as King).isCheck = true
+          // }
         } else {
           row += `[${targetPosition.notation}] ` //invalid
         }
@@ -235,15 +239,37 @@ class Board {
     if (existingPosition.figure === null) {
       existingPosition.figure = figure
       console.log(`New figure added: ${figure.type} of colour: ${figure.color} at position ${figure.position.notation}`)
+      figure.id = this.figures.length
+      this.figures.push(figure)
       return true
     }
     console.warn(`Position "${position.notation}" already has a figure.`)
     return false
   }
+
   public moveFigureToPosition(move: { from: Position; to: Position }): boolean {
     if (!move.from.figure) return false
 
     return move.from.figure.move(move.to)
+  }
+
+  public clearPosition(position: Position): boolean {
+    if (position.figure && position.figure.id !== undefined) {
+      this.figures[position.figure.id] = null
+      position.figure = null
+      return true
+    }
+    return false
+  }
+
+  private getKingPosition(color: "white" | "black"): Position {
+    for (const figure in this.figures) {
+      if (this.figures[figure] instanceof King && this.figures[figure]?.color === color) {
+        return this.figures[figure]?.position
+      }
+    }
+    console.error("No king found")
+    throw new Error("No king found")
   }
 }
 export default Board
