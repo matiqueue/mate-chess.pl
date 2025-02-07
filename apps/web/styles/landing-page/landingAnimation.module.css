@@ -1,0 +1,126 @@
+
+
+/* Resetowanie domyślnych marginesów i paddingów */
+.reset {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Kontener dla całej strony */
+.loadingPage {
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right, #3f3f46, #0b0b0e);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Logo SVG */
+.logoSvg {
+  width: 180px;
+  height: 180px;
+  stroke: white;
+  fill: none;
+  stroke-width: 3px;
+
+  @media (min-width: 640px) {
+    width: 220px;
+    height: 220px;
+  }
+
+  @media (min-width: 768px) {
+    width: 260px;
+    height: 260px;
+  }
+}
+
+/* Animacja rysowania SVG */
+@keyframes draw {
+  from {
+    stroke-dasharray: 4500;
+    stroke-dashoffset: 4500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.svgPath {
+  stroke-dasharray: 4500;
+  stroke-dashoffset: 4500;
+  animation: draw 4s ease-in-out forwards;
+}
+
+/* Tekst pod logo */
+.logoText {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: "Merienda", serif;
+  animation: fadeInUp 2s ease-out forwards;
+}
+
+@media (min-width: 640px) {
+  .logoText {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .logoText {
+    font-size: 1.875rem;
+  }
+}
+
+/* Animacja fadeInUp */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeInUp {
+  animation: fadeInUp 2s ease-out forwards;
+}
+
+/* Pasek postępu */
+.progressBar {
+  text-align: center;
+  width: 70%;
+  max-width: 1000px;
+  height: 1.5em;
+  background-color: #111;
+  border-radius: 1.5em;
+  overflow: hidden;
+  position: relative;
+  font-family: "Merienda", serif;
+  font-optical-sizing: auto;
+  display: flex;
+}
+
+.progressBarInner {
+  content: "";
+  display: block;
+  height: 100%;
+  background-color: #fafafa;
+  border-radius: 1em;
+  transition: width 0.1s ease-out;
+}

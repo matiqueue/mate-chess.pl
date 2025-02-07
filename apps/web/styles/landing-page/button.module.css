@@ -1,0 +1,63 @@
+.button {
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  margin: 0 auto;
+  width: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Soft white border */
+  color: rgba(255, 255, 255, 0.9); /* Bright white text */
+  background: rgba(0, 0, 0, 0.3); /* Transparent black */
+  border-radius: 10px;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 1.8em;
+  cursor: pointer;
+  height: 76px;
+  opacity: 1;
+  transition: all 0.2s ease;
+  line-height: 30px;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  perspective-origin: 49% 50%;
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.5); /* White glow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.1); /* Slight white glow on hover */
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 255, 0.8); /* Enhanced white glow */
+}
+
+.button p {
+  transition: all 0.2s ease;
+  user-select: none;
+  line-height: 33px;
+  position: absolute;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .button {
+    width: 200px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}
