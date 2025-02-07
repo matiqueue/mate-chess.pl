@@ -79,13 +79,16 @@ abstract class Figure {
       console.log("Cannot move to a square occupied by your own piece.")
       return false
     }
-    console.log(this._board.figures)
 
     this.capturePiece(target)
 
     this._board.clearPosition(this.position)
     target.figure = this
     this.position = target
+    this._board.figures[this._id] = this
+
+    console.log(this._board.figures)
+
     // // Atak na figurę przeciwnika
     // if (target.figure) {
     //   console.log(`Capturing enemy piece at ${target.notation}.`)
@@ -97,7 +100,7 @@ abstract class Figure {
     // this.position.figure = null // Usuń figurę z bieżącej pozycji
     // target.figure = this // Ustaw figurę na nowej pozycji
     // this.position = target // Zaktualizuj pozycję figury
-
+    this._board.updateProperties()
     return true
   }
   private capturePiece(target: Position): boolean {
