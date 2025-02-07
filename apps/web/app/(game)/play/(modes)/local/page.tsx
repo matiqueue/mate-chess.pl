@@ -45,7 +45,7 @@ const Page = () => {
 
     const clickedFigure = clickedPos.figure
 
-    if (clickedFigure && clickedFigure.color !== turn) {
+    if (clickedFigure && clickedFigure.color === turn) {
       setSelectedPos(clickedPos)
       setValidMoves(getValidMovesForPosition(board, clickedPos))
       return
