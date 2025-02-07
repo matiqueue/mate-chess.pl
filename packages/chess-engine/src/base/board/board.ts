@@ -196,7 +196,7 @@ class Board {
           row += `[${targetPosition.notation}] ` //invalid
         }
       }
-      console.debug(row.trim())
+      // console.debug(row.trim())
     }
     return validMoves
   }
