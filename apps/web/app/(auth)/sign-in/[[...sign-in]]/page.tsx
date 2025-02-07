@@ -4,7 +4,7 @@ import { Footer } from "@/components/main-footer"
 
 export default function SignInPage() {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col">
       <div className="flex-shrink-0">
         <Navbar />
       </div>

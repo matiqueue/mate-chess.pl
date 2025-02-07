@@ -8,6 +8,8 @@ import { Button } from "@workspace/ui/components/button"
 import {CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import Link from "next/link"
+
 
 export function SignInForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   // Upewniamy się, że hook zwraca dane – jeżeli nie, można np. zwrócić null
@@ -19,32 +21,58 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [emailHint, setEmailHint] = useState("Email")
+  const [passwordHint, setPasswordHint] = useState("Password")
+  const [passwordHintColor, setPasswordHintColor] = useState("");
+  const [emailHintColor, setEmailHintColor] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-    try {
-      const result = await signIn?.create({
-        identifier: email,
-        password: password,
-      })
-      // Upewnij się, że otrzymany identyfikator sesji nie jest undefined
-      if (!result?.createdSessionId) {
-        throw new Error("Nie udało się utworzyć sesji")
+
+    if(email == "" || password == ""){
+      if(email == ""){
+        setEmailHint("Make sure email is not empty!")
+        setEmailHintColor("text-destructive")
+      }else{
+        setEmailHintColor("")
+        setEmailHint("Email")
       }
-      if (setActive) {
-        await setActive({ session: result.createdSessionId })
-      } else {
-        throw new Error("setActive is undefined")
+
+      if(password == ""){
+        setPasswordHint("Don't forget about password!")
+        setPasswordHintColor("text-destructive")
+      }else{
+        setPasswordHint("Password")
+        setPasswordHintColor("");
       }
-      // Po udanym logowaniu przekierowujemy na /home
-      window.location.href = "/home"
-    } catch (err) {
-      const error = err as { errors?: { message: string }[] }
-      setError(error.errors?.[0]?.message || "Błąd logowania")
-      setIsLoading(false)
+      
+    }else{
+      try {
+        const result = await signIn?.create({
+          identifier: email,
+          password: password,
+        })
+        // Upewnij się, że otrzymany identyfikator sesji nie jest undefined
+        if (!result?.createdSessionId) {
+          throw new Error("Nie udało się utworzyć sesji")
+        }
+        if (setActive) {
+          await setActive({ session: result.createdSessionId })
+        } else {
+          throw new Error("setActive is undefined")
+        }
+        // Po udanym logowaniu przekierowujemy na /home
+        window.location.href = "/home"
+      } catch (err) {
+        const error = err as { errors?: { message: string }[] }
+        setError(error.errors?.[0]?.message || "Błąd logowania")
+        setIsLoading(false)
+      }
     }
+
+
   }
 
   async function handleGoogleLogin() {
@@ -107,12 +135,12 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
             </span>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <Label htmlFor="email" className={emailHintColor}>{emailHint}</Label>
+            <Input id="email" type="email" placeholder="m@example.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className={passwordHintColor}>{passwordHint}</Label>
               <a
                 href="#"
                 className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -120,17 +148,17 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
                 Forgot your password?
               </a>
             </div>
-            <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isLoading}>
             Login
           </Button>
         </div>
         <div className="text-center text-sm p-3">
           Don&apos;t have an account?{" "}
-          <SignUpButton>
+          <Link href="/sign-up">
             <div className="underline underline-offset-4">Sign Up</div>
-          </SignUpButton>
+          </Link>
 
         </div>
       </form>
