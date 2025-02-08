@@ -34,12 +34,7 @@ export default function HomePage() {
         transition={{ duration: 0.6 }}
       >
         <div className="absolute inset-0 mix-blend-overlay">
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hOTh4KGZPvw2G79nkgDaouAgt4UNsH.png"
-            alt="Chess board"
-            fill
-            className="object-cover opacity-30"
-          />
+          <Image src="/backgrounds/homeBgImage.png" alt="Chess board" fill className="object-cover opacity-30" />
         </div>
         <div className="relative p-8 md:p-12 lg:p-16">
           <motion.h1
@@ -170,7 +165,7 @@ export default function HomePage() {
         transition={{ duration: 0.8, delay: 1 }}
       >
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-          <Link href="/">
+          <Link href="/easter-egg">
             <Bot className="h-10 w-10 text-primary" />
           </Link>
         </motion.div>

@@ -3,9 +3,9 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js"
-import "@/styles/chessboard.css"
-import Button from "@/components/landing-page/Button"
-import Navbar from "@/components/landing-page/Navbar"
+import styles from "@/styles/landing-page/chessboard.module.css"
+import Button from "@/components/landing-page/button"
+import Navbar from "@/components/landing-page/navbar"
 import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scrollAnimation"
 
@@ -128,11 +128,12 @@ const Chessboard: React.FC = () => {
     return (
       <div
         key={currentPositionIndex.current} // Klucz wymuszający odświeżenie
-        className={`text-container ${currentPositionIndex.current % 2 === 0 ? "text-left" : "text-right"} animate-text`} // Dodano klasę animacji
+        className={`${styles.textContainer} ${currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight} ${styles.animateText}`}
+         // Dodano klasę animacji
         style={{ top: `${topPosition}%` }} // Dynamiczna pozycja `top`
       >
-        <h1 className={`${fraunces.className} text-title`}>{currentText.title}</h1>
-        <p className={`${fraunces.className} text-description`}>{currentText.description}</p>
+        <h1 className={`${fraunces.className} ${styles.textTitle}`}>{currentText.title}</h1>
+        <p className={`${fraunces.className} ${styles.textDescription}`}>{currentText.description}</p>
       </div>
     )
   }
@@ -155,17 +156,33 @@ const Chessboard: React.FC = () => {
     const renderer = new THREE.WebGLRenderer({ antialias: true })
 
     renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
+    renderer.domElement.style.width = "100vw"; 
+    renderer.domElement.style.height = "100vh";
+    renderer.domElement.style.margin = "0";
+    renderer.domElement.style.padding = "0";
+    renderer.domElement.style.overflow = "hidden"; 
     renderer.shadowMap.enabled = true
     mountRef.current.appendChild(renderer.domElement)
+
     const handleResize = () => {
-      if (mountRef.current) {
-        const width = window.innerWidth
-        const height = window.innerHeight
-        renderer.setSize(width, height)
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
+      if (mountRef.current && cameraRef.current) {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+    
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio); 
+    
+        cameraRef.current.aspect = width / height;
+        cameraRef.current.updateProjectionMatrix();
+    
+        // ✅ Wymuszenie ponownego renderowania sceny po resize
+        renderer.clear();
+        renderer.render(scene, cameraRef.current);
       }
-    }
+    };
     window.addEventListener("resize", handleResize)
 
     const textureLoader = new RGBELoader()
@@ -383,12 +400,12 @@ const Chessboard: React.FC = () => {
       <Navbar />
       {renderButton()}
       {RenderText()}
-      <div className="dots-container">
+      <div className={styles.dotsContainer}>
         {cameraPositions.current.map((_, index) => (
-          <div onClick={handleDotClick} data-index={index} key={index} className={`dot ${currentIndex === index ? "active" : ""}`}></div>
+          <div onClick={handleDotClick} data-index={index} key={index} className={`${styles.dot} ${currentIndex === index ? styles.dotActive : ""}`}></div>
         ))}
       </div>
-      <div className="scroll-containter">
+      <div className={styles.scrollContainer}>
         <ScrollAnimation />
       </div>
     </>

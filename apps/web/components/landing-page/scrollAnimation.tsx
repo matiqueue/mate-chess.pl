@@ -1,10 +1,10 @@
 import React from "react"
-import "@/styles/scrollAnimation.css"
+import styles from "@/styles/landing-page/scrollAnimation.module.css"
 
 const ScrollAnimation = () => {
   return (
     <>
-      <button></button>
+      <button className={styles.btnScroll}></button>
     </>
   )
 }

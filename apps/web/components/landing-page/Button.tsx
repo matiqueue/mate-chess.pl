@@ -1,6 +1,6 @@
 import { gsap } from "gsap"
 import { useRef } from "react"
-import styles from "@/styles/button.module.css"
+import styles from "@/styles/landing-page/button.module.css"
 import { useRouter } from "next/navigation"
 import { Smooch_Sans } from "next/font/google"
 

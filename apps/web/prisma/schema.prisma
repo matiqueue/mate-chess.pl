@@ -14,7 +14,39 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String?
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkID    String   @unique
+  username   String   @unique
+  email      String   @unique
+  elo        Int      @default(300)
+  createdAt  DateTime @default(now())
+  lastOnline DateTime @default(now())
+  gamesIDs   String[] @default([]) @db.ObjectId
+  games      Game[]   @relation(fields: [gamesIDs], references: [id])
+  settings   Json?
+}
+
+model Game {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  gameType      String
+  playersIDs    String[]      @db.ObjectId
+  players       User[]        @relation(fields: [playersIDs], references: [id])
+  gameResult    GameResult
+  gameEndReason GameEndReason
+  eloBefore     Int[] // [0] - player1, [1] - player2, before game
+  eloAfter      Int[] // [0] - player1, [1] - player2, after game
+  playedAt      DateTime      @default(now()) @db.Date
+}
+
+enum GameResult {
+  Draw
+  Player1Win
+  Player2Win
+}
+
+enum GameEndReason {
+  Resignation
+  TimeOut
+  Checkmate
+  Stalemate
 }
