@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Navbar } from "@/components/main-navbar"
 import { Footer } from "@/components/main-footer"
 import { SignUpForm } from "@/components/auth/sign-up-form"
@@ -18,10 +19,11 @@ export default function SignUpPage() {
         </div>
       </div>
       <div className="relative hidden bg-muted lg:block">
-        <img
-          src="/backgrounds/sign-in-background.webp"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        <Image
+        src="/backgrounds/sign-in-background.webp"
+        alt="Image"
+        layout="fill"
+        className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
     </div>

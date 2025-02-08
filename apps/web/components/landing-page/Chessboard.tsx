@@ -4,8 +4,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js"
 import styles from "@/styles/landing-page/chessboard.module.css"
-import Button from "@/components/landing-page/button"
-import Navbar from "@/components/landing-page/navbar"
+import Button from "@/components/landing-page/Button"
+import Navbar from "@/components/landing-page/Navbar"
 import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scrollAnimation"
 
@@ -17,7 +17,7 @@ const fraunces = Fraunces({
 const Chessboard: React.FC = () => {
   const mountRef = useRef<HTMLDivElement | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0) // Aktualny indeks pozycji kamery
-  const [lastPosition, setLastPosition] = useState(5)
+const [lastPosition] = useState(5)
   const [showButton, setShowButton] = useState(false)
   const cameraPositions = useRef<{ position: THREE.Vector3; lookAt: THREE.Vector3 }[]>([
     {
@@ -55,7 +55,7 @@ const Chessboard: React.FC = () => {
   const targetRotation = useRef(0) // Docelowa rotacja szachownicy
   const chessModel = useRef<THREE.Group | null>(null) // Referencja do modelu szachownicy
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
-  const [textTab, setTextTab] = useState([
+const [textTab] = useState([
     {
       title: "Mate-Chess",
       description: "The battle begins. Focus your mind.",
@@ -129,7 +129,7 @@ const Chessboard: React.FC = () => {
       <div
         key={currentPositionIndex.current} // Klucz wymuszający odświeżenie
         className={`${styles.textContainer} ${currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight} ${styles.animateText}`}
-         // Dodano klasę animacji
+        // Dodano klasę animacji
         style={{ top: `${topPosition}%` }} // Dynamiczna pozycja `top`
       >
         <h1 className={`${fraunces.className} ${styles.textTitle}`}>{currentText.title}</h1>
@@ -156,33 +156,33 @@ const Chessboard: React.FC = () => {
     const renderer = new THREE.WebGLRenderer({ antialias: true })
 
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.domElement.style.position = "absolute";
-    renderer.domElement.style.top = "0";
-    renderer.domElement.style.left = "0";
-    renderer.domElement.style.width = "100vw"; 
-    renderer.domElement.style.height = "100vh";
-    renderer.domElement.style.margin = "0";
-    renderer.domElement.style.padding = "0";
-    renderer.domElement.style.overflow = "hidden"; 
+    renderer.domElement.style.position = "absolute"
+    renderer.domElement.style.top = "0"
+    renderer.domElement.style.left = "0"
+    renderer.domElement.style.width = "100vw"
+    renderer.domElement.style.height = "100vh"
+    renderer.domElement.style.margin = "0"
+    renderer.domElement.style.padding = "0"
+    renderer.domElement.style.overflow = "hidden"
     renderer.shadowMap.enabled = true
     mountRef.current.appendChild(renderer.domElement)
 
     const handleResize = () => {
       if (mountRef.current && cameraRef.current) {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-    
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio); 
-    
-        cameraRef.current.aspect = width / height;
-        cameraRef.current.updateProjectionMatrix();
-    
+        const width = window.innerWidth
+        const height = window.innerHeight
+
+        renderer.setSize(width, height)
+        renderer.setPixelRatio(window.devicePixelRatio)
+
+        cameraRef.current.aspect = width / height
+        cameraRef.current.updateProjectionMatrix()
+
         // ✅ Wymuszenie ponownego renderowania sceny po resize
-        renderer.clear();
-        renderer.render(scene, cameraRef.current);
+        renderer.clear()
+        renderer.render(scene, cameraRef.current)
       }
-    };
+    }
     window.addEventListener("resize", handleResize)
 
     const textureLoader = new RGBELoader()

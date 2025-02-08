@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { SignUpButton, useSignIn } from "@clerk/nextjs"
+import { useSignIn } from "@clerk/nextjs"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import {CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
@@ -19,7 +19,7 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+const [, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [emailHint, setEmailHint] = useState("Email")
   const [passwordHint, setPasswordHint] = useState("Password")

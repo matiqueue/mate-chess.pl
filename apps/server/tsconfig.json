@@ -1,12 +1,14 @@
 {
-  "extends": "@workspace/typescript-config/nextjs.json",
+  "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
       "@workspace/ui/*": ["../../packages/ui/src/*"],
       "@workspace/chess-engine/*": ["../../packages/chess-engine/*"]
-    }
+    },
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "exclude": ["node_modules"],
   "include": ["."]
