@@ -1,45 +1,39 @@
-export interface MoveResult {
-  success: boolean
-  error?: string
-}
+import { Bishop, Rook, Queen, King, Pawn, Knight } from "./utils/figures"
+import ChessEngine from "./base/chessEngine"
 
-export class ChessGame {
-  private board: string[][] // Przykładowa reprezentacja planszy
-
+class ChessGame extends ChessEngine {
   constructor() {
-    this.board = this.initializeBoard()
+    super()
   }
 
-  private initializeBoard(): string[][] {
-    // Inicjuj planszę – możesz tu zaimplementować ustawienie początkowe
-    return [
-      /* ... */
-    ]
-  }
-
-  // Metoda wykonująca ruch – zwraca obiekt MoveResult
-  public makeMove(from: string, to: string): MoveResult {
-    // Walidacja ruchu oraz aktualizacja stanu gry
-    // Tu implementacja walidacji i logiki ruchu
-    // Przykładowo:
-    if (this.isValidMove(from, to)) {
-      // aktualizuj stan planszy
-      return { success: true }
-    } else {
-      return { success: false, error: "Nieprawidłowy ruch" }
+  override start() {
+    super.start()
+    if (!this._board) {
+      return
     }
+    //ur code here
+
+    console.debug("CHESS GAME LAYER CODE OUTPUT BELOW")
+
+    this._board.printFigures()
   }
 
-  private isValidMove(from: string, to: string): boolean {
-    // Tutaj implementacja walidacji ruchu
-    return true // przykład
+  override update() {
+    super.update()
+    //ur code here
   }
-
-  public getState(): any {
-    // Zwraca aktualny stan gry (może być to JSON lub inna struktura)
-    return {
-      board: this.board,
-      // dodatkowe dane gry
-    }
-  }
+  /**@TODO Ujednolicone ustawianie figur. póki co jest kilka metod od tego. chciałbym zrobić to tak, że jeżeli nic tutaj nie zostało zapisane a metoda nie została wywołana
+   * to wtedy występuje standardowe ustawienie figur*/
+  // override customFigureSetup() {
+  //   // super.customFigureSetup() //call
+  //   // //example party
+  //   // this._board.addFigureAtPosition(this._board.positions.get("g2")!, new Pawn("white", this._board.positions.get("g2")!)) // White Pawn
+  //   // this._board.addFigureAtPosition(this._board.positions.get("f3")!, new Queen("white", this._board.positions.get("f3")!)) // White Queen
+  //   // this._board.addFigureAtPosition(this._board.positions.get("e4")!, new King("white", this._board.positions.get("e4")!)) // White King
+  //   //
+  //   // this._board.addFigureAtPosition(this._board.positions.get("e7")!, new King("black", this._board.positions.get("e7")!)) // Black King
+  //   // this._board.addFigureAtPosition(this._board.positions.get("d6")!, new Bishop("black", this._board.positions.get("d6")!)) // Black Bishop
+  //   // this._board.addFigureAtPosition(this._board.positions.get("c7")!, new Pawn("black", this._board.positions.get("c7")!)) // Black Pawn
+  // }
 }
+export default ChessGame

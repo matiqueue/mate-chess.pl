@@ -25,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/av
 import { Input } from "@workspace/ui/components/input"
 import { Card, CardContent } from "@workspace/ui/components/card"
 import { SignedIn, SignedOut, SignInButton, useClerk } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 interface NavItemProps {
   href: string
@@ -190,12 +191,31 @@ export function Sidebar() {
   }
 
   // W pozostałych przypadkach (np. na "/play") renderujemy pełny sidebar
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter()
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    try {
+      await fetch("/api/clearCookie", {
+        method: "POST",
+      })
+    } catch (error) {
+      console.error("Błąd przy czyszczeniu ciasteczka:", error)
+    }
+    // Przekierowanie na stronę główną
+    router.push("/")
+  }
+
   return (
     <ShadcnSidebar>
       <SidebarHeader className="p-6">
-        <div className="flex items-center gap-2">
-          <PuzzlePiece className="h-6 w-6" />
-          <h1 className="text-xl font-bold">Mate Chess</h1>
+        <div onClick={handleClick} style={{ cursor: "pointer" }}>
+          <div className="flex items-center gap-2">
+            <PuzzlePiece className="h-6 w-6" />
+            <h1 className="text-xl font-bold">Mate Chess</h1>
+          </div>
         </div>
       </SidebarHeader>
 

@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@modules/*": ["../../packages/chess-engine/src/*"],
       "@/*": ["./*"],
       "@workspace/ui/*": ["../../packages/ui/src/*"],
-      "@workspace/chess-engine/functions": ["../../packages/chess-engine/src/ChessGame.ts"]
+      "@workspace/chess-engine/functions": ["../../packages/chess-engine/src/index.ts"]
     },
     "plugins": [
       {
