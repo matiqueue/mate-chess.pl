@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
-import { Loading } from "@/components/landing-page/loading-animation"
+import { Loading } from "@/components/landing-page/loadingAnimation"
 
 // Dynamiczny import Chessboard
 const Chessboard = dynamic(() => import("@/components/landing-page/Chessboard"), { ssr: false })

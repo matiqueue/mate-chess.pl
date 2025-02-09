@@ -1,0 +1,43 @@
+
+.btnScroll{
+    height: 50px;
+    width: 30px;
+    border: 2px solid white;
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    border-radius: 50px;
+    cursor: default;
+}
+.btnScroll::before,
+.btnScroll::after{
+    content: "";
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    border: 2px solid white;
+    height: 10px;
+    width: 10px;
+    transform: translate(-50%, -100%) rotate(45deg);
+    border-top: transparent;
+    border-left: transparent;
+    animation: button-animation 1s ease-in-out infinite;
+}
+.btnScroll::after{
+    top: 30%;
+    animation-delay: .3s;
+}
+@keyframes button-animation{
+0%{
+    opacity: 0;
+}30%{
+    opacity: 1;
+}
+60%{
+    opacity: 1;
+}
+100%{
+    opacity: 0;
+    top: 90%;
+}
+}
