@@ -19,7 +19,7 @@ import { SiChessdotcom } from "react-icons/si"
 import chessGame from "@modules/chessGame"
 import { King } from "@modules/utils/figures"
 
-const Page = () => {
+export default function LocalPage ()  {
   const [board, setBoard] = useState<Board>()
   const [selectedPos, setSelectedPos] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
@@ -146,4 +146,4 @@ const getFigureIcon = (type?: string, color?: string) => {
   }
 }
 
-export default Page
+

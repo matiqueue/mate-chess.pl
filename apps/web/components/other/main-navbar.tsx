@@ -9,7 +9,7 @@ import { Button } from "@workspace/ui/components/button"
 
 import { Sheet, SheetContent, SheetTrigger } from "@workspace/ui/components/sheet"
 import { ModeToggle } from "@workspace/ui/components/mode-toggle"
-import { UserProfile } from "@/components/user-profile"
+import { UserProfile } from "@/components/home/user-profile"
 
 const navItems = [
   { name: "Play", href: "/play" },

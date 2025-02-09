@@ -7,7 +7,7 @@ import styles from "@/styles/landing-page/chessboard.module.css"
 import Button from "@/components/landing-page/button"
 import Navbar from "@/components/landing-page/navbar"
 import { Fraunces } from "next/font/google"
-import ScrollAnimation from "@/components/landing-page/scrollAnimation"
+import ScrollAnimation from "@/components/landing-page/scroll-animation"
 
 const fraunces = Fraunces({
   subsets: ["latin"],

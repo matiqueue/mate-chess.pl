@@ -1,6 +1,6 @@
 import Image from "next/image"
-import { Navbar } from "@/components/main-navbar"
-import { Footer } from "@/components/main-footer"
+import { Navbar } from "@/components/other/main-navbar"
+import { Footer } from "@/components/other/main-footer"
 import { SignUpForm } from "@/components/auth/sign-up-form"
 
 export default function SignUpPage() {

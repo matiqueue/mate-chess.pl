@@ -1,6 +1,6 @@
-import { Navbar } from "@/components/main-navbar"
+import { Navbar } from "@/components/other/main-navbar"
 import { UserProfile } from "@clerk/nextjs"
-import { Footer } from "@/components/main-footer"
+import { Footer } from "@/components/other/main-footer"
 
 export default function Page() {
   return (
