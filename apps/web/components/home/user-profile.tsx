@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut, SignInButton, useClerk, useUser } from "@clerk/nextjs"
+import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import {

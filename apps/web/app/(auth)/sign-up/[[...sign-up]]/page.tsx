@@ -1,6 +1,11 @@
 import Image from "next/image"
+<<<<<<< HEAD
+import { Navbar } from "@/components/main-navbar"
+import { Footer } from "@/components/main-footer"
+=======
 import { Navbar } from "@/components/other/main-navbar"
 import { Footer } from "@/components/other/main-footer"
+>>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f
 import { SignUpForm } from "@/components/auth/sign-up-form"
 
 export default function SignUpPage() {
