@@ -18,7 +18,9 @@ class Pawn extends Figure {
 
     const leftFigure = leftPosition?.figure
     const rightFigure = rightPosition?.figure
-
+    if (target.figure?.color === this.color) {
+      return false
+    }
     switch (this.color) {
       case "black":
         //standard fwd
