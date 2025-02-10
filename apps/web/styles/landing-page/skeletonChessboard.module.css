@@ -100,3 +100,19 @@
   border-radius: 1em;
   transition: width 0.1s ease-out;
 }
+
+@keyframes draw {
+  from {
+    stroke-dasharray: 4500;
+    stroke-dashoffset: 4500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.svgPath {
+  stroke-dasharray: 4500;
+  stroke-dashoffset: 4500;
+  animation: draw 4s ease-in-out forwards infinite;
+}
