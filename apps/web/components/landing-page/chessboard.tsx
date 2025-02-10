@@ -1,16 +1,4 @@
-<<<<<<< HEAD:apps/web/components/landing-page/Chessboard.tsx
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
-import styles from "@/styles/landing-page/chessboard.module.css";
-import Button from "@/components/landing-page/button";
-import Navbar from "@/components/landing-page/navbar";
-import { Fraunces } from "next/font/google";
-import ScrollAnimation from "@/components/landing-page/scrollAnimation";
-import SkeletonChessboard from "@/components/landing-page/skeletonChessboard";
-=======
+
 import React, { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -21,7 +9,8 @@ import Button from "@/components/landing-page/button"
 import Navbar from "@/components/landing-page/navbar"
 import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scroll-animation"
->>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f:apps/web/components/landing-page/chessboard.tsx
+import SkeletonChessboard from "./skeletonChessboard"
+
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -29,7 +18,6 @@ const fraunces = Fraunces({
 });
 
 const Chessboard: React.FC = () => {
-<<<<<<< HEAD:apps/web/components/landing-page/Chessboard.tsx
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0); // Aktualny indeks pozycji kamery
   const [lastPosition] = useState(5);
@@ -51,12 +39,6 @@ const Chessboard: React.FC = () => {
   }, []);
 
   const [showButton, setShowButton] = useState(false);
-=======
-  const mountRef = useRef<HTMLDivElement | null>(null)
-  const [currentIndex, setCurrentIndex] = useState(0) // Aktualny indeks pozycji kamery
-const [lastPosition] = useState(5)
-  const [showButton, setShowButton] = useState(false)
->>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f:apps/web/components/landing-page/chessboard.tsx
   const cameraPositions = useRef<{ position: THREE.Vector3; lookAt: THREE.Vector3 }[]>([
     {
       position: new THREE.Vector3(0, 8, 8), // Widok z przodu
@@ -82,7 +64,6 @@ const [lastPosition] = useState(5)
       position: new THREE.Vector3(-8, 3, 0), // Widok oddalony
       lookAt: new THREE.Vector3(0, 0, 0),
     },
-<<<<<<< HEAD:apps/web/components/landing-page/Chessboard.tsx
   ]);
   const currentPositionIndex = useRef(0);
   const transitioning = useRef(false);
@@ -96,20 +77,6 @@ const [lastPosition] = useState(5)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
   const [textTab] = useState([
-=======
-  ])
-  const currentPositionIndex = useRef(0)
-  const transitioning = useRef(false)
-  const startTransitionTime = useRef<number | null>(null)
-  const animationDuration = 3000 // 3 sekundy
-  const startPosition = useRef(new THREE.Vector3())
-  const targetPosition = useRef(new THREE.Vector3())
-  const startRotation = useRef(0) // Startowa rotacja szachownicy
-  const targetRotation = useRef(0) // Docelowa rotacja szachownicy
-  const chessModel = useRef<THREE.Group | null>(null) // Referencja do modelu szachownicy
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
-const [textTab] = useState([
->>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f:apps/web/components/landing-page/chessboard.tsx
     {
       title: "Mate-Chess",
       description: "The battle begins. Focus your mind.",
@@ -229,14 +196,9 @@ const [textTab] = useState([
     return (
       <div
         key={currentPositionIndex.current} // Klucz wymuszający odświeżenie
-<<<<<<< HEAD:apps/web/components/landing-page/Chessboard.tsx
         className={`${styles.textContainer} ${
           currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight
         } ${styles.animateText}`}
-=======
-        className={`${styles.textContainer} ${currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight} ${styles.animateText}`}
-        // Dodano klasę animacji
->>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f:apps/web/components/landing-page/chessboard.tsx
         style={{ top: `${topPosition}%` }} // Dynamiczna pozycja `top`
       >
         <h1 className={`${fraunces.className} ${styles.textTitle}`}>{currentText.title}</h1>
@@ -269,7 +231,6 @@ const [textTab] = useState([
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-<<<<<<< HEAD:apps/web/components/landing-page/Chessboard.tsx
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.domElement.style.position = "absolute";
     renderer.domElement.style.top = "0";
@@ -299,37 +260,6 @@ const [textTab] = useState([
       }
     };
     window.addEventListener("resize", handleResize);
-=======
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.domElement.style.position = "absolute"
-    renderer.domElement.style.top = "0"
-    renderer.domElement.style.left = "0"
-    renderer.domElement.style.width = "100vw"
-    renderer.domElement.style.height = "100vh"
-    renderer.domElement.style.margin = "0"
-    renderer.domElement.style.padding = "0"
-    renderer.domElement.style.overflow = "hidden"
-    renderer.shadowMap.enabled = true
-    mountRef.current.appendChild(renderer.domElement)
-
-    const handleResize = () => {
-      if (mountRef.current && cameraRef.current) {
-        const width = window.innerWidth
-        const height = window.innerHeight
-
-        renderer.setSize(width, height)
-        renderer.setPixelRatio(window.devicePixelRatio)
-
-        cameraRef.current.aspect = width / height
-        cameraRef.current.updateProjectionMatrix()
-
-        // ✅ Wymuszenie ponownego renderowania sceny po resize
-        renderer.clear()
-        renderer.render(scene, cameraRef.current)
-      }
-    }
-    window.addEventListener("resize", handleResize)
->>>>>>> e4acb22f827b8015832bc8a7b23dc7001016958f:apps/web/components/landing-page/chessboard.tsx
 
     const textureLoader = new RGBELoader();
     textureLoader.load("/backgrounds/finalBackground.hdr", (texture: THREE.Texture) => {
