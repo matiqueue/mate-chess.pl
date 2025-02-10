@@ -14,7 +14,7 @@ import Board from "@modules/base/board/board"
 import Position from "@modules/base/position"
 
 // Import ikon z react-icons z pakietu FontAwesome
-import { FaChessPawn, FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
+import { FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
 import { SiChessdotcom } from "react-icons/si"
 import chessGame from "@modules/chessGame"
 import { King } from "@modules/utils/figures"
