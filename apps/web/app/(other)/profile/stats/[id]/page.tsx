@@ -1,9 +1,6 @@
-"use client";
-
 import { Statistics } from "@/components/statistics/statistics-page"
 import { Navbar } from "@/components/other/main-navbar"
 import { Footer } from "@/components/other/main-footer"
-// eslint-disable-next-line @next/next/no-async-client-component
 export default async function Page({
     params,
   }: {
