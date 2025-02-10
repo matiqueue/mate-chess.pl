@@ -18,6 +18,7 @@ import { FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } 
 import { SiChessdotcom } from "react-icons/si"
 import chessGame from "@modules/chessGame"
 import { King } from "@modules/utils/figures"
+import { isCheckmate } from "@modules/shared/gameStateFunctions/checkmateFunctions"
 
 export default function LocalPage() {
   const [board, setBoard] = useState<Board>()
@@ -25,6 +26,7 @@ export default function LocalPage() {
   const [validMoves, setValidMoves] = useState<Position[]>([])
   const gameInstanceRef = useRef<chessGame>(setupGame())
   const [turn, setTurn] = useState<"white" | "black">(whosTurn(gameInstanceRef.current))
+  const [checkmate, setCheckmate] = useState<"white" | "black" | null>(null)
 
   // ODPALA SIE TYLKO RAZ, NA POCZĄTKU GRY
   useEffect(() => {
@@ -69,12 +71,15 @@ export default function LocalPage() {
     setTurn(whosTurn(gameInstanceRef.current))
     setSelectedPos(null)
     setValidMoves([])
+
+    setCheckmate(isCheckmate(gameInstanceRef.current))
   }
 
   return (
     <>
       <div>
-        <h1 className={"text-5xl"}>Turn: {gameInstanceRef ? whosTurn(gameInstanceRef.current) : "An error occured"}</h1>
+        <h1 className="text-5xl">Turn: {gameInstanceRef ? whosTurn(gameInstanceRef.current) : "An error occurred"}</h1>
+        {checkmate && <h1 className="text-4xl text-red-600 mt-4">Checkmate! {checkmate.charAt(0).toUpperCase() + checkmate.slice(1)} wins!</h1>}
       </div>
       <div className="w-max h-screen flex">
         <div className="flex flex-col items-center justify-center h-screen">

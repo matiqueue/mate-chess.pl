@@ -17,6 +17,7 @@ class ChessEngine {
   protected _board: Board | undefined
   private _currentPlayer: "white" | "black" = "white"
   public isGameOn: boolean = false
+  public isMated: "white" | "black" | null = null
   constructor() {}
   /**
    * This method will be called four times in the first frame.<br>
@@ -36,6 +37,7 @@ class ChessEngine {
     this._board.setupBoard()
     this._board.setupFigures()
     this.isGameOn = true
+    this.isMated = null
   }
   /**
    * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -120,7 +122,6 @@ class ChessEngine {
     this._currentPlayer = value
   }
   public updateProperties() {
-    console.log("chuj cyce")
     if (!this.board) return
     ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = false
     ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = false
@@ -146,6 +147,7 @@ class ChessEngine {
   }
   private callCheckmate(color: "white" | "black") {
     this.onGameOver()
+    this.isMated = color
   }
 }
 
