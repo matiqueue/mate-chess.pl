@@ -123,9 +123,6 @@ class Pawn extends Figure {
     let leftPosition = this._board.getPositionByCords(this.position.x - 1, this.position.y)
     let rightPosition = this._board.getPositionByCords(this.position.x + 1, this.position.y)
 
-    let leftFigure = leftPosition?.figure
-    let rightFigure = rightPosition?.figure
-
     const isSucces = super.move(target)
     if (target.x === leftPosition?.x) {
       leftPosition.figure = null

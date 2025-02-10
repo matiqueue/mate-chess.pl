@@ -145,8 +145,6 @@ class ChessEngine {
     }
   }
   private callCheckmate(color: "white" | "black") {
-    console.error(`${color} was mated!`)
-    console.log(this.isGameOn)
     this.onGameOver()
   }
 }
