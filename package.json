@@ -1,6 +1,6 @@
 {
   "name": "mate-chess",
-  "version": "0.2.6.10",
+  "version": "0.2.7",
   "private": true,
   "scripts": {
     "build": "turbo build",
