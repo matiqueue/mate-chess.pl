@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Board, Position } from "@modules/utils/board"
+import { King, Pawn } from "@modules/utils/figures"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>
@@ -112,6 +113,32 @@ class ChessEngine {
 
   set currentPlayer(value: "white" | "black") {
     this._currentPlayer = value
+  }
+  public updateProperties() {
+    console.log("chuj cyce")
+    if (!this.board) return
+    ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = false
+    ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = false
+
+    for (let i = 0; i < this.board.figures.length; i++) {
+      if (this.board.figures[i] === null) continue
+      if (this.board.figures[i] instanceof Pawn) {
+        ;(this.board.figures[i] as Pawn).isEnPassantPossible = false
+      }
+      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("white")) && this.board.figures[i]?.color === "black") {
+        ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = true
+        if (this.board.getValidMovesForPosition(this.board.getKingPosition("white")).length <= 0) {
+        }
+      }
+      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("black")) && this.board.figures[i]?.color === "white") {
+        for (const pos in this.board.getValidMovesForPosition(this.board.getKingPosition("black"))) {
+          if (pos.length < 1) {
+            console.log("CHECKMATE")
+          }
+        }
+        ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = true
+      }
+    }
   }
 }
 

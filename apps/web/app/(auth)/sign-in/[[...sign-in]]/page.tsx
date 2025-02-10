@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { SignInForm } from "@/components/auth/sign-in-form"
-import { Navbar } from "@/components/main-navbar"
-import { Footer } from "@/components/main-footer"
+import { Navbar } from "@/components/other/main-navbar"
+import { Footer } from "@/components/other/main-footer"
 
 export default function SignInPage() {
   return (

@@ -34,7 +34,9 @@ class Rook extends Figure {
         return false
       }
       if (currentPosition.figure) {
-        return false
+        if(currentPosition.figure.type !== "king" || undefined || null){
+          return false
+        }
       }
       currentX -= signX
       currentY -= signY

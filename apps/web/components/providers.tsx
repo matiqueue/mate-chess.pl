@@ -3,6 +3,7 @@
 import { ReactNode } from "react"
 import { ThemeProvider } from "next-themes"
 import { usePathname } from "next/navigation"
+import { Analytics } from "@vercel/analytics/react"
 
 type ProvidersProps = {
   children: ReactNode
@@ -23,6 +24,7 @@ export function Providers({ children }: ProvidersProps) {
       enableColorScheme
       disableTransitionOnChange
     >
+      <Analytics/>
       {children}
     </ThemeProvider>
   )

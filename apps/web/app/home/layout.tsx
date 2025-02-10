@@ -1,6 +1,6 @@
-import { MobileHeader } from "@/components/mobile-header"
-import { Navbar } from "@/components/navbar"
-import { Sidebar } from "@/components/sidebar"
+import { MobileHeader } from "@/components/home/mobile-header"
+import { Navbar } from "@/components/home/navbar"
+import { Sidebar } from "@/components/home/sidebar"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
 export default function HomeLayout({

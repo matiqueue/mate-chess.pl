@@ -6,7 +6,7 @@ import {
   getBoard,
   getPositionByCords,
   makeMove,
-  getValidMovesForPosition,
+  getValidPositions,
   whosTurn, // Upewnij się, że ta metoda jest dostępna w silniku
 } from "@workspace/chess-engine/functions"
 
@@ -19,7 +19,7 @@ import { SiChessdotcom } from "react-icons/si"
 import chessGame from "@modules/chessGame"
 import { King } from "@modules/utils/figures"
 
-const Page = () => {
+export default function LocalPage() {
   const [board, setBoard] = useState<Board>()
   const [selectedPos, setSelectedPos] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
@@ -47,13 +47,13 @@ const Page = () => {
 
     if (clickedFigure && clickedFigure.color === turn) {
       setSelectedPos(clickedPos)
-      setValidMoves(getValidMovesForPosition(board, clickedPos))
+      setValidMoves(getValidPositions(board, clickedPos))
       return
     }
     // Jeśli nie mamy jeszcze wybranej pozycji, ustaw ją i pobierz dostępne ruchy
     if (!selectedPos) {
       setSelectedPos(clickedPos)
-      setValidMoves(getValidMovesForPosition(board, clickedPos))
+      setValidMoves(getValidPositions(board, clickedPos))
       return
     } else {
       makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
@@ -76,42 +76,48 @@ const Page = () => {
       <div>
         <h1 className={"text-5xl"}>Turn: {gameInstanceRef ? whosTurn(gameInstanceRef.current) : "An error occured"}</h1>
       </div>
-      <div className="flex flex-col items-center justify-center h-screen">
-        <div className="grid grid-cols-8 border border-gray-800">
-          {Array.from({ length: 64 }).map((_, index) => {
-            const x = index % 8
-            const y = Math.floor(index / 8)
-            const position: Position | null = board ? getPositionByCords(board, x, y) : null
-            const figure = position?.figure || null
+      <div className="w-max h-screen flex">
+        <div className="flex flex-col items-center justify-center h-screen">
+          <div className="grid grid-cols-8 border border-gray-800">
+            {Array.from({ length: 64 }).map((_, index) => {
+              const x = index % 8
+              const y = Math.floor(index / 8)
+              const position: Position | null = board ? getPositionByCords(board, x, y) : null
+              const figure = position?.figure || null
 
-            const isSelected = selectedPos && position && selectedPos.notation === position.notation
-            const isValidMove = validMoves.some((move) => move.notation === position?.notation)
+              const isSelected = selectedPos && position && selectedPos.notation === position.notation
+              const isValidMove = validMoves.some((move) => move.notation === position?.notation)
 
-            // podświetli nam na szaro gdy valid moves jest dla drugiego gracza
-            const isOpponentMove = selectedPos?.figure?.color !== turn
+              // podświetli nam na szaro gdy valid moves jest dla drugiego gracza
+              const isOpponentMove = selectedPos?.figure?.color !== turn
 
-            const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
-            //Z góry przepraszam za taki kod tutaj xD
-            const isKingInCheck = figure?.type === "king" && (figure as King).isCheck
-            const bgColor = isKingInCheck
-              ? "bg-red-500"
-              : isSelected
-                ? "bg-blue-300"
-                : isValidMove
-                  ? isOpponentMove
-                    ? "bg-gray-500"
-                    : "bg-green-300"
-                  : defaultBg
-            return (
-              <div
-                key={index}
-                className={`w-24 h-24 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
-                onClick={() => handleClick(x, y)}
-              >
-                {figure ? getFigureIcon(figure.type, figure.color) : null}
-              </div>
-            )
-          })}
+              const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
+              //Z góry przepraszam za taki kod tutaj xD
+              const isKingInCheck = figure?.type === "king" && (figure as King).isCheck
+              const bgColor = isKingInCheck
+                ? "bg-red-500"
+                : isSelected
+                  ? "bg-blue-300"
+                  : isValidMove
+                    ? isOpponentMove
+                      ? "bg-gray-500"
+                      : "bg-green-300"
+                    : defaultBg
+              return (
+                <div
+                  key={index}
+                  className={`w-12 h-12 flex items-center justify-center border text-lg font-bold ${bgColor} ${isSelected ? "border-blue-500" : ""}`}
+                  onClick={() => handleClick(x, y)}
+                >
+                  {figure ? getFigureIcon(figure.type, figure.color) : null}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="flex flex-col h-screen">
+          <div></div>
+          <div></div>
         </div>
       </div>
     </>
@@ -130,20 +136,18 @@ const getFigureIcon = (type?: string, color?: string) => {
 
   switch (type) {
     case "pawn":
-      return <SiChessdotcom {...commonProps} className={"size-16"} />
+      return <SiChessdotcom {...commonProps} className={"size-10"} />
     case "knight":
-      return <FaChessKnight {...commonProps} className={"size-16"} />
+      return <FaChessKnight {...commonProps} className={"size-10"} />
     case "bishop":
-      return <FaChessBishop {...commonProps} className={"size-16"} />
+      return <FaChessBishop {...commonProps} className={"size-10"} />
     case "rook":
-      return <FaChessRook {...commonProps} className={"size-16"} />
+      return <FaChessRook {...commonProps} className={"size-10"} />
     case "queen":
-      return <FaChessQueen {...commonProps} className={"size-16"} />
+      return <FaChessQueen {...commonProps} className={"size-10"} />
     case "king":
-      return <FaChessKing {...commonProps} className={"size-16"} />
+      return <FaChessKing {...commonProps} className={"size-10"} />
     default:
       return null
   }
 }
-
-export default Page
