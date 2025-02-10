@@ -18,7 +18,9 @@ class Pawn extends Figure {
 
     const leftFigure = leftPosition?.figure
     const rightFigure = rightPosition?.figure
-
+    if (target.figure?.color === this.color) {
+      return false
+    }
     switch (this.color) {
       case "black":
         //standard fwd
@@ -120,9 +122,6 @@ class Pawn extends Figure {
   public enPassantMove(target: Position): boolean {
     let leftPosition = this._board.getPositionByCords(this.position.x - 1, this.position.y)
     let rightPosition = this._board.getPositionByCords(this.position.x + 1, this.position.y)
-
-    let leftFigure = leftPosition?.figure
-    let rightFigure = rightPosition?.figure
 
     const isSucces = super.move(target)
     if (target.x === leftPosition?.x) {

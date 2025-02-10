@@ -16,6 +16,7 @@ import { King, Pawn } from "@modules/utils/figures"
 class ChessEngine {
   protected _board: Board | undefined
   private _currentPlayer: "white" | "black" = "white"
+  public isGameOn: boolean = false
   constructor() {}
   /**
    * This method will be called four times in the first frame.<br>
@@ -34,6 +35,7 @@ class ChessEngine {
     }
     this._board.setupBoard()
     this._board.setupFigures()
+    this.isGameOn = true
   }
   /**
    * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -87,12 +89,15 @@ class ChessEngine {
   //         }
   //     })
   // }
-  private onGameOver() {}
+  private onGameOver() {
+    this.isGameOn = false
+  }
 
   get board(): Board | undefined {
     return this._board
   }
   public makeFigureMove(move: { from: Position; to: Position }): boolean {
+    if (!this.isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
       if (this.board?.moveFigureToPosition(move)) {
         this.switchCurrentPlayer()
@@ -128,17 +133,19 @@ class ChessEngine {
       if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("white")) && this.board.figures[i]?.color === "black") {
         ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = true
         if (this.board.getValidMovesForPosition(this.board.getKingPosition("white")).length <= 0) {
+          this.callCheckmate("white")
         }
       }
       if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("black")) && this.board.figures[i]?.color === "white") {
-        for (const pos in this.board.getValidMovesForPosition(this.board.getKingPosition("black"))) {
-          if (pos.length < 1) {
-            console.log("CHECKMATE")
-          }
+        if (this.board.getValidMovesForPosition(this.board.getKingPosition("black")).length <= 0) {
+          this.callCheckmate("black")
         }
         ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = true
       }
     }
+  }
+  private callCheckmate(color: "white" | "black") {
+    this.onGameOver()
   }
 }
 
