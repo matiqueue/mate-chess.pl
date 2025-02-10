@@ -8,7 +8,6 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { useSignUp } from "@clerk/nextjs"
 import Link from "next/link"
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import {
   InputOTP,
   InputOTPGroup,
@@ -156,7 +155,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
 
         <div className="grid gap-2">
             <div className="flex justify-center">
-            <InputOTP value={code} onChange={(value: string) => setCode(value)} maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+            <InputOTP value={code} onChange={(value: string) => setCode(value)} maxLength={6}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
