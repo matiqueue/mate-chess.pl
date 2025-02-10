@@ -23,6 +23,11 @@ class King extends Figure {
     }
     //standard movement
     if (Math.abs(target.x - this.position.x) <= 1 && Math.abs(target.y - this.position.y) <= 1) {
+      for (let i = 0; i < this._board.figures.length; i++) {
+        if(this._board.figures[i]?.color !== this.color && this._board.figures[i]?.isValidMove(target)) {
+          return false
+        }
+      }
       return !(target.figure && target.figure.color === this.color)
     }
     return false
