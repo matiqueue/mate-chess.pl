@@ -15,7 +15,11 @@ class ChessGame extends ChessEngine {
 
     console.debug("CHESS GAME LAYER CODE OUTPUT BELOW")
 
-    this._board.printFigures()
+    //checkmate test
+    const knightPos = this._board.getPositionByNotation("c4")
+    if (knightPos) {
+      this._board.addFigureAtPosition(knightPos, new Knight("white", knightPos, this._board))
+    }
   }
 
   override update() {
