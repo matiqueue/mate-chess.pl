@@ -321,7 +321,9 @@ export function Sidebar() {
                 <DropdownMenuItem>
                   <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Stats</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href={"profile/stats/" + user?.id}>Your Statistics</Link>
+                </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
