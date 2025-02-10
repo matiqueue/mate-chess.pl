@@ -1,5 +1,6 @@
 import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@modules/utils/figures"
 import { Position } from "@modules/utils/board"
+import { getValidPositions } from "@modules/shared/moveFunctions/moveValidation"
 
 /**
  * Main playing board. very important.<br>
@@ -271,22 +272,30 @@ class Board {
     console.error("No king found")
     throw new Error("No king found")
   }
-  public updateProperties() {
-    ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = false
-    ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = false
-
-    for (let i = 0; i < this.figures.length; i++) {
-      if (this.figures[i] === null) continue
-      if (this.figures[i] instanceof Pawn) {
-        ;(this.figures[i] as Pawn).isEnPassantPossible = false
-      }
-      if (this.figures[i]?.isValidMove(this.getKingPosition("white")) && this.figures[i]?.color === "black") {
-        ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = true
-      }
-      if (this.figures[i]?.isValidMove(this.getKingPosition("black")) && this.figures[i]?.color === "white") {
-        ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = true
-      }
-    }
-  }
+  //prosze zostawić ten kod dopoki mateusz nie przypomni sobie na chuj go przenosił do chessEngine
+  // public updateProperties() {
+  //   ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = false
+  //   ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = false
+  //
+  //   for (let i = 0; i < this.figures.length; i++) {
+  //     if (this.figures[i] === null) continue
+  //     if (this.figures[i] instanceof Pawn) {
+  //       ;(this.figures[i] as Pawn).isEnPassantPossible = false
+  //     }
+  //     if (this.figures[i]?.isValidMove(this.getKingPosition("white")) && this.figures[i]?.color === "black") {
+  //       ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = true
+  //       if (this.getValidMovesForPosition(this.getKingPosition("white")).length <= 0) {
+  //       }
+  //     }
+  //     if (this.figures[i]?.isValidMove(this.getKingPosition("black")) && this.figures[i]?.color === "white") {
+  //       for (const pos in this.getValidMovesForPosition(this.getKingPosition("black"))) {
+  //         if (pos.length < 1) {
+  //           console.log("CHECKMATE")
+  //         }
+  //       }
+  //       ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = true
+  //     }
+  //   }
+  // }
 }
 export default Board
