@@ -100,7 +100,7 @@ abstract class Figure {
     // this.position.figure = null // Usuń figurę z bieżącej pozycji
     // target.figure = this // Ustaw figurę na nowej pozycji
     // this.position = target // Zaktualizuj pozycję figury
-    this._board.updateProperties()
+    // this._board.updateProperties()
     return true
   }
   private capturePiece(target: Position): boolean {

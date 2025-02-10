@@ -28,9 +28,10 @@ class Bishop extends Figure {
       if (!currentPosition) {
         return false
       }
-      if (this._board.getPositionByCords(currentX, currentY)?.figure) {
-        // console.log("path blocked at: " + this._board.getPositionByCords(currentX, currentY)?.notation) //debug
-        return false
+      if (currentPosition.figure) {
+        if(currentPosition.figure.type !== "king" || undefined || null){
+          return false
+        }
       }
       currentX -= signX
       currentY -= signY

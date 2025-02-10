@@ -1,12 +1,5 @@
 
 
-/* Resetowanie domyślnych marginesów i paddingów */
-.reset {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* Kontener dla całej strony */
 .loadingPage {
   align-items: center;
@@ -44,22 +37,6 @@
   }
 }
 
-/* Animacja rysowania SVG */
-@keyframes draw {
-  from {
-    stroke-dasharray: 4500;
-    stroke-dashoffset: 4500;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.svgPath {
-  stroke-dasharray: 4500;
-  stroke-dashoffset: 4500;
-  animation: draw 4s ease-in-out forwards;
-}
 
 /* Tekst pod logo */
 .logoText {
@@ -70,7 +47,6 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   font-family: "Merienda", serif;
-  animation: fadeInUp 2s ease-out forwards;
 }
 
 @media (min-width: 640px) {
@@ -101,12 +77,12 @@
   animation: fadeInUp 2s ease-out forwards;
 }
 
-/* Pasek postępu */
+
 .progressBar {
   text-align: center;
   width: 70%;
   max-width: 1000px;
-  height: 1.5em;
+  height: 1em;
   background-color: #111;
   border-radius: 1.5em;
   overflow: hidden;
