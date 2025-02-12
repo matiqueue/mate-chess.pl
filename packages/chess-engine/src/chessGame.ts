@@ -14,8 +14,6 @@ class ChessGame extends ChessEngine {
     //ur code here
 
     console.debug("CHESS GAME LAYER CODE OUTPUT BELOW")
-
-    this._board.printFigures()
   }
 
   override update() {

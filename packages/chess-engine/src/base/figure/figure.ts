@@ -17,7 +17,6 @@ abstract class Figure {
     this._color = color
     this._position = position
     this._board = board
-    // console.debug(`new ${type} ${color} at ${position.notation}`)
   }
 
   get type(): "rook" | "knight" | "bishop" | "queen" | "king" | "pawn" {
@@ -62,19 +61,16 @@ abstract class Figure {
    * */
   abstract isValidMove(target: Position): boolean
   public move(target: Position): boolean {
-    // Sprawdź, czy docelowa pozycja jest na planszy
     if (!this.isPositionValid(target)) {
       console.error("Invalid target position: outside of board boundaries.")
       return false
     }
 
-    // Sprawdź, czy ruch jest zgodny z zasadami dla danej figury
     if (!this.isValidMove(target)) {
       console.log("Invalid move for this piece.")
       return false
     }
 
-    // Sprawdź, czy docelowa pozycja zawiera figurę sojuszniczą
     if (this.color === target.figure?.color) {
       console.log("Cannot move to a square occupied by your own piece.")
       return false
@@ -89,18 +85,6 @@ abstract class Figure {
 
     console.log(this._board.figures)
 
-    // // Atak na figurę przeciwnika
-    // if (target.figure) {
-    //   console.log(`Capturing enemy piece at ${target.notation}.`)
-    // } else {
-    //   console.log(`Moving to empty square at ${target.notation}.`)
-    // }
-    //
-    // // Przenieś figurę na nową pozycję
-    // this.position.figure = null // Usuń figurę z bieżącej pozycji
-    // target.figure = this // Ustaw figurę na nowej pozycji
-    // this.position = target // Zaktualizuj pozycję figury
-    this._board.updateProperties()
     return true
   }
   private capturePiece(target: Position): boolean {

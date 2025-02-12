@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Board, Position } from "@modules/utils/board"
+import { King, Pawn } from "@modules/utils/figures"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>
@@ -15,6 +16,8 @@ import { Board, Position } from "@modules/utils/board"
 class ChessEngine {
   protected _board: Board | undefined
   private _currentPlayer: "white" | "black" = "white"
+  public isGameOn: boolean = false
+  public isMated: "white" | "black" | null = null
   constructor() {}
   /**
    * This method will be called four times in the first frame.<br>
@@ -33,6 +36,8 @@ class ChessEngine {
     }
     this._board.setupBoard()
     this._board.setupFigures()
+    this.isGameOn = true
+    this.isMated = null
   }
   /**
    * This method will be called every "playerInput" action. It will proceed with regenerating and updating
@@ -86,12 +91,15 @@ class ChessEngine {
   //         }
   //     })
   // }
-  private onGameOver() {}
+  private onGameOver() {
+    this.isGameOn = false
+  }
 
   get board(): Board | undefined {
     return this._board
   }
   public makeFigureMove(move: { from: Position; to: Position }): boolean {
+    if (!this.isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
       if (this.board?.moveFigureToPosition(move)) {
         this.switchCurrentPlayer()
@@ -112,6 +120,34 @@ class ChessEngine {
 
   set currentPlayer(value: "white" | "black") {
     this._currentPlayer = value
+  }
+  public updateProperties() {
+    if (!this.board) return
+    ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = false
+    ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = false
+
+    for (let i = 0; i < this.board.figures.length; i++) {
+      if (this.board.figures[i] === null) continue
+      if (this.board.figures[i] instanceof Pawn) {
+        ;(this.board.figures[i] as Pawn).isEnPassantPossible = false
+      }
+      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("white")) && this.board.figures[i]?.color === "black") {
+        ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = true
+        if (this.board.getValidMovesForPosition(this.board.getKingPosition("white")).length <= 0) {
+          this.callCheckmate("white")
+        }
+      }
+      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("black")) && this.board.figures[i]?.color === "white") {
+        if (this.board.getValidMovesForPosition(this.board.getKingPosition("black")).length <= 0) {
+          this.callCheckmate("black")
+        }
+        ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = true
+      }
+    }
+  }
+  private callCheckmate(color: "white" | "black") {
+    this.onGameOver()
+    this.isMated = color
   }
 }
 

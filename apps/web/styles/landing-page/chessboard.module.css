@@ -132,4 +132,8 @@
   .scrollContainer {
     visibility: hidden;
   }
+
+  .mainContainer{
+    overflow: hidden;
+  }
 }
