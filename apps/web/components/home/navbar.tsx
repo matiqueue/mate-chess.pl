@@ -1,18 +1,27 @@
-"use client"
+"use client";
 
-import { Bell, MessageSquare, Search } from "lucide-react"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import React from "react";
+import { Bell, MessageSquare, Search } from "lucide-react";
+import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
+import { cn } from "@workspace/ui/lib/utils";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
+import { ModeToggle } from "@workspace/ui/components/mode-toggle";
+import { Volume2, VolumeOff } from "lucide-react"
+import { useAudio } from "@/components/home/audio-provider"; 
 
-import { cn } from "@workspace/ui/lib/utils"
-import { SidebarTrigger } from "@workspace/ui/components/sidebar"
-import { ModeToggle } from "@workspace/ui/components/mode-toggle"
-
-type NavbarProps = React.HTMLAttributes<HTMLElement>
+type NavbarProps = React.HTMLAttributes<HTMLElement>;
 
 export function Navbar({ className }: NavbarProps) {
+  const { isPlaying, toggleMusic } = useAudio();
+
   return (
-    <header className={cn("w-full h-16 border-b px-6 flex items-center gap-6 bg-sidebar", className)}>
+    <header
+      className={cn(
+        "w-full h-16 border-b px-6 flex items-center gap-6 bg-sidebar",
+        className
+      )}
+    >
       <SidebarTrigger />
 
       <form className="flex-1 flex max-w-sm">
@@ -33,7 +42,16 @@ export function Navbar({ className }: NavbarProps) {
           <span className="sr-only">Messages</span>
         </Button>
         <ModeToggle />
+
+        {/* Przycisk do sterowania muzyką */}
+        <Button variant="ghost" size="icon" onClick={toggleMusic}>
+          {isPlaying ? (
+            <Volume2/>
+          ) : (
+            <VolumeOff/>
+          )}
+        </Button>
       </div>
     </header>
-  )
+  );
 }

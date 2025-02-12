@@ -4,6 +4,7 @@ import { ReactNode } from "react"
 import { ThemeProvider } from "next-themes"
 import { usePathname } from "next/navigation"
 import { Analytics } from "@vercel/analytics/react"
+import { AudioProvider } from "@/components/home/audio-provider";
 
 type ProvidersProps = {
   children: ReactNode
@@ -25,7 +26,9 @@ export function Providers({ children }: ProvidersProps) {
       disableTransitionOnChange
     >
       <Analytics/>
-      {children}
+      <AudioProvider>
+        {children}
+      </AudioProvider>
     </ThemeProvider>
   )
 }
