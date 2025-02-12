@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Board, Position } from "@modules/utils/board"
 import { King, Pawn } from "@modules/utils/figures"
+import Figure from "@modules/base/figure/figure"
+import { isCheckmate } from "@modules/shared/gameStateFunctions/checkmateFunctions"
 /**
  * Main class for the backend. Here we will implement any NON-changable logic.<br>
  * In order to change a logic for a certain gamemode or simply game, please use "ChessGame.ts"<br>
@@ -49,52 +51,36 @@ class ChessEngine {
    *     </ul>
    * */
   public update(): void {
-    // this._board.update() //nonexistent right now
-    this.checkForCheck()
-    if (this.checkForMate()) {
-      this.onGameOver()
-      return
-    }
+    this.updateProperties()
 
-    // const { from, to } = await this.awaitPlayer()
-
-    // this.awaitPlayer()
     return //instead of await player
     this.update()
-  }
-  // public customFigureSetup() {
-  //   console.log("customFigureSetup called. Clearing the chessboard.")
-  //   this._board.positions.forEach((position: Position) => {
-  //     position.figure = null
-  //   })
-  // }
-  private checkForCheck() {
-    return
   }
   /**
    * @todo implement logic for checking for mate
    * */
-  private checkForMate(): boolean {
-    return false
+  private checkForMate(): void {
+    if (!this._board) return
+    const whiteKing = this._board.getKing("white")
+    const blackKing = this._board.getKing("black")
+    if (!whiteKing || !blackKing) return
+
+    whiteKing.isCheck = false
+    blackKing.isCheck = false
+
+    for (const figure of this._board.figures) {
+      if (!figure) continue
+      if (figure.color === "black" && figure.isValidMove(whiteKing.position)) {
+        whiteKing.isCheck = true
+      }
+      if (figure.color === "white" && figure.isValidMove(blackKing.position)) {
+        blackKing.isCheck = true
+      }
+    }
   }
-  /**
-   * @warning need to look into promises to make sure this code is sufficient
-   * AI GENERATED CODE
-   * @todo implement logic for awaiting the player actions
-   * */
-  // private async awaitPlayer(): Promise<{ from: String; to: String }> {
-  //     return new Promise((resolve) => {
-  //         // Nasłuchiwanie ruchu gracza, np. przez callback lub event
-  //         const onPlayerMove = (move: { from: string; to: string }) => {
-  //             // Tutaj możesz dodać walidację ruchu, jeśli chcesz
-  //             resolve(move)
-  //         }
-  //     })
-  // }
   private onGameOver() {
     this.isGameOn = false
   }
-
   get board(): Board | undefined {
     return this._board
   }
@@ -122,28 +108,7 @@ class ChessEngine {
     this._currentPlayer = value
   }
   public updateProperties() {
-    if (!this.board) return
-    ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = false
-    ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = false
-
-    for (let i = 0; i < this.board.figures.length; i++) {
-      if (this.board.figures[i] === null) continue
-      if (this.board.figures[i] instanceof Pawn) {
-        ;(this.board.figures[i] as Pawn).isEnPassantPossible = false
-      }
-      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("white")) && this.board.figures[i]?.color === "black") {
-        ;(this.board.getFigureAtPosition(this.board.getKingPosition("white")) as King).isCheck = true
-        if (this.board.getValidMovesForPosition(this.board.getKingPosition("white")).length <= 0) {
-          this.callCheckmate("white")
-        }
-      }
-      if (this.board.figures[i]?.isValidMove(this.board.getKingPosition("black")) && this.board.figures[i]?.color === "white") {
-        if (this.board.getValidMovesForPosition(this.board.getKingPosition("black")).length <= 0) {
-          this.callCheckmate("black")
-        }
-        ;(this.board.getFigureAtPosition(this.board.getKingPosition("black")) as King).isCheck = true
-      }
-    }
+    this.checkForMate()
   }
   private callCheckmate(color: "white" | "black") {
     this.onGameOver()

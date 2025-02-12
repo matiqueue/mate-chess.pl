@@ -272,30 +272,14 @@ class Board {
     console.error("No king found")
     throw new Error("No king found")
   }
-  //prosze zostawić ten kod dopoki mateusz nie przypomni sobie na chuj go przenosił do chessEngine
-  // public updateProperties() {
-  //   ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = false
-  //   ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = false
-  //
-  //   for (let i = 0; i < this.figures.length; i++) {
-  //     if (this.figures[i] === null) continue
-  //     if (this.figures[i] instanceof Pawn) {
-  //       ;(this.figures[i] as Pawn).isEnPassantPossible = false
-  //     }
-  //     if (this.figures[i]?.isValidMove(this.getKingPosition("white")) && this.figures[i]?.color === "black") {
-  //       ;(this.getFigureAtPosition(this.getKingPosition("white")) as King).isCheck = true
-  //       if (this.getValidMovesForPosition(this.getKingPosition("white")).length <= 0) {
-  //       }
-  //     }
-  //     if (this.figures[i]?.isValidMove(this.getKingPosition("black")) && this.figures[i]?.color === "white") {
-  //       for (const pos in this.getValidMovesForPosition(this.getKingPosition("black"))) {
-  //         if (pos.length < 1) {
-  //           console.log("CHECKMATE")
-  //         }
-  //       }
-  //       ;(this.getFigureAtPosition(this.getKingPosition("black")) as King).isCheck = true
-  //     }
-  //   }
-  // }
+  public getKing(color: "white" | "black"): King | null {
+    for (const figure in this.figures) {
+      if (this.figures[figure] instanceof King && this.figures[figure]?.color === color) {
+        return this.figures[figure]
+      }
+    }
+    console.error("No king found")
+    throw new Error("No king found")
+  }
 }
 export default Board
