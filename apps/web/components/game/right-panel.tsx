@@ -2,24 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Eye,
-  Layout,
-  Settings2,
-  ChevronDown,
-  Clock,
-  MessageCircle,
-  Flag,
-  X,
-  Moon,
-  Sun,
-  PanelLeftClose,
-  PanelLeftOpen,
-  DiamondIcon as ChessQueen,
-  RocketIcon as ChessRook,
-  ChurchIcon as ChessBishop,
-  CastleIcon as ChessKnight,
-} from "lucide-react"
+import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
 import { Separator } from "@workspace/ui/components/separator"
@@ -28,6 +11,7 @@ import { useAppContext } from "@/contexts/AppContext"
 import { useTheme } from "next-themes"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { usePathname } from "next/navigation"
+import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 
 export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
