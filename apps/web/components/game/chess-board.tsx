@@ -8,10 +8,14 @@ import {
   FaChessKing as ChessKing,
 } from "react-icons/fa"
 
-import { SiChessdotcom as ChessPawn } from "react-icons/si";
-
+import { SiChessdotcom as ChessPawn } from "react-icons/si"
+import { useTheme } from "next-themes"
+import clsx from "clsx"
 
 export function ChessBoard() {
+  const { theme } = useTheme()
+  const isDarkMode = theme === "dark"
+
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -24,41 +28,73 @@ export function ChessBoard() {
   ]
 
   const getPieceIcon = (piece: string) => {
+    if (!piece) return null
     const isWhite = piece === piece.toUpperCase()
-    const className = `w-8 h-8 ${isWhite ? "text-white" : "text-zinc-900"}`
+    const iconColor = isWhite ? "text-white" : "text-neutral-800"
+    const baseClasses = "w-[60%] h-[60%]"
+    let IconComponent
 
     switch (piece.toLowerCase()) {
       case "p":
-        return <ChessPawn className={className} />
+        IconComponent = ChessPawn
+        break
       case "r":
-        return <ChessRook className={className} />
+        IconComponent = ChessRook
+        break
       case "n":
-        return <ChessKnight className={className} />
+        IconComponent = ChessKnight
+        break
       case "b":
-        return <ChessBishop className={className} />
+        IconComponent = ChessBishop
+        break
       case "q":
-        return <ChessQueen className={className} />
+        IconComponent = ChessQueen
+        break
       case "k":
-        return <ChessKing className={className} />
+        IconComponent = ChessKing
+        break
       default:
         return null
     }
+
+    const dropShadowValue = isWhite
+      ? `drop-shadow(0 0 6px #000)` // dla białych figur – mocniejszy czarny cień
+      : `drop-shadow(0 0 6px #fff)` // dla czarnych figur – mocniejszy biały cień
+
+    return <IconComponent className={clsx(baseClasses, iconColor)} style={{ filter: dropShadowValue }} />
   }
 
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
-      <div className="absolute inset-0 bg-black/20 blur-2xl rounded-3xl" />
-      <div className="relative w-full h-full bg-zinc-600 rounded-xl p-4 shadow-2xl">
-        <div className="grid grid-cols-8 grid-rows-8 h-full w-full gap-[1px] bg-zinc-400 p-[1px- rounded-xl">
+      {/* Overlay z rozmyciem i obramowaniem – pointer-events-none nie blokuje eventów */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
+        <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
+      </div>
+      {/* Plansza z wyższym z-index */}
+      <div className={`relative z-10 w-full h-full ${isDarkMode ? "bg-stone-600" : "bg-gray-300"} rounded-xl p-4 shadow-2xl`}>
+        <div className={`grid grid-cols-8 grid-rows-8 h-full w-full ${isDarkMode ? "bg-stone-600" : "bg-gray-300"} rounded-xl`}>
           {initialBoard.flatMap((row, rowIndex) =>
             row.map((piece, colIndex) => {
               const isBlack = (rowIndex + colIndex) % 2 === 1
               return (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className={`${
-                    isBlack ? "bg-zinc-600" : "bg-zinc-300"
-                  } relative transition-all duration-300 hover:bg-blue-400/30 flex items-center justify-center`}
+                  style={{
+                    transition: "none",
+                    willChange: "background-color",
+                    contain: "paint",
+                  }}
+                  className={clsx(
+                    isBlack
+                      ? isDarkMode
+                        ? "bg-neutral-400 hover:bg-neutral-500"
+                        : "bg-gray-400 hover:bg-neutral-500"
+                      : isDarkMode
+                        ? "bg-stone-700 hover:bg-neutral-500"
+                        : "bg-zinc-200 hover:bg-neutral-500",
+                    "relative flex items-center justify-center",
+                  )}
                 >
                   {getPieceIcon(piece)}
                 </div>
@@ -70,4 +106,3 @@ export function ChessBoard() {
     </div>
   )
 }
-
