@@ -321,6 +321,9 @@ importers:
       '@types/react-dom':
         specifier: 18.3.1
         version: 18.3.1
+      '@types/tailwindcss':
+        specifier: ^3.1.0
+        version: 3.1.0(ts-node@10.9.2(@types/node@22.10.2)(typescript@5.7.2))
       '@workspace/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
@@ -6452,6 +6455,12 @@ snapshots:
   '@types/tailwindcss@3.1.0(ts-node@10.9.2(@types/node@20.17.10)(typescript@5.7.2))':
     dependencies:
       tailwindcss: 3.4.16(ts-node@10.9.2(@types/node@20.17.10)(typescript@5.7.2))
+    transitivePeerDependencies:
+      - ts-node
+
+  '@types/tailwindcss@3.1.0(ts-node@10.9.2(@types/node@22.10.2)(typescript@5.7.2))':
+    dependencies:
+      tailwindcss: 3.4.16(ts-node@10.9.2(@types/node@22.10.2)(typescript@5.7.2))
     transitivePeerDependencies:
       - ts-node
 
