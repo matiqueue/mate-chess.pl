@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/componen
 import { PuzzleIcon as PuzzlePiece, GraduationCap, Users, PlayCircle, Trophy, Timer, Zap, Bot } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useTheme } from "next-themes"
 
 // Warianty animacji
 const fadeInUp = {
@@ -23,18 +24,20 @@ const staggerContainer = {
 }
 
 export default function HomePage() {
+  const { theme } = useTheme()
+
   return (
     <div className="space-y-8 bg-sidebar">
       {/* Hero Section */}
       <motion.section
-        className="relative rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background"
+        className="relative rounded-lg overflow-hidden bg-gradient-to-br from-primary/30 via-background to-background"
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
         transition={{ duration: 0.6 }}
       >
-        <div className="absolute inset-0 mix-blend-overlay">
-          <Image src="/backgrounds/homeBgImage.png" alt="Chess board" fill className="object-cover opacity-30" />
+        <div className={`absolute inset-0 ${theme === "dark" ? "" : "mix-blend-screen"}`}>
+          <Image src="/backgrounds/homeBgImage.png" alt="Chess board" fill className={`object-cover ${theme === "dark" ? "opacity-30" : "opacity-10"}`} />
         </div>
         <div className="relative p-8 md:p-12 lg:p-16">
           <motion.h1
