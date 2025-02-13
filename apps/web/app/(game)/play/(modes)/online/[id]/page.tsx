@@ -24,7 +24,7 @@ function ChessPageContent() {
       <div
         className={`absolute inset-0 bg-cover bg-center ${
           theme === "dark"
-            ? "bg-[url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2662&q=80')]"
+            ? "bg-[url('/backgrounds/darkThemeBg.png')]"
             : "bg-[url('https://images.unsplash.com/photo-1601297183305-6df142704ea2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2674&q=80')]"
         }`}
       />
