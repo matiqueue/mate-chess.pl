@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes"
 import { usePathname } from "next/navigation"
 import { Analytics } from "@vercel/analytics/react"
 import { AudioProvider } from "@/components/home/audio-provider";
+import "@workspace/ui/styles/globals.css"
 
 type ProvidersProps = {
   children: ReactNode
