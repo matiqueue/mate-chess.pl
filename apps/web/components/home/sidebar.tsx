@@ -1,11 +1,9 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { io, Socket } from "socket.io-client"
 import { useUser } from "@clerk/nextjs"
-import { useParams, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings, Send } from "lucide-react"
+import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings } from "lucide-react"
 
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { Separator } from "@workspace/ui/components/separator"
@@ -22,8 +20,7 @@ import {
 
 import { Button } from "@workspace/ui/components/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
-import { Input } from "@workspace/ui/components/input"
-import { Card, CardContent } from "@workspace/ui/components/card"
+
 import { SignedIn, SignedOut, SignInButton, useClerk } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 
@@ -50,150 +47,127 @@ function NavItem({ href, icon: Icon, children, badge }: NavItemProps) {
  * Komponent chatu, który przenosimy do sidebaru minimalnego.
  * Został lekko zmodyfikowany, żeby pasował do szerszych stylów sidebara.
  */
-function ChatSidebar() {
-  const { isSignedIn, user } = useUser()
-  const params = useParams()
-  // Przyjmujemy, że id pokoju jest przekazywane w ścieżce, np. /play/online/[id]
-  const roomId = params.id as string
+// function ChatSidebar() {
+//   const { isSignedIn, user } = useUser()
+//   const params = useParams()
+//   // Przyjmujemy, że id pokoju jest przekazywane w ścieżce, np. /play/online/[id]
+//   const roomId = params.id as string
 
-  const [messages, setMessages] = useState<{ sender: string; text: string; imageUrl: string }[]>([])
-  const [input, setInput] = useState("")
-  const [cooldown, setCooldown] = useState<number>(0)
-  const socketRef = useRef<Socket | null>(null)
-  const lastSentRef = useRef<number>(0)
+//   const [messages, setMessages] = useState<{ sender: string; text: string; imageUrl: string }[]>([])
+//   const [input, setInput] = useState("")
+//   const [cooldown, setCooldown] = useState<number>(0)
+//   const socketRef = useRef<Socket | null>(null)
+//   const lastSentRef = useRef<number>(0)
 
-  useEffect(() => {
-    if (!isSignedIn || !user) return
+//   useEffect(() => {
+//     if (!isSignedIn || !user) return
 
-    if (!socketRef.current) {
-      socketRef.current = io("http://localhost:4000")
-      socketRef.current.emit("joinRoom", roomId)
-    }
+//     if (!socketRef.current) {
+//       socketRef.current = io("http://localhost:4000")
+//       socketRef.current.emit("joinRoom", roomId)
+//     }
 
-    socketRef.current.on("chatHistory", (data: typeof messages) => {
-      setMessages(data)
-    })
+//     socketRef.current.on("chatHistory", (data: typeof messages) => {
+//       setMessages(data)
+//     })
 
-    socketRef.current.on("receiveMessage", (message: (typeof messages)[0]) => {
-      setMessages((prev) => [...prev, message])
-    })
+//     socketRef.current.on("receiveMessage", (message: (typeof messages)[0]) => {
+//       setMessages((prev) => [...prev, message])
+//     })
 
-    return () => {
-      socketRef.current?.disconnect()
-    }
-  }, [isSignedIn, user, roomId])
+//     return () => {
+//       socketRef.current?.disconnect()
+//     }
+//   }, [isSignedIn, user, roomId])
 
-  // Licznik cooldownu
-  useEffect(() => {
-    if (cooldown > 0) {
-      const timer = setTimeout(() => {
-        setCooldown((prev) => Math.max(prev - 1, 0))
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [cooldown])
+//   // Licznik cooldownu
+//   useEffect(() => {
+//     if (cooldown > 0) {
+//       const timer = setTimeout(() => {
+//         setCooldown((prev) => Math.max(prev - 1, 0))
+//       }, 1000)
+//       return () => clearTimeout(timer)
+//     }
+//   }, [cooldown])
 
-  const sendMessage = () => {
-    if (input.trim() === "") return
+//   const sendMessage = () => {
+//     if (input.trim() === "") return
 
-    const now = Date.now()
-    if (now - lastSentRef.current < 2000) {
-      setCooldown(Math.ceil((2000 - (now - lastSentRef.current)) / 1000))
-      return
-    }
-    lastSentRef.current = now
+//     const now = Date.now()
+//     if (now - lastSentRef.current < 2000) {
+//       setCooldown(Math.ceil((2000 - (now - lastSentRef.current)) / 1000))
+//       return
+//     }
+//     lastSentRef.current = now
 
-    const message = {
-      sender: user?.firstName || "Player",
-      text: input,
-      imageUrl: user?.imageUrl || "https://via.placeholder.com/40",
-    }
+//     const message = {
+//       sender: user?.firstName || "Player",
+//       text: input,
+//       imageUrl: user?.imageUrl || "https://via.placeholder.com/40",
+//     }
 
-    socketRef.current?.emit("sendMessage", { roomId, message })
-    setInput("")
-  }
+//     socketRef.current?.emit("sendMessage", { roomId, message })
+//     setInput("")
+//   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      sendMessage()
-    }
-  }
+//   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+//     if (e.key === "Enter") {
+//       sendMessage()
+//     }
+//   }
 
-  return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4 text-center">Game Chat</h1>
-      <Card className="p-2">
-        <ScrollArea className="max-h-[40vh] space-y-3 overflow-y-auto">
-          {messages.map((msg, index) => (
-            <CardContent key={index} className="flex gap-2 items-center p-2 border rounded-lg shadow-md">
-              <Avatar>
-                <AvatarImage src={msg.imageUrl || "https://via.placeholder.com/40"} />
-                <AvatarFallback>{msg.sender[0]}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-semibold">{msg.sender}</p>
-                <p className="text-sm text-gray-600">{msg.text}</p>
-              </div>
-            </CardContent>
-          ))}
-        </ScrollArea>
-        <div className="flex flex-col gap-2 mt-4">
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="flex-1 p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-            <Button onClick={sendMessage} className="px-3 py-2 bg-white text-black rounded-md shadow-md border">
-              <Send size={20} color="black" />
-            </Button>
-          </div>
-          {cooldown > 0 && (
-            <p className="text-xs text-red-600">
-              Next message can be sent in {cooldown} second{cooldown > 1 ? "s" : ""}
-            </p>
-          )}
-        </div>
-      </Card>
-    </div>
-  )
-}
+//   return (
+//     <div className="p-4">
+//       <h1 className="text-xl font-bold mb-4 text-center">Game Chat</h1>
+//       <Card className="p-2">
+//         <ScrollArea className="max-h-[40vh] space-y-3 overflow-y-auto">
+//           {messages.map((msg, index) => (
+//             <CardContent key={index} className="flex gap-2 items-center p-2 border rounded-lg shadow-md">
+//               <Avatar>
+//                 <AvatarImage src={msg.imageUrl || "https://via.placeholder.com/40"} />
+//                 <AvatarFallback>{msg.sender[0]}</AvatarFallback>
+//               </Avatar>
+//               <div>
+//                 <p className="font-semibold">{msg.sender}</p>
+//                 <p className="text-sm text-gray-600">{msg.text}</p>
+//               </div>
+//             </CardContent>
+//           ))}
+//         </ScrollArea>
+//         <div className="flex flex-col gap-2 mt-4">
+//           <div className="flex gap-2">
+//             <Input
+//               value={input}
+//               onChange={(e) => setInput(e.target.value)}
+//               onKeyDown={handleKeyDown}
+//               placeholder="Type your message..."
+//               className="flex-1 p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+//             />
+//             <Button onClick={sendMessage} className="px-3 py-2 bg-white text-black rounded-md shadow-md border">
+//               <Send size={20} color="black" />
+//             </Button>
+//           </div>
+//           {cooldown > 0 && (
+//             <p className="text-xs text-red-600">
+//               Next message can be sent in {cooldown} second{cooldown > 1 ? "s" : ""}
+//             </p>
+//           )}
+//         </div>
+//       </Card>
+//     </div>
+//   )
+// }
 
 export function Sidebar() {
+  const router = useRouter()
   const pathname = usePathname()
   const { user } = useUser()
   const clerk = useClerk()
 
   // Jeśli dokładnie "/play/online" lub "/play/link" – nie renderujemy sidebaru
-  if (pathname === "/play/online" || pathname === "/play/link") {
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
     return null
   }
-
-  // Jeśli jesteśmy na podstronach "/play/online/*" lub "/play/link/*" – renderujemy minimalny sidebar z chatem
-  if (pathname.startsWith("/play/online/") || pathname.startsWith("/play/link/")) {
-    return (
-      <ShadcnSidebar>
-        <SidebarHeader className="p-6">
-          <Link href="/home">
-            <div className="flex items-center gap-2">
-              <PuzzlePiece className="h-6 w-6" />
-              <h1 className="text-xl font-bold">Mate Chess</h1>
-            </div>
-          </Link>
-        </SidebarHeader>
-        <SidebarContent>
-          <ChatSidebar />
-        </SidebarContent>
-      </ShadcnSidebar>
-    )
-  }
-
-  // W pozostałych przypadkach (np. na "/play") renderujemy pełny sidebar
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const router = useRouter()
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
