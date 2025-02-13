@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-1 flex flex-col">
           <MobileHeader className="md:hidden" />
           <Navbar className="hidden md:flex" />
-          <main className="flex flex-col flex-grow items-center justify-center">{children}</main>
+          <main className="flex flex-col flex-grow justify-center">{children}</main>
         </div>
       </div>
     </SidebarProvider>

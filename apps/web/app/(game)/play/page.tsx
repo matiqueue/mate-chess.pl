@@ -62,7 +62,7 @@ export default function GameModeSelector() {
         {/* Background Image: widoczne tylko w trybie ciemnym */}
         {theme === "dark" && (
           <motion.div
-            className="absolute inset-0 m-[4%] rounded-[70%_10%_90%_15%_/25%_60%_35%_50%]"
+            className="absolute inset-0 sm:m-[5%] rounded-[70%_10%_90%_15%_/25%_60%_35%_50%]"
             style={{
               backgroundImage: "url('/backgrounds/playBgImage.png')",
               backgroundSize: "cover",
