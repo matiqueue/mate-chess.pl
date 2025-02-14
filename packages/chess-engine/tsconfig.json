@@ -3,7 +3,9 @@
   "compilerOptions": {
     "paths": {
       "@modules/*": ["./src/*"],
-      "@workspace/chess-engine/": ["./"]
+      "@workspace/chess-engine/": ["./"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/shared/types/*"]
     },
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
