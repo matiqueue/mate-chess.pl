@@ -17,7 +17,7 @@ abstract class Figure {
     this._board = board
   }
 
-  private isPositionExisting(target: Position): boolean {
+  protected isPositionExisting(target: Position): boolean {
     return !!this._board.getPositionByNotation(target.notation)
   }
   abstract isPositionValid(target: Position): boolean
