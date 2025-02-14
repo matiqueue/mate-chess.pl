@@ -64,62 +64,47 @@ class Pawn extends Figure {
     const rightFigure = rightPosition?.figure
 
     //standard fwd move
-    if (target.x === this.position.x && !target.figure && Math.abs(target.x - this.position.x) === 1) {
+    if (target.x === this.position.x && !target.figure && Math.abs(target.y - this.position.y) === 1) {
       return true
     }
     //standard diagonal attack
     if (Math.abs(target.x - this.position.x) === 1 && Math.abs(target.y - this.position.y) === 1 && target.figure?.color !== this.color) {
       return true
     }
-    //2 fields move fwd
-    if (target.x === this.position.x && !target.figure && Math.abs(target.x - this.position.x) === 2) {
+    // 2 fields move forward
+    if (target.x === this.position.x && !target.figure && Math.abs(target.y - this.position.y) === 2) {
       switch (this.color) {
         case color.White:
-          //first pawn move fwd
           if (
             this._isFirstMove &&
-            target.x === this.position.x &&
             target.y === this.position.y - 2 &&
             !target.figure &&
-            !this._board.getPositionByCords(target.x, this.position.y - 1)?.figure
+            !this._board.getPositionByCords(target.x, this.position.y - 1)?.figure // Check if path is blocked
           ) {
             return true
-          }
-          //en passant below
-          if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
-            if (target.x === this.position.x - 1 && target.y === this.position.y - 1) {
-              return true
-            }
-          } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
-            if (target.x === this.position.x + 1 && target.y === this.position.y - 1) {
-              return true
-            }
           }
           break
         case color.Black:
           if (
             this._isFirstMove &&
-            target.x === this.position.x &&
             target.y === this.position.y + 2 &&
             !target.figure &&
-            !this._board.getPositionByCords(target.x, this.position.y + 1)?.figure
+            !this._board.getPositionByCords(target.x, this.position.y + 1)?.figure // Check if path is blocked
           ) {
             return true
-          }
-          //en passant below
-          if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
-            if (target.x === this.position.x - 1 && target.y === this.position.y + 1) {
-              return true
-            }
-          } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
-            if (target.x === this.position.x + 1 && target.y === this.position.y + 1) {
-              return true
-            }
           }
           break
       }
     }
     return false
+  }
+
+  get isFirstMove(): boolean {
+    return this._isFirstMove
+  }
+
+  set isFirstMove(value: boolean) {
+    this._isFirstMove = value
   }
 }
 export default Pawn

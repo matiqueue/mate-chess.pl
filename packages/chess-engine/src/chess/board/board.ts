@@ -89,20 +89,34 @@ class Board {
       return false
     }
 
-    const figure = this.getFigureAtPosition(move.from)
+    const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
       console.error("Invalid move: No figure at the starting position", move.from)
       return false
     }
-    if (!figure.isMoveValid(move.to)) {
+
+    if (!figure.isMoveValid(toPos)) {
+      console.error("Invalid move: Move is not valid for this figure", { from: move.from, to: move.to })
       return false
     }
 
-    fromPos.figure = null
-    toPos.figure = figure
+    // If there is a piece at the destination, remove it
+    if (toPos.figure) {
+      console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
+      toPos.figure = null
+    }
+
+    // Update figure's position
     figure.position = toPos
 
+    // Update board references
+    fromPos.figure = null
+    toPos.figure = figure
+
     if (figure instanceof Pawn) {
+      figure.isFirstMove = false
+    }
+    if (figure instanceof Pawn && Math.abs(move.from.y - move.to.y) === 2) {
       figure.isEnPassantPossible = true
     }
     if (figure instanceof King) {
@@ -166,6 +180,89 @@ class Board {
 
   get allFigures(): Figure[] {
     return this._allFigures
+  }
+
+  public printBoard() {
+    console.debug("\nPrinting chessboard with notations: \n")
+
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          continue
+        }
+        const notation = letter + (8 - y)
+        const position = this.positions.get(notation)
+        row += position ? `[${position.notation}] ` : `[ undfd ] `
+      }
+      console.debug(row.trim())
+    }
+  }
+  // Wyświetlenie szachownicy z figurami DEBUG
+  public printFigures() {
+    console.debug("\n \nPrinting chessboard by figures: \n")
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const figure = this.positions.get(letter + (8 - y))?.figure?.type
+        if (figure === undefined) {
+          row += `[-] `
+          continue
+        }
+        if (figure === "knight") {
+          row += "[" + figure?.charAt(1) + "] " //since King and Knight have the same first letter, in english chess notation the King is K and a Knight is N
+          continue
+        }
+        row += "[" + figure?.charAt(0) + "] "
+      }
+      console.debug(row.trim())
+    }
+  }
+  public printIds() {
+    console.debug("\n \nPrinting chessboard by ids: \n")
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const id = this.positions.get(letter + (8 - y))?.id
+        row += `[${id !== undefined ? id : " undfd "}] `
+      }
+      console.debug(row.trim())
+    }
+  }
+  public printCords() {
+    console.debug("\n \nPrinting chessboard by cords: \n")
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const currentPos = this.positions.get(letter + (8 - y))
+        if (currentPos === undefined) {
+          console.log("undefined!!!")
+          continue
+        }
+        const cordsY = currentPos.y
+        const cordsX = currentPos.x
+        row += `[${cordsX}, ${cordsY}] `
+        // row += `[${id !== undefined ? id : " undfd "}] `
+      }
+      console.debug(row.trim())
+    }
   }
 }
 export default Board

@@ -12,11 +12,22 @@ class chessGame {
     this._board.setupBoard()
     this._currentPlayer = color.White
   }
-  protected start(): void {
+  start(): void {
     this.process()
   }
   protected process() {
     this.setupFigures()
+    // this._board.printFigures()
+    // this._board.printBoard()
+    // this._board.printCords()
+    // this._board.printIds()
+    //
+    // const move: Move = {
+    //   from: this._board.getPositionByNotation("e2")!,
+    //   to: this._board.getPositionByNotation("e3")!,
+    // }
+    // this._board.moveFigure(move)
+    // this._board.printFigures()
   }
   public makeMove(move: Move): boolean {
     if (!this.isGameOn) return false
