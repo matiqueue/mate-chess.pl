@@ -16,8 +16,8 @@ describe("Board", () => {
     const whiteKingPosition = board.getPositionByNotation("e1")!
     const blackKingPosition = board.getPositionByNotation("e8")!
 
-    whiteKing = new King(figureType.king, colorType.White, whiteKingPosition, board)
-    blackKing = new King(figureType.king, colorType.Black, blackKingPosition, board)
+    whiteKing = new King(colorType.White, whiteKingPosition, board)
+    blackKing = new King(colorType.Black, blackKingPosition, board)
 
     board.addFigureAtPosition(whiteKingPosition, whiteKing)
     board.addFigureAtPosition(blackKingPosition, blackKing)
@@ -29,7 +29,7 @@ describe("Board", () => {
 
   test("Figures can be added to the board", () => {
     const testPosition = board.getPositionByNotation("d4")!
-    const testFigure = new King(figureType.king, colorType.White, testPosition, board)
+    const testFigure = new King(colorType.White, testPosition, board)
     expect(board.addFigureAtPosition(testPosition, testFigure)).toBe(true)
   })
 
@@ -51,7 +51,7 @@ describe("Board", () => {
 
   test("Castling: short castle is valid", () => {
     const whiteRookPos = board.getPositionByNotation("h1")!
-    const whiteRook = new Rook(figureType.rook, colorType.White, whiteRookPos, board)
+    const whiteRook = new Rook(colorType.White, whiteRookPos, board)
     board.addFigureAtPosition(whiteRookPos, whiteRook)
 
     const move: Move = {
@@ -64,7 +64,7 @@ describe("Board", () => {
 
   test("Castling: long castle is valid", () => {
     const whiteRookPos = board.getPositionByNotation("a1")!
-    const whiteRook = new Rook(figureType.rook, colorType.White, whiteRookPos, board)
+    const whiteRook = new Rook(colorType.White, whiteRookPos, board)
     board.addFigureAtPosition(whiteRookPos, whiteRook)
 
     const move: Move = {
@@ -88,12 +88,12 @@ describe("Board", () => {
 
   test("Castling: piece between king and rook", () => {
     const whiteRookPos = board.getPositionByNotation("h1")!
-    const whiteRook = new Rook(figureType.rook, colorType.White, whiteRookPos, board)
+    const whiteRook = new Rook(colorType.White, whiteRookPos, board)
     board.addFigureAtPosition(whiteRookPos, whiteRook)
 
     // Add a piece between the king and the rook
     const blockerPos = board.getPositionByNotation("f1")!
-    board.addFigureAtPosition(blockerPos, new King(figureType.king, colorType.White, blockerPos, board))
+    board.addFigureAtPosition(blockerPos, new King(colorType.White, blockerPos, board))
 
     const move: Move = {
       from: board.getPositionByNotation("e1")!,

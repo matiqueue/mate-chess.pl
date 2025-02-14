@@ -4,8 +4,8 @@ import color from "@chesstypes/colorType"
 import { Board, Position } from "@utils/boardUtils"
 
 class Queen extends Figure {
-  constructor(type: figureType, color: color, position: Position, board: Board) {
-    super(type, color, position, board)
+  constructor(color: color, position: Position, board: Board) {
+    super(figureType.queen, color, position, board)
   }
 
   override isPositionValid(target: Position): boolean {

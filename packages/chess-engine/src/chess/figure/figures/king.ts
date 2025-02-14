@@ -6,8 +6,8 @@ import { Board, Position } from "@utils/boardUtils"
 class King extends Figure {
   private _isCheck: boolean = false
   private _hasMoved: boolean
-  constructor(type: figureType, color: color, position: Position, board: Board) {
-    super(type, color, position, board)
+  constructor(color: color, position: Position, board: Board) {
+    super(figureType.king, color, position, board)
     this._hasMoved = this.position === this._board.getPositionByNotation("e1") || this.position === this._board.getPositionByNotation("e8")
   }
 

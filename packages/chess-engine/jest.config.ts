@@ -9,5 +9,6 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
     "^@chesstypes/(.*)$": "<rootDir>/src/shared/types/$1",
+    "^@modules/(.*)$": "<rootDir>/src/$1",
   },
 }
