@@ -1,4 +1,9 @@
-interface figureType {
-  type: "pawn" | "king" | "knight" | "queen" | "bishop" | "rook"
+enum figureType {
+  knight = "knight",
+  queen = "queen",
+  king = "king",
+  bishop = "bishop",
+  pawn = "pawn",
+  rook = "rook",
 }
 export default figureType
