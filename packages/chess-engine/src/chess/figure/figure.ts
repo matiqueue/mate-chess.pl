@@ -7,14 +7,13 @@ abstract class Figure {
   private _color: color
 
   private _position: Position
-  private _id: number
-  private _board: Board
+  private _id: number = 0
+  protected _board: Board
 
-  constructor(type: figureType, color: color, position: Position, id: number, board: Board) {
+  constructor(type: figureType, color: color, position: Position, board: Board) {
     this._type = type
     this._color = color
     this._position = position
-    this._id = id
     this._board = board
   }
 
