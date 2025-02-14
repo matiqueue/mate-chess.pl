@@ -3,7 +3,7 @@ import figureType from "@chesstypes/figureType"
 import color from "@chesstypes/colorType"
 import { Board, Position } from "@utils/boardUtils"
 
-class Queen extends Figure {
+class Bishop extends Figure {
   constructor(type: figureType, color: color, position: Position, board: Board) {
     super(type, color, position, board)
   }
@@ -51,4 +51,4 @@ class Queen extends Figure {
     return true
   }
 }
-export default Queen
+export default Bishop

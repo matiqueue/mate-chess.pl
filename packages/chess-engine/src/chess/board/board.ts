@@ -1,15 +1,14 @@
 import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { Position } from "@utils/boardUtils"
-import { Move } from "@utils/typeUtils"
-import figureType from "@chesstypes/figureType"
 import colorType from "@chesstypes/colorType"
+import Move from "@chesstypes/moveType"
 
 class Board {
   private positions: Map<string, Position>
   private letters: string = "abcdefgh"
-  private whiteFigures: Figure[] = []
-  private blackFigures: Figure[] = []
-  private allFigures: Figure[] = []
+  private _whiteFigures: Figure[] = []
+  private _blackFigures: Figure[] = []
+  private _allFigures: Figure[] = []
   private positionsById: Position[] = []
 
   constructor() {
@@ -66,11 +65,11 @@ class Board {
     if (existingPos.figure) return false
 
     existingPos.figure = figure
-    figure.id = this.allFigures.length
+    figure.id = this._allFigures.length
     if (figure.color === colorType.White) {
-      this.whiteFigures.push(figure)
+      this._whiteFigures.push(figure)
     } else if (figure.color === colorType.Black) {
-      this.blackFigures.push(figure)
+      this._blackFigures.push(figure)
     }
     this.updateArray()
     console.log(`Figure of id ${figure.id}, type: ${figure.type} and color: ${figure.color} was added at position: ${existingPos.notation}`)
@@ -105,7 +104,19 @@ class Board {
     return true
   }
   private updateArray(): void {
-    this.allFigures = this.whiteFigures.concat(this.blackFigures)
+    this._allFigures = this._whiteFigures.concat(this._blackFigures)
+  }
+
+  get whiteFigures(): Figure[] {
+    return this._whiteFigures
+  }
+
+  get blackFigures(): Figure[] {
+    return this._blackFigures
+  }
+
+  get allFigures(): Figure[] {
+    return this._allFigures
   }
 }
 export default Board
