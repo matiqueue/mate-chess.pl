@@ -5,15 +5,16 @@ class ChessGameExtraLayer extends ChessGame {
     super()
   }
 
-  protected override start() {
+  public override start() {
     super.start()
   }
 
-  protected override process() {
+  public override process() {
     super.process()
   }
 
-  protected override setupFigures() {
+  public override setupFigures() {
     super.setupFigures()
   }
 }
+export default ChessGameExtraLayer

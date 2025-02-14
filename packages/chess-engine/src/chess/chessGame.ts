@@ -2,16 +2,19 @@ import { Board } from "@utils/boardUtils"
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import color from "@chesstypes/colorType"
 import Move from "@chesstypes/moveType"
-import colorType from "@chesstypes/colorType"
+import MoveRecorder from "@modules/chess/history/moveRecorder"
+import moveRecorder from "@modules/chess/history/moveRecorder"
 
 class chessGame {
-  public _board: Board
+  private _board: Board
   private _currentPlayer: color.White | color.Black
+  private _moveRecorder: MoveRecorder
   public isGameOn: boolean = false
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
     this._currentPlayer = color.White
+    this._moveRecorder = new MoveRecorder(this._board)
   }
   start(): void {
     this.process()
@@ -40,8 +43,13 @@ class chessGame {
   public makeMove(move: Move): boolean {
     if (!this.isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
+      const figure = this._board.getFigureAtPosition(move.from)
+      const targetFigure = this._board.getFigureAtPosition(move.to)
       if (this._board?.moveFigure(move)) {
         this.switchCurrentPlayer()
+        if (figure) {
+          this._moveRecorder.recordMove(figure.type, move, targetFigure?.type)
+        }
         return true
       }
     }
@@ -60,6 +68,10 @@ class chessGame {
 
   set currentPlayer(value: color.White | color.Black) {
     this._currentPlayer = value
+  }
+
+  get board(): Board {
+    return this._board
   }
 
   protected setupFigures(): void {
