@@ -9,6 +9,7 @@ class Knight extends Figure {
   }
 
   override isPositionValid(target: Position): boolean {
+    if (!this.isPositionExisting(target)) return false
     if (target.figure && target.figure.color === this.color) {
       return false
     }
