@@ -6,8 +6,8 @@ import Move from "@chesstypes/moveType"
 class Board {
   private positions: Map<string, Position>
   private letters: string = "abcdefgh"
-  private _whiteFigures: Figure[] = []
-  private _blackFigures: Figure[] = []
+  _whiteFigures: Figure[] = []
+  _blackFigures: Figure[] = []
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
 
@@ -199,6 +199,136 @@ class Board {
       console.debug(row.trim())
     }
     return validMoves
+  }
+
+  public getWhiteKing(): Figure | null {
+    for (const figure of this._whiteFigures) {
+      if (figure instanceof King) {
+        return figure
+      }
+    }
+    return null
+  }
+  public getBlackKing(): Figure | null {
+    for (const figure of this.blackFigures) {
+      if (figure instanceof King) {
+        return figure
+      }
+    }
+    return null
+  }
+
+  public isKingInCheck(color: colorType.White | colorType.Black): boolean {
+    const king = color === colorType.White ? this.getWhiteKing() : this.getBlackKing()
+    if (!king) return false // King should always exist
+
+    const enemyFigures = color === colorType.White ? this._blackFigures : this._whiteFigures
+
+    for (const figure of enemyFigures) {
+      if (figure.isMoveValid(king.position)) {
+        return true // Enemy can attack the king
+      }
+    }
+    return false
+  }
+  public canKingEscape(color: colorType.White | colorType.Black): boolean {
+    const king = color === colorType.White ? this.getWhiteKing() : this.getBlackKing()
+    if (!king) return false
+
+    const possibleMoves = [
+      { dx: -1, dy: -1 },
+      { dx: 0, dy: -1 },
+      { dx: 1, dy: -1 },
+      { dx: -1, dy: 0 },
+      { dx: 1, dy: 0 },
+      { dx: -1, dy: 1 },
+      { dx: 0, dy: 1 },
+      { dx: 1, dy: 1 },
+    ]
+
+    for (const move of possibleMoves) {
+      const target = this.getPositionByCords(king.position.x + move.dx, king.position.y + move.dy)
+      if (target && (!target.figure || target.figure.color !== king.color)) {
+        const originalPosition = king.position
+        king.position = target // Simulate move
+        const stillInCheck = this.isKingInCheck(color)
+        king.position = originalPosition // Revert move
+
+        if (!stillInCheck) {
+          return true // King has at least one escape
+        }
+      }
+    }
+    return false
+  }
+  public canBlockOrCaptureAttacker(color: colorType.White | colorType.Black): boolean {
+    const king = color === colorType.White ? this.getWhiteKing() : this.getBlackKing()
+    if (!king) return false
+
+    const enemyFigures = color === colorType.White ? this._blackFigures : this._whiteFigures
+    const allies = color === colorType.White ? this._whiteFigures : this._blackFigures
+    let attackers: Figure[] = []
+
+    // Find all attacking pieces
+    for (const figure of enemyFigures) {
+      if (figure.isMoveValid(king.position)) {
+        attackers.push(figure)
+      }
+    }
+
+    if (attackers.length > 1) return false // Double check - only the king can move
+
+    const attacker = attackers[0] // Only one attacker (not double check)
+
+    // 1️⃣ **Check if an ally can capture the attacker**
+    if (!attacker) return false
+    for (const ally of allies) {
+      if (ally.isMoveValid(attacker.position)) {
+        return true
+      }
+    }
+
+    // 2️⃣ **Check if an ally can block the attack**
+    if (attacker instanceof Knight || attacker instanceof Pawn) return false // Cannot be blocked
+
+    const deltaX = Math.sign(attacker.position.x - king.position.x)
+    const deltaY = Math.sign(attacker.position.y - king.position.y)
+    let currentX = king.position.x + deltaX
+    let currentY = king.position.y + deltaY
+
+    while (currentX !== attacker.position.x || currentY !== attacker.position.y) {
+      const blockPosition = this.getPositionByCords(currentX, currentY)
+      if (!blockPosition) return false
+
+      for (const ally of allies) {
+        if (ally.isMoveValid(blockPosition)) {
+          return true // An ally can move to block
+        }
+      }
+
+      currentX += deltaX
+      currentY += deltaY
+    }
+
+    return false
+  }
+  public isCheckmate(color: colorType.White | colorType.Black): boolean {
+    if (!this.isKingInCheck(color)) return false // King must be in check
+    if (this.canKingEscape(color)) return false // King has an escape
+    if (this.canBlockOrCaptureAttacker(color)) return false // Can block or capture attacker
+
+    return true // No way to escape = Checkmate
+  }
+  public isStalemate(color: colorType.White | colorType.Black): boolean {
+    if (this.isKingInCheck(color)) return false // Not checkmate, but no legal moves
+    const pieces = color === colorType.White ? this._whiteFigures : this._blackFigures
+
+    for (const piece of pieces) {
+      const possibleMoves = this.getValidMovesForPosition(piece.position)
+      if (possibleMoves.length > 0) return false // At least one legal move exists
+    }
+
+    return true // No legal moves = Stalemate
   }
 
   private updateArray(): void {

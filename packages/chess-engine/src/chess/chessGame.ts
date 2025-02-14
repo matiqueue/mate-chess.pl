@@ -2,6 +2,7 @@ import { Board } from "@utils/boardUtils"
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import color from "@chesstypes/colorType"
 import Move from "@chesstypes/moveType"
+import colorType from "@chesstypes/colorType"
 
 class chessGame {
   public _board: Board
@@ -17,6 +18,13 @@ class chessGame {
   }
   protected process() {
     this.setupFigures()
+    if (this._board.isCheckmate(this.currentPlayer)) {
+      console.log(`${this.currentPlayer} is checkmated!`)
+      this.isGameOn = false
+    } else if (this._board.isStalemate(this.currentPlayer)) {
+      console.log(`Stalemate! The game is a draw.`)
+      this.isGameOn = false
+    }
     // this._board.printFigures()
     // this._board.printBoard()
     // this._board.printCords()
