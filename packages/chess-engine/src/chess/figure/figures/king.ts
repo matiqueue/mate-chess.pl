@@ -1,4 +1,4 @@
-import { Figure } from "@utils/figureUtils"
+import { Figure, Pawn } from "@utils/figureUtils"
 import figureType from "@chesstypes/figureType"
 import color from "@chesstypes/colorType"
 import { Board, Position } from "@utils/boardUtils"
@@ -31,6 +31,9 @@ class King extends Figure {
     const opponentFigures = this.color === color.White ? this._board.blackFigures : this._board.whiteFigures
 
     for (const opponentFigure of opponentFigures) {
+      if (opponentFigure instanceof Pawn && opponentFigure.isPositionValid(target)) {
+        return false
+      }
       if (opponentFigure.isMoveValid(target)) {
         return false
       }

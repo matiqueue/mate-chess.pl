@@ -1,4 +1,4 @@
-import { King } from "@utils/figureUtils"
+import { King, Pawn } from "@utils/figureUtils"
 import { Position, Board } from "@utils/boardUtils"
 import colorType from "@chesstypes/colorType"
 import figureType from "@chesstypes/figureType"
@@ -44,7 +44,11 @@ describe("King", () => {
     const opponentRookPos = board.getPositionByNotation("e8")!
     board.addFigureAtPosition(opponentRookPos, new King(colorType.Black, opponentRookPos, board))
 
+    const opponentPawn = board.getPositionByNotation("d3")!
+    expect(board.addFigureAtPosition(opponentPawn, new Pawn(colorType.Black, opponentPawn, board))).toBe(true)
     const moveTarget = board.getPositionByNotation("e2")!
+
+    expect(board.getFigureAtPosition(opponentPawn)?.isPositionValid(moveTarget)).toBe(true)
     expect(king.isMoveValid(moveTarget)).toBe(false)
   })
 })

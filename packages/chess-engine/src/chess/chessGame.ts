@@ -42,6 +42,7 @@ class chessGame {
     if (move.from.figure?.color === this.currentPlayer) {
       if (this._board?.moveFigure(move)) {
         this.switchCurrentPlayer()
+        return true
       }
     }
     return false

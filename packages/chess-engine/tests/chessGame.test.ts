@@ -1,8 +1,9 @@
 import ChessGame from "@modules/chess/chessGame"
-import { Board, Position } from "@utils/boardUtils"
-import { Pawn, Rook, Knight, Bishop, Queen, King } from "@utils/figureUtils"
+import { Board } from "@utils/boardUtils"
+import { King } from "@utils/figureUtils"
 import color from "@chesstypes/colorType"
 import Move from "@chesstypes/moveType"
+import figureType from "@chesstypes/figureType"
 
 describe("ChessGame", () => {
   let game: ChessGame
@@ -20,7 +21,13 @@ describe("ChessGame", () => {
   test("Board initializes with 64 positions and all pieces", () => {
     expect(board.setupBoard()).toBe(true)
     expect(board["positions"].size).toBe(64)
+    let pos = board.getPositionByNotation("e1")
+    if (!pos) return
+    expect(board.addFigureAtPosition(pos, new King(color.White, pos, board))).toBe(true)
     expect(board.getFigureAtPosition(board.getPositionByNotation("e1")!)).toBeInstanceOf(King)
+    let pos2 = board.getPositionByNotation("e8")
+    if (!pos2) return
+    expect(board.addFigureAtPosition(pos2, new King(color.Black, pos2, board))).toBe(true)
     expect(board.getFigureAtPosition(board.getPositionByNotation("e8")!)).toBeInstanceOf(King)
   })
 
@@ -33,7 +40,7 @@ describe("ChessGame", () => {
       from: board.getPositionByNotation("e2")!,
       to: board.getPositionByNotation("e3")!,
     }
-
+    expect(game._board.getFigureAtPosition(move.from)?.type).toBe(figureType.pawn)
     expect(game.makeMove(move)).toBe(true)
     expect(game.currentPlayer).toBe(color.Black)
   })
