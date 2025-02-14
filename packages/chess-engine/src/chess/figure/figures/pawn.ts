@@ -56,6 +56,13 @@ class Pawn extends Figure {
 
   override isMoveValid(target: Position): boolean {
     if (!this.isPositionValid(target)) return false
+
+    const leftPosition = this._board.getPositionByCords(this.position.x - 1, this.position.y)
+    const rightPosition = this._board.getPositionByCords(this.position.x + 1, this.position.y)
+
+    const leftFigure = leftPosition?.figure
+    const rightFigure = rightPosition?.figure
+
     //standard fwd move
     if (target.x === this.position.x && !target.figure && Math.abs(target.x - this.position.x) === 1) {
       return true
@@ -78,6 +85,16 @@ class Pawn extends Figure {
           ) {
             return true
           }
+          //en passant below
+          if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
+            if (target.x === this.position.x - 1 && target.y === this.position.y - 1) {
+              return true
+            }
+          } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
+            if (target.x === this.position.x + 1 && target.y === this.position.y - 1) {
+              return true
+            }
+          }
           break
         case color.Black:
           if (
@@ -88,6 +105,16 @@ class Pawn extends Figure {
             !this._board.getPositionByCords(target.x, this.position.y + 1)?.figure
           ) {
             return true
+          }
+          //en passant below
+          if (leftFigure instanceof Pawn && leftFigure.isEnPassantPossible && leftFigure.color !== this.color) {
+            if (target.x === this.position.x - 1 && target.y === this.position.y + 1) {
+              return true
+            }
+          } else if (rightFigure instanceof Pawn && rightFigure.isEnPassantPossible && rightFigure.color !== this.color) {
+            if (target.x === this.position.x + 1 && target.y === this.position.y + 1) {
+              return true
+            }
           }
           break
       }
