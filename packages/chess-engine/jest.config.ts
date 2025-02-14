@@ -7,5 +7,7 @@ module.exports = {
   },
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@chesstypes/(.*)$": "<rootDir>/src/shared/types/$1",
   },
 }
