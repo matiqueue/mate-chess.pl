@@ -10,33 +10,20 @@ class Queen extends Figure {
 
   override isPositionValid(target: Position): boolean {
     if (!this.isPositionExisting(target)) return false
+    if (target.x === this.position.x && target.y === this.position.y) return false // No self-move
+
     const deltaX = target.x - this.position.x
     const deltaY = target.y - this.position.y
 
-    const isDiagonal = Math.abs(deltaX) === Math.abs(deltaY)
-    const isStraight = deltaX === 0 || deltaY === 0
-
-    if (!isDiagonal && !isStraight) {
-      return false
-    }
-    return true
+    return Math.abs(deltaX) === Math.abs(deltaY) || deltaX === 0 || deltaY === 0 // Allow diagonal or straight
   }
 
   override isMoveValid(target: Position): boolean {
     if (!this.isPositionValid(target)) return false
-
-    if (target.figure?.color === this.color) return false
+    if (target.figure?.color === this.color) return false // Prevent landing on own piece
 
     const deltaX = target.x - this.position.x
     const deltaY = target.y - this.position.y
-
-    const isDiagonal = Math.abs(deltaX) === Math.abs(deltaY)
-    const isStraight = deltaX === 0 || deltaY === 0
-
-    if (!isDiagonal && !isStraight) {
-      return false
-    }
-
     const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
     const signY = deltaY === 0 ? 0 : deltaY > 0 ? 1 : -1
 
@@ -49,12 +36,8 @@ class Queen extends Figure {
 
     while (currentX !== this.position.x || currentY !== this.position.y) {
       const currentPosition = this._board.getPositionByCords(currentX, currentY)
-      if (!currentPosition) {
-        return false
-      }
-      if (currentPosition.figure) {
-        return false
-      }
+      if (!currentPosition) return false
+      if (currentPosition.figure) return false // Old collision-checking algorithm restored
       currentX -= signX
       currentY -= signY
     }
@@ -62,4 +45,5 @@ class Queen extends Figure {
     return true
   }
 }
+
 export default Queen

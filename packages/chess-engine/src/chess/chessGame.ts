@@ -4,7 +4,7 @@ import color from "@chesstypes/colorType"
 import Move from "@chesstypes/moveType"
 
 class chessGame {
-  private _board: Board
+  public _board: Board
   private _currentPlayer: color.White | color.Black
   public isGameOn: boolean = false
   constructor() {
