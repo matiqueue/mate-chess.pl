@@ -4,11 +4,11 @@ import color from "@chesstypes/colorType"
 import { Board, Position } from "@utils/boardUtils"
 
 class King extends Figure {
-  private isCheck: boolean = false
-  private canCastle: boolean
+  private _isCheck: boolean = false
+  private _hasMoved: boolean
   constructor(type: figureType, color: color, position: Position, board: Board) {
     super(type, color, position, board)
-    this.canCastle = this.position === this._board.getPositionByNotation("e1") || this.position === this._board.getPositionByNotation("e8")
+    this._hasMoved = this.position === this._board.getPositionByNotation("e1") || this.position === this._board.getPositionByNotation("e8")
   }
 
   override isPositionValid(target: Position): boolean {
@@ -18,22 +18,41 @@ class King extends Figure {
       return true
     }
     //roszada
-    if (this.canCastle) {
+    if (!this._hasMoved && Math.abs(target.x - this.position.x) === 2) {
+      return this._board.canCastle(this, target)
     }
     return false
   }
 
   override isMoveValid(target: Position): boolean {
     if (!this.isPositionValid(target)) return false
-    if (Math.abs(target.x - this.position.x) <= 1 && Math.abs(target.y - this.position.y) <= 1) {
-      for (let i = 0; i < this._board.allFigures.length; i++) {
-        if (this._board.allFigures[i]?.color !== this.color && this._board.allFigures[i]?.isMoveValid(target)) {
-          return false
-        }
+
+    // Sprawdzenie, czy król nie wchodzi na szachowane pole
+    const opponentFigures = this.color === color.White ? this._board.blackFigures : this._board.whiteFigures
+
+    for (const opponentFigure of opponentFigures) {
+      if (opponentFigure.isMoveValid(target)) {
+        return false
       }
-      return !(target.figure && target.figure.color === this.color)
     }
-    return false
+
+    return !(target.figure && target.figure.color === this.color)
+  }
+
+  get isCheck(): boolean {
+    return this._isCheck
+  }
+
+  set isCheck(value: boolean) {
+    this._isCheck = value
+  }
+
+  get hasMoved(): boolean {
+    return this._hasMoved
+  }
+
+  set hasMoved(value: boolean) {
+    this._hasMoved = value
   }
 }
 export default King

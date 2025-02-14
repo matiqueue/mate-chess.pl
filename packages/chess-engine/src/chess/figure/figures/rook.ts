@@ -4,8 +4,14 @@ import color from "@chesstypes/colorType"
 import { Board, Position } from "@utils/boardUtils"
 
 class Rook extends Figure {
+  private _hasMoved: boolean
   constructor(type: figureType, color: color, position: Position, board: Board) {
     super(type, color, position, board)
+    this._hasMoved =
+      this.position === this._board.getPositionByNotation("a1") ||
+      this.position === this._board.getPositionByNotation("a8") ||
+      this.position === this._board.getPositionByNotation("g8") ||
+      this.position === this._board.getPositionByNotation("g1")
   }
 
   override isPositionValid(target: Position): boolean {
@@ -54,6 +60,14 @@ class Rook extends Figure {
     }
 
     return true
+  }
+
+  get hasMoved(): boolean {
+    return this._hasMoved
+  }
+
+  set hasMoved(value: boolean) {
+    this._hasMoved = value
   }
 }
 export default Rook

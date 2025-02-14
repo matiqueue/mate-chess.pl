@@ -101,8 +101,56 @@ class Board {
     fromPos.figure = null
     toPos.figure = figure
 
+    if (figure instanceof Pawn) {
+      figure.isEnPassantPossible = true
+    }
+    if (figure instanceof King) {
+      figure.hasMoved = true
+    }
+    if (figure instanceof Rook) {
+      figure.hasMoved = true
+    }
     return true
   }
+  public canCastle(king: King, target: Position): boolean {
+    if (king.hasMoved) return false
+
+    const y = king.color === colorType.White ? 0 : 7
+    const isShortCastle = target.x > king.position.x
+    const rookStartX = isShortCastle ? 7 : 0
+    const rookEndX = isShortCastle ? 5 : 3
+
+    const rookPos = this.getPositionByCords(rookStartX, y)
+    const rook = rookPos?.figure
+
+    if (!(rook instanceof Rook) || (rook as Rook).hasMoved) {
+      return false
+    }
+
+    // Sprawdzenie, czy pola między królem a wieżą są puste
+    const direction = isShortCastle ? 1 : -1
+    for (let x = king.position.x + direction; x !== rookPos?.x; x += direction) {
+      if (this.getPositionByCords(x, y)?.figure) {
+        return false
+      }
+    }
+
+    // Sprawdzenie, czy król nie przechodzi przez szachowane pole
+    const opponentFigures = king.color === colorType.White ? this._blackFigures : this._whiteFigures
+    for (let x = king.position.x; x !== target.x + direction; x += direction) {
+      const testPosition = this.getPositionByCords(x, y)
+      if (!testPosition) continue
+
+      for (const opponentFigure of opponentFigures) {
+        if (opponentFigure.isMoveValid(testPosition)) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }
+
   private updateArray(): void {
     this._allFigures = this._whiteFigures.concat(this._blackFigures)
   }
