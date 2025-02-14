@@ -166,6 +166,41 @@ class Board {
     return true
   }
 
+  /**
+   * returns an array of positions, on which a move is possible to be made from given position
+   * debug: shows in console a chessboard with possible moves
+   * */
+  public getValidMovesForPosition(position: Position): Position[] {
+    const validMoves: Position[] = []
+    console.debug("\nValidating moves for position: ", position.notation)
+    console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
+        }
+        const targetPosition = this.getPositionByNotation(letter + (8 - y))
+        if (!targetPosition) {
+          row += "[null]"
+          break
+        }
+        if (targetPosition === position) {
+          row += "[&&] " //starting pos
+        } else if (position.figure?.isMoveValid(targetPosition)) {
+          row += "[--] " //valid
+          validMoves.push(targetPosition)
+        } else {
+          row += `[${targetPosition.notation}] ` //invalid
+        }
+      }
+      console.debug(row.trim())
+    }
+    return validMoves
+  }
+
   private updateArray(): void {
     this._allFigures = this._whiteFigures.concat(this._blackFigures)
   }
