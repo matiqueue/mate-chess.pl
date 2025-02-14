@@ -1,18 +1,45 @@
 import { Board } from "@utils/boardUtils"
-import { Pawn, Rook, Knight, Bishop, Queen, King } from "@utils/figureUtils"
+import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import color from "@chesstypes/colorType"
+import Move from "@chesstypes/moveType"
 
 class chessGame {
   private _board: Board
+  private _currentPlayer: color.White | color.Black
+  public isGameOn: boolean = false
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
+    this._currentPlayer = color.White
   }
   protected start(): void {
     this.process()
   }
   protected process() {
     this.setupFigures()
+  }
+  public makeMove(move: Move): boolean {
+    if (!this.isGameOn) return false
+    if (move.from.figure?.color === this.currentPlayer) {
+      if (this._board?.moveFigure(move)) {
+        this.switchCurrentPlayer()
+      }
+    }
+    return false
+  }
+  private switchCurrentPlayer() {
+    if (this.currentPlayer === color.White) {
+      this.currentPlayer = color.Black
+    } else if (this.currentPlayer === color.Black) {
+      this.currentPlayer = color.White
+    }
+  }
+  get currentPlayer(): color.White | color.Black {
+    return this._currentPlayer
+  }
+
+  set currentPlayer(value: color.White | color.Black) {
+    this._currentPlayer = value
   }
 
   protected setupFigures(): void {
@@ -53,8 +80,6 @@ class chessGame {
     this._board.addFigureAtPosition(this._board.getPositionByNotation("f8")!, new Bishop(color.Black, this._board.getPositionByNotation("f8")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("d8")!, new Queen(color.Black, this._board.getPositionByNotation("d8")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("e8")!, new King(color.Black, this._board.getPositionByNotation("e8")!, this._board))
-
-    console.log("Figures placed on the board.")
   }
 }
 

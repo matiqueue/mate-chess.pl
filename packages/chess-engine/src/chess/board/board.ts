@@ -72,7 +72,7 @@ class Board {
       this._blackFigures.push(figure)
     }
     this.updateArray()
-    console.log(`Figure of id ${figure.id}, type: ${figure.type} and color: ${figure.color} was added at position: ${existingPos.notation}`)
+    // console.log(`Figure of id ${figure.id}, type: ${figure.type} and color: ${figure.color} was added at position: ${existingPos.notation}`)
     return true
   }
 
@@ -100,6 +100,7 @@ class Board {
 
     fromPos.figure = null
     toPos.figure = figure
+    figure.position = toPos
 
     if (figure instanceof Pawn) {
       figure.isEnPassantPossible = true
