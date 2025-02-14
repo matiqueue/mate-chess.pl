@@ -29,9 +29,19 @@
     "uuid": "^11.0.5"
   },
   "_moduleAliases": {
-    "@": "./src"
+    "@": "./src",
+    "@utils": "./src/utils",
+    "@types": "./src/shared/types"
   },
   "exports": {
     "./functions": "./src/index.ts"
+  },
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@utils/*": ["src/utils/*"],
+      "@types/*": ["src/shared/types/*"]
+    }
   }
 }
