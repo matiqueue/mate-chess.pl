@@ -47,9 +47,7 @@ class Queen extends Figure {
         return false
       }
       if (currentPosition.figure) {
-        if (currentPosition.figure.type !== "king" || undefined || null) {
-          return false
-        }
+        return false
       }
       currentX -= signX
       currentY -= signY

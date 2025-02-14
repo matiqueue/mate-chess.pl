@@ -2,7 +2,6 @@ import { Figure } from "@modules/utils/figureUtils"
 import figureType from "@modules/shared/types/figureType"
 import color from "@modules/shared/types/colorType"
 import { Board, Position } from "@modules/utils/boardUtils"
-import board from "@modules/chess/board/board"
 
 class Pawn extends Figure {
   private _isFirstMove: boolean
@@ -16,6 +15,7 @@ class Pawn extends Figure {
   }
 
   override isPositionValid(target: Position): boolean {
+    if (!this.isPositionExisting(target)) return false
     switch (this.color) {
       case color.White:
         //standard move fwd
