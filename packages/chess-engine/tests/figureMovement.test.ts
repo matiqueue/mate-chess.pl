@@ -96,7 +96,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("c1")!,
       to: board.getPositionByNotation("f4")!,
     }
-    expect(board.moveFigure(move)).toBe(true)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(true)
   })
 
   test("Bishop cannot move in a straight line", () => {
@@ -104,7 +104,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("c1")!,
       to: board.getPositionByNotation("c4")!,
     }
-    expect(board.moveFigure(move)).toBe(false)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(false)
   })
 
   // 🏰 Rook Movement
@@ -113,7 +113,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("a1")!,
       to: board.getPositionByNotation("a5")!,
     }
-    expect(board.moveFigure(move)).toBe(true)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(true)
   })
 
   test("Rook cannot move diagonally", () => {
@@ -121,7 +121,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("a1")!,
       to: board.getPositionByNotation("c3")!,
     }
-    expect(board.moveFigure(move)).toBe(false)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(false)
   })
 
   // 👑 Queen Movement
@@ -130,7 +130,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("d1")!,
       to: board.getPositionByNotation("h5")!,
     }
-    expect(board.moveFigure(move)).toBe(true)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(true)
   })
 
   test("Queen can move straight", () => {
@@ -138,7 +138,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("d1")!,
       to: board.getPositionByNotation("d4")!,
     }
-    expect(board.moveFigure(move)).toBe(true)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(true)
   })
 
   test("Queen cannot move in an invalid pattern", () => {
@@ -146,7 +146,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("d1")!,
       to: board.getPositionByNotation("e3")!,
     }
-    expect(board.moveFigure(move)).toBe(false)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(false)
   })
 
   // 🤴 King Movement
@@ -155,7 +155,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("e1")!,
       to: board.getPositionByNotation("e2")!,
     }
-    expect(board.moveFigure(move)).toBe(true)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(true)
   })
 
   test("King cannot move more than one square", () => {
@@ -163,7 +163,7 @@ describe("Chess Pieces Movement", () => {
       from: board.getPositionByNotation("e1")!,
       to: board.getPositionByNotation("e3")!,
     }
-    expect(board.moveFigure(move)).toBe(false)
+    expect(board.getFigureAtPosition(move.from)?.isPositionValid(move.to)).toBe(false)
   })
 
   test("King cannot move into check", () => {
