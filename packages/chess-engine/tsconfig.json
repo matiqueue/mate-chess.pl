@@ -5,7 +5,7 @@
       "@modules/*": ["./src/*"],
       "@workspace/chess-engine/": ["./"],
       "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/shared/types/*"]
+      "@chesstypes/*": ["./src/shared/types/*"]
     },
     /* Visit https://aka.ms/tsconfig to read more about this file */
 

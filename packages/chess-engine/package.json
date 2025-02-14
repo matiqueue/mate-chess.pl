@@ -29,9 +29,7 @@
     "uuid": "^11.0.5"
   },
   "_moduleAliases": {
-    "@": "./src",
-    "@utils": "./src/utils",
-    "@types": "./src/shared/types"
+    "@": "./src"
   },
   "exports": {
     "./functions": "./src/index.ts"

@@ -1,8 +1,8 @@
-import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@modules/utils/figureUtils"
-import { Position } from "@modules/utils/boardUtils"
-import { Move } from "@modules/utils/typeUtils"
-import figureType from "@modules/shared/types/figureType"
-import colorType from "@modules/shared/types/colorType"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
+import { Position } from "@utils/boardUtils"
+import { Move } from "@utils/typeUtils"
+import figureType from "@chesstypes/figureType"
+import colorType from "@chesstypes/colorType"
 
 class Board {
   private positions: Map<string, Position>

@@ -1,7 +1,7 @@
-import { Figure } from "@modules/utils/figureUtils"
-import figureType from "@modules/shared/types/figureType"
-import color from "@modules/shared/types/colorType"
-import { Board, Position } from "@modules/utils/boardUtils"
+import { Figure } from "@utils/figureUtils"
+import figureType from "@chesstypes/figureType"
+import color from "@chesstypes/colorType"
+import { Board, Position } from "@utils/boardUtils"
 
 class Knight extends Figure {
   constructor(color: color.White | color.Black, position: Position, board: Board) {

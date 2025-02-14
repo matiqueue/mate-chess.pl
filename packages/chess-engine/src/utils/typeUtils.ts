@@ -1,5 +1,5 @@
-import Move from "@modules/shared/types/moveType"
-import ColorTypes from "@modules/shared/types/colorType"
-import FigureTypes from "@modules/shared/types/figureType"
-
-export type { Move, ColorTypes, FigureTypes }
+// import Move from "@chesstypes/moveType"
+// import colorType from "@chesstypes/colorType"
+// import figureType from "@chesstypes/figureType"
+//
+// export type { Move, colorType, figureType }

@@ -1,6 +1,6 @@
-import color from "@modules/shared/types/colorType"
-import figureType from "@modules/shared/types/figureType"
-import { Position, Board } from "src/utils/boardUtils"
+import color from "@chesstypes/colorType"
+import figureType from "@chesstypes/figureType"
+import { Position, Board } from "@utils/boardUtils"
 
 abstract class Figure {
   private _type: figureType

@@ -1,4 +1,4 @@
-import Position from "@modules/chess/position"
+import { Position } from "@utils/boardUtils"
 
 interface Move {
   from: Position

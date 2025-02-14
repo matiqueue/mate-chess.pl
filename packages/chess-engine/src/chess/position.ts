@@ -1,5 +1,5 @@
-import { Board } from "src/utils/boardUtils"
-import { Figure } from "src/utils/figureUtils"
+import { Board } from "@utils/boardUtils"
+import { Figure } from "@utils//figureUtils"
 
 /**
  * Class for a single cell position on chessBoard. Very important<br>
