@@ -2,13 +2,19 @@ import { Board } from "@utils/boardUtils"
 import { Pawn, Rook, Knight, Bishop, Queen, King } from "@utils/figureUtils"
 import color from "@chesstypes/colorType"
 import Move from "@chesstypes/moveType"
+import ChessGame from "@modules/chess/chessGame"
 
 describe("Chess Pieces Movement", () => {
+  let game: ChessGame
   let board: Board
 
   beforeEach(() => {
-    board = new Board()
-    board.setupBoard()
+    game = new ChessGame()
+    board = game["_board"] // Access private board for testing
+
+    // Manually call setupFigures to ensure pieces are placed
+    game["setupFigures"]()
+    game.isGameOn = true // Manually start the game
   })
 
   // 🩸 Pawn Movement
