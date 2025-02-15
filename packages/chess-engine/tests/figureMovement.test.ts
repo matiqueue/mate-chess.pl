@@ -1,7 +1,7 @@
 import { Board } from "@utils/boardUtils"
 import { Pawn, Rook, Knight, Bishop, Queen, King } from "@utils/figureUtils"
-import color from "@chesstypes/colorType"
-import Move from "@chesstypes/moveType"
+import { color } from "@shared/types/colorType"
+import { Move } from "@shared/types/moveType"
 import ChessGame from "@modules/chess/chessGame"
 
 describe("Chess Pieces Movement", () => {

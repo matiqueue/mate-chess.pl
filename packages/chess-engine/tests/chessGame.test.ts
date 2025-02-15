@@ -1,9 +1,9 @@
 import ChessGame from "@modules/chess/chessGame"
 import { Board } from "@utils/boardUtils"
 import { King } from "@utils/figureUtils"
-import color from "@chesstypes/colorType"
-import Move from "@chesstypes/moveType"
-import figureType from "@chesstypes/figureType"
+import { color } from "@shared/types/colorType"
+import { Move } from "@shared/types/moveType"
+import { figureType } from "@shared/types/figureType"
 
 describe("ChessGame", () => {
   let game: ChessGame

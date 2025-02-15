@@ -1,7 +1,7 @@
 import { King, Pawn } from "@utils/figureUtils"
 import { Position, Board } from "@utils/boardUtils"
-import colorType from "@chesstypes/colorType"
-import figureType from "@chesstypes/figureType"
+import { color } from "@shared/types/colorType"
+import { figureType } from "@shared/types/figureType"
 
 describe("King", () => {
   let board: Board
@@ -16,7 +16,7 @@ describe("King", () => {
     whiteKingPosition = board.getPositionByNotation("e1")!
     blackKingPosition = board.getPositionByNotation("e8")!
 
-    king = new King(colorType.White, whiteKingPosition, board)
+    king = new King(color.White, whiteKingPosition, board)
     board.addFigureAtPosition(whiteKingPosition, king)
   })
 
@@ -32,7 +32,7 @@ describe("King", () => {
 
   test("King cannot move onto a piece of the same color", () => {
     const targetPos = board.getPositionByNotation("d1")!
-    board.addFigureAtPosition(targetPos, new King(colorType.White, targetPos, board))
+    board.addFigureAtPosition(targetPos, new King(color.White, targetPos, board))
     expect(king.isMoveValid(targetPos)).toBe(false)
   })
 
@@ -42,10 +42,10 @@ describe("King", () => {
 
   test("King should not allow movement to check", () => {
     const opponentRookPos = board.getPositionByNotation("e8")!
-    board.addFigureAtPosition(opponentRookPos, new King(colorType.Black, opponentRookPos, board))
+    board.addFigureAtPosition(opponentRookPos, new King(color.Black, opponentRookPos, board))
 
     const opponentPawn = board.getPositionByNotation("d3")!
-    expect(board.addFigureAtPosition(opponentPawn, new Pawn(colorType.Black, opponentPawn, board))).toBe(true)
+    expect(board.addFigureAtPosition(opponentPawn, new Pawn(color.Black, opponentPawn, board))).toBe(true)
     const moveTarget = board.getPositionByNotation("e2")!
 
     expect(board.getFigureAtPosition(opponentPawn)?.isPositionValid(moveTarget)).toBe(true)
