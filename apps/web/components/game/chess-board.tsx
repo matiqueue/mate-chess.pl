@@ -1,119 +1,108 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
-import { setupGame, getBoard, getPositionByCords, makeMove, getValidMoves, whosTurn, isCheckmate } from "@chess-engine/functions"
-import { Board, Position } from "@modules/utils/boardUtils"
-import { King } from "@modules/utils/figureUtils"
-import { FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
+import {
+  FaChessRook as ChessRook,
+  FaChessKnight as ChessKnight,
+  FaChessBishop as ChessBishop,
+  FaChessQueen as ChessQueen,
+  FaChessKing as ChessKing,
+} from "react-icons/fa"
+
 import { SiChessdotcom as ChessPawn } from "react-icons/si"
+import { useTheme } from "next-themes"
 import clsx from "clsx"
 
-export default function Chessboard() {
-  const [board, setBoard] = useState<Board | null>(null)
-  const [selectedPos, setSelectedPos] = useState<Position | null>(null)
-  const [validMoves, setValidMoves] = useState<Position[]>([])
-  const gameInstanceRef = useRef(setupGame())
-  const [turn, setTurn] = useState<"white" | "black">(whosTurn(gameInstanceRef.current))
-  const [checkmate, setCheckmate] = useState<"white" | "black" | null>(null)
+export function ChessBoard() {
+  const { theme } = useTheme()
+  const isDarkMode = theme === "dark"
 
-  useEffect(() => {
-    if (!gameInstanceRef.current) return
-    setBoard(getBoard(gameInstanceRef.current))
-  }, [])
+  const initialBoard = [
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    Array(8).fill(""),
+    Array(8).fill(""),
+    Array(8).fill(""),
+    Array(8).fill(""),
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    ["R", "N", "B", "Q", "K", "B", "N", "R"],
+  ]
 
-  const handleClick = (x: number, y: number) => {
-    if (!gameInstanceRef.current || !board) return
-    const clickedPos = getPositionByCords(board, x, y)
-    if (!clickedPos) return
+  const getPieceIcon = (piece: string) => {
+    if (!piece) return null
+    const isWhite = piece === piece.toUpperCase()
+    const iconColor = isWhite ? "text-white" : "text-neutral-800"
+    const baseClasses = "w-[60%] h-[60%]"
+    let IconComponent
 
-    if (clickedPos.figure && clickedPos.figure.color === turn) {
-      setSelectedPos(clickedPos)
-      setValidMoves(getValidMoves(board, clickedPos))
-      return
+    switch (piece.toLowerCase()) {
+      case "p":
+        IconComponent = ChessPawn
+        break
+      case "r":
+        IconComponent = ChessRook
+        break
+      case "n":
+        IconComponent = ChessKnight
+        break
+      case "b":
+        IconComponent = ChessBishop
+        break
+      case "q":
+        IconComponent = ChessQueen
+        break
+      case "k":
+        IconComponent = ChessKing
+        break
+      default:
+        return null
     }
 
-    if (!selectedPos) {
-      setSelectedPos(clickedPos)
-      setValidMoves(getValidMoves(board, clickedPos))
-      return
-    }
+    const dropShadowValue = isWhite
+      ? `drop-shadow(0 0 6px #000)` // dla białych figur – mocniejszy czarny cień
+      : `drop-shadow(0 0 6px #fff)` // dla czarnych figur – mocniejszy biały cień
 
-    makeMove(gameInstanceRef.current, { from: selectedPos, to: clickedPos })
-
-    // Update game state
-    const updatedBoard = getBoard(gameInstanceRef.current)
-    setBoard(updatedBoard)
-    setTurn(whosTurn(gameInstanceRef.current))
-    setSelectedPos(null)
-    setValidMoves([])
+    return <IconComponent className={clsx(baseClasses, iconColor)} style={{ filter: dropShadowValue }} />
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-4">Turn: {turn.toUpperCase()}</h1>
-      {checkmate && <h1 className="text-4xl text-red-600 mt-4">Checkmate! {checkmate.charAt(0).toUpperCase() + checkmate.slice(1)} wins!</h1>}
-
-      <div className="grid grid-cols-8 border border-gray-800">
-        {Array.from({ length: 64 }).map((_, index) => {
-          const x = index % 8
-          const y = Math.floor(index / 8)
-          const position = board ? getPositionByCords(board, x, y) : null
-          const figure = position?.figure || null
-          const isSelected = selectedPos && position && selectedPos.notation === position.notation
-          const isValidMove = validMoves.some((move) => move.notation === position?.notation)
-          const isOpponentMove = selectedPos?.figure?.color !== turn
-          const isKingInCheck = figure?.type === "king" && (figure as King).isCheck
-
-          const defaultBg = (x + y) % 2 === 0 ? "bg-gray-300" : "bg-gray-600"
-          const bgColor = isKingInCheck
-            ? "bg-red-500"
-            : isSelected
-              ? "bg-blue-300"
-              : isValidMove
-                ? isOpponentMove
-                  ? "bg-gray-500"
-                  : "bg-green-300"
-                : defaultBg
-
-          return (
-            <div
-              key={index}
-              className={clsx("w-12 h-12 flex items-center justify-center border text-lg font-bold", bgColor, isSelected && "border-blue-500")}
-              onClick={() => handleClick(x, y)}
-            >
-              {figure ? getFigureIcon(figure.type, figure.color) : null}
-            </div>
-          )
-        })}
+    <div className="relative w-full max-w-[68vh] aspect-square">
+      {/* Overlay z rozmyciem i obramowaniem – pointer-events-none nie blokuje eventów */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
+        <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
+      </div>
+      {/* Plansza z wyższym z-index */}
+      <div className={`relative z-10 w-full h-full ${isDarkMode ? "bg-stone-600" : "bg-gray-300"} rounded-xl p-4 shadow-2xl`}>
+        <div className={`grid grid-cols-8 grid-rows-8 h-full w-full ${isDarkMode ? "bg-stone-600" : "bg-gray-300"} rounded-xl`}>
+          {initialBoard.flatMap((row, rowIndex) =>
+            row.map((piece, colIndex) => {
+              const isBlack = (rowIndex + colIndex) % 2 === 1
+              return (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  style={{
+                    transition: "none",
+                    willChange: "background-color",
+                    contain: "paint",
+                  }}
+                  className={clsx(
+                    isBlack
+                      ? isDarkMode
+                        ? "bg-neutral-400 hover:bg-neutral-500"
+                        : "bg-gray-400 hover:bg-neutral-500"
+                      : isDarkMode
+                        ? "bg-stone-700 hover:bg-neutral-500"
+                        : "bg-zinc-200 hover:bg-neutral-500",
+                    "relative flex items-center justify-center",
+                  )}
+                >
+                  {getPieceIcon(piece)}
+                </div>
+              )
+            }),
+          )}
+        </div>
       </div>
     </div>
   )
-}
-
-// Helper function for displaying chess piece icons
-const getFigureIcon = (type?: string, color?: string) => {
-  if (!type) return null
-
-  const commonProps = {
-    size: 28,
-    color: color === "black" ? "black" : "white",
-    className: "drop-shadow-md",
-  }
-
-  switch (type) {
-    case "pawn":
-      return <ChessPawn {...commonProps} />
-    case "knight":
-      return <FaChessKnight {...commonProps} />
-    case "bishop":
-      return <FaChessBishop {...commonProps} />
-    case "rook":
-      return <FaChessRook {...commonProps} />
-    case "queen":
-      return <FaChessQueen {...commonProps} />
-    case "king":
-      return <FaChessKing {...commonProps} />
-    default:
-      return null
-  }
 }
