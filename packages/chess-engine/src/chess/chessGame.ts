@@ -8,10 +8,11 @@ class chessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
   private _moveRecorder: MoveRecorder
-  public isGameOn: boolean = false
+  public isGameOn: boolean = true
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
+    this.setupFigures()
     this._currentPlayer = color.White
     this._moveRecorder = new MoveRecorder(this._board, this)
   }
@@ -19,14 +20,13 @@ class chessGame {
     this.process()
   }
   protected process() {
-    this.setupFigures()
-    if (this._board.isCheckmate() === this.currentPlayer) {
-      console.log(`${this.currentPlayer} is checkmated!`)
-      this.isGameOn = false
-    } else if (this._board.isStalemate()) {
-      console.log(`Stalemate! The game is a draw.`)
-      this.isGameOn = false
-    }
+    // if (this._board.isCheckmate() === this.currentPlayer) {
+    //   console.log(`${this.currentPlayer} is checkmated!`)
+    //   this.isGameOn = false
+    // } else if (this._board.isStalemate()) {
+    //   console.log(`Stalemate! The game is a draw.`)
+    //   this.isGameOn = false
+    // }
     // this._board.printFigures()
     // this._board.printBoard()
     // this._board.printCords()
@@ -47,7 +47,7 @@ class chessGame {
       if (this._board?.moveFigure(move)) {
         this.switchCurrentPlayer()
         if (figure) {
-          this._moveRecorder.recordMove(figure.type, move, targetFigure?.type)
+          // this._moveRecorder.recordMove(figure.type, move, targetFigure?.type)
         }
         return true
       }
@@ -111,6 +111,8 @@ class chessGame {
     this._board.addFigureAtPosition(this._board.getPositionByNotation("f8")!, new Bishop(color.Black, this._board.getPositionByNotation("f8")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("d8")!, new Queen(color.Black, this._board.getPositionByNotation("d8")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("e8")!, new King(color.Black, this._board.getPositionByNotation("e8")!, this._board))
+
+    console.log(this.board.getBoardArray())
   }
 }
 

@@ -22,3 +22,6 @@ export const getPositionByNotation = (board: Board, notation: string) => {
 export const getPositionById = (board: Board, id: number) => {
   return board.getPositionById(id)
 }
+export const getBoardArray = (board: Board): [string[]] => {
+  return board.getBoardArray()
+}
