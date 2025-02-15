@@ -214,202 +214,202 @@ class Board {
    * debug: shows in console a chessboard with possible moves
    *
    * */
-  // public getValidMovesForPosition(position: Position): Position[] {
-  //   const validMoves: Position[] = []
-  //   console.debug("\nValidating moves for position: ", position.notation)
-  //   console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
-  //   for (let y = 0; y < 8; y++) {
-  //     let row = ""
-  //     for (let x = 0; x < 8; x++) {
-  //       const letter = this.letters[x]
-  //       if (!letter) {
-  //         console.error(`Invalid letter index: ${x}`)
-  //         break
-  //       }
-  //       const targetPosition = this.getPositionByNotation(letter + (8 - y))
-  //       if (!targetPosition) {
-  //         row += "[null]"
-  //         break
-  //       }
-  //       if (targetPosition === position) {
-  //         row += "[&&] " //starting pos
-  //       } else if (position.figure?.isMoveValid(targetPosition)) {
-  //         row += "[--] " //valid
-  //         validMoves.push(targetPosition)
-  //       } else {
-  //         row += `[${targetPosition.notation}] ` //invalid
-  //       }
-  //     }
-  //     console.debug(row.trim())
-  //   }
-  //   return validMoves
-  // }
   public getValidMovesForPosition(position: Position): Position[] {
     const validMoves: Position[] = []
-    const figure = position.figure
-    if (!figure) return validMoves
-
-    console.debug("\nValidating moves for position:", position.notation)
-    console.debug(`\nFigure: ${figure.type} \nof color: ${figure.color} \nat ${position.notation} \nnoted as [o]`)
-
-    const x = position.x
-    const y = position.y
-
-    switch (figure.type) {
-      case figureType.pawn: {
-        const direction = figure.color === color.White ? -1 : 1
-
-        // Normal move forward
-        const oneStep = this.getPositionByCords(x, y + direction)
-        if (oneStep && !oneStep.figure) validMoves.push(oneStep)
-
-        // Two steps forward if first move
-        if ((figure as Pawn).isFirstMove) {
-          const twoSteps = this.getPositionByCords(x, y + 2 * direction)
-          if (twoSteps && !twoSteps.figure && oneStep) validMoves.push(twoSteps)
+    console.debug("\nValidating moves for position: ", position.notation)
+    console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
+    for (let y = 0; y < 8; y++) {
+      let row = ""
+      for (let x = 0; x < 8; x++) {
+        const letter = this.letters[x]
+        if (!letter) {
+          console.error(`Invalid letter index: ${x}`)
+          break
         }
-
-        // Diagonal capture
-        ;[-1, 1].forEach((side) => {
-          const diag = this.getPositionByCords(x + side, y + direction)
-          if (diag && diag.figure && diag.figure.color !== figure.color) validMoves.push(diag)
-        })
-
-        break
-      }
-
-      case figureType.rook: {
-        for (let i = -7; i <= 7; i++) {
-          if (i === 0) continue
-          const horizontal = this.getPositionByCords(x + i, y)
-          const vertical = this.getPositionByCords(x, y + i)
-
-          if (horizontal) {
-            if (horizontal.figure) {
-              if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
-              break
-            }
-            validMoves.push(horizontal)
-          }
-
-          if (vertical) {
-            if (vertical.figure) {
-              if (vertical.figure.color !== figure.color) validMoves.push(vertical)
-              break
-            }
-            validMoves.push(vertical)
-          }
+        const targetPosition = this.getPositionByNotation(letter + (8 - y))
+        if (!targetPosition) {
+          row += "[null]"
+          break
         }
-        break
-      }
-
-      case figureType.bishop: {
-        for (let i = -7; i <= 7; i++) {
-          if (i === 0) continue
-          const diag1 = this.getPositionByCords(x + i, y + i)
-          const diag2 = this.getPositionByCords(x - i, y + i)
-
-          if (diag1) {
-            if (diag1.figure) {
-              if (diag1.figure.color !== figure.color) validMoves.push(diag1)
-              break
-            }
-            validMoves.push(diag1)
-          }
-
-          if (diag2) {
-            if (diag2.figure) {
-              if (diag2.figure.color !== figure.color) validMoves.push(diag2)
-              break
-            }
-            validMoves.push(diag2)
-          }
+        if (targetPosition === position) {
+          row += "[&&] " //starting pos
+        } else if (position.figure?.isMoveValid(targetPosition)) {
+          row += "[--] " //valid
+          validMoves.push(targetPosition)
+        } else {
+          row += `[${targetPosition.notation}] ` //invalid
         }
-        break
       }
-
-      case figureType.queen: {
-        // Rook + Bishop moves combined
-        for (let i = -7; i <= 7; i++) {
-          if (i === 0) continue
-          const horizontal = this.getPositionByCords(x + i, y)
-          const vertical = this.getPositionByCords(x, y + i)
-          const diag1 = this.getPositionByCords(x + i, y + i)
-          const diag2 = this.getPositionByCords(x - i, y + i)
-
-          if (horizontal) {
-            if (horizontal.figure) {
-              if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
-              break
-            }
-            validMoves.push(horizontal)
-          }
-
-          if (vertical) {
-            if (vertical.figure) {
-              if (vertical.figure.color !== figure.color) validMoves.push(vertical)
-              break
-            }
-            validMoves.push(vertical)
-          }
-
-          if (diag1) {
-            if (diag1.figure) {
-              if (diag1.figure.color !== figure.color) validMoves.push(diag1)
-              break
-            }
-            validMoves.push(diag1)
-          }
-
-          if (diag2) {
-            if (diag2.figure) {
-              if (diag2.figure.color !== figure.color) validMoves.push(diag2)
-              break
-            }
-            validMoves.push(diag2)
-          }
-        }
-        break
-      }
-
-      case figureType.knight: {
-        const knightMoves = [
-          [2, 1],
-          [2, -1],
-          [-2, 1],
-          [-2, -1],
-          [1, 2],
-          [1, -2],
-          [-1, 2],
-          [-1, -2],
-        ]
-
-        knightMoves.forEach(([dx, dy]) => {
-          if (!dx || !dy) return
-          const newPos = this.getPositionByCords(x + dx, y + dy)
-          if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
-            validMoves.push(newPos)
-          }
-        })
-        break
-      }
-
-      case figureType.king: {
-        for (let dx = -1; dx <= 1; dx++) {
-          for (let dy = -1; dy <= 1; dy++) {
-            if (dx === 0 && dy === 0) continue
-            const newPos = this.getPositionByCords(x + dx, y + dy)
-            if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
-              validMoves.push(newPos)
-            }
-          }
-        }
-        break
-      }
+      console.debug(row.trim())
     }
-
     return validMoves
   }
+  // public getValidMovesForPosition(position: Position): Position[] {
+  //   const validMoves: Position[] = []
+  //   const figure = position.figure
+  //   if (!figure) return validMoves
+  //
+  //   console.debug("\nValidating moves for position:", position.notation)
+  //   console.debug(`\nFigure: ${figure.type} \nof color: ${figure.color} \nat ${position.notation} \nnoted as [o]`)
+  //
+  //   const x = position.x
+  //   const y = position.y
+  //
+  //   switch (figure.type) {
+  //     case figureType.pawn: {
+  //       const direction = figure.color === color.White ? -1 : 1
+  //
+  //       // Normal move forward
+  //       const oneStep = this.getPositionByCords(x, y + direction)
+  //       if (oneStep && !oneStep.figure) validMoves.push(oneStep)
+  //
+  //       // Two steps forward if first move
+  //       if ((figure as Pawn).isFirstMove) {
+  //         const twoSteps = this.getPositionByCords(x, y + 2 * direction)
+  //         if (twoSteps && !twoSteps.figure && oneStep) validMoves.push(twoSteps)
+  //       }
+  //
+  //       // Diagonal capture
+  //       ;[-1, 1].forEach((side) => {
+  //         const diag = this.getPositionByCords(x + side, y + direction)
+  //         if (diag && diag.figure && diag.figure.color !== figure.color) validMoves.push(diag)
+  //       })
+  //
+  //       break
+  //     }
+  //
+  //     case figureType.rook: {
+  //       for (let i = -7; i <= 7; i++) {
+  //         if (i === 0) continue
+  //         const horizontal = this.getPositionByCords(x + i, y)
+  //         const vertical = this.getPositionByCords(x, y + i)
+  //
+  //         if (horizontal) {
+  //           if (horizontal.figure) {
+  //             if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
+  //             break
+  //           }
+  //           validMoves.push(horizontal)
+  //         }
+  //
+  //         if (vertical) {
+  //           if (vertical.figure) {
+  //             if (vertical.figure.color !== figure.color) validMoves.push(vertical)
+  //             break
+  //           }
+  //           validMoves.push(vertical)
+  //         }
+  //       }
+  //       break
+  //     }
+  //
+  //     case figureType.bishop: {
+  //       for (let i = -7; i <= 7; i++) {
+  //         if (i === 0) continue
+  //         const diag1 = this.getPositionByCords(x + i, y + i)
+  //         const diag2 = this.getPositionByCords(x - i, y + i)
+  //
+  //         if (diag1) {
+  //           if (diag1.figure) {
+  //             if (diag1.figure.color !== figure.color) validMoves.push(diag1)
+  //             break
+  //           }
+  //           validMoves.push(diag1)
+  //         }
+  //
+  //         if (diag2) {
+  //           if (diag2.figure) {
+  //             if (diag2.figure.color !== figure.color) validMoves.push(diag2)
+  //             break
+  //           }
+  //           validMoves.push(diag2)
+  //         }
+  //       }
+  //       break
+  //     }
+  //
+  //     case figureType.queen: {
+  //       // Rook + Bishop moves combined
+  //       for (let i = -7; i <= 7; i++) {
+  //         if (i === 0) continue
+  //         const horizontal = this.getPositionByCords(x + i, y)
+  //         const vertical = this.getPositionByCords(x, y + i)
+  //         const diag1 = this.getPositionByCords(x + i, y + i)
+  //         const diag2 = this.getPositionByCords(x - i, y + i)
+  //
+  //         if (horizontal) {
+  //           if (horizontal.figure) {
+  //             if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
+  //             break
+  //           }
+  //           validMoves.push(horizontal)
+  //         }
+  //
+  //         if (vertical) {
+  //           if (vertical.figure) {
+  //             if (vertical.figure.color !== figure.color) validMoves.push(vertical)
+  //             break
+  //           }
+  //           validMoves.push(vertical)
+  //         }
+  //
+  //         if (diag1) {
+  //           if (diag1.figure) {
+  //             if (diag1.figure.color !== figure.color) validMoves.push(diag1)
+  //             break
+  //           }
+  //           validMoves.push(diag1)
+  //         }
+  //
+  //         if (diag2) {
+  //           if (diag2.figure) {
+  //             if (diag2.figure.color !== figure.color) validMoves.push(diag2)
+  //             break
+  //           }
+  //           validMoves.push(diag2)
+  //         }
+  //       }
+  //       break
+  //     }
+  //
+  //     case figureType.knight: {
+  //       const knightMoves = [
+  //         [2, 1],
+  //         [2, -1],
+  //         [-2, 1],
+  //         [-2, -1],
+  //         [1, 2],
+  //         [1, -2],
+  //         [-1, 2],
+  //         [-1, -2],
+  //       ]
+  //
+  //       knightMoves.forEach(([dx, dy]) => {
+  //         if (!dx || !dy) return
+  //         const newPos = this.getPositionByCords(x + dx, y + dy)
+  //         if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
+  //           validMoves.push(newPos)
+  //         }
+  //       })
+  //       break
+  //     }
+  //
+  //     case figureType.king: {
+  //       for (let dx = -1; dx <= 1; dx++) {
+  //         for (let dy = -1; dy <= 1; dy++) {
+  //           if (dx === 0 && dy === 0) continue
+  //           const newPos = this.getPositionByCords(x + dx, y + dy)
+  //           if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
+  //             validMoves.push(newPos)
+  //           }
+  //         }
+  //       }
+  //       break
+  //     }
+  //   }
+  //
+  //   return validMoves
+  // }
 
   public getWhiteKing(): Figure | null {
     for (const figure of this._whiteFigures) {
@@ -463,19 +463,22 @@ class Board {
     const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
     const legalMoves: Position[] = []
+
     if (!king) return []
     if (!figures) return []
+
     for (const figure of figures) {
-      for (const moveToVerify of this.getValidMovesForPosition(figure.position)) {
+      const pseudoLegalMoves = this.getValidMovesForPosition(figure.position)
+
+      for (const moveToVerify of pseudoLegalMoves) {
         const move = {
           from: figure.position,
           to: moveToVerify,
         }
         if (this.moveFigure(move)) {
-          if (this.isKingInCheck(king.color)) {
-            continue
+          if (!this.isKingInCheck(king.color)) {
+            legalMoves.push(moveToVerify)
           }
-          legalMoves.push(moveToVerify)
           this.undoLastMove()
         }
       }
@@ -494,6 +497,46 @@ class Board {
     return this._blackFigures
   }
 
+  public getBoardArray(): [string[]] {
+    let result: [string[]] = [[]]
+    let rowArray: string[] = []
+    for (const position of this.positions) {
+      let symbol: string = ""
+      switch (position[1].figure?.type) {
+        case figureType.king:
+          symbol = "k"
+          break
+        case figureType.pawn:
+          symbol = "p"
+          break
+        case figureType.rook:
+          symbol = "r"
+          break
+        case figureType.bishop:
+          symbol = "b"
+          break
+        case figureType.knight:
+          symbol = "n"
+          break
+        case figureType.queen:
+          symbol = "q"
+          break
+        default:
+          symbol = ""
+          break
+      }
+      if (position[1].figure?.color === color.White) {
+        symbol = symbol.toUpperCase()
+      }
+      rowArray.push(symbol)
+
+      if ((position[1].id + 1) % 8 === 0) {
+        result.push(rowArray)
+        rowArray = []
+      }
+    }
+    return result
+  }
   get allFigures(): Figure[] {
     return this._allFigures
   }
