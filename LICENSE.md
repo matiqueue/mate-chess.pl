@@ -7,11 +7,11 @@ This license governs the use of the software application **mate-chess.pl** ("the
 ## 1. Copyright Information
 The owner of the **mate-chess.pl** project is **Mateusz Lis**.
 The copyright for the Software belongs to the **Digital Gods** team, consisting of:
-- **Mateusz Lis** – project owner,
-- **Szymon Góral**,
-- **Filip Serwatka**,
-- **Jakub Batko**,
-- **Wojciech Piątek**.
+- **Mateusz Lis** – project owner;
+- **Szymon Góral** - project manager;
+- **Filip Serwatka**;
+- **Jakub Batko**;
+- **Wojciech Piątek**;
 
 Team supervisor: **Marcin Stawinoga**.
 

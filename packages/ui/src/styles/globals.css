@@ -91,6 +91,12 @@
     --secondary-foreground: 240 5.9% 15%;
     --accent-foreground: 240 5.9% 15%;
   }
+  .dark {
+    --foreground: 0 0% 98%;
+    --muted-foreground: 240 5% 64.9%;
+    --secondary-foreground: 0 0% 98%;
+    --accent-foreground: 0 0% 98%;
+  }
 }
 
 /* Additional styles for better readability */
@@ -110,4 +116,15 @@ h6 {
 
 a {
   @apply font-medium;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

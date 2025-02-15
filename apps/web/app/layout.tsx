@@ -1,6 +1,5 @@
 import { Providers } from "@/components/providers"
 import { ClerkProvider } from "@clerk/nextjs"
-import "@workspace/ui/styles/globals.css"
 
 import { Metadata } from "next"
 

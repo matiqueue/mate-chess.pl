@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
@@ -11,34 +10,33 @@ import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scroll-animation"
 import SkeletonChessboard from "./skeletonChessboard"
 
-
 const fraunces = Fraunces({
   subsets: ["latin"],
   weight: "300",
-});
+})
 
 const Chessboard: React.FC = () => {
-  const mountRef = useRef<HTMLDivElement | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Aktualny indeks pozycji kamery
-  const [lastPosition] = useState(5);
-  const [modelLoaded, setModelLoaded] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const mountRef = useRef<HTMLDivElement | null>(null)
+  const [currentIndex, setCurrentIndex] = useState(0) // Aktualny indeks pozycji kamery
+  const [lastPosition] = useState(5)
+  const [modelLoaded, setModelLoaded] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
 
   useEffect(() => {
-    let current = 0;
+    let current = 0
     const intervalId = setInterval(() => {
       if (current < 100) {
-        current++;
-        setLoadingProgress(current);
+        current++
+        setLoadingProgress(current)
       } else {
-        clearInterval(intervalId);
-        setModelLoaded(true);
+        clearInterval(intervalId)
+        setModelLoaded(true)
       }
-    }, 65); 
-    return () => clearInterval(intervalId);
-  }, []);
+    }, 65)
+    return () => clearInterval(intervalId)
+  }, [])
 
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(false)
   const cameraPositions = useRef<{ position: THREE.Vector3; lookAt: THREE.Vector3 }[]>([
     {
       position: new THREE.Vector3(0, 8, 8), // Widok z przodu
@@ -64,17 +62,17 @@ const Chessboard: React.FC = () => {
       position: new THREE.Vector3(-8, 3, 0), // Widok oddalony
       lookAt: new THREE.Vector3(0, 0, 0),
     },
-  ]);
-  const currentPositionIndex = useRef(0);
-  const transitioning = useRef(false);
-  const startTransitionTime = useRef<number | null>(null);
-  const animationDuration = 3000; // 3 sekundy
-  const startPosition = useRef(new THREE.Vector3());
-  const targetPosition = useRef(new THREE.Vector3());
-  const startRotation = useRef(0); // Startowa rotacja szachownicy
-  const targetRotation = useRef(0); // Docelowa rotacja szachownicy
-  const chessModel = useRef<THREE.Group | null>(null); // Referencja do modelu szachownicy
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  ])
+  const currentPositionIndex = useRef(0)
+  const transitioning = useRef(false)
+  const startTransitionTime = useRef<number | null>(null)
+  const animationDuration = 3000 // 3 sekundy
+  const startPosition = useRef(new THREE.Vector3())
+  const targetPosition = useRef(new THREE.Vector3())
+  const startRotation = useRef(0) // Startowa rotacja szachownicy
+  const targetRotation = useRef(0) // Docelowa rotacja szachownicy
+  const chessModel = useRef<THREE.Group | null>(null) // Referencja do modelu szachownicy
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
 
   const [textTab] = useState([
     {
@@ -97,9 +95,7 @@ const Chessboard: React.FC = () => {
       title: "Critical Chess Insights",
       description: "Zooming in on critical details.",
     },
-  ]);
-
-  
+  ])
 
   const handleDotClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const index = Number(e.currentTarget.getAttribute("data-index"))
@@ -138,332 +134,315 @@ const Chessboard: React.FC = () => {
   }
 
   const handleDotTouch = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation(); // Zatrzymaj propagację, aby globalne touch eventy nie reagowały
-  
-    const index = Number(e.currentTarget.getAttribute("data-index"));
-    if (index === currentPositionIndex.current || transitioning.current || !cameraRef.current) return;
-  
-    const newPosition = cameraPositions.current[index];
-    if (!newPosition) return;
-  
-    startPosition.current.copy(cameraRef.current.position);
-    targetPosition.current.copy(newPosition.position);
-  
+    e.preventDefault()
+    e.stopPropagation() // Zatrzymaj propagację, aby globalne touch eventy nie reagowały
+
+    const index = Number(e.currentTarget.getAttribute("data-index"))
+    if (index === currentPositionIndex.current || transitioning.current || !cameraRef.current) return
+
+    const newPosition = cameraPositions.current[index]
+    if (!newPosition) return
+
+    startPosition.current.copy(cameraRef.current.position)
+    targetPosition.current.copy(newPosition.position)
+
     // Ustawienia rotacji szachownicy
-    startRotation.current = chessModel.current?.rotation.y || 0;
+    startRotation.current = chessModel.current?.rotation.y || 0
     if (index === 3) {
       // Obrót szachownicy o 90 stopni dla widoku z boku
-      targetRotation.current = startRotation.current + Math.PI / 2;
+      targetRotation.current = startRotation.current + Math.PI / 2
     } else if (index === 2) {
       // Cofnij obrót do pierwotnej rotacji
-      targetRotation.current = 0;
+      targetRotation.current = 0
     } else {
-      targetRotation.current = startRotation.current; // Nie obracaj w innych przypadkach
+      targetRotation.current = startRotation.current // Nie obracaj w innych przypadkach
     }
-  
+
     // Aktualizacja indeksu i stanu
-    currentPositionIndex.current = index;
-    setCurrentIndex(index);
-    transitioning.current = true;
-    startTransitionTime.current = performance.now();
-  
+    currentPositionIndex.current = index
+    setCurrentIndex(index)
+    transitioning.current = true
+    startTransitionTime.current = performance.now()
+
     // Wyświetl przycisk, jeśli dotyczy ostatniej pozycji
     if (index === lastPosition) {
-      setShowButton(true);
+      setShowButton(true)
     } else {
-      setShowButton(false);
+      setShowButton(false)
     }
-  };
-
-
-
-  
+  }
 
   const renderButton = () => {
     if (showButton) {
-      return <Button />;
+      return <Button />
     }
-  };
+  }
 
   const RenderText = () => {
-    const currentText = textTab[currentPositionIndex.current]; // Pobierz tekst na podstawie indeksu
-    if (!currentText) return null;
+    const currentText = textTab[currentPositionIndex.current] // Pobierz tekst na podstawie indeksu
+    if (!currentText) return null
 
     // Oblicz dynamiczną wartość `top`
-    const topPosition = 20 + currentPositionIndex.current * 10;
+    const topPosition = 20 + currentPositionIndex.current * 10
 
     return (
       <div
         key={currentPositionIndex.current} // Klucz wymuszający odświeżenie
-        className={`${styles.textContainer} ${
-          currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight
-        } ${styles.animateText}`}
+        className={`${styles.textContainer} ${currentPositionIndex.current % 2 === 0 ? styles.textLeft : styles.textRight} ${styles.animateText}`}
         style={{ top: `${topPosition}%` }} // Dynamiczna pozycja `top`
       >
         <h1 className={`${fraunces.className} ${styles.textTitle}`}>{currentText.title}</h1>
         <p className={`${fraunces.className} ${styles.textDescription}`}>{currentText.description}</p>
       </div>
-    );
-  };
+    )
+  }
 
   useEffect(() => {
-    console.log("Chessboard mounted");
+    console.log("Chessboard mounted")
     if (!mountRef.current) {
-      console.error("mountRef.current jest null!");
-      return;
+      console.error("mountRef.current jest null!")
+      return
     }
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    cameraRef.current = camera;
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000)
+    cameraRef.current = camera
 
     // Ustaw początkową pozycję kamery
     if (cameraPositions.current[0]) {
-      camera.position.copy(cameraPositions.current[0].position);
-      camera.lookAt(cameraPositions.current[0].lookAt);
+      camera.position.copy(cameraPositions.current[0].position)
+      camera.lookAt(cameraPositions.current[0].lookAt)
     }
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.domElement.style.position = "absolute";
-    renderer.domElement.style.top = "0";
-    renderer.domElement.style.left = "0";
-    renderer.domElement.style.width = "100vw";
-    renderer.domElement.style.height = "100vh";
-    renderer.domElement.style.margin = "0";
-    renderer.domElement.style.padding = "0";
-    renderer.domElement.style.overflow = "hidden";
-    renderer.shadowMap.enabled = true;
-    mountRef.current.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.domElement.style.position = "absolute"
+    renderer.domElement.style.top = "0"
+    renderer.domElement.style.left = "0"
+    renderer.domElement.style.width = "100vw"
+    renderer.domElement.style.height = "100vh"
+    renderer.domElement.style.margin = "0"
+    renderer.domElement.style.padding = "0"
+    renderer.domElement.style.overflow = "hidden"
+    renderer.shadowMap.enabled = true
+    mountRef.current.appendChild(renderer.domElement)
 
     const handleResize = () => {
       if (mountRef.current && cameraRef.current) {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        const width = window.innerWidth
+        const height = window.innerHeight
 
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(width, height)
+        renderer.setPixelRatio(window.devicePixelRatio)
 
-        cameraRef.current.aspect = width / height;
-        cameraRef.current.updateProjectionMatrix();
+        cameraRef.current.aspect = width / height
+        cameraRef.current.updateProjectionMatrix()
 
         // Wymuszenie ponownego renderowania sceny po resize
-        renderer.clear();
-        renderer.render(scene, cameraRef.current);
+        renderer.clear()
+        renderer.render(scene, cameraRef.current)
       }
-    };
-    window.addEventListener("resize", handleResize);
+    }
+    window.addEventListener("resize", handleResize)
 
-    const textureLoader = new RGBELoader();
+    const textureLoader = new RGBELoader()
     textureLoader.load("/backgrounds/finalBackground.hdr", (texture: THREE.Texture) => {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      const backgroundGeometry = new THREE.SphereGeometry(500, 32, 32);
+      texture.mapping = THREE.EquirectangularReflectionMapping
+      const backgroundGeometry = new THREE.SphereGeometry(500, 32, 32)
       const backgroundMaterial = new THREE.MeshBasicMaterial({
         map: texture,
         side: THREE.BackSide,
-      });
+      })
 
-      const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-      scene.add(backgroundMesh);
+      const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial)
+      scene.add(backgroundMesh)
 
-      scene.environment = texture;
-    });
+      scene.environment = texture
+    })
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableRotate = false;
-    controls.enablePan = false;
-    controls.enableZoom = false;
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.enableRotate = false
+    controls.enablePan = false
+    controls.enableZoom = false
 
-    const ambientLight = new THREE.AmbientLight(0x808080, 0.7); // Jaśniejsze światło otoczenia
-    scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0x808080, 0.7) // Jaśniejsze światło otoczenia
+    scene.add(ambientLight)
 
-    const pointLight = new THREE.PointLight(0xffffff, 2.0, 150); // Mocniejsze światło punktowe
-    pointLight.position.set(0, 20, 10); // Wyższe ustawienie nad szachownicą
-    pointLight.castShadow = true;
-    pointLight.shadow.mapSize.width = 2048;
-    pointLight.shadow.mapSize.height = 2048;
-    scene.add(pointLight);
+    const pointLight = new THREE.PointLight(0xffffff, 2.0, 150) // Mocniejsze światło punktowe
+    pointLight.position.set(0, 20, 10) // Wyższe ustawienie nad szachownicą
+    pointLight.castShadow = true
+    pointLight.shadow.mapSize.width = 2048
+    pointLight.shadow.mapSize.height = 2048
+    scene.add(pointLight)
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Światło kierunkowe
-    directionalLight.position.set(10, 20, 15);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    scene.add(directionalLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0) // Światło kierunkowe
+    directionalLight.position.set(10, 20, 15)
+    directionalLight.castShadow = true
+    directionalLight.shadow.mapSize.width = 2048
+    directionalLight.shadow.mapSize.height = 2048
+    scene.add(directionalLight)
 
-    const loaderGLTF = new GLTFLoader();
+    const loaderGLTF = new GLTFLoader()
     loaderGLTF.load(
-      "/models/chess_set_1k.glb",
+      "/models/landing-page/landing-chessboard.glb",
       (gltf) => {
-        const model = gltf.scene;
+        const model = gltf.scene
         const updateModelScale = () => {
-          const isMobile = window.innerWidth < 768;
-          const scaleFactor = isMobile ? 6 : 11;
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
-        };
-        updateModelScale();
+          const isMobile = window.innerWidth < 768
+          const scaleFactor = isMobile ? 6 : 11
+          model.scale.set(scaleFactor, scaleFactor, scaleFactor)
+        }
+        updateModelScale()
         model.traverse((node) => {
           if ((node as THREE.Mesh).isMesh) {
-            const mesh = node as THREE.Mesh;
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
+            const mesh = node as THREE.Mesh
+            mesh.castShadow = true
+            mesh.receiveShadow = true
           }
-        });
+        })
 
-        chessModel.current = model; // Zachowaj referencję do szachownicy
-        scene.add(model);
-        window.addEventListener("resize", updateModelScale);
+        chessModel.current = model // Zachowaj referencję do szachownicy
+        scene.add(model)
+        window.addEventListener("resize", updateModelScale)
       },
       undefined,
       (error) => {
-        console.error("Błąd ładowania modelu:", error);
-      }
-    );
+        console.error("Błąd ładowania modelu:", error)
+      },
+    )
 
     const handleScroll = (event: WheelEvent) => {
       if (currentPositionIndex.current === lastPosition) {
-        setShowButton(true);
+        setShowButton(true)
       } else {
-        if (transitioning.current || !cameraPositions.current.length) return;
+        if (transitioning.current || !cameraPositions.current.length) return
 
-        const direction = event.deltaY > 0 ? 1 : -1;
-        const newIndex =
-          (currentPositionIndex.current + direction + cameraPositions.current.length) %
-          cameraPositions.current.length;
+        const direction = event.deltaY > 0 ? 1 : -1
+        const newIndex = (currentPositionIndex.current + direction + cameraPositions.current.length) % cameraPositions.current.length
 
-        const newPosition = cameraPositions.current[newIndex];
-        if (!newPosition) return;
+        const newPosition = cameraPositions.current[newIndex]
+        if (!newPosition) return
 
         // Ustawienia pozycji kamery
-        startPosition.current.copy(camera.position);
-        targetPosition.current.copy(newPosition.position);
+        startPosition.current.copy(camera.position)
+        targetPosition.current.copy(newPosition.position)
 
         // Ustawienia rotacji szachownicy
-        startRotation.current = chessModel.current?.rotation.y || 0;
+        startRotation.current = chessModel.current?.rotation.y || 0
         if (newIndex === 3) {
-          targetRotation.current = startRotation.current + Math.PI / 4;
+          targetRotation.current = startRotation.current + Math.PI / 4
         } else if (newIndex === 2) {
-          targetRotation.current = 0;
+          targetRotation.current = 0
         } else {
-          targetRotation.current = startRotation.current;
+          targetRotation.current = startRotation.current
         }
 
-        currentPositionIndex.current = newIndex;
-        setCurrentIndex(newIndex);
-        transitioning.current = true;
-        startTransitionTime.current = performance.now();
+        currentPositionIndex.current = newIndex
+        setCurrentIndex(newIndex)
+        transitioning.current = true
+        startTransitionTime.current = performance.now()
 
         if (newIndex === lastPosition) {
-          setShowButton(true);
+          setShowButton(true)
         }
       }
-    };
+    }
 
-    let touchStartY = 0;
-    let touchEndY = 0;
+    let touchStartY = 0
+    let touchEndY = 0
 
     const handleTouchStart = (event: TouchEvent) => {
-      touchStartY = event.touches[0]?.clientY ?? 0;
-    };
+      touchStartY = event.touches[0]?.clientY ?? 0
+    }
     const handleTouchMove = (event: TouchEvent) => {
       if (event.touches[0]) {
-        touchEndY = event.touches[0].clientY;
+        touchEndY = event.touches[0].clientY
       }
-    };
+    }
     const handleTouchEnd = () => {
-      if (transitioning.current || !cameraPositions.current.length || !cameraRef.current) return;
+      if (transitioning.current || !cameraPositions.current.length || !cameraRef.current) return
 
-      const deltaY = touchStartY - touchEndY;
-      const direction = deltaY > 0 ? 1 : -1;
-      const newIndex =
-        (currentPositionIndex.current + direction + cameraPositions.current.length) %
-        cameraPositions.current.length;
+      const deltaY = touchStartY - touchEndY
+      const direction = deltaY > 0 ? 1 : -1
+      const newIndex = (currentPositionIndex.current + direction + cameraPositions.current.length) % cameraPositions.current.length
 
-      const newPosition = cameraPositions.current[newIndex];
-      if (!newPosition) return;
+      const newPosition = cameraPositions.current[newIndex]
+      if (!newPosition) return
 
-      startPosition.current.copy(cameraRef.current!.position);
-      targetPosition.current.copy(newPosition.position);
+      startPosition.current.copy(cameraRef.current!.position)
+      targetPosition.current.copy(newPosition.position)
 
-      startRotation.current = chessModel.current?.rotation.y || 0;
+      startRotation.current = chessModel.current?.rotation.y || 0
       if (newIndex === 3) {
-        targetRotation.current = startRotation.current + Math.PI / 4;
+        targetRotation.current = startRotation.current + Math.PI / 4
       } else if (newIndex === 2) {
-        targetRotation.current = 0;
+        targetRotation.current = 0
       } else {
-        targetRotation.current = startRotation.current;
+        targetRotation.current = startRotation.current
       }
 
-      currentPositionIndex.current = newIndex;
-      setCurrentIndex(newIndex);
-      transitioning.current = true;
-      startTransitionTime.current = performance.now();
+      currentPositionIndex.current = newIndex
+      setCurrentIndex(newIndex)
+      transitioning.current = true
+      startTransitionTime.current = performance.now()
 
       if (newIndex === lastPosition) {
-        setShowButton(true);
+        setShowButton(true)
       } else {
-        setShowButton(false);
+        setShowButton(false)
       }
-    };
+    }
 
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
-    window.addEventListener("wheel", handleScroll);
+    window.addEventListener("touchstart", handleTouchStart)
+    window.addEventListener("touchmove", handleTouchMove)
+    window.addEventListener("touchend", handleTouchEnd)
+    window.addEventListener("wheel", handleScroll)
 
     const animate = () => {
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animate)
 
       if (transitioning.current && startTransitionTime.current !== null) {
-        const elapsedTime = performance.now() - startTransitionTime.current;
-        const rawProgress = Math.min(elapsedTime / animationDuration, 1);
-        const easeInOutQuad = (t: number): number =>
-          t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-        const progress = easeInOutQuad(rawProgress);
+        const elapsedTime = performance.now() - startTransitionTime.current
+        const rawProgress = Math.min(elapsedTime / animationDuration, 1)
+        const easeInOutQuad = (t: number): number => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t)
+        const progress = easeInOutQuad(rawProgress)
 
         // Interpolacja pozycji kamery
-        camera.position.lerpVectors(startPosition.current, targetPosition.current, progress);
+        camera.position.lerpVectors(startPosition.current, targetPosition.current, progress)
 
         // Rotacja szachownicy
         if (chessModel.current) {
-          chessModel.current.rotation.y =
-            startRotation.current + (targetRotation.current - startRotation.current) * progress;
+          chessModel.current.rotation.y = startRotation.current + (targetRotation.current - startRotation.current) * progress
         }
 
-        const currentLookAt = cameraPositions.current[currentPositionIndex.current]?.lookAt;
-        if (currentLookAt) camera.lookAt(currentLookAt);
+        const currentLookAt = cameraPositions.current[currentPositionIndex.current]?.lookAt
+        if (currentLookAt) camera.lookAt(currentLookAt)
 
         if (rawProgress === 1) {
-          transitioning.current = false;
-          startTransitionTime.current = null;
+          transitioning.current = false
+          startTransitionTime.current = null
         }
       }
 
-      controls.update();
-      renderer.render(scene, camera);
-    };
+      controls.update()
+      renderer.render(scene, camera)
+    }
 
-    animate();
+    animate()
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("wheel", handleScroll);
+      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("wheel", handleScroll)
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      mountRef.current?.removeChild(renderer.domElement);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [lastPosition]);
+      mountRef.current?.removeChild(renderer.domElement)
+      window.removeEventListener("touchstart", handleTouchStart)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
+    }
+  }, [lastPosition])
 
   return (
     <div className="mainContainer">
@@ -472,30 +451,27 @@ const Chessboard: React.FC = () => {
         <div ref={mountRef} style={{ width: "100%", height: "100%" }} />
 
         {/* Overlay z progress barem */}
-        {!modelLoaded && (
-          <SkeletonChessboard progress={loadingProgress} />
-        )}
+        {!modelLoaded && <SkeletonChessboard progress={loadingProgress} />}
       </div>
       {modelLoaded && <Navbar />}
       {modelLoaded && RenderText()}
       {modelLoaded && renderButton()}
-      {modelLoaded &&  
-      <div className={styles.dotsContainer}>
-        {cameraPositions.current.map((_, index) => (
-          <div
-            onClick={handleDotClick}
-            onTouchStart={handleDotTouch}
-            data-index={index}
-            key={index}
-            className={`${styles.dot} ${currentIndex === index ? styles.dotActive : ""}`}
-          ></div>
-        ))}
-      </div>}
-      <div className={styles.scrollContainer}>
-      {modelLoaded && <ScrollAnimation />}
-      </div>
+      {modelLoaded && (
+        <div className={styles.dotsContainer}>
+          {cameraPositions.current.map((_, index) => (
+            <div
+              onClick={handleDotClick}
+              onTouchStart={handleDotTouch}
+              data-index={index}
+              key={index}
+              className={`${styles.dot} ${currentIndex === index ? styles.dotActive : ""}`}
+            ></div>
+          ))}
+        </div>
+      )}
+      <div className={styles.scrollContainer}>{modelLoaded && <ScrollAnimation />}</div>
     </div>
-  );
-};
+  )
+}
 
-export default Chessboard;
+export default Chessboard

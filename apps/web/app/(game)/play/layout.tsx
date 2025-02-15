@@ -10,11 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   // Jeśli ścieżka zaczyna się od bazowych i ma dodatkowy segment (np. "/play/link/costma")
-  if (
-    pathname.startsWith("/play/online/") ||
-    pathname.startsWith("/play/link/") ||
-    pathname.startsWith("/play/local/")
-  ) {
+  if (pathname.startsWith("/play/online/") || pathname.startsWith("/play/link/") || pathname === "/play/local") {
     return <>{children}</>
   }
 
@@ -27,9 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-1 flex flex-col">
           <MobileHeader className="md:hidden" />
           <Navbar className="hidden md:flex" />
-          <main className="flex flex-col flex-grow items-center justify-center">
-            {children}
-          </main>
+          <main className="flex flex-col flex-grow justify-center">{children}</main>
         </div>
       </div>
     </SidebarProvider>
