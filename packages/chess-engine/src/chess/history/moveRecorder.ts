@@ -58,7 +58,7 @@ class MoveRecorder {
     }
 
     // Check for check or checkmate
-    if (this._board.isCheckmate(this._gameInstance.currentPlayer)) {
+    if (this._board.isCheckmate() === this._gameInstance.currentPlayer) {
       moveName += "#" // Checkmate
     } else if (this._board.isKingInCheck(this._gameInstance.currentPlayer)) {
       moveName += "+" // Check

@@ -1,12 +1,12 @@
-import ChessGame from "@modules/chess/chessGame"
-import { Bishop } from "@utils/figureUtils"
-import color from "@chesstypes/colorType"
-const game = new ChessGame()
-game.start()
+import { isCheckmate } from "@modules/shared/destruct/gameStateFunctions/gameStateFunctions"
+import { getBoard, getPositionByCords, getPositionByNotation, getPositionById } from "@modules/shared/destruct/mallocFunctions/positonMapping"
+import { isMoveValid, getValidMoves, whosTurn } from "@modules/shared/destruct/movementFunctions/getValidMoves"
+import { makeMove } from "@modules/shared/destruct/movementFunctions/makeMove"
+import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-const pos = game._board.getPositionByNotation("e3")
-if (pos) {
-  const fig = new Bishop(color.White, pos, game._board)
-  game._board.addFigureAtPosition(pos, fig)
-  game._board.getValidMovesForPosition(pos)
+const setupGame = () => {
+  const game = new ChessGameExtraLayer()
+  return game
 }
+
+export { isCheckmate, getBoard, getPositionByCords, getPositionByNotation, getPositionById, isMoveValid, getValidMoves, whosTurn, makeMove, setupGame }

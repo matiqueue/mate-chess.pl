@@ -14,17 +14,17 @@ class chessGame {
     this._board = new Board()
     this._board.setupBoard()
     this._currentPlayer = color.White
-    this._moveRecorder = new MoveRecorder(this._board)
+    this._moveRecorder = new MoveRecorder(this._board, this)
   }
   start(): void {
     this.process()
   }
   protected process() {
     this.setupFigures()
-    if (this._board.isCheckmate(this.currentPlayer)) {
+    if (this._board.isCheckmate() === this.currentPlayer) {
       console.log(`${this.currentPlayer} is checkmated!`)
       this.isGameOn = false
-    } else if (this._board.isStalemate(this.currentPlayer)) {
+    } else if (this._board.isStalemate()) {
       console.log(`Stalemate! The game is a draw.`)
       this.isGameOn = false
     }

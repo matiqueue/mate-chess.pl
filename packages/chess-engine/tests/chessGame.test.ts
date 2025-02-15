@@ -40,7 +40,7 @@ describe("ChessGame", () => {
       from: board.getPositionByNotation("e2")!,
       to: board.getPositionByNotation("e3")!,
     }
-    expect(game._board.getFigureAtPosition(move.from)?.type).toBe(figureType.pawn)
+    expect(game.board.getFigureAtPosition(move.from)?.type).toBe(figureType.pawn)
     expect(game.makeMove(move)).toBe(true)
     expect(game.currentPlayer).toBe(color.Black)
   })
