@@ -1,4 +1,4 @@
-enum figureType {
+export enum figureType {
   knight = "knight",
   queen = "queen",
   king = "king",
@@ -6,4 +6,3 @@ enum figureType {
   pawn = "pawn",
   rook = "rook",
 }
-export default figureType

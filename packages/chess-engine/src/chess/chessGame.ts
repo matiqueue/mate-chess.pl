@@ -1,9 +1,8 @@
 import { Board } from "@utils/boardUtils"
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
-import color from "@chesstypes/colorType"
-import Move from "@chesstypes/moveType"
+import { color } from "@shared/types/colorType"
+import { Move } from "@shared/types/moveType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
-import moveRecorder from "@modules/chess/history/moveRecorder"
 
 class chessGame {
   private _board: Board

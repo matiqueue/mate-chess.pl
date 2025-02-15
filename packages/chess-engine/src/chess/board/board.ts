@@ -1,9 +1,8 @@
 import { Figure, King, Pawn, Rook } from "@utils/figureUtils"
 import { Position } from "@utils/boardUtils"
-import colorType from "@chesstypes/colorType"
-import color from "@chesstypes/colorType"
-import Move from "@chesstypes/moveType"
-import figureType from "@chesstypes/figureType"
+import { color } from "@shared/types/colorType"
+import { Move } from "@shared/types/moveType"
+import { figureType } from "@shared/types/figureType"
 
 class Board {
   private positions: Map<string, Position>
@@ -68,9 +67,9 @@ class Board {
 
     existingPos.figure = figure
     figure.id = this._allFigures.length
-    if (figure.color === colorType.White) {
+    if (figure.color === color.White) {
       this._whiteFigures.push(figure)
-    } else if (figure.color === colorType.Black) {
+    } else if (figure.color === color.Black) {
       this._blackFigures.push(figure)
     }
     this.updateArray()
@@ -164,7 +163,7 @@ class Board {
     }
 
     if (movedFigure instanceof Pawn) {
-      movedFigure.isFirstMove = (fromPos.y === 1 && movedFigure.color === colorType.White) || (fromPos.y === 6 && movedFigure.color === colorType.Black)
+      movedFigure.isFirstMove = (fromPos.y === 1 && movedFigure.color === color.White) || (fromPos.y === 6 && movedFigure.color === color.Black)
     }
 
     console.log(`Move undone: ${movedFigure.type} moved back to ${fromPos.notation}`)
@@ -174,7 +173,7 @@ class Board {
   public canCastle(king: King, target: Position): boolean {
     if (king.hasMoved) return false
 
-    const y = king.color === colorType.White ? 0 : 7
+    const y = king.color === color.White ? 0 : 7
     const isShortCastle = target.x > king.position.x
     const rookStartX = isShortCastle ? 7 : 0
     const rookEndX = isShortCastle ? 5 : 3
@@ -195,7 +194,7 @@ class Board {
     }
 
     // Sprawdzenie, czy król nie przechodzi przez szachowane pole
-    const opponentFigures = king.color === colorType.White ? this._blackFigures : this._whiteFigures
+    const opponentFigures = king.color === color.White ? this._blackFigures : this._whiteFigures
     for (let x = king.position.x; x !== target.x + direction; x += direction) {
       const testPosition = this.getPositionByCords(x, y)
       if (!testPosition) continue
@@ -258,7 +257,7 @@ class Board {
 
     switch (figure.type) {
       case figureType.pawn: {
-        const direction = figure.color === colorType.White ? -1 : 1
+        const direction = figure.color === color.White ? -1 : 1
 
         // Normal move forward
         const oneStep = this.getPositionByCords(x, y + direction)
@@ -429,9 +428,9 @@ class Board {
     return null
   }
 
-  public isKingInCheck(color: colorType.White | colorType.Black): boolean {
-    const king = color === colorType.White ? this.getWhiteKing() : this.getBlackKing()
-    const enemyFigures = color === colorType.White ? this._blackFigures : this._whiteFigures
+  public isKingInCheck(colorType: color.White | color.Black): boolean {
+    const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
+    const enemyFigures = colorType === color.White ? this._blackFigures : this._whiteFigures
 
     if (!king) return false
 
@@ -442,7 +441,7 @@ class Board {
     }
     return false
   }
-  public isCheckmate(): colorType.White | colorType.Black | null {
+  public isCheckmate(): color.White | color.Black | null {
     if (this.getLegalMoves(color.White).length <= 0) {
       if (this.isKingInCheck(color.White)) return color.White
     }
@@ -460,10 +459,10 @@ class Board {
     }
     return false
   }
-  public getLegalMoves(color: colorType.White | colorType.Black): Position[] {
-    const king = color === colorType.White ? this.getWhiteKing() : this.getBlackKing()
-    const figures = color === colorType.Black ? this._blackFigures : this._whiteFigures
-    let legalMoves: Position[] = []
+  public getLegalMoves(colorType: color.White | color.Black): Position[] {
+    const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
+    const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
+    const legalMoves: Position[] = []
     if (!king) return []
     if (!figures) return []
     for (const figure of figures) {

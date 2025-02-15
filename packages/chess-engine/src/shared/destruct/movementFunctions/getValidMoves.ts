@@ -1,6 +1,6 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Position, Board } from "@utils/boardUtils"
-import Move from "@chesstypes/moveType"
+import { Move } from "@shared/types/moveType"
 
 export const isMoveValid = (board: Board, move: Move): boolean => {
   return !!board?.getFigureAtPosition(move.from)?.isMoveValid(move.to)

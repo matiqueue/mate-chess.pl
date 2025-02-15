@@ -1,8 +1,8 @@
 import Board from "@modules/chess/board/board"
-import Move from "@chesstypes/moveType"
-import figureType from "@chesstypes/figureType"
-import MoveRecord from "@chesstypes/moveRecord"
-import color from "@chesstypes/colorType"
+import { Move } from "@shared/types/moveType"
+import { figureType } from "@shared/types/figureType"
+import MoveRecord from "@shared/types/moveRecord"
+import { color } from "@shared/types/colorType"
 import { King, Pawn } from "@utils/figureUtils"
 import ChessGame from "@modules/chess/chessGame"
 

@@ -1,6 +1,6 @@
 import { Figure, Pawn } from "@utils/figureUtils"
-import figureType from "@chesstypes/figureType"
-import color from "@chesstypes/colorType"
+import { figureType } from "@shared/types/figureType"
+import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 
 class King extends Figure {

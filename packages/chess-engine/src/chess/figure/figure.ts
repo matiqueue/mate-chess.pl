@@ -1,5 +1,5 @@
-import color from "@chesstypes/colorType"
-import figureType from "@chesstypes/figureType"
+import { color } from "@shared/types/colorType"
+import { figureType } from "@shared/types/figureType"
 import { Position, Board } from "@utils/boardUtils"
 
 abstract class Figure {

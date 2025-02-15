@@ -1,5 +1,5 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import color from "@chesstypes/colorType"
+import { color } from "@shared/types/colorType"
 
 export const isCheckmate = (game: ChessGameExtraLayer): color | undefined | null => {
   if (game.board) {
