@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { setupGame, getBoard, getPositionByCords, makeMove, getValidMoves, whosTurn, isCheckmate } from "@workspace/chess-engine/functions"
+import { setupGame, getBoard, getPositionByCords, makeMove, getValidMoves, whosTurn, isCheckmate } from "@chess-engine/functions"
 import { Board, Position } from "@modules/utils/boardUtils"
 import { King } from "@modules/utils/figureUtils"
 import { FaChessKnight, FaChessBishop, FaChessRook, FaChessQueen, FaChessKing } from "react-icons/fa"
@@ -46,7 +46,6 @@ export default function Chessboard() {
     setTurn(whosTurn(gameInstanceRef.current))
     setSelectedPos(null)
     setValidMoves([])
-    setCheckmate(isCheckmate(gameInstanceRef.current))
   }
 
   return (
