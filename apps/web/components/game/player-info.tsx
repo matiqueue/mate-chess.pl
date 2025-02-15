@@ -5,8 +5,8 @@ export function PlayerInfo() {
   const { theme } = useTheme()
   const textColor = theme === "dark" ? "text-white" : "text-zinc-900"
   const mutedTextColor = theme === "dark" ? "text-white/60" : "text-zinc-600"
-  const timerBg = theme === "dark" ? "bg-zinc-800" : "bg-white/80"
-
+  const timerBg = theme === "dark" ? "bg-zinc-800" : "bg-white/50"
+  const currentTurn = "White"
   return (
     <div className="w-full py-6 px-8">
       <div className="flex justify-between items-center max-w-4xl mx-auto">
@@ -34,7 +34,7 @@ export function PlayerInfo() {
           </Avatar>
         </div>
       </div>
+      <div className={`text-center font-medium bg-background/30 py-2 mb-[1%] mt-[2%] rounded-lg max-w-xs mx-auto border`}>Current turn: {currentTurn}</div>
     </div>
   )
 }
-
