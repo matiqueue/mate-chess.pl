@@ -3,10 +3,27 @@ import { getBoard, getPositionByCords, getPositionByNotation, getPositionById } 
 import { isMoveValid, getValidMoves, whosTurn } from "@modules/shared/destruct/movementFunctions/getValidMoves"
 import { makeMove } from "@modules/shared/destruct/movementFunctions/makeMove"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
+import type colorType from "@chesstypes/colorType"
+import type figureType from "@chesstypes/figureType"
+import type moveType from "@chesstypes/moveType"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
   return game
 }
 
-export { isCheckmate, getBoard, getPositionByCords, getPositionByNotation, getPositionById, isMoveValid, getValidMoves, whosTurn, makeMove, setupGame }
+export {
+  isCheckmate,
+  getBoard,
+  getPositionByCords,
+  getPositionByNotation,
+  getPositionById,
+  isMoveValid,
+  getValidMoves,
+  whosTurn,
+  makeMove,
+  setupGame,
+  colorType,
+  figureType,
+  moveType,
+}
