@@ -1,59 +1,80 @@
+"use client"
+
 import { Button } from "@workspace/ui/components/button"
 import { Users, Trophy, PuzzleIcon as PuzzlePiece, BookOpen, Activity, Settings, PuzzleIcon, Home, Bot, GraduationCap } from "lucide-react"
-import { useAppContext } from "@/contexts/AppContext"
 import { useTheme } from "next-themes"
 import { Separator } from "@workspace/ui/components/separator"
 import Link from "next/link"
+import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, useSidebar } from "@workspace/ui/components/sidebar"
 
 export function LeftSidebar() {
-  const { isLeftSidebarVisible } = useAppContext()
   const { theme } = useTheme()
-
-  if (!isLeftSidebarVisible) {
-    return null
-  }
+  const { open } = useSidebar() // Pobieramy stan otwarcia sidebaru
 
   const isDark = theme === "dark"
   const textColor = isDark ? "text-white" : "text-zinc-900"
   const mutedTextColor = isDark ? "text-white/60" : "text-zinc-600"
   const borderColor = isDark ? "border-white/10" : "border-zinc-200"
 
+  // Warunkowe style dla przycisków
+  const buttonClass = open
+    ? `w-full flex items-center justify-start px-2 ${textColor} hover:bg-white/10`
+    : `w-full flex items-center justify-center ${textColor} hover:bg-white/10`
+
+  // Warunkowe style dla ikon przycisków
+  const iconClass = open ? "mr-2 h-4 w-4" : "h-4 w-4"
+
+  // Warunkowe style dla nagłówka (logo)
+  const headerClass = open
+    ? `text-2xl font-bold flex items-center justify-start gap-2 ${textColor}`
+    : `text-2xl font-bold flex items-center justify-center ${textColor}`
+
+  // Stały rozmiar dla ikony logo – niezależnie od stanu sidebaru
+  const titleIconClass = "h-6 w-6 flex-none"
+
+  function Header() {
+    return (
+      <SidebarHeader className="p-6 text-center">
+        <h1 className={headerClass}>
+          <PuzzleIcon className={titleIconClass} />
+          {open && "Mate Chess"}
+        </h1>
+      </SidebarHeader>
+    )
+  }
+
   return (
-    <div className={`w-64 flex flex-col border-r ${borderColor} bg-background/30 backdrop-blur-sm rounded-tr-2xl rounded-br-2xl`}>
-      <div className="p-6 text-center">
-        <Link href="/">
-          <h1 className={`text-2xl font-bold flex items-center justify-start gap-2 ${textColor}`}>
-            <PuzzleIcon className="h-6 w-6" />
-            Mate Chess
-          </h1>
-        </Link>
-      </div>
-
-      <div className="flex-1 p-4 space-y-6">
+    <Sidebar
+      collapsible="icon"
+      // Szerokość sidebaru zależy od stanu: 16rem gdy otwarty, 4rem gdy collapsed
+      style={{ width: open ? "16rem" : "4rem" }}
+      className={`flex flex-col border-r ${borderColor} bg-background/30 backdrop-blur-sm rounded-tr-2xl rounded-br-2xl`}
+    >
+      {open && <Header />}
+      <SidebarContent className="flex-1 p-4 space-y-4">
         <Link href="/home">
-          <div className="space-y-1 ">
-            <h3 className={`text-l font flex items-center justify-start gap-2 ${textColor}`}>
-              <Home className="ml-3 h-5 w-5" />
-              Home
-            </h3>
-          </div>
+          <Button variant="ghost" className={buttonClass}>
+            <Home className={iconClass} />
+            {open && "Home"}
+          </Button>
         </Link>
 
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
+
         <div>
-          <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>PLAY</h2>
+          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>PLAY</h2>}
           <div className="space-y-1">
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <Users className="mr-2 h-4 w-4" />
-              Play Online
+            <Button variant="ghost" className={buttonClass}>
+              <Users className={iconClass} />
+              {open && "Play Online"}
             </Button>
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <Bot className="mr-2 h-4 w-4" />
-              Play vs Bot
+            <Button variant="ghost" className={buttonClass}>
+              <Bot className={iconClass} />
+              {open && "Play vs Bot"}
             </Button>
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <Trophy className="mr-2 h-4 w-4" />
-              Tournaments
+            <Button variant="ghost" className={buttonClass}>
+              <Trophy className={iconClass} />
+              {open && "Tournaments"}
             </Button>
           </div>
         </div>
@@ -61,19 +82,19 @@ export function LeftSidebar() {
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
         <div>
-          <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>LEARN</h2>
+          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>LEARN</h2>}
           <div className="space-y-1">
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <PuzzlePiece className="mr-2 h-4 w-4" />
-              Puzzles
+            <Button variant="ghost" className={buttonClass}>
+              <PuzzlePiece className={iconClass} />
+              {open && "Puzzles"}
             </Button>
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <GraduationCap className="mr-2 h-4 w-4" />
-              Lessons
+            <Button variant="ghost" className={buttonClass}>
+              <GraduationCap className={iconClass} />
+              {open && "Lessons"}
             </Button>
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <BookOpen className="mr-2 h-4 w-4" />
-              Openings
+            <Button variant="ghost" className={buttonClass}>
+              <BookOpen className={iconClass} />
+              {open && "Openings"}
             </Button>
           </div>
         </div>
@@ -81,28 +102,28 @@ export function LeftSidebar() {
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
         <div>
-          <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>COMMUNITY</h2>
+          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>COMMUNITY</h2>}
           <div className="space-y-1">
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <Users className="mr-2 h-4 w-4" />
-              Players
+            <Button variant="ghost" className={buttonClass}>
+              <Users className={iconClass} />
+              {open && "Players"}
             </Button>
-            <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-              <Activity className="mr-2 h-4 w-4" />
-              Activity
+            <Button variant="ghost" className={buttonClass}>
+              <Activity className={iconClass} />
+              {open && "Activity"}
             </Button>
           </div>
         </div>
-      </div>
+      </SidebarContent>
 
       <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-      <div className="p-4">
-        <Button variant="ghost" className={`w-full justify-start ${textColor} hover:bg-white/10`}>
-          <Settings className="mr-2 h-4 w-4" />
-          Settings
+      <SidebarFooter className="p-4">
+        <Button variant="ghost" className={buttonClass}>
+          <Settings className={iconClass} />
+          {open && "Settings"}
         </Button>
-      </div>
-    </div>
+      </SidebarFooter>
+    </Sidebar>
   )
 }

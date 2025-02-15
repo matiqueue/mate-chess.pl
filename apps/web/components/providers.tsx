@@ -19,7 +19,7 @@ export function Providers({ children }: ProvidersProps) {
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} enableColorScheme disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} enableColorScheme disableTransitionOnChange>
       <Analytics />
       <AudioProvider>{children}</AudioProvider>
     </ThemeProvider>

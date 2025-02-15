@@ -5,7 +5,8 @@ import { GameControls } from "@/components/game/game-controls"
 import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"
 import { RightPanel } from "@/components/game/right-panel"
-import { AppProvider } from "@/contexts/AppContext"
+import { SidebarProvider } from "@workspace/ui/components/sidebar"
+
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
@@ -30,24 +31,22 @@ function ChessPageContent() {
       />
       <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/30"} backdrop-blur-sm`} />
       <div className="relative flex w-full h-full">
-        <LeftSidebar />
-        <main className="flex-1 flex flex-col items-center justify-center p-4">
-          <PlayerInfo />
-          <div className="flex-1 flex items-center justify-center w-full max-w-[68vh]">
-            <ChessBoard />
-          </div>
-          <GameControls />
-        </main>
-        <RightPanel />
+        <SidebarProvider>
+          <LeftSidebar />
+          <main className="flex-1 flex flex-col items-center justify-center p-4">
+            <PlayerInfo />
+            <div className="flex-1 flex items-center justify-center w-full max-w-[68vh]">
+              <ChessBoard />
+            </div>
+            <GameControls />
+          </main>
+          <RightPanel />
+        </SidebarProvider>
       </div>
     </div>
   )
 }
 
 export default function ChessPage() {
-  return (
-    <AppProvider>
-      <ChessPageContent />
-    </AppProvider>
-  )
+  return <ChessPageContent />
 }
