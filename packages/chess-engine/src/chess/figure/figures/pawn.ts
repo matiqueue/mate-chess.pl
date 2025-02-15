@@ -68,7 +68,7 @@ class Pawn extends Figure {
       return true
     }
     //standard diagonal attack
-    if (Math.abs(target.x - this.position.x) === 1 && Math.abs(target.y - this.position.y) === 1 && target.figure?.color !== this.color) {
+    if (Math.abs(target.x - this.position.x) === 1 && Math.abs(target.y - this.position.y) === 1 && target.figure && target.figure?.color !== this.color) {
       return true
     }
     // 2 fields move forward
