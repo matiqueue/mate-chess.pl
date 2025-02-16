@@ -1,3 +1,5 @@
+"use client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components//card"
 import { Progress } from "@workspace/ui/components/progress"
@@ -6,6 +8,28 @@ import { GamepadIcon, TrophyIcon, Activity } from "lucide-react"
 
 export default function StatiscticsPage() {
   // Placeholder data - replace with actual data from your backend
+  // useEffect(() => {
+  //   async function fetchUserData() {
+
+  //       try {
+  //         const response = await fetch(`/api/getUserStats?clerkID=clerk_test_1`);
+  //         const data = await response.json();
+  //         if (!response.ok) {
+  //           throw new Error(data.error || "Failed to fetch user data");
+  //         }
+  //         setUser(data);
+  //         console.log(data)
+  //       } catch (error) {
+  //         console.error("Error fetching user data:", error);
+  //       }
+  //     }
+  
+  //     fetchUserData();
+  // }, []);
+
+
+
+
   const user = {
     name: "John Doe",
     username: "johnd",
@@ -14,8 +38,9 @@ export default function StatiscticsPage() {
     gamesPlayed: 150,
     winPercentage: 65,
     eloPoints: 1850,
+    time_played: "15.02.2025",
     lastGames: [
-      { id: 1, result: "Win", opponent: "Alice", eloChange: "+15" },
+      { id: 1, result: "Win", opponent: "Alice", eloChange: "+15"},
       { id: 2, result: "Loss", opponent: "Bob", eloChange: "-10" },
       { id: 3, result: "Win", opponent: "Charlie", eloChange: "+12" },
       { id: 4, result: "Win", opponent: "David", eloChange: "+14" },
@@ -30,17 +55,17 @@ export default function StatiscticsPage() {
           <CardContent className="flex flex-col md:flex-row items-center justify-between py-6">
             <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
               <Avatar className="w-24 h-24 md:mr-6 mb-4 md:mb-0">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                {/* <AvatarImage src={avatar} alt={user.name} /> */}
+                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="text-center md:text-left">
-                <h1 className="text-3xl font-bold">{user.name}</h1>
+                <h1 className="text-3xl font-bold">{user.username}</h1>
                 <p className="text-muted-foreground">@{user.username}</p>
               </div>
             </div>
             <div className="flex flex-col items-center md:items-end">
               <p className="text-sm text-muted-foreground">Member since</p>
-              <p className="text-lg font-semibold">{new Date(user.joinDate).toLocaleDateString()}</p>
+              <p className="text-lg font-semibold">{new Date().toLocaleDateString()}</p>
             </div>
           </CardContent>
         </Card>
@@ -61,7 +86,7 @@ export default function StatiscticsPage() {
             <TrophyIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.winPercentage}%</div>
+            <div className="text-2xl font-bold">63%</div>
             <Progress value={user.winPercentage} className="mt-2" />
           </CardContent>
         </Card>
@@ -83,7 +108,7 @@ export default function StatiscticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {user.eloPoints > 2000 ? "Master" : user.eloPoints > 1500 ? "Expert" : "Beginner"}
+             {user.eloPoints > 2200 ? "Master & Beyond" : user.eloPoints > 2000 ? "Candidate Master" : user.eloPoints > 1800 ? "Expert" : user.eloPoints > 1600 ? "Strong Tournamnet Player" : user.eloPoints > 1400 ? "Advanced Club Player" :  user.eloPoints > 1200 ? "Club Player" : user.eloPoints > 1000 ? "Intermediate" : user.eloPoints > 800 ? "Casual Player" : user.eloPoints > 600 ? "Novice" : "Beginer"}
             </div>
           </CardContent>
         </Card>
@@ -100,6 +125,7 @@ export default function StatiscticsPage() {
                 <TableHead>Result</TableHead>
                 <TableHead>Opponent</TableHead>
                 <TableHead>ELO Change</TableHead>
+                <TableHead>Time Played</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -108,6 +134,7 @@ export default function StatiscticsPage() {
                   <TableCell>{game.result}</TableCell>
                   <TableCell>{game.opponent}</TableCell>
                   <TableCell>{game.eloChange}</TableCell>
+                  <TableCell>{user.time_played}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
