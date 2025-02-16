@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
 
@@ -17,7 +16,6 @@ import { useSidebar } from "@workspace/ui/components/sidebar"
 
 export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
-  const [notationStyle, setNotationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [currentWidth, setCurrentWidth] = useState(320) // aktualna szerokość panelu
 
@@ -33,7 +31,7 @@ export function RightPanel() {
   const isNarrow = currentWidth <= 220
 
   // Aktualizacja szerokości w czasie rzeczywistym:
-  const handleResize = (e: any, direction: any, ref: HTMLElement) => {
+  const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
 
@@ -49,19 +47,6 @@ export function RightPanel() {
     { white: "O-O", black: "Be7" },
   ]
 
-  const renderMove = (move: string) => {
-    switch (notationStyle) {
-      case "algebraic":
-        return move
-      case "long":
-        return move.length > 2 ? move : `P${move}`
-      case "descriptive":
-        return `P-${move}`
-      default:
-        return move
-    }
-  }
-
   const pathname = usePathname()
   let modeText = ""
   let modeColor = ""
@@ -76,9 +61,8 @@ export function RightPanel() {
     modeColor = "text-green-500"
   }
 
-  const { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar()
+  const { open, setOpen } = useSidebar()
 
-  // Klasy dla przycisków dolnego wiersza – gdy wąskie, tylko ikony (szerokość fit)
   const bottomButtonClass = isNarrow
     ? "w-fit p-2 flex items-center justify-center"
     : "flex-1 min-w-[100px] text-sm whitespace-nowrap flex items-center justify-center"
@@ -277,15 +261,17 @@ export function RightPanel() {
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Move History – usunięto tytuł */}
-              <div className="text-sm space-y-1 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
-                {moves.map((move, index) => (
-                  <div key={index} className="flex hover:bg-secondary rounded px-2 py-1 transition-colors">
-                    <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
-                    <span className={`w-14 ${textColor}`}>{renderMove(move.white)}</span>
-                    <span className={`w-14 ${textColor}`}>{renderMove(move.black)}</span>
-                  </div>
-                ))}
+              <div>
+                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Move History</h2>
+                <div className="text-sm space-y-1 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                  {moves.map((move, index) => (
+                    <div key={index} className="flex hover:bg-secondary rounded px-2 py-1 transition-colors">
+                      <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
+                      <span className={`w-14 ${textColor}`}>{move.white}</span>
+                      <span className={`w-14 ${textColor}`}>{move.black}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
