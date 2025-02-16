@@ -82,7 +82,7 @@ class Board {
     return position.figure
   }
 
-  public moveFigure(move: Move): boolean {
+  public moveFigure(move: Move, simulate: boolean = false): boolean {
     const fromPos = this.getPosition(move.from)
     const toPos = this.getPosition(move.to)
 
@@ -95,10 +95,14 @@ class Board {
       return false
     }
 
-    if (!figure.isMoveValid(toPos)) {
-      return false
-    }
+    if (!simulate) {
+      const legalMoves = this.getLegalMoves(figure.color)
+      const isLegal = legalMoves.some((legalMove) => legalMove.from.notation === fromPos.notation && legalMove.to.notation === toPos.notation)
 
+      if (!isLegal) {
+        return false
+      }
+    }
     let wasFirstMove = false
     if (fromPos.figure instanceof Pawn) {
       wasFirstMove = fromPos.figure.isFirstMove
@@ -469,7 +473,7 @@ class Board {
           from: figure.position,
           to: moveToVerify,
         }
-        if (this.moveFigure(move)) {
+        if (this.moveFigure(move, true)) {
           if (!this.isKingInCheck(king.color)) {
             legalMoves.push(move)
           }
