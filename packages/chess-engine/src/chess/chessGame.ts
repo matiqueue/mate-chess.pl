@@ -20,13 +20,13 @@ class chessGame {
     this.process()
   }
   protected process() {
-    // if (this._board.isCheckmate() === this.currentPlayer) {
-    //   console.log(`${this.currentPlayer} is checkmated!`)
-    //   this.isGameOn = false
-    // } else if (this._board.isStalemate()) {
-    //   console.log(`Stalemate! The game is a draw.`)
-    //   this.isGameOn = false
-    // }
+    if (this._board.isCheckmate() === this.currentPlayer) {
+      console.error(`${this.currentPlayer} is checkmated!`)
+      this.isGameOn = false
+    } else if (this._board.isStalemate()) {
+      console.error(`Stalemate! The game is a draw.`)
+      this.isGameOn = false
+    }
     // this._board.printFigures()
     // this._board.printBoard()
     // this._board.printCords()
