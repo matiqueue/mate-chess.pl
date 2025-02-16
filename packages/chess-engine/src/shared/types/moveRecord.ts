@@ -3,14 +3,17 @@ import Figure from "@modules/chess/figure/figure"
 
 class MoveRecord {
   private _move: Move
+  private _figurePerforming: Figure
   private _figureCaptured: Figure | null
   private _wasFirstMove: boolean
 
-  constructor(move: Move, figureCaptured: Figure | null, wasFirstMove: boolean) {
+  constructor(move: Move, figurePerforming: Figure, figureCaptured: Figure | null, wasFirstMove: boolean) {
     this._move = move
+    this._figurePerforming = figurePerforming
     this._figureCaptured = figureCaptured
     this._wasFirstMove = wasFirstMove
   }
+
   get move(): Move {
     return this._move
   }
@@ -33,6 +36,14 @@ class MoveRecord {
 
   set wasFirstMove(value: boolean) {
     this._wasFirstMove = value
+  }
+
+  get figurePerforming(): Figure {
+    return this._figurePerforming
+  }
+
+  set figurePerforming(value: Figure) {
+    this._figurePerforming = value
   }
 }
 

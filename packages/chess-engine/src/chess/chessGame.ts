@@ -3,11 +3,13 @@ import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
+import { figureType } from "@shared/types/figureType"
 
 class chessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
   // private _moveRecorder: MoveRecorder
+  private _moves: MoveRecord[] = []
   public isGameOn: boolean = true
   constructor() {
     this._board = new Board()
@@ -38,6 +40,8 @@ class chessGame {
     // }
     // this._board.moveFigure(move)
     // this._board.printFigures()
+    this._moves = this._board.moveHistory
+    console.log(this.getMoveHistory())
   }
   public makeMove(move: Move): boolean {
     if (!this.isGameOn) return false
@@ -55,10 +59,54 @@ class chessGame {
     return false
   }
   public undoMove(): boolean {
-    const succes = this._board.undoLastMove()
+    const succes = this._board.undoLastMove() && this._board.undoLastMove()
     if (succes) this.switchCurrentPlayer()
 
     return succes
+  }
+  public getMoveHistory(): string[] {
+    let result: string[] = []
+    let j = 0
+    for (let i = 0; i < this._moves.length; i++) {
+      const action = this._moves[i]
+      if (!action) break
+
+      const performingFigure = action.figurePerforming
+      const performingColour = performingFigure.color
+      const targetPos = action.move.to
+      const capturedFig = action.figureCaptured
+
+      let figNotation = ""
+      switch (performingFigure.type) {
+        case figureType.queen:
+          figNotation = "Q"
+          break
+        case figureType.rook:
+          figNotation = "R"
+          break
+        case figureType.knight:
+          figNotation = "N"
+          break
+        case figureType.king:
+          figNotation = "K"
+          break
+        case figureType.bishop:
+          figNotation = "B"
+          break
+      }
+      //implementacja v2: generuje tablice stringów z notacjami. Każdy biały ruch ma swój "iterator". każda następujący ruch
+      let move = ""
+      if (performingColour === color.White) {
+        j++
+        move = `${i + 1}. ${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
+      } else if (performingColour === color.Black) {
+        move = `${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
+      }
+      //poniżej implementacja v1. każdy ruch ma swój iterator, każdy parzysty ruch to powinien być czarny
+      // let move: string = `${i + 1}. ${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
+      result.push(move)
+    }
+    return result
   }
   private switchCurrentPlayer() {
     if (this.currentPlayer === color.White) {
