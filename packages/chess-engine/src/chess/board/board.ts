@@ -3,6 +3,7 @@ import { Position } from "@utils/boardUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
+import MoveRecord from "@shared/types/moveRecord"
 
 class Board {
   private positions: Map<string, Position>
@@ -11,7 +12,7 @@ class Board {
   _blackFigures: Figure[] = []
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
-  private moveHistory: { move: Move; capturedFigure: Figure | null }[] = []
+  private moveHistory: MoveRecord[] = []
 
   constructor() {
     this.positions = new Map()
@@ -86,31 +87,27 @@ class Board {
     const toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
-      console.error("Invalid move: One of the positions is null", { fromPos, toPos })
       return false
     }
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      console.error("Invalid move: No figure at the starting position", move.from)
       return false
     }
 
     if (!figure.isMoveValid(toPos)) {
-      console.error("Invalid move: Move is not valid for this figure", { from: move.from, to: move.to })
       return false
     }
 
-    // If there is a piece at the destination, remove it
+    this.moveHistory.push(new MoveRecord(move, toPos.figure))
+
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
       toPos.figure = null
     }
 
-    // Update figure's position
     figure.position = toPos
 
-    // Update board references
     fromPos.figure = null
     toPos.figure = figure
 
@@ -128,48 +125,34 @@ class Board {
     }
     return true
   }
-  public undoLastMove(): boolean {
-    if (this.moveHistory.length === 0) {
-      console.warn("No moves to undo.")
-      return false
-    }
 
-    const lastMove = this.moveHistory.pop()
+  public undoLastMove(): boolean {
+    if (this.moveHistory.length === 0) return false
+    if (!this.moveHistory) return false
+
+    const lastMove = this.moveHistory[this.moveHistory.length - 1]
     if (!lastMove) return false
 
-    const { move, capturedFigure } = lastMove
-    const fromPos = this.getPosition(move.from)
-    const toPos = this.getPosition(move.to)
+    const beforePosition = this.getPosition(lastMove.move.from)
+    const afterPosition = this.getPosition(lastMove.move.to)
+    const capturedFigure = lastMove.figureCaptured
+    if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
 
-    if (!fromPos || !toPos) {
-      console.error("Undo failed: Invalid positions.")
-      return false
+    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
+    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
+    figureToUndo.position = beforePosition
+    beforePosition.figure = figureToUndo
+
+    if (capturedFigure) {
+      afterPosition.figure = capturedFigure
+      capturedFigure.position = afterPosition
+    } else {
+      afterPosition.figure = null
     }
-
-    // Restore figure’s previous position
-    const movedFigure = this.getFigureAtPosition(toPos)
-    if (!movedFigure) {
-      console.error("Undo failed: No figure found at the destination.")
-      return false
-    }
-
-    fromPos.figure = movedFigure
-    movedFigure.position = fromPos
-    toPos.figure = capturedFigure // Restore captured figure (if any)
-
-    // Reset flags for castling and en passant
-    if (movedFigure instanceof King || movedFigure instanceof Rook) {
-      movedFigure.hasMoved = false
-    }
-
-    if (movedFigure instanceof Pawn) {
-      movedFigure.isFirstMove = (fromPos.y === 1 && movedFigure.color === color.White) || (fromPos.y === 6 && movedFigure.color === color.Black)
-    }
-
-    console.log(`Move undone: ${movedFigure.type} moved back to ${fromPos.notation}`)
-
+    this.moveHistory.pop()
     return true
   }
+
   public canCastle(king: King, target: Position): boolean {
     if (king.hasMoved) return false
 

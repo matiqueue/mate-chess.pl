@@ -2,19 +2,19 @@ import { Board } from "@utils/boardUtils"
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
-import MoveRecorder from "@modules/chess/history/moveRecorder"
+import MoveRecord from "@shared/types/moveRecord"
 
 class chessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
-  private _moveRecorder: MoveRecorder
+  // private _moveRecorder: MoveRecorder
   public isGameOn: boolean = true
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
     this.setupFigures()
     this._currentPlayer = color.White
-    this._moveRecorder = new MoveRecorder(this._board, this)
+    // this._moveRecorder = new MoveRecorder(this._board, this)
   }
   start(): void {
     this.process()
@@ -53,6 +53,12 @@ class chessGame {
       }
     }
     return false
+  }
+  public undoMove(): boolean {
+    const succes = this._board.undoLastMove()
+    if (succes) this.switchCurrentPlayer()
+
+    return succes
   }
   private switchCurrentPlayer() {
     if (this.currentPlayer === color.White) {
@@ -113,6 +119,7 @@ class chessGame {
     this._board.addFigureAtPosition(this._board.getPositionByNotation("e8")!, new King(color.Black, this._board.getPositionByNotation("e8")!, this._board))
 
     console.log(this.board.getBoardArray())
+    console.trace()
   }
 }
 

@@ -1,26 +1,28 @@
+import { Move } from "@shared/types/moveType"
+import Figure from "@modules/chess/figure/figure"
+
 class MoveRecord {
-  private _notation: string
-  private _number: number
+  private _move: Move
+  private _figureCaptured: Figure | null
 
-  constructor(notation: string, number: number) {
-    this._notation = notation
-    this._number = number
+  constructor(move: Move, figureCaptured: Figure | null) {
+    this._move = move
+    this._figureCaptured = figureCaptured
+  }
+  get move(): Move {
+    return this._move
   }
 
-  get notation(): string {
-    return this._notation
+  set move(value: Move) {
+    this._move = value
   }
 
-  set notation(value: string) {
-    this._notation = value
+  get figureCaptured(): Figure | null {
+    return this._figureCaptured
   }
 
-  get number(): number {
-    return this._number
-  }
-
-  set number(value: number) {
-    this._number = value
+  set figureCaptured(value: Figure | null) {
+    this._figureCaptured = value
   }
 }
 

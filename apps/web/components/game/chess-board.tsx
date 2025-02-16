@@ -15,7 +15,7 @@ import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
 import chessGameExtraLayer from "@modules/chessGameExtraLayer"
-import { getBoard, getPositionByCords, getValidMoves, makeMove, setupGame, startGame, whosTurn } from "@modules/index"
+import { getBoard, getPositionByCords, getValidMoves, makeMove, rewindMove, setupGame, startGame, whosTurn } from "@modules/index"
 import { color } from "@chess-engine/types"
 import { getBoardArray } from "@shared/destruct/mallocFunctions/positonMapping"
 
@@ -23,16 +23,6 @@ export function ChessBoard() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
 
-  // const initialBoard = [
-  //   ["r", "n", "b", "q", "k", "b", "n", "r"],
-  //   ["p", "p", "p", "p", "p", "p", "p", "p"],
-  //   Array(8).fill(""),
-  //   Array(8).fill(""),
-  //   Array(8).fill(""),
-  //   Array(8).fill(""),
-  //   ["P", "P", "P", "P", "P", "P", "P", "P"],
-  //   ["R", "N", "B", "Q", "K", "B", "N", "R"],
-  // ]
   const [board, setBoard] = useState<Board>()
   const gameInstanceRef = useRef<chessGameExtraLayer>(setupGame())
 
@@ -40,6 +30,7 @@ export function ChessBoard() {
   const [validMoves, setValidMoves] = useState<Position[]>([])
   const [turn, setTurn] = useState<color>(whosTurn(gameInstanceRef.current))
   const [initialBoard, setInitialBoard] = useState(Array(8).fill(Array(8).fill("")))
+
   // ODPALA SIE TYLKO RAZ, NA POCZĄTKU GRY
   useEffect(() => {
     if (!gameInstanceRef.current) {
@@ -52,7 +43,15 @@ export function ChessBoard() {
     console.log(initialBoard)
   }, [])
 
-  const handleClick = (x: number, y: number) => {
+  useEffect(() => {
+    if (!board) return
+    setInitialBoard(getBoardArray(board))
+    return
+    // reviewing required because ML is unsure if that's correct way to use useEffect.
+    // previously there was [initalBoard] but it caused endless loop resulting in memory leak in browser
+  }, [turn])
+
+  const handleBoardClick = (x: number, y: number) => {
     if (!board) return
 
     const clickedPosition = getPositionByCords(board, x, y)
@@ -75,15 +74,23 @@ export function ChessBoard() {
       }
       makeMove(gameInstanceRef.current, move)
     }
+
     const updatedBoard = getBoard(gameInstanceRef.current)
     setBoard(updatedBoard)
 
-    setBoard(getBoard(gameInstanceRef.current))
+    // setBoard(getBoard(gameInstanceRef.current)) //nie wiem na chuj to dodawałem w ogóle?
     setTurn(whosTurn(gameInstanceRef.current))
     setSelectedPos(null)
     setValidMoves([])
   }
-
+  const handleRewind = () => {
+    rewindMove(gameInstanceRef.current)
+    const updatedBoard = getBoard(gameInstanceRef.current)
+    setBoard(updatedBoard)
+    setTurn(whosTurn(gameInstanceRef.current))
+    setSelectedPos(null)
+    setValidMoves([])
+  }
   const getPieceIcon = (piece: string) => {
     if (!piece) return null
     const isWhite = piece === piece.toUpperCase()
@@ -165,7 +172,7 @@ export function ChessBoard() {
                             : "bg-zinc-200 hover:bg-neutral-500",
                     "relative flex items-center justify-center",
                   )}
-                  onClick={() => handleClick(colIndex, rowIndex - 1)}
+                  onClick={() => handleBoardClick(colIndex, rowIndex - 1)}
                 >
                   {getPieceIcon(piece)}
                 </div>
@@ -174,6 +181,8 @@ export function ChessBoard() {
           )}
         </div>
       </div>
+      {/*JUST FOR TESTING*/}
+      {/*<button onClick={handleRewind}>REWIND TEST</button>*/}
     </div>
   )
 }
