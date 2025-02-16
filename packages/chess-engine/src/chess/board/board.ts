@@ -457,6 +457,32 @@ class Board {
     }
     return false
   }
+
+  public getLegalMovesForPosition(from: Position) {
+    const king = from.figure?.color === color.White ? this.getWhiteKing() : this.getBlackKing()
+    const figures = from.figure?.color === color.Black ? this._blackFigures : this._whiteFigures
+    const legalMoves: Position[] = []
+
+    if (!king) return []
+    if (!figures) return []
+
+    const pseudoLegalMoves = this.getValidMovesForPosition(from)
+    for (const moveToVerify of pseudoLegalMoves) {
+      const move = {
+        from: from,
+        to: moveToVerify,
+      }
+      if (this.moveFigure(move, true)) {
+        if (!this.isKingInCheck(king.color)) {
+          const position = this.getPosition(moveToVerify)
+          if (!position) continue
+          legalMoves.push(position)
+        }
+        this.undoLastMove()
+      }
+    }
+    return legalMoves
+  }
   public getLegalMoves(colorType: color.White | color.Black): Move[] {
     const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
