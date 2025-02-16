@@ -113,15 +113,14 @@ class Board {
     }
 
     figure.position = toPos
-
     fromPos.figure = null
     toPos.figure = figure
 
     if (figure instanceof Pawn) {
       figure.isFirstMove = false
-    }
-    if (figure instanceof Pawn && Math.abs(move.from.y - move.to.y) === 2) {
-      figure.isEnPassantPossible = true
+      if (Math.abs(move.from.y - move.to.y) === 2) {
+        figure.isEnPassantPossible = true
+      }
     }
     if (figure instanceof King) {
       figure.hasMoved = true
@@ -454,10 +453,10 @@ class Board {
     }
     return false
   }
-  public getLegalMoves(colorType: color.White | color.Black): Position[] {
+  public getLegalMoves(colorType: color.White | color.Black): Move[] {
     const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
-    const legalMoves: Position[] = []
+    const legalMoves: Move[] = []
 
     if (!king) return []
     if (!figures) return []
@@ -472,7 +471,7 @@ class Board {
         }
         if (this.moveFigure(move)) {
           if (!this.isKingInCheck(king.color)) {
-            legalMoves.push(moveToVerify)
+            legalMoves.push(move)
           }
           this.undoLastMove()
         }
@@ -535,7 +534,7 @@ class Board {
   get allFigures(): Figure[] {
     return this._allFigures
   }
-
+  //all debug below
   public printBoard() {
     console.debug("\nPrinting chessboard with notations: \n")
 
@@ -554,7 +553,6 @@ class Board {
       console.debug(row.trim())
     }
   }
-  // Wyświetlenie szachownicy z figurami DEBUG
   public printFigures() {
     console.debug("\n \nPrinting chessboard by figures: \n")
     for (let y = 0; y < 8; y++) {
