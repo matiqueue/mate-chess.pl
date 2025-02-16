@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   // Jeśli ścieżka zaczyna się od bazowych i ma dodatkowy segment (np. "/play/link/costma")
-  if (pathname.startsWith("/play/online/") || pathname.startsWith("/play/link/") || pathname === "/play/local") {
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
     return <>{children}</>
   }
 
