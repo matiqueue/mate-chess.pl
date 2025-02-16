@@ -59,7 +59,7 @@ class chessGame {
     return false
   }
   public undoMove(): boolean {
-    const succes = this._board.undoLastMove() && this._board.undoLastMove()
+    const succes = this._board.undoLastMove()
     if (succes) this.switchCurrentPlayer()
 
     return succes
