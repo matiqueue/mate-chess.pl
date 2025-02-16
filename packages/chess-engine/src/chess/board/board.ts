@@ -12,7 +12,7 @@ class Board {
   _blackFigures: Figure[] = []
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
-  private moveHistory: MoveRecord[] = []
+  private _moveHistory: MoveRecord[] = []
 
   constructor() {
     this.positions = new Map()
@@ -109,7 +109,9 @@ class Board {
     } else if (fromPos.figure instanceof King || fromPos.figure instanceof Rook) {
       wasFirstMove = !fromPos.figure.hasMoved
     }
-    this.moveHistory.push(new MoveRecord(move, toPos.figure, wasFirstMove))
+    const performingfigure = fromPos.figure
+    if (!performingfigure) throw new Error("No figure performing the move")
+    this._moveHistory.push(new MoveRecord(move, performingfigure, toPos.figure, wasFirstMove))
 
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
@@ -136,10 +138,10 @@ class Board {
   }
 
   public undoLastMove(): boolean {
-    if (this.moveHistory.length === 0) return false
-    if (!this.moveHistory) return false
+    if (this._moveHistory.length === 0) return false
+    if (!this._moveHistory) return false
 
-    const lastMove = this.moveHistory[this.moveHistory.length - 1]
+    const lastMove = this._moveHistory[this._moveHistory.length - 1]
     if (!lastMove) return false
 
     const beforePosition = this.getPosition(lastMove.move.from)
@@ -164,7 +166,7 @@ class Board {
     } else {
       afterPosition.figure = null
     }
-    this.moveHistory.pop()
+    this._moveHistory.pop()
     return true
   }
 
@@ -238,7 +240,7 @@ class Board {
           row += `[${targetPosition.notation}] ` //invalid
         }
       }
-      console.debug(row.trim())
+      // console.debug(row.trim())
     }
     return validMoves
   }
@@ -564,87 +566,9 @@ class Board {
   get allFigures(): Figure[] {
     return this._allFigures
   }
-  //all debug below
-  public printBoard() {
-    console.debug("\nPrinting chessboard with notations: \n")
 
-    for (let y = 0; y < 8; y++) {
-      let row = ""
-      for (let x = 0; x < 8; x++) {
-        const letter = this.letters[x]
-        if (!letter) {
-          console.error(`Invalid letter index: ${x}`)
-          continue
-        }
-        const notation = letter + (8 - y)
-        const position = this.positions.get(notation)
-        row += position ? `[${position.notation}] ` : `[ undfd ] `
-      }
-      console.debug(row.trim())
-    }
-  }
-  public printFigures() {
-    console.debug("\n \nPrinting chessboard by figures: \n")
-    for (let y = 0; y < 8; y++) {
-      let row = ""
-      for (let x = 0; x < 8; x++) {
-        const letter = this.letters[x]
-        if (!letter) {
-          console.error(`Invalid letter index: ${x}`)
-          break
-        }
-        const figure = this.positions.get(letter + (8 - y))?.figure?.type
-        if (figure === undefined) {
-          row += `[-] `
-          continue
-        }
-        if (figure === "knight") {
-          row += "[" + figure?.charAt(1) + "] " //since King and Knight have the same first letter, in english chess notation the King is K and a Knight is N
-          continue
-        }
-        row += "[" + figure?.charAt(0) + "] "
-      }
-      console.debug(row.trim())
-    }
-  }
-  public printIds() {
-    console.debug("\n \nPrinting chessboard by ids: \n")
-    for (let y = 0; y < 8; y++) {
-      let row = ""
-      for (let x = 0; x < 8; x++) {
-        const letter = this.letters[x]
-        if (!letter) {
-          console.error(`Invalid letter index: ${x}`)
-          break
-        }
-        const id = this.positions.get(letter + (8 - y))?.id
-        row += `[${id !== undefined ? id : " undfd "}] `
-      }
-      console.debug(row.trim())
-    }
-  }
-  public printCords() {
-    console.debug("\n \nPrinting chessboard by cords: \n")
-    for (let y = 0; y < 8; y++) {
-      let row = ""
-      for (let x = 0; x < 8; x++) {
-        const letter = this.letters[x]
-        if (!letter) {
-          console.error(`Invalid letter index: ${x}`)
-          break
-        }
-        const currentPos = this.positions.get(letter + (8 - y))
-        if (currentPos === undefined) {
-          console.log("undefined!!!")
-          continue
-        }
-        const cordsY = currentPos.y
-        const cordsX = currentPos.x
-        row += `[${cordsX}, ${cordsY}] `
-        // row += `[${id !== undefined ? id : " undfd "}] `
-      }
-      console.debug(row.trim())
-    }
+  get moveHistory(): MoveRecord[] {
+    return this._moveHistory
   }
 }
 export default Board
