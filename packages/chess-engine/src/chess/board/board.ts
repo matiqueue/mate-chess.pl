@@ -99,7 +99,13 @@ class Board {
       return false
     }
 
-    this.moveHistory.push(new MoveRecord(move, toPos.figure))
+    let wasFirstMove = false
+    if (fromPos.figure instanceof Pawn) {
+      wasFirstMove = fromPos.figure.isFirstMove
+    } else if (fromPos.figure instanceof King || fromPos.figure instanceof Rook) {
+      wasFirstMove = !fromPos.figure.hasMoved
+    }
+    this.moveHistory.push(new MoveRecord(move, toPos.figure, wasFirstMove))
 
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
@@ -142,6 +148,12 @@ class Board {
     if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
     figureToUndo.position = beforePosition
     beforePosition.figure = figureToUndo
+
+    if (figureToUndo instanceof Pawn) {
+      figureToUndo.isFirstMove = lastMove.wasFirstMove
+    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
+      figureToUndo.hasMoved = !lastMove.wasFirstMove
+    }
 
     if (capturedFigure) {
       afterPosition.figure = capturedFigure

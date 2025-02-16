@@ -182,7 +182,7 @@ export function ChessBoard() {
         </div>
       </div>
       {/*JUST FOR TESTING*/}
-      {/*<button onClick={handleRewind}>REWIND TEST</button>*/}
+      <button onClick={handleRewind}>REWIND TEST</button>
     </div>
   )
 }
