@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = "mongodb+srv://root:jxakZLUJYP3EpBPd@matechess.owvit.mongodb.net/chessApp?retryWrites=true&w=majority&appName=matechess"
+  url      = env("DATABASE_URL")
 }
 
 model UserProfile {
