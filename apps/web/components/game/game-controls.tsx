@@ -12,8 +12,10 @@ import {
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
 import { useTheme } from "next-themes"
+import { usePathname } from "next/navigation"
 
 export function GameControls() {
+  const isLocal = usePathname().startsWith("/play/local")
   const { theme } = useTheme()
 
   function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
@@ -39,44 +41,52 @@ export function GameControls() {
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
           <FastForward className="h-5 w-5" />
         </Button>
-        <div className="w-px h-8 bg-white/20 mx-2" />
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
-              <Flag className="h-4 w-4 mr-2" />
-              Surrender
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure you want to surrender?</AlertDialogTitle>
-              <AlertDialogDescription>If you surrender, your opponent will win the game immediately. This action cannot be undone!</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmSurrender}>Confirm Surrender</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
 
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
-              <Handshake className="h-4 w-4 mr-2" />
-              Offer Draw
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
-              <AlertDialogDescription>If your opponent accepts, the game will end in a draw. If they decline, the game will continue.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {isLocal ? null : (
+          <>
+            <div className="w-px h-8 bg-white/20 mx-2" />
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
+                  <Flag className="h-4 w-4 mr-2" />
+                  Surrender
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to surrender?</AlertDialogTitle>
+                  <AlertDialogDescription>If you surrender, your opponent will win the game immediately. This action cannot be undone!</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={confirmSurrender}>Confirm Surrender</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
+                  <Handshake className="h-4 w-4 mr-2" />
+                  Offer Draw
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    If your opponent accepts, the game will end in a draw. If they decline, the game will continue.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </div>
   )
