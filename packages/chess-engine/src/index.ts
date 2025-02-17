@@ -1,33 +1,31 @@
-import { startGame } from "@modules/shared/rootFunctions"
-import { printFigures, printBoard, printCords, printIds } from "@modules/shared/utilities/boardPrinter"
-import { makeMove } from "@modules/shared/moveFunctions/moveExecution"
-import { isMoveValid, getValidPositions, whosTurn } from "@modules/shared/moveFunctions/moveValidation"
-import { castleMove } from "@modules/shared/specialMovesFunctions/castlingFunctions"
-import { enPassantMove } from "@modules/shared/specialMovesFunctions/enPassantFunctions"
-import ChessGame from "@modules/chessGame"
-import { getBoard, getPositionByCords, getPositionByNotation, getPositionById } from "@modules/shared/positionFunctions/coordinateMapping"
+import { isCheckmate, isStalemate, getGameStatus } from "@modules/shared/destruct/gameStateFunctions/gameStateFunctions"
+import { getBoard, getPositionByCords, getPositionByNotation, getPositionById } from "@modules/shared/destruct/mallocFunctions/positonMapping"
+import { isMoveValid, getValidMoves, whosTurn } from "@modules/shared/destruct/movementFunctions/getValidMoves"
+import { makeMove } from "@modules/shared/destruct/movementFunctions/makeMove"
+import { startGame } from "@shared/destruct/rootFunc"
+import { rewindMove } from "@shared/destruct/movementFunctions/undoMove"
+import { getMoveHistory } from "@shared/destruct/movementFunctions/getMoveHistory"
+import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
 const setupGame = () => {
-  const game = new ChessGame()
-
+  const game = new ChessGameExtraLayer()
   return game
 }
 
 export {
+  setupGame,
   startGame,
+  isCheckmate,
+  getBoard,
   getPositionByCords,
   getPositionByNotation,
   getPositionById,
-  getBoard,
-  setupGame,
-  printCords,
-  printIds,
-  printFigures,
-  printBoard,
   isMoveValid,
-  makeMove,
-  castleMove,
-  enPassantMove,
-  getValidPositions,
+  getValidMoves,
   whosTurn,
+  makeMove,
+  rewindMove,
+  getMoveHistory,
+  isStalemate,
+  getGameStatus,
 }
