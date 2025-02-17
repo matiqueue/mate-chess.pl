@@ -13,6 +13,7 @@ class Board {
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
   private _moveHistory: MoveRecord[] = []
+  private _redoStack: MoveRecord[] = []
 
   constructor() {
     this.positions = new Map()
@@ -169,7 +170,78 @@ class Board {
     this._moveHistory.pop()
     return true
   }
+  //===================================== AI GENERATED CODE BELOW =====================================
+  //IT IS TOTALLY UNTESTED. I AM NOT RESPONSIBILE FOR WHETHER IT WORKS OR NOT.
 
+  public rewindMove(): boolean {
+    if (this._moveHistory.length === 0) return false
+
+    const lastMove = this._moveHistory.pop()
+    if (!lastMove) return false
+
+    const beforePosition = this.getPosition(lastMove.move.from)
+    const afterPosition = this.getPosition(lastMove.move.to)
+    const capturedFigure = lastMove.figureCaptured
+
+    if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
+
+    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
+    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
+
+    // Move figure back
+    figureToUndo.position = beforePosition
+    beforePosition.figure = figureToUndo
+
+    // Restore first move status
+    if (figureToUndo instanceof Pawn) {
+      figureToUndo.isFirstMove = lastMove.wasFirstMove
+    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
+      figureToUndo.hasMoved = !lastMove.wasFirstMove
+    }
+
+    // Restore captured figure
+    if (capturedFigure) {
+      afterPosition.figure = capturedFigure
+      capturedFigure.position = afterPosition
+    } else {
+      afterPosition.figure = null
+    }
+
+    // Store move in redo stack for forwardMove
+    this._redoStack.push(lastMove)
+
+    return true
+  }
+  public forwardMove(): boolean {
+    if (this._redoStack.length === 0) return false
+
+    const moveRecord = this._redoStack.pop()
+    if (!moveRecord) return false
+
+    const move = moveRecord.move
+    const fromPos = this.getPosition(move.from)
+    const toPos = this.getPosition(move.to)
+    if (!fromPos || !toPos) return false
+
+    const figure = this.getFigureAtPosition(fromPos)
+    if (!figure) return false
+
+    // Apply move again
+    toPos.figure = figure
+    fromPos.figure = null
+    figure.position = toPos
+
+    // Restore captured figure if it was captured
+    if (moveRecord.figureCaptured) {
+      toPos.figure = moveRecord.figureCaptured
+      moveRecord.figureCaptured.position = toPos
+    }
+
+    this._moveHistory.push(moveRecord)
+    return true
+  }
+
+  //===================================== AI GENERATED ENDS HERE =====================================
   public canCastle(king: King, target: Position): boolean {
     if (king.hasMoved) return false
 
