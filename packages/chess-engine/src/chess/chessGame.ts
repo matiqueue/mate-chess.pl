@@ -10,7 +10,8 @@ class chessGame {
   private _currentPlayer: color.White | color.Black
   // private _moveRecorder: MoveRecorder
   private _moves: MoveRecord[] = []
-  public isGameOn: boolean = true
+  private _isGameOn: boolean = false
+  private _gameStatus: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" = "stop"
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
@@ -19,15 +20,23 @@ class chessGame {
     // this._moveRecorder = new MoveRecorder(this._board, this)
   }
   start(): void {
+    this._gameStatus = "active"
+    this._isGameOn = true
     this.process()
   }
   protected process() {
     if (this._board.isCheckmate() === this.currentPlayer) {
       console.error(`${this.currentPlayer} is checkmated!`)
-      this.isGameOn = false
+      if (this.currentPlayer === color.Black) {
+        this._gameStatus = "white wins"
+      } else if (this.currentPlayer === color.White) {
+        this._gameStatus = "black wins"
+      }
+      this._isGameOn = false
     } else if (this._board.isStalemate()) {
       console.error(`Stalemate! The game is a draw.`)
-      this.isGameOn = false
+      this._gameStatus = "stalemate"
+      this._isGameOn = false
     }
     // this._board.printFigures()
     // this._board.printBoard()
@@ -44,7 +53,7 @@ class chessGame {
     console.log(this.getMoveHistory())
   }
   public makeMove(move: Move): boolean {
-    if (!this.isGameOn) return false
+    if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
       const figure = this._board.getFigureAtPosition(move.from)
       const targetFigure = this._board.getFigureAtPosition(move.to)
@@ -108,6 +117,10 @@ class chessGame {
     }
     return result
   }
+  public gameDraw() {
+    this._gameStatus = "draw"
+    this._isGameOn = false
+  }
   private switchCurrentPlayer() {
     if (this.currentPlayer === color.White) {
       this.currentPlayer = color.Black
@@ -125,6 +138,18 @@ class chessGame {
 
   get board(): Board {
     return this._board
+  }
+
+  get isGameOn(): boolean {
+    return this._isGameOn
+  }
+
+  set gameStatus(value: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop") {
+    this._gameStatus = value
+  }
+
+  get gameStatus(): "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" {
+    return this._gameStatus
   }
 
   protected setupFigures(): void {

@@ -435,20 +435,25 @@ class Board {
     if (!king) return false
 
     for (const figure of enemyFigures) {
-      if (figure.isMoveValid(king.position)) {
+      const move = {
+        from: figure.position,
+        to: king.position,
+      }
+      if (this.isLegalMove(move)) {
         return true
+        console.error("king is check")
       }
     }
     return false
   }
-  public isCheckmate(): color.White | color.Black | null {
+  public isCheckmate(): color.White | color.Black | false {
     if (this.getLegalMoves(color.White).length <= 0) {
       if (this.isKingInCheck(color.White)) return color.White
     }
     if (this.getLegalMoves(color.Black).length <= 0) {
       if (this.isKingInCheck(color.Black)) return color.Black
     }
-    return null
+    return false
   }
   public isStalemate(): boolean {
     if (this.getLegalMoves(color.White).length <= 0) {
@@ -457,6 +462,26 @@ class Board {
     if (this.getLegalMoves(color.Black).length <= 0) {
       if (!this.isKingInCheck(color.Black)) return true
     }
+    return false
+  }
+
+  private isLegalMove(move: { from: Position; to: Position }): boolean {
+    const king = move.from.figure?.color === color.White ? this.getWhiteKing() : this.getBlackKing()
+    const figures = move.from.figure?.color === color.Black ? this._blackFigures : this._whiteFigures
+
+    if (!king) return false
+    if (!figures) return false
+
+    if (this.moveFigure(move, true)) {
+      if (!this.isKingInCheck(king.color)) {
+        const position = this.getPosition(move.to)
+        if (position) {
+          this.undoLastMove()
+          return true
+        }
+      }
+    }
+
     return false
   }
 
