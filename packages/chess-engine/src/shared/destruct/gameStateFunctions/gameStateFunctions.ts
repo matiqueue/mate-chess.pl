@@ -1,6 +1,6 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import { color } from "@shared/types/colorType"
 import chessGameExtraLayer from "@modules/chessGameExtraLayer"
+import { color } from "@shared/types/colorType"
 
 export const isCheckmate = (game: ChessGameExtraLayer): color | false => {
   if (game.board) {
@@ -22,4 +22,14 @@ export const isStalemate = (game: ChessGameExtraLayer): boolean => {
 }
 export const getGameStatus = (game: chessGameExtraLayer) => {
   return game.gameStatus
+}
+export const setSurrender = (game: chessGameExtraLayer, surrenderingColor: color) => {
+  if (game.board) {
+    const whoSurrenders = surrenderingColor === color.White ? (game.gameStatus = "black wins") : (game.gameStatus = "white wins")
+  }
+}
+export const setDraw = (game: chessGameExtraLayer) => {
+  if (game.board) {
+    game.gameStatus = "draw"
+  }
 }
