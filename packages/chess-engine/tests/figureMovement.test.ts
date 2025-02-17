@@ -14,7 +14,7 @@ describe("Chess Pieces Movement", () => {
 
     // Manually call setupFigures to ensure pieces are placed
     game["setupFigures"]()
-    game.isGameOn = true // Manually start the game
+    game.start()
   })
 
   // 🩸 Pawn Movement

@@ -15,7 +15,7 @@ describe("ChessGame", () => {
 
     // Manually call setupFigures to ensure pieces are placed
     game["setupFigures"]()
-    game.isGameOn = true // Manually start the game
+    game.start() // Manually start the game
   })
 
   test("Board initializes with 64 positions and all pieces", () => {
@@ -56,7 +56,7 @@ describe("ChessGame", () => {
   })
 
   test("Game prevents moves when isGameOn is false", () => {
-    game.isGameOn = false
+    game.start()
 
     const move: Move = {
       from: board.getPositionByNotation("e2")!,
