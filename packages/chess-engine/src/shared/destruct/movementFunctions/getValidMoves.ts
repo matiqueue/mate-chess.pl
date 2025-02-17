@@ -4,7 +4,7 @@ import { Move } from "@shared/types/moveType"
 import { color } from "@shared/types/colorType"
 
 export const isMoveValid = (board: Board, move: Move): boolean => {
-  return !!board?.getFigureAtPosition(move.from)?.isMoveValid(move.to)
+  return board.isLegalMove(move)
 }
 export const getValidMoves = (board: Board, from: Position): Position[] => {
   if (!from.figure) return []

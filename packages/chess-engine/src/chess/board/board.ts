@@ -465,7 +465,7 @@ class Board {
     return false
   }
 
-  private isLegalMove(move: { from: Position; to: Position }): boolean {
+  public isLegalMove(move: { from: Position; to: Position }): boolean {
     const king = move.from.figure?.color === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = move.from.figure?.color === color.Black ? this._blackFigures : this._whiteFigures
 
