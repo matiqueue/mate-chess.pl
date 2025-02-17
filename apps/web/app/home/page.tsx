@@ -7,6 +7,7 @@ import { PuzzleIcon as PuzzlePiece, GraduationCap, Users, PlayCircle, Trophy, Ti
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 // Warianty animacji
 const fadeInUp = {
@@ -24,7 +25,14 @@ const staggerContainer = {
 }
 
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
 
   return (
     <div className="space-y-8 bg-sidebar">

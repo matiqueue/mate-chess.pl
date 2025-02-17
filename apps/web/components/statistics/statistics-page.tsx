@@ -1,51 +1,64 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components//card"
+import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Progress } from "@workspace/ui/components/progress"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
 import { GamepadIcon, TrophyIcon, Activity } from "lucide-react"
+import { useUser } from "@clerk/nextjs"
 
-export default function StatiscticsPage() {
-  // Placeholder data - replace with actual data from your backend
-  // useEffect(() => {
-  //   async function fetchUserData() {
+type Game = {
+  id: string
+  result: string
+  opponent: string
+  eloChange: string
+}
 
-  //       try {
-  //         const response = await fetch(`/api/getUserStats?clerkID=clerk_test_1`);
-  //         const data = await response.json();
-  //         if (!response.ok) {
-  //           throw new Error(data.error || "Failed to fetch user data");
-  //         }
-  //         setUser(data);
-  //         console.log(data)
-  //       } catch (error) {
-  //         console.error("Error fetching user data:", error);
-  //       }
-  //     }
-  
-  //     fetchUserData();
-  // }, []);
+type UserProfile = {
+  clerkUserId: string
+  gamesPlayed: number
+  winPercentage: number
+  eloPoints: number
+  timePlayed: string // przechowujemy w string lub możesz zmienić na Date
+  lastGames: Game[]
+  // Dodatkowe pola, których dane pobieramy z bazy, np. nickname, joinDate, avatar
+  nickname?: string
+  joinDate?: string
+  avatar?: string
+  name?: string
+}
 
+export default function StatisticsPage() {
+  const { user } = useUser()
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const res = await fetch("/api/chess-stats")
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data")
+        }
+        const data = await res.json()
+        setProfile(data)
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
+    fetchUserData()
+  }, [])
 
-  const user = {
-    name: "John Doe",
-    username: "johnd",
-    joinDate: "2023-01-15",
-    avatar: "/placeholder.svg?height=100&width=100",
-    gamesPlayed: 150,
-    winPercentage: 65,
-    eloPoints: 1850,
-    time_played: "15.02.2025",
-    lastGames: [
-      { id: 1, result: "Win", opponent: "Alice", eloChange: "+15"},
-      { id: 2, result: "Loss", opponent: "Bob", eloChange: "-10" },
-      { id: 3, result: "Win", opponent: "Charlie", eloChange: "+12" },
-      { id: 4, result: "Win", opponent: "David", eloChange: "+14" },
-      { id: 5, result: "Loss", opponent: "Eve", eloChange: "-8" },
-    ],
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!profile) {
+    return <div>No data available</div>
   }
 
   return (
@@ -55,17 +68,17 @@ export default function StatiscticsPage() {
           <CardContent className="flex flex-col md:flex-row items-center justify-between py-6">
             <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
               <Avatar className="w-24 h-24 md:mr-6 mb-4 md:mb-0">
-                {/* <AvatarImage src={avatar} alt={user.name} /> */}
-                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                <AvatarImage src={user?.imageUrl || profile.avatar || "/placeholder.svg"} />
+                <AvatarFallback>{user?.firstName || (profile.name ? profile.name.charAt(0) : "U")}</AvatarFallback>
               </Avatar>
               <div className="text-center md:text-left">
-                <h1 className="text-3xl font-bold">{user.username}</h1>
-                <p className="text-muted-foreground">@{user.username}</p>
+                <h1 className="text-3xl font-bold">{user?.fullName || profile.name || "Unknown User"}</h1>
+                <p className="text-muted-foreground">@{user?.username || profile.nickname || "unknown"}</p>
               </div>
             </div>
             <div className="flex flex-col items-center md:items-end">
               <p className="text-sm text-muted-foreground">Member since</p>
-              <p className="text-lg font-semibold">{new Date().toLocaleDateString()}</p>
+              <p className="text-lg font-semibold">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : profile.joinDate || "N/A"}</p>
             </div>
           </CardContent>
         </Card>
@@ -76,7 +89,7 @@ export default function StatiscticsPage() {
             <GamepadIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.gamesPlayed}</div>
+            <div className="text-2xl font-bold">{profile.gamesPlayed}</div>
           </CardContent>
         </Card>
 
@@ -86,8 +99,8 @@ export default function StatiscticsPage() {
             <TrophyIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">63%</div>
-            <Progress value={user.winPercentage} className="mt-2" />
+            <div className="text-2xl font-bold">{profile.winPercentage}%</div>
+            <Progress value={profile.winPercentage} className="mt-2" />
           </CardContent>
         </Card>
 
@@ -97,7 +110,7 @@ export default function StatiscticsPage() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.eloPoints}</div>
+            <div className="text-2xl font-bold">{profile.eloPoints}</div>
           </CardContent>
         </Card>
 
@@ -108,7 +121,25 @@ export default function StatiscticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-             {user.eloPoints > 2200 ? "Master & Beyond" : user.eloPoints > 2000 ? "Candidate Master" : user.eloPoints > 1800 ? "Expert" : user.eloPoints > 1600 ? "Strong Tournamnet Player" : user.eloPoints > 1400 ? "Advanced Club Player" :  user.eloPoints > 1200 ? "Club Player" : user.eloPoints > 1000 ? "Intermediate" : user.eloPoints > 800 ? "Casual Player" : user.eloPoints > 600 ? "Novice" : "Beginer"}
+              {profile.eloPoints > 2200
+                ? "Master & Beyond"
+                : profile.eloPoints > 2000
+                  ? "Candidate Master"
+                  : profile.eloPoints > 1800
+                    ? "Expert"
+                    : profile.eloPoints > 1600
+                      ? "Strong Tournament Player"
+                      : profile.eloPoints > 1400
+                        ? "Advanced Club Player"
+                        : profile.eloPoints > 1200
+                          ? "Club Player"
+                          : profile.eloPoints > 1000
+                            ? "Intermediate"
+                            : profile.eloPoints > 800
+                              ? "Casual Player"
+                              : profile.eloPoints > 600
+                                ? "Novice"
+                                : "Beginner"}
             </div>
           </CardContent>
         </Card>
@@ -129,12 +160,12 @@ export default function StatiscticsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {user.lastGames.map((game) => (
+              {profile.lastGames.map((game) => (
                 <TableRow key={game.id}>
                   <TableCell>{game.result}</TableCell>
                   <TableCell>{game.opponent}</TableCell>
                   <TableCell>{game.eloChange}</TableCell>
-                  <TableCell>{user.time_played}</TableCell>
+                  <TableCell>{profile.timePlayed}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
