@@ -74,46 +74,71 @@ class chessGame {
     return succes
   }
   public getMoveHistory(): string[] {
-    let result: string[] = []
-    let j = 0
-    for (let i = 0; i < this._moves.length; i++) {
-      const action = this._moves[i]
-      if (!action) break
-
-      const performingFigure = action.figurePerforming
-      const performingColour = performingFigure.color
-      const targetPos = action.move.to
-      const capturedFig = action.figureCaptured
-
-      let figNotation = ""
-      switch (performingFigure.type) {
+    const result: string[] = []
+    for (let i = 0; i < this._moves.length; i += 2) {
+      // Biały ruch
+      const whiteRecord = this._moves[i]!
+      const whiteFigure = whiteRecord!.figurePerforming
+      const whiteCaptured = whiteRecord!.figureCaptured
+      let whiteNotation = ""
+      switch (whiteFigure.type) {
         case figureType.queen:
-          figNotation = "Q"
+          whiteNotation = "Q"
           break
         case figureType.rook:
-          figNotation = "R"
+          whiteNotation = "R"
           break
         case figureType.knight:
-          figNotation = "N"
+          whiteNotation = "N"
           break
         case figureType.king:
-          figNotation = "K"
+          whiteNotation = "K"
           break
         case figureType.bishop:
-          figNotation = "B"
+          whiteNotation = "B"
           break
+        default:
+          whiteNotation = ""
       }
-      //implementacja v2: generuje tablice stringów z notacjami. Każdy biały ruch ma swój "iterator". każda następujący ruch
-      let move = ""
-      if (performingColour === color.White) {
-        j++
-        move = `${i + 1}. ${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
-      } else if (performingColour === color.Black) {
-        move = `${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
+      const whiteCapture = whiteCaptured ? "x" : ""
+      const whitePos = this.board.getPosition(whiteRecord!.move.to)?.notation ?? ""
+      const whiteMove = `${whiteNotation}${whiteCapture}${whitePos}`
+
+      let line = `${i / 2 + 1}. White: ${whiteMove}`
+
+      // Czarny ruch, jeśli istnieje
+      if (i + 1 < this._moves.length) {
+        const blackRecord = this._moves[i + 1]!
+        const blackFigure = blackRecord!.figurePerforming
+        const blackCaptured = blackRecord!.figureCaptured
+        let blackNotation = ""
+        switch (blackFigure.type) {
+          case figureType.queen:
+            blackNotation = "Q"
+            break
+          case figureType.rook:
+            blackNotation = "R"
+            break
+          case figureType.knight:
+            blackNotation = "N"
+            break
+          case figureType.king:
+            blackNotation = "K"
+            break
+          case figureType.bishop:
+            blackNotation = "B"
+            break
+          default:
+            blackNotation = ""
+        }
+        const blackCapture = blackCaptured ? "x" : ""
+        const blackPos = this.board.getPosition(blackRecord!.move.to)?.notation ?? ""
+        const blackMove = `${blackNotation}${blackCapture}${blackPos}`
+
+        line += ` Black: ${blackMove}`
       }
-      //poniżej implementacja v1. każdy ruch ma swój iterator, każdy parzysty ruch to powinien być czarny
-      // let move: string = `${i + 1}. ${figNotation}${capturedFig !== null ? "x" : ""}${this.board.getPosition(targetPos)?.notation}`
-      result.push(move)
+
+      result.push(line)
     }
     return result
   }
