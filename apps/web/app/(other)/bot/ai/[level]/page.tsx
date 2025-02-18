@@ -1,6 +1,6 @@
 "use client"
 
-import { ChessBoard } from "@/components/game/chess-board"
+import { ChessBoard } from "@/components/game/chessboard"
 import { GameControls } from "@/components/game/game-controls"
 import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"
@@ -13,7 +13,6 @@ import { useEffect, useState } from "react"
 function ChessPageContent() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
-
 
   useEffect(() => {
     setMounted(true)
@@ -49,7 +48,6 @@ function ChessPageContent() {
 }
 
 export default function ChessPage({ params }: { params: { level: string } }) {
-
   alert(params.level)
 
   return <ChessPageContent />

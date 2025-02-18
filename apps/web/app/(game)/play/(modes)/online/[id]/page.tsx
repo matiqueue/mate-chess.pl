@@ -1,6 +1,6 @@
 "use client"
 
-import { ChessBoard } from "@/components/game/chess-board"
+import { ChessBoard } from "@/components/game/chessboard"
 import { GameControls } from "@/components/game/game-controls"
 import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"

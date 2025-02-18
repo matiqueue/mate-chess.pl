@@ -1,10 +1,11 @@
 "use client"
 
-import { ChessBoard } from "@/components/game/chess-board"
+import { ChessBoard } from "@/components/game/chessboard"
 import { GameControls } from "@/components/game/game-controls"
 import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"
 import { RightPanel } from "@/components/game/right-panel"
+import { GameProvider } from "@/contexts/GameContext"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
 import { useTheme } from "next-themes"
@@ -48,5 +49,9 @@ function ChessPageContent() {
 }
 
 export default function ChessPage() {
-  return <ChessPageContent />
+  return (
+    <GameProvider>
+      <ChessPageContent />
+    </GameProvider>
+  )
 }

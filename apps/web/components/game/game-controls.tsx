@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@workspace/ui/components/button"
 import { Flag, Handshake, RotateCcw, FastForward, ChevronLeft, ChevronRight } from "lucide-react"
 import {
@@ -13,10 +15,12 @@ import {
 } from "@workspace/ui/components/alert-dialog"
 import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
+import { useGameContext } from "@/contexts/GameContext"
 
 export function GameControls() {
   const isLocal = usePathname().startsWith("/play/local")
   const { theme } = useTheme()
+  const { undoMove } = useGameContext() // pobieramy funkcję cofania ruchu
 
   function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
     throw new Error("Function not implemented.")
@@ -29,7 +33,13 @@ export function GameControls() {
   return (
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        {/* Przycisk cofania ruchu */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white/70 hover:text-white hover:bg-white/10"
+          onClick={undoMove} // cofamy ruch
+        >
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
@@ -91,61 +101,3 @@ export function GameControls() {
     </div>
   )
 }
-
-// import { Flag, Handshake, RotateCcw, FastForward, ChevronLeft, ChevronRight } from "lucide-react"
-// import { useTheme } from "next-themes"
-// import { toast } from "sonner"
-
-// export function GameControls() {
-//   const { theme } = useTheme()
-//   const isDark = theme === "dark"
-
-//   const handleSurrender = () => {
-//     toast("Surrender", {
-//       description: "Are you sure you want to surrender?",
-//       action: {
-//         label: "Confirm",
-//         onClick: () => console.log("Surrendered"),
-//       },
-//       className: isDark ? "dark" : "",
-//     })
-//   }
-
-//   const handleOfferDraw = () => {
-//     toast("Offer Draw", {
-//       description: "Are you sure you want to offer a draw?",
-//       action: {
-//         label: "Confirm",
-//         onClick: () => console.log("Draw offered"),
-//       },
-//       className: isDark ? "dark" : "",
-//     })
-//   }
-//   return (
-//     <div className="w-full py-6 px-8">
-//       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
-//         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
-//           <ChevronLeft className="h-6 w-6" />
-//         </Button>
-//         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
-//           <RotateCcw className="h-5 w-5" />
-//         </Button>
-//         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
-//           <ChevronRight className="h-6 w-6" />
-//         </Button>
-//         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
-//           <FastForward className="h-5 w-5" />
-//         </Button>
-//         <div className="w-px h-8 bg-white/20 mx-2" />
-//         <Button onClick={handleSurrender} variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
-//           <Flag className="h-4 w-4 mr-2" />
-//           Surrender
-//         </Button>
-//         <Button onClick={handleOfferDraw} variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
-//           <Handshake className="h-4 w-4 mr-2" />
-//           Offer Draw
-//         </Button>
-//       </div>
-//     </div>
-//   )
-// }

@@ -7,21 +7,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
-
 import { useTheme } from "next-themes"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { usePathname } from "next/navigation"
 import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 import { Resizable } from "re-resizable"
 import { useSidebar } from "@workspace/ui/components/sidebar"
+import { useGameContext } from "@/contexts/GameContext"
 
 export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
   const [notationStyle, setNotationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const [currentWidth, setCurrentWidth] = useState(320) // aktualna szerokość panelu
+  const [currentWidth, setCurrentWidth] = useState(320)
 
   const { theme, setTheme } = useTheme()
+  // Pobieramy historię ruchów z hooka (dynamicznie)
+  const { moveHistory } = useGameContext()
 
   const isDark = theme === "dark"
   const textColor = isDark ? "text-white" : "text-zinc-900"
@@ -29,10 +31,8 @@ export function RightPanel() {
   const borderColor = isDark ? "border-white/10" : "border-zinc-200"
   const bgColor = "bg-background/30"
 
-  // Przyjmujemy, że jeśli szerokość panelu ≤ 220px, to jest wąski i wyświetlamy same ikonki.
   const isNarrow = currentWidth <= 220
 
-  // Aktualizacja szerokości w czasie rzeczywistym:
   const handleResize = (e: any, direction: any, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
@@ -41,14 +41,7 @@ export function RightPanel() {
     setActivePopover(activePopover === id ? null : id)
   }
 
-  const moves = [
-    { white: "e4", black: "e5" },
-    { white: "Nf3", black: "Nc6" },
-    { white: "Bb5", black: "a6" },
-    { white: "Ba4", black: "Nf6" },
-    { white: "O-O", black: "Be7" },
-  ]
-
+  // Funkcja konwertująca ruch do notacji – można ją rozbudować według potrzeb
   const renderMove = (move: string) => {
     switch (notationStyle) {
       case "algebraic":
@@ -78,7 +71,6 @@ export function RightPanel() {
 
   const { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar()
 
-  // Klasy dla przycisków dolnego wiersza – gdy wąskie, tylko ikony (szerokość fit)
   const bottomButtonClass = isNarrow
     ? "w-fit p-2 flex items-center justify-center"
     : "flex-1 min-w-[100px] text-sm whitespace-nowrap flex items-center justify-center"
@@ -93,18 +85,14 @@ export function RightPanel() {
       onResizeStop={(e, direction, ref) => setCurrentWidth(ref.offsetWidth)}
     >
       <div className="relative w-full h-full">
-        {/* Dekoracyjna ikona na lewym borderze – ustawiona trochę wyżej */}
         <div className="absolute left-0 top-[40%] transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none rounded-sm border bg-border">
           <GripVertical className="h-5 w-3" />
         </div>
-
-        {/* Główny kontener panelu */}
         <div
           className={`w-full p-6 pr-8 flex flex-col justify-between h-full border-l ${borderColor} ${bgColor} backdrop-blur-sm rounded-tl-2xl rounded-bl-2xl`}
         >
           <ScrollArea>
             <div className="space-y-6 flex-grow overflow-auto">
-              {/* Game Info */}
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className={`text-xl font-semibold ${textColor}`}>Game Info</h2>
@@ -126,11 +114,9 @@ export function RightPanel() {
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Game Options */}
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Game Options</h2>
                 {isNarrow ? (
-                  // Wąski: 2 kolumny (2 rzedy, bo mamy 3 przyciski)
                   <div className="grid grid-cols-2 gap-2">
                     <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
                       <PopoverTrigger asChild>
@@ -197,7 +183,6 @@ export function RightPanel() {
                     </Popover>
                   </div>
                 ) : (
-                  // Szeroki: każdy przycisk w osobnym wierszu
                   <div className="space-y-2">
                     <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
                       <PopoverTrigger asChild>
@@ -277,20 +262,25 @@ export function RightPanel() {
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Move History – usunięto tytuł */}
-              <div className="text-sm space-y-1 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
-                {moves.map((move, index) => (
-                  <div key={index} className="flex hover:bg-secondary rounded px-2 py-1 transition-colors">
-                    <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
-                    <span className={`w-14 ${textColor}`}>{renderMove(move.white)}</span>
-                    <span className={`w-14 ${textColor}`}>{renderMove(move.black)}</span>
-                  </div>
-                ))}
+              {/* Zmodyfikowana sekcja Move History */}
+              <div>
+                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Move History</h2>
+
+                <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                  {moveHistory && moveHistory.length > 0 ? (
+                    moveHistory.map((move, index) => (
+                      <div key={index} className="hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
+                        {renderMove(move)}
+                      </div>
+                    ))
+                  ) : (
+                    <p className={`${mutedTextColor} text-center`}>No moves yet.</p>
+                  )}
+                </div>
               </div>
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Promote Pawn – przyciski ułożone w 2 kolumny */}
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Promote Pawn</h2>
                 <div className="grid grid-cols-2 gap-2">
@@ -314,8 +304,6 @@ export function RightPanel() {
               </div>
             </div>
           </ScrollArea>
-
-          {/* Dolny obszar – przyciski */}
           <div className="mt-6 space-y-2">
             {isChatOpen ? (
               <div className="bg-secondary/50 rounded-lg p-4">
