@@ -507,13 +507,10 @@ class Board {
     if (!king) return false
 
     for (const figure of enemyFigures) {
-      const move = {
-        from: figure.position,
-        to: king.position,
-      }
-      if (this.isLegalMove(move)) {
+      // Zamiast wywoływać isLegalMove (które symuluje ruch i sprawdza króla)
+      // sprawdzamy, czy dana figura może (pseudo)legalnie zaatakować pole króla.
+      if (figure.isMoveValid(king.position)) {
         return true
-        console.error("king is check")
       }
     }
     return false
