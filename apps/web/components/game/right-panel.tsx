@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
 import { useTheme } from "next-themes"
@@ -17,7 +16,7 @@ import { useGameContext } from "@/contexts/GameContext"
 
 export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
-  const [notationStyle, setNotationStyle] = useState("algebraic")
+  const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [currentWidth, setCurrentWidth] = useState(320)
 
@@ -33,7 +32,7 @@ export function RightPanel() {
 
   const isNarrow = currentWidth <= 220
 
-  const handleResize = (e: any, direction: any, ref: HTMLElement) => {
+  const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
 
@@ -69,7 +68,7 @@ export function RightPanel() {
     modeColor = "text-green-500"
   }
 
-  const { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar()
+  const { open, setOpen } = useSidebar()
 
   const bottomButtonClass = isNarrow
     ? "w-fit p-2 flex items-center justify-center"

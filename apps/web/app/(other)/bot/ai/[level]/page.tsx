@@ -6,7 +6,6 @@ import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"
 import { RightPanel } from "@/components/game/right-panel"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
-import { useSearchParams } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
@@ -47,8 +46,6 @@ function ChessPageContent() {
   )
 }
 
-export default function ChessPage({ params }: { params: { level: string } }) {
-  alert(params.level)
-
+export default function ChessPage() {
   return <ChessPageContent />
 }

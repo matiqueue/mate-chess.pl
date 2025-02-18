@@ -56,7 +56,7 @@ class chessGame {
     if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
       const figure = this._board.getFigureAtPosition(move.from)
-      const targetFigure = this._board.getFigureAtPosition(move.to)
+      // const targetFigure = this._board.getFigureAtPosition(move.to)
       if (this._board?.moveFigure(move)) {
         this.switchCurrentPlayer()
         if (figure) {

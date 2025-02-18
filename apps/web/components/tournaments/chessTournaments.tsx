@@ -8,7 +8,6 @@ import { Card, CardContent } from "@workspace/ui/components/card"
 import { Button } from "@workspace/ui/components/button"
 import { useTheme } from "next-themes"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
 
 const MotionCard = motion(Card)
 
@@ -80,6 +79,8 @@ export default function ChessTournaments() {
   const { theme } = useTheme()
   const [isWideScreen, setIsWideScreen] = useState(false)
 
+  console.log(isDragging)
+
   useEffect(() => {
     const handleResize = () => {
       setIsWideScreen(window.innerWidth >= 1400)
@@ -108,20 +109,15 @@ export default function ChessTournaments() {
     }
   }
 
-  const formatDate = (date: Date) =>
-    date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+  const formatDate = (date: Date) => date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
 
   const isRegistrationActive = (tournament: Tournament) => {
     const now = new Date()
-    return (
-      tournament.status === "upcoming" &&
-      tournament.participants < tournament.maxParticipants &&
-      tournament.startDate > now
-    )
+    return tournament.status === "upcoming" && tournament.participants < tournament.maxParticipants && tournament.startDate > now
   }
 
-  if(!tournaments[0]){
-    return "";
+  if (!tournaments[0]) {
+    return ""
   }
 
   return (
@@ -162,11 +158,7 @@ export default function ChessTournaments() {
                     className={`absolute w-full max-w-[400px] h-[450px] transition-all duration-300`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{
-                      opacity:
-                        (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) ||
-                        (!isWideScreen && index === currentIndex)
-                          ? 1
-                          : 0,
+                      opacity: (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) || (!isWideScreen && index === currentIndex) ? 1 : 0,
                       scale: index === currentIndex ? 1.1 : 0.9,
                       x: (index - currentIndex) * (isWideScreen ? 400 : 0),
                       zIndex: index === currentIndex ? 30 : isWideScreen ? 20 : 10,
@@ -174,12 +166,7 @@ export default function ChessTournaments() {
                     transition={{ duration: 0.5, zIndex: { delay: index === currentIndex ? 0 : 0.2 } }}
                   >
                     <CardContent className="p-6 flex flex-col items-center justify-between h-full">
-                      <motion.img
-                        src={tournament.logo}
-                        alt={`${tournament.name} logo`}
-                        className="w-32 h-32 mb-4"
-                        animate={floatingAnimation}
-                      />
+                      <motion.img src={tournament.logo} alt={`${tournament.name} logo`} className="w-32 h-32 mb-4" animate={floatingAnimation} />
                       <h3 className="text-2xl font-semibold mb-4 text-center">{tournament.name}</h3>
                       <div className="flex items-center mb-2">
                         <Calendar className="mr-2 h-5 w-5" />
@@ -195,8 +182,7 @@ export default function ChessTournaments() {
                       </div>
                       {tournament.status === "upcoming" && (
                         <span className="text-yellow-500">
-                          Starts in {Math.ceil((tournament.startDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))}{" "}
-                          days
+                          Starts in {Math.ceil((tournament.startDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days
                         </span>
                       )}
                       {tournament.status === "active" && <span className="text-green-500">Tournament in progress</span>}
@@ -216,23 +202,13 @@ export default function ChessTournaments() {
 
             {/* Navigation buttons with improved styling */}
             <div className="flex justify-center items-center space-x-4 mt-4">
-              <Button
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
-                className="z-20 rounded-full p-2"
-                variant="outline"
-              >
+              <Button onClick={handlePrev} disabled={currentIndex === 0} className="z-20 rounded-full p-2" variant="outline">
                 <ChevronLeft className="h-6 w-6" />
               </Button>
               <Button onClick={handleReset} className="z-20 rounded-full p-2" variant="outline">
                 <RotateCcw className="h-6 w-6" />
               </Button>
-              <Button
-                onClick={handleNext}
-                disabled={currentIndex === tournaments.length - 1}
-                className="z-20 rounded-full p-2"
-                variant="outline"
-              >
+              <Button onClick={handleNext} disabled={currentIndex === tournaments.length - 1} className="z-20 rounded-full p-2" variant="outline">
                 <ChevronRight className="h-6 w-6" />
               </Button>
             </div>
@@ -242,4 +218,3 @@ export default function ChessTournaments() {
     </ScrollArea>
   )
 }
-

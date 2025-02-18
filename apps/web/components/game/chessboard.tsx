@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useState } from "react"
@@ -42,8 +43,8 @@ export function ChessBoard() {
   const boardRows = rawBoard.slice(1) // teraz 8 wierszy, 0..7
 
   // Sprawdzamy, czy król w szachu
-  const whiteInCheck = board?.isKingInCheck("white") ?? false
-  const blackInCheck = board?.isKingInCheck("black") ?? false
+  // const whiteInCheck = board?.isKingInCheck("white") ?? false
+  // const blackInCheck = board?.isKingInCheck("black") ?? false
 
   /**
    * Oblicza notację (np. "a8") na podstawie wiersza i kolumny.
