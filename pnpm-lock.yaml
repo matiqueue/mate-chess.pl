@@ -91,6 +91,12 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      GLTFLoader:
+        specifier: link:three/examples/jsm/loaders/GLTFLoader
+        version: link:three/examples/jsm/loaders/GLTFLoader
+      OrbitControls:
+        specifier: link:three/examples/jsm/controls/OrbitControls
+        version: link:three/examples/jsm/controls/OrbitControls
       axios:
         specifier: ^1.7.9
         version: 1.7.9

@@ -1,4 +1,4 @@
-// hooks/useGame.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react"
 import {
   setupGame,
@@ -12,7 +12,10 @@ import {
   getMoveHistory,
   isStalemate,
   getGameStatus,
-} from "@modules/index" // Upewnij się, że ścieżka jest poprawna
+  getPositionByCords,
+  getPositionByNotation,
+  getPositionById,
+} from "@modules/index"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
@@ -65,6 +68,10 @@ const useGame = () => {
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),
+    // Dodajemy funkcje do pobierania pozycji – wykorzystując funkcje eksportowane z index
+    getPositionByCords: (x: number, y: number) => getPositionByCords(getBoard(game), x, y),
+    getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
+    getPositionById: (id: number) => getPositionById(getBoard(game), id),
   }
 }
 

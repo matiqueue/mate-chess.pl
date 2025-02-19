@@ -1,11 +1,14 @@
 "use client"
 
-import { ChessBoard } from "@/components/game/chessboard"
+import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameControls } from "@/components/game/game-controls"
+// Zakładam, że masz komponent GameOptions – podobnie jak GameControls
+
 import { LeftSidebar } from "@/components/game/left-sidebar"
 import { PlayerInfo } from "@/components/game/player-info"
 import { RightPanel } from "@/components/game/right-panel"
 import { GameProvider } from "@/contexts/GameContext"
+import { GameViewProvider } from "@/contexts/GameViewContext"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
 import { useTheme } from "next-themes"
@@ -34,12 +37,21 @@ function ChessPageContent() {
       <div className="relative flex w-full h-full">
         <SidebarProvider>
           <LeftSidebar />
-          <main className="flex-1 flex flex-col items-center justify-center p-4">
-            <PlayerInfo />
-            <div className="flex-1 flex items-center justify-center w-full max-w-[68vh]">
-              <ChessBoard />
+          <main className="relative flex-1 ">
+            {/* Wrapper dla PlayerInfo */}
+            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 w-[103%]">
+              <PlayerInfo />
             </div>
-            <GameControls />
+
+            {/* Wrapper dla planszy */}
+            <div className="absolute inset-0 pt-[10%]">
+              <ChessBoardContainer />
+            </div>
+
+            {/* Wrapper dla GameOptions */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+              <GameControls />
+            </div>
           </main>
           <RightPanel />
         </SidebarProvider>
@@ -51,7 +63,9 @@ function ChessPageContent() {
 export default function ChessPage() {
   return (
     <GameProvider>
-      <ChessPageContent />
+      <GameViewProvider>
+        <ChessPageContent />
+      </GameViewProvider>
     </GameProvider>
   )
 }

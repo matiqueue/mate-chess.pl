@@ -28,7 +28,7 @@ export function PlayerInfo() {
   const currentTurn = currentPlayer ?? "White"
 
   return (
-    <div className="w-full py-6 px-8">
+    <div className="w-full py-6 px-8 z-10">
       <div className="flex justify-between items-center max-w-4xl mx-auto">
         <div className="flex items-center gap-4">
           {/* Pierwszy użytkownik: używamy danych z useUser */}

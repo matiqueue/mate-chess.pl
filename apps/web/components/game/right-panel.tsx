@@ -9,10 +9,11 @@ import { Input } from "@workspace/ui/components/input"
 import { useTheme } from "next-themes"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { usePathname } from "next/navigation"
-import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 import { Resizable } from "re-resizable"
 import { useSidebar } from "@workspace/ui/components/sidebar"
 import { useGameContext } from "@/contexts/GameContext"
+import { useGameView } from "@/contexts/GameViewContext"
+import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 
 export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
@@ -21,8 +22,10 @@ export function RightPanel() {
   const [currentWidth, setCurrentWidth] = useState(320)
 
   const { theme, setTheme } = useTheme()
-  // Pobieramy historię ruchów z hooka (dynamicznie)
-  const { moveHistory } = useGameContext()
+  const { moveHistory } = useGameContext() // Historia ruchów z GameContext (lub z useGame – zależy od Twojej struktury)
+  // W naszym przykładzie załóżmy, że moveHistory jest przekazywane dalej z hooka useGame
+
+  const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
   const textColor = isDark ? "text-white" : "text-zinc-900"
@@ -40,7 +43,6 @@ export function RightPanel() {
     setActivePopover(activePopover === id ? null : id)
   }
 
-  // Funkcja konwertująca ruch do notacji – można ją rozbudować według potrzeb
   const renderMove = (move: string) => {
     switch (notationStyle) {
       case "algebraic":
@@ -115,161 +117,95 @@ export function RightPanel() {
 
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Game Options</h2>
-                {isNarrow ? (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-fit p-2 flex items-center justify-center">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              2D
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              3D
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={activePopover === "layout"} onOpenChange={() => togglePopover("layout")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-fit p-2 flex items-center justify-center">
-                          <Layout className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Default
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Compact
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={activePopover === "settings"} onOpenChange={() => togglePopover("settings")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-fit p-2 flex items-center justify-center">
-                          <Settings2 className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Sound
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Notifications
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full justify-between">
-                          <span className="flex items-center">
-                            <Eye className="h-4 w-4 mr-2" /> View
-                          </span>
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              2D
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              3D
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={activePopover === "layout"} onOpenChange={() => togglePopover("layout")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full justify-between">
-                          <span className="flex items-center">
-                            <Layout className="h-4 w-4 mr-2" /> Layout
-                          </span>
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Default
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Compact
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={activePopover === "settings"} onOpenChange={() => togglePopover("settings")}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full justify-between">
-                          <span className="flex items-center">
-                            <Settings2 className="h-4 w-4 mr-2" /> Settings
-                          </span>
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-48">
-                        <ul className="space-y-1">
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Sound
-                            </Button>
-                          </li>
-                          <li>
-                            <Button variant="ghost" className="w-full justify-start">
-                              Notifications
-                            </Button>
-                          </li>
-                        </ul>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                )}
+                <div className="space-y-2">
+                  {/* Pole View – wybór między 2D a 3D */}
+                  <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full justify-between">
+                        <span className="flex items-center">
+                          <Eye className="h-4 w-4 mr-2" /> View
+                        </span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48">
+                      <ul className="space-y-1">
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("2D")}>
+                            2D
+                          </Button>
+                        </li>
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("3D")}>
+                            3D
+                          </Button>
+                        </li>
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover open={activePopover === "layout"} onOpenChange={() => togglePopover("layout")}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full justify-between">
+                        <span className="flex items-center">
+                          <Layout className="h-4 w-4 mr-2" /> Layout
+                        </span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48">
+                      <ul className="space-y-1">
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Default
+                          </Button>
+                        </li>
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Compact
+                          </Button>
+                        </li>
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                  <Popover open={activePopover === "settings"} onOpenChange={() => togglePopover("settings")}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full justify-between">
+                        <span className="flex items-center">
+                          <Settings2 className="h-4 w-4 mr-2" /> Settings
+                        </span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48">
+                      <ul className="space-y-1">
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Sound
+                          </Button>
+                        </li>
+                        <li>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Notifications
+                          </Button>
+                        </li>
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Zmodyfikowana sekcja Move History */}
+              {/* Reszta RightPanel (Move History, Promote Pawn, Chat, etc.) */}
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Move History</h2>
-
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
-                    moveHistory.map((move, index) => (
+                    moveHistory.map((moveStr, index) => (
                       <div key={index} className="hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
-                        {renderMove(move)}
+                        <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
+                        <span className={`w-full ${textColor}`}>{renderMove(moveStr)}</span>
                       </div>
                     ))
                   ) : (
@@ -284,12 +220,12 @@ export function RightPanel() {
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Promote Pawn</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
-                    <ChessQueen className="h-6 w-6" />
-                    <span className="sr-only">Queen</span>
-                  </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessRook className="h-6 w-6" />
                     <span className="sr-only">Rook</span>
+                  </Button>
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                    <ChessQueen className="h-6 w-6" />
+                    <span className="sr-only">Queen</span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessBishop className="h-6 w-6" />

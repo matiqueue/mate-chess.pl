@@ -23,11 +23,9 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} enableColorScheme disableTransitionOnChange>
       <I18nextProvider i18n={i18n}>
-        {children}
         <Analytics />
         <AudioProvider>{children}</AudioProvider>
       </I18nextProvider>
-      ;
     </ThemeProvider>
   )
 }
