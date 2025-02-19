@@ -8,8 +8,8 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
-// Warianty animacji
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
@@ -27,6 +27,7 @@ const staggerContainer = {
 export default function HomePage() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
+  const { t } = useTranslation()
 
   useEffect(() => {
     setMounted(true)
@@ -54,7 +55,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Play Chess Online
+            {t("playChessOnline")}
           </motion.h1>
           <motion.p
             className="text-xl md:text-2xl text-muted-foreground mb-6"
@@ -62,7 +63,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Master the Game of Kings
+            {t("masterTheGameOfKings")}
           </motion.p>
           <motion.div
             className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8"
@@ -72,7 +73,7 @@ export default function HomePage() {
           >
             <div className="flex items-center gap-1">
               <Users size={16} />
-              15,000+ Active Players
+              15,000+ {t("activePlayers")}
             </div>
             <div className="flex items-center gap-1">
               <PlayCircle size={16} />
