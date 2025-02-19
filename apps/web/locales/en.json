@@ -1,5 +1,7 @@
 {
   "playChessOnline": "Play Chess Online!",
   "masterTheGameOfKings": "Master the Game of Kings...",
-  "activePlayers": "Active Players"
+  "activePlayers": "Active Players",
+  "gamesInProgress": "Games in Progress",
+  "playOnline": "Play Online"
 }

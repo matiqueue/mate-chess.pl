@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react"
 import * as THREE from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 /**
  * ChessBoard3D - Komponent renderujący trójwymiarową szachownicę wraz z figurami.
@@ -23,7 +23,7 @@ export function ChessBoard3D() {
   useEffect(() => {
     // Stałe do skalowania modelu szachownicy i figur.
     const BOARD_SCALE = 14 // Skalowanie całej szachownicy
-    const PIECE_SCALE = 10 // Skalowanie figur (pionków, wież, itd.)
+    const PIECE_SCALE = 12 // Skalowanie figur (pionków, wież, itd.)
 
     // Inicjalizacja sceny 3D.
     const scene = new THREE.Scene()

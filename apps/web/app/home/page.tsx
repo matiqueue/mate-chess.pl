@@ -77,7 +77,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-1">
               <PlayCircle size={16} />
-              1,000+ Games in Progress
+              1,000+ {t("gamesInProgress")}
             </div>
             <div className="flex items-center gap-1">
               <Trophy size={16} />
@@ -88,7 +88,7 @@ export default function HomePage() {
             <motion.div whileHover={{ scale: 1.05 }}>
               <Link href="/play">
                 <Button size="lg" className="w-full sm:w-auto">
-                  Play Online
+                  {t("playOnline")}
                 </Button>
               </Link>
             </motion.div>
