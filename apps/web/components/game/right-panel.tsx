@@ -19,12 +19,18 @@ export function RightPanel() {
   const [activePopover, setActivePopover] = useState<string | null>(null)
   const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const [currentWidth, setCurrentWidth] = useState(320)
+
+  // Lazy initial state – odczytujemy panelWidth z localStorage lub ustawiamy 320 domyślnie
+  const [currentWidth, setCurrentWidth] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("panelWidth")
+      return stored ? Number(stored) : 320
+    }
+    return 320
+  })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory } = useGameContext() // Historia ruchów z GameContext (lub z useGame – zależy od Twojej struktury)
-  // W naszym przykładzie załóżmy, że moveHistory jest przekazywane dalej z hooka useGame
-
+  const { moveHistory } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -35,12 +41,16 @@ export function RightPanel() {
 
   const isNarrow = currentWidth <= 220
 
+  // Aktualizujemy stan podczas zmiany rozmiaru
   const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
 
-  const togglePopover = (id: string) => {
-    setActivePopover(activePopover === id ? null : id)
+  // Po zakończeniu zmiany rozmiaru zapisujemy nową szerokość do localStorage
+  const handleResizeStop = (e: unknown, direction: unknown, ref: HTMLElement) => {
+    const newWidth = ref.offsetWidth
+    setCurrentWidth(newWidth)
+    localStorage.setItem("panelWidth", newWidth.toString())
   }
 
   const renderMove = (move: string) => {
@@ -78,12 +88,12 @@ export function RightPanel() {
 
   return (
     <Resizable
-      defaultSize={{ width: 320, height: "100%" }}
+      defaultSize={{ width: currentWidth, height: "100%" }}
       minWidth={235}
       maxWidth="30%"
       enable={{ left: true }}
       onResize={handleResize}
-      onResizeStop={(e, direction, ref) => setCurrentWidth(ref.offsetWidth)}
+      onResizeStop={handleResizeStop}
     >
       <div className="relative w-full h-full">
         <div className="absolute left-0 top-[40%] transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none rounded-sm border bg-border">
@@ -93,6 +103,7 @@ export function RightPanel() {
           className={`w-full p-6 pr-8 flex flex-col justify-between h-full border-l ${borderColor} ${bgColor} backdrop-blur-sm rounded-tl-2xl rounded-bl-2xl`}
         >
           <ScrollArea>
+            {/* Reszta zawartości komponentu */}
             <div className="space-y-6 flex-grow overflow-auto">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -118,8 +129,7 @@ export function RightPanel() {
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Game Options</h2>
                 <div className="space-y-2">
-                  {/* Pole View – wybór między 2D a 3D */}
-                  <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
+                  <Popover open={activePopover === "view"} onOpenChange={(open) => setActivePopover(open ? "view" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -128,15 +138,29 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
-                      <ul className="space-y-1">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
+                      <ul className="flex space-x-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("2D")}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("2D")
+                              setActivePopover(null)
+                            }}
+                          >
                             2D
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("3D")}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("3D")
+                              setActivePopover(null)
+                            }}
+                          >
                             3D
                           </Button>
                         </li>
@@ -144,7 +168,7 @@ export function RightPanel() {
                     </PopoverContent>
                   </Popover>
 
-                  <Popover open={activePopover === "layout"} onOpenChange={() => togglePopover("layout")}>
+                  <Popover open={activePopover === "layout"} onOpenChange={(open) => setActivePopover(open ? "layout" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -153,22 +177,37 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Default layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             Default
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Compact layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             Compact
                           </Button>
                         </li>
                       </ul>
                     </PopoverContent>
                   </Popover>
-                  <Popover open={activePopover === "settings"} onOpenChange={() => togglePopover("settings")}>
+
+                  <Popover open={activePopover === "settings"} onOpenChange={(open) => setActivePopover(open ? "settings" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -177,15 +216,29 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Sound")
+                              setActivePopover(null)
+                            }}
+                          >
                             Sound
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Notifications")
+                              setActivePopover(null)
+                            }}
+                          >
                             Notifications
                           </Button>
                         </li>
@@ -197,7 +250,6 @@ export function RightPanel() {
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              {/* Reszta RightPanel (Move History, Promote Pawn, Chat, etc.) */}
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Move History</h2>
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">

@@ -6,10 +6,30 @@ import { useTheme } from "next-themes"
 import { Separator } from "@workspace/ui/components/separator"
 import Link from "next/link"
 import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, useSidebar } from "@workspace/ui/components/sidebar"
+import { useEffect } from "react"
 
 export function LeftSidebar() {
   const { theme } = useTheme()
-  const { open } = useSidebar() // Pobieramy stan otwarcia sidebaru
+  const { open, setOpen } = useSidebar()
+
+  // Przy montowaniu odczytujemy stan z localStorage i ustawiamy go tylko, gdy się różni
+  useEffect(() => {
+    const storedState = localStorage.getItem("sidebarOpen")
+    if (storedState !== null) {
+      const value = storedState === "true"
+      // Jeśli aktualny stan jest inny od zapisanego, to ustaw go
+      if (open !== value) {
+        setOpen(value)
+      }
+    }
+    // Uruchamiamy efekt tylko przy montowaniu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Za każdym razem, gdy stan 'open' ulega zmianie, zapisujemy go w localStorage
+  useEffect(() => {
+    localStorage.setItem("sidebarOpen", open.toString())
+  }, [open])
 
   const isDark = theme === "dark"
   const textColor = isDark ? "text-white" : "text-zinc-900"

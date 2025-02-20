@@ -1,15 +1,8 @@
 "use client"
 
 import ChessBoardContainer from "@/components/game/chessboard-container"
-import { GameControls } from "@/components/game/game-controls"
-// Zakładam, że masz komponent GameOptions – podobnie jak GameControls
-
-import { LeftSidebar } from "@/components/game/left-sidebar"
-import { PlayerInfo } from "@/components/game/player-info"
-import { RightPanel } from "@/components/game/right-panel"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
@@ -34,28 +27,7 @@ function ChessPageContent() {
         }`}
       />
       <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/30"} backdrop-blur-sm`} />
-      <div className="relative flex w-full h-full">
-        <SidebarProvider>
-          <LeftSidebar />
-          <main className="relative flex-1 ">
-            {/* Wrapper dla PlayerInfo */}
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 w-[103%]">
-              <PlayerInfo />
-            </div>
-
-            {/* Wrapper dla planszy */}
-            <div className="absolute inset-0 pt-[10%]">
-              <ChessBoardContainer />
-            </div>
-
-            {/* Wrapper dla GameOptions */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-              <GameControls />
-            </div>
-          </main>
-          <RightPanel />
-        </SidebarProvider>
-      </div>
+      <ChessBoardContainer />
     </div>
   )
 }
