@@ -10,11 +10,13 @@ import { ModeToggle } from "@workspace/ui/components/mode-toggle"
 import { Volume2, VolumeOff } from "lucide-react"
 import { useAudio } from "@/components/home/audio-provider"
 import { LanguageSwitcher } from "./language-switcher"
+import { useTranslation } from "react-i18next"
 
 type NavbarProps = React.HTMLAttributes<HTMLElement>
 
 export function Navbar({ className }: NavbarProps) {
   const { isPlaying, toggleMusic } = useAudio()
+  const { t } = useTranslation()
 
   return (
     <header className={cn("w-full h-16 border-b px-6 flex items-center gap-6 bg-sidebar", className)}>
@@ -23,7 +25,7 @@ export function Navbar({ className }: NavbarProps) {
       <form className="flex-1 flex max-w-sm">
         <div className="relative flex-1">
           <Search className="absolute left-2 top-1/2 mx-2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search games, players..." className="h-10 pl-10" />
+          <Input placeholder={t("searchNavbar")} className="h-10 pl-10" />
         </div>
       </form>
 
