@@ -1,15 +1,8 @@
 "use client"
 
 import ChessBoardContainer from "@/components/game/chessboard-container"
-import { GameControls } from "@/components/game/game-controls"
-// Zakładam, że masz komponent GameOptions – podobnie jak GameControls
-
-import { LeftSidebar } from "@/components/game/left-sidebar"
-import { PlayerInfo } from "@/components/game/player-info"
-import { RightPanel } from "@/components/game/right-panel"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
