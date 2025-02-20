@@ -118,8 +118,6 @@ a {
   @apply font-medium;
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -127,4 +125,14 @@ a {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* styles/globals.css */
+html,
+body,
+* {
+  -webkit-user-select: none; /* dla Safari */
+  -moz-user-select: none; /* dla Firefox */
+  -ms-user-select: none; /* dla Internet Explorer/Edge */
+  user-select: none; /* standard */
 }

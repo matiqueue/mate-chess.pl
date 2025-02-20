@@ -3,7 +3,18 @@
 import { useUser } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings } from "lucide-react"
+import {
+  Home,
+  PlayCircle,
+  PuzzleIcon as PuzzlePiece,
+  Bot,
+  GraduationCap,
+  Trophy,
+  Users,
+  BookOpen,
+  Activity,
+  Settings,
+} from "lucide-react"
 
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { Separator } from "@workspace/ui/components/separator"
@@ -23,6 +34,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/av
 
 import { SignedIn, SignedOut, SignInButton, useClerk } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 
 interface NavItemProps {
   href: string
@@ -33,139 +45,36 @@ interface NavItemProps {
 
 function NavItem({ href, icon: Icon, children, badge }: NavItemProps) {
   return (
-    <Link href={href} className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+    <Link
+      href={href}
+      className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+    >
       <div className="flex items-center gap-2">
         <Icon size={20} />
         <span>{children}</span>
       </div>
-      {badge && <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{badge}</span>}
+      {badge && (
+        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+          {badge}
+        </span>
+      )}
     </Link>
   )
 }
-
-/**
- * Komponent chatu, który przenosimy do sidebaru minimalnego.
- * Został lekko zmodyfikowany, żeby pasował do szerszych stylów sidebara.
- */
-// function ChatSidebar() {
-//   const { isSignedIn, user } = useUser()
-//   const params = useParams()
-//   // Przyjmujemy, że id pokoju jest przekazywane w ścieżce, np. /play/online/[id]
-//   const roomId = params.id as string
-
-//   const [messages, setMessages] = useState<{ sender: string; text: string; imageUrl: string }[]>([])
-//   const [input, setInput] = useState("")
-//   const [cooldown, setCooldown] = useState<number>(0)
-//   const socketRef = useRef<Socket | null>(null)
-//   const lastSentRef = useRef<number>(0)
-
-//   useEffect(() => {
-//     if (!isSignedIn || !user) return
-
-//     if (!socketRef.current) {
-//       socketRef.current = io("http://localhost:4000")
-//       socketRef.current.emit("joinRoom", roomId)
-//     }
-
-//     socketRef.current.on("chatHistory", (data: typeof messages) => {
-//       setMessages(data)
-//     })
-
-//     socketRef.current.on("receiveMessage", (message: (typeof messages)[0]) => {
-//       setMessages((prev) => [...prev, message])
-//     })
-
-//     return () => {
-//       socketRef.current?.disconnect()
-//     }
-//   }, [isSignedIn, user, roomId])
-
-//   // Licznik cooldownu
-//   useEffect(() => {
-//     if (cooldown > 0) {
-//       const timer = setTimeout(() => {
-//         setCooldown((prev) => Math.max(prev - 1, 0))
-//       }, 1000)
-//       return () => clearTimeout(timer)
-//     }
-//   }, [cooldown])
-
-//   const sendMessage = () => {
-//     if (input.trim() === "") return
-
-//     const now = Date.now()
-//     if (now - lastSentRef.current < 2000) {
-//       setCooldown(Math.ceil((2000 - (now - lastSentRef.current)) / 1000))
-//       return
-//     }
-//     lastSentRef.current = now
-
-//     const message = {
-//       sender: user?.firstName || "Player",
-//       text: input,
-//       imageUrl: user?.imageUrl || "https://via.placeholder.com/40",
-//     }
-
-//     socketRef.current?.emit("sendMessage", { roomId, message })
-//     setInput("")
-//   }
-
-//   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-//     if (e.key === "Enter") {
-//       sendMessage()
-//     }
-//   }
-
-//   return (
-//     <div className="p-4">
-//       <h1 className="text-xl font-bold mb-4 text-center">Game Chat</h1>
-//       <Card className="p-2">
-//         <ScrollArea className="max-h-[40vh] space-y-3 overflow-y-auto">
-//           {messages.map((msg, index) => (
-//             <CardContent key={index} className="flex gap-2 items-center p-2 border rounded-lg shadow-md">
-//               <Avatar>
-//                 <AvatarImage src={msg.imageUrl || "https://via.placeholder.com/40"} />
-//                 <AvatarFallback>{msg.sender[0]}</AvatarFallback>
-//               </Avatar>
-//               <div>
-//                 <p className="font-semibold">{msg.sender}</p>
-//                 <p className="text-sm text-gray-600">{msg.text}</p>
-//               </div>
-//             </CardContent>
-//           ))}
-//         </ScrollArea>
-//         <div className="flex flex-col gap-2 mt-4">
-//           <div className="flex gap-2">
-//             <Input
-//               value={input}
-//               onChange={(e) => setInput(e.target.value)}
-//               onKeyDown={handleKeyDown}
-//               placeholder="Type your message..."
-//               className="flex-1 p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-//             />
-//             <Button onClick={sendMessage} className="px-3 py-2 bg-white text-black rounded-md shadow-md border">
-//               <Send size={20} color="black" />
-//             </Button>
-//           </div>
-//           {cooldown > 0 && (
-//             <p className="text-xs text-red-600">
-//               Next message can be sent in {cooldown} second{cooldown > 1 ? "s" : ""}
-//             </p>
-//           )}
-//         </div>
-//       </Card>
-//     </div>
-//   )
-// }
 
 export function Sidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const { user } = useUser()
   const clerk = useClerk()
+  const { t } = useTranslation()
 
-  // Jeśli dokładnie "/play/online" lub "/play/link" – nie renderujemy sidebaru
-  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
+  // Jeśli jesteśmy na określonych ścieżkach, nie renderujemy sidebaru
+  if (
+    pathname.startsWith("/play/online") ||
+    pathname.startsWith("/play/link") ||
+    pathname === "/play/local"
+  ) {
     return null
   }
 
@@ -178,7 +87,6 @@ export function Sidebar() {
     } catch (error) {
       console.error("Błąd przy czyszczeniu ciasteczka:", error)
     }
-    // Przekierowanie na stronę główną
     router.push("/")
   }
 
@@ -188,7 +96,7 @@ export function Sidebar() {
         <div onClick={handleClick} style={{ cursor: "pointer" }}>
           <div className="flex items-center gap-2">
             <PuzzlePiece className="h-6 w-6" />
-            <h1 className="text-xl font-bold">Mate Chess</h1>
+            <h1 className="text-xl font-bold">{t("brandName")}</h1>
           </div>
         </div>
       </SidebarHeader>
@@ -198,49 +106,55 @@ export function Sidebar() {
           <div className="space-y-4">
             <div>
               <NavItem href="/home" icon={Home}>
-                Home
+                {t("home")}
               </NavItem>
             </div>
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">PLAY</h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">
+                  {t("navPlay")}
+                </h2>
               </div>
-              <NavItem href="/play" icon={PlayCircle} badge="Live">
-                Play Online
+              <NavItem href="/play" icon={PlayCircle} badge={t("live")}>
+                {t("playOnline")}
               </NavItem>
               <NavItem href="/bot" icon={Bot}>
-                Play vs Bot
+                {t("playVsBot")}
               </NavItem>
               <NavItem href="/tournaments" icon={Trophy}>
-                Tournaments
+                {t("tournaments")}
               </NavItem>
             </div>
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">LEARN</h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">
+                  {t("navLearn")}
+                </h2>
               </div>
-              <NavItem href="/puzzles" icon={PuzzlePiece} badge="Daily">
-                Puzzles
+              <NavItem href="/puzzles" icon={PuzzlePiece} badge={t("daily")}>
+                {t("puzzles")}
               </NavItem>
               <NavItem href="/lessons" icon={GraduationCap}>
-                Lessons
+                {t("lessons")}
               </NavItem>
               <NavItem href="/openings" icon={BookOpen}>
-                Openings
+                {t("openings")}
               </NavItem>
             </div>
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">COMMUNITY</h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">
+                  {t("navCommunity")}
+                </h2>
               </div>
               <NavItem href="/players" icon={Users}>
-                Players
+                {t("players")}
               </NavItem>
               <NavItem href="/activity" icon={Activity}>
-                Activity
+                {t("activity")}
               </NavItem>
             </div>
 
@@ -248,7 +162,7 @@ export function Sidebar() {
 
             <div>
               <NavItem href="/settings" icon={Settings}>
-                Settings
+                {t("settings")}
               </NavItem>
             </div>
           </div>
@@ -259,11 +173,11 @@ export function Sidebar() {
         <SignedOut>
           <div className="flex items-center gap-4">
             <SignInButton>
-              <Button variant="outline">Login</Button>
+              <Button variant="outline">{t("login")}</Button>
             </SignInButton>
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-red-500" />
-              <span className="text-sm text-muted-foreground">Offline</span>
+              <span className="text-sm text-muted-foreground">{t("offline")}</span>
             </div>
           </div>
         </SignedOut>
@@ -286,28 +200,34 @@ export function Sidebar() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.fullName}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.primaryEmailAddress?.emailAddress}
+                    </p>
                   </div>
                 </DropdownMenuLabel>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
-                  <Link href="/profile">Profile</Link>
+                  <Link href="/profile">{t("profile")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href={"profile/stats/" + user?.id}>Your Statistics</Link>
+                  <Link href={"profile/stats/" + user?.id}>
+                    {t("yourStatistics")}
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => clerk.signOut()}>Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => clerk.signOut()}>
+                  {t("logout")}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-500" />
-              <span className="text-sm text-muted-foreground">Online</span>
+              <span className="text-sm text-muted-foreground">{t("online")}</span>
             </div>
           </div>
         </SignedIn>

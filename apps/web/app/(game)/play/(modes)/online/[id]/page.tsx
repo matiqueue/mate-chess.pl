@@ -1,11 +1,8 @@
 "use client"
 
-import { ChessBoard } from "@/components/game/chess-board"
-import { GameControls } from "@/components/game/game-controls"
-import { LeftSidebar } from "@/components/game/left-sidebar"
-import { PlayerInfo } from "@/components/game/player-info"
-import { RightPanel } from "@/components/game/right-panel"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
+import ChessBoardContainer from "@/components/game/chessboard-container"
+import { GameProvider } from "@/contexts/GameContext"
+import { GameViewProvider } from "@/contexts/GameViewContext"
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
@@ -30,23 +27,17 @@ function ChessPageContent() {
         }`}
       />
       <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/30"} backdrop-blur-sm`} />
-      <div className="relative flex w-full h-full">
-        <SidebarProvider>
-          <LeftSidebar />
-          <main className="flex-1 flex flex-col items-center justify-center p-4">
-            <PlayerInfo />
-            <div className="flex-1 flex items-center justify-center w-full max-w-[68vh]">
-              <ChessBoard />
-            </div>
-            <GameControls />
-          </main>
-          <RightPanel />
-        </SidebarProvider>
-      </div>
+      <ChessBoardContainer />
     </div>
   )
 }
 
 export default function ChessPage() {
-  return <ChessPageContent />
+  return (
+    <GameProvider>
+      <GameViewProvider>
+        <ChessPageContent />
+      </GameViewProvider>
+    </GameProvider>
+  )
 }

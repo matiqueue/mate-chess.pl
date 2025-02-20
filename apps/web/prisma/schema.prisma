@@ -13,64 +13,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-//   clerkID    String   @unique
-//   username   String   @unique
-//   email      String   @unique
-//   elo        Int      @default(300)
-//   createdAt  DateTime @default(now())
-//   lastOnline DateTime @default(now())
-//   gamesIDs   String[] @default([]) @db.ObjectId
-//   games      Game[]   @relation(fields: [gamesIDs], references: [id])
-//   settings   Json?
-// }
-
-// model Game {
-//   id            String        @id @default(auto()) @map("_id") @db.ObjectId
-//   gameType      String
-//   playersIDs    String[]      @db.ObjectId
-//   players       User[]        @relation(fields: [playersIDs], references: [id])
-//   gameResult    GameResult
-//   gameEndReason GameEndReason
-//   eloBefore     Int[] // [0] - player1, [1] - player2, before game
-//   eloAfter      Int[] // [0] - player1, [1] - player2, after game
-//   playedAt      DateTime      @default(now()) @db.Date
-// }
-
-// enum GameResult {
-//   Draw
-//   Player1Win
-//   Player2Win
-// }
-
-// enum GameEndReason {
-//   Resignation
-//   TimeOut
-//   Checkmate
-//   Stalemate
-// }
-
-model User {
-  id          String   @id @map("_id") @db.ObjectId // ID pobierane z Clerk’a
-  username    String // Username z Clerk’a
-  name        String // Imię z Clerk’a
-  fullname    String // Pełne imię z Clerk’a
-  createdAt   DateTime // Data utworzenia konta (Clerk)
-  lastOnline  DateTime // Ostatnia aktywność – aktualizowana ręcznie lub przez logikę aplikacji
-  gamesIDs    String[] // Lista identyfikatorów gier
-  games       Game[]   @relation("UserGames") // Relacja do gier
-  settings    Json // Ustawienia użytkownika zapisane jako JSON
-  gamesWon    Int      @default(0) // Liczba wygranych gier
-  gamesLost   Int      @default(0) // Liczba przegranych gier
-  gameHistory Json? // Historia gier (opcjonalnie)
+model UserProfile {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkUserId   String   @unique
+  gamesPlayed   Int
+  winPercentage Int
+  eloPoints     Int
+  timePlayed    DateTime
+  nickname      String?
+  joinDate      String?
+  avatar        String?
+  name          String?
+  lastGames     Game[]
 }
 
 model Game {
-  id        String   @id @map("_id") @db.ObjectId
-  name      String // Nazwa gry, np. "Szachy"
-  createdAt DateTime @default(now())
-  // Opcjonalna relacja do użytkownika, jeśli chcesz przypisać grę do konkretnego użytkownika
-  user      User?    @relation("UserGames", fields: [userId], references: [id])
-  userId    String?  @db.ObjectId
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  result        String
+  opponent      String
+  eloChange     String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
+  userProfileId String
 }
+
+// model User {
+//   id         String   @id @default(auto()) @map("_id") @db.ObjectId
+//   clerkID    String   @unique // ID pobierane z Clerk’a 
+//   username   String   // Username z Clerk’a
+//   elo        Int      @default(300)
+//   createdAt  DateTime // Data utworzenia konta (Clerk)
+//   lastOnline DateTime // Ostatnia aktywność – aktualizowana ręcznie lub przez logikę aplikacji
+//   settings   Json     // Ustawienia użytkownika zapisane jako JSON
+//   gamesWon   Int      @default(0) // Liczba wygranych gier
+//   gamesLost  Int      @default(0) // Liczba przegranych gier
+// }
+
+// model Game {
+//   id             String   @id @map("_id") @db.ObjectId
+//   gameType       String
+//   createdAt      DateTime @default(now())
+//   player1        String   @db.ObjectId
+//   player2        String   @db.ObjectId
+//   player1_PGN    String
+//   player2_PGN    String
+//   player1_result String
+//   player2_result String
+// }
