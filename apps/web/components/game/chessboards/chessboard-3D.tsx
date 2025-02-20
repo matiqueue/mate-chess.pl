@@ -1,7 +1,17 @@
 import React, { useRef, useEffect } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
+
+// Definicja interfejsu dla modeli figur
+interface Pieces {
+  pawn: THREE.Object3D
+  rook: THREE.Object3D
+  knight: THREE.Object3D
+  bishop: THREE.Object3D
+  queen: THREE.Object3D
+  king: THREE.Object3D
+}
 
 /**
  * ChessBoard3D - Komponent renderujący trójwymiarową szachownicę wraz z figurami.
@@ -17,10 +27,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
  *
  * @returns {JSX.Element} Element div zawierający renderowaną scenę 3D.
  */
-export function ChessBoard3D() {
-  const containerRef = useRef()
+export function ChessBoard3D(): JSX.Element {
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (!containerRef.current) return
+
     const BOARD_SCALE = 14
     const PIECE_SCALE = 15
 
@@ -56,7 +68,6 @@ export function ChessBoard3D() {
     controls.minDistance = initialDistance * 0.8
 
     // Ustawienie ograniczenia kąta polarnego:
-    // Obliczamy początkowy kąt na podstawie pozycji kamery, jak wcześniej
     const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2)
     const heightY = camera.position.y
     const startPolarAngle = Math.atan2(distXZ, heightY)
@@ -73,7 +84,7 @@ export function ChessBoard3D() {
      *
      * @param {THREE.Object3D} piece - Model figury.
      */
-    const adjustPiecePivot = (piece) => {
+    const adjustPiecePivot = (piece: THREE.Object3D): void => {
       piece.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(piece)
       const deltaY = -box.min.y
@@ -82,7 +93,7 @@ export function ChessBoard3D() {
 
     loader.load(
       "/models/game/game-chessboard.glb",
-      (gltf) => {
+      (gltf: GLTF) => {
         const board = gltf.scene
         board.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE)
         board.updateMatrixWorld(true)
@@ -114,13 +125,13 @@ export function ChessBoard3D() {
       (error) => console.error("Błąd ładowania szachownicy:", error),
     )
 
-    async function loadPieces(cellSize, playableMinX, playableMinZ) {
-      const loadModel = (url) =>
+    async function loadPieces(cellSize: number, playableMinX: number, playableMinZ: number): Promise<void> {
+      const loadModel = (url: string): Promise<GLTF> =>
         new Promise((resolve, reject) => {
-          loader.load(url, (gltf) => resolve(gltf), undefined, reject)
+          loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject)
         })
 
-      const getPosition = (file, rank) => {
+      const getPosition = (file: number, rank: number): THREE.Vector3 => {
         const x = playableMinX + file * cellSize + cellSize * 0.5
         const z = playableMinZ + rank * cellSize + cellSize * 0.5
         return new THREE.Vector3(x, 0, z)
@@ -142,7 +153,7 @@ export function ChessBoard3D() {
           loadModel("/models/game/black-pawns/king_black.glb"),
         ])
 
-      const pieceModels = {
+      const pieceModels: { white: Pieces; black: Pieces } = {
         white: {
           pawn: whitePawn.scene,
           rook: whiteRook.scene,
@@ -164,7 +175,7 @@ export function ChessBoard3D() {
       const backRankOrder = ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"]
 
       for (let file = 0; file < 8; file++) {
-        const type = backRankOrder[file]
+        const type = backRankOrder[file] as keyof Pieces
         const piece = pieceModels.white[type].clone()
         piece.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
         piece.position.copy(getPosition(file, 0))
@@ -179,7 +190,7 @@ export function ChessBoard3D() {
         scene.add(piece)
       }
       for (let file = 0; file < 8; file++) {
-        const type = backRankOrder[file]
+        const type = backRankOrder[file] as keyof Pieces
         const piece = pieceModels.black[type].clone()
         piece.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
         piece.position.copy(getPosition(file, 7))
@@ -195,18 +206,18 @@ export function ChessBoard3D() {
       }
     }
 
-    const animate = () => {
+    const animate = (): void => {
       requestAnimationFrame(animate)
       controls.update()
       renderer.render(scene, camera)
     }
     animate()
 
-    let resizeTimer
+    let resizeTimer: number
     const resizeObserver = new ResizeObserver((entries) => {
       clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(() => {
-        for (let entry of entries) {
+      resizeTimer = window.setTimeout(() => {
+        for (const entry of entries) {
           const { width, height } = entry.contentRect
           renderer.setSize(width, height)
           camera.aspect = width / height
