@@ -18,7 +18,9 @@ import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
 
 export function GameControls() {
-  const isLocal = usePathname().startsWith("/play/local")
+  const pathname = usePathname()
+  const isLocal = pathname.startsWith("/play/local")
+  const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
   const { undoMove } = useGameContext() // pobieramy funkcję cofania ruchu
 
@@ -33,13 +35,8 @@ export function GameControls() {
   return (
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
-        {/* Przycisk cofania ruchu */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white/70 hover:text-white hover:bg-white/10"
-          onClick={undoMove} // cofamy ruch
-        >
+        {/* Przyciski sterujące (strzałki) widoczne wszędzie */}
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoMove}>
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
@@ -52,10 +49,12 @@ export function GameControls() {
           <FastForward className="h-5 w-5" />
         </Button>
 
-        {isLocal ? null : (
-          <>
-            <div className="w-px h-8 bg-white/20 mx-2" />
+        {/* Separator wyświetlany tylko, gdy będą widoczne przyciski akcji */}
+        {!isLocal && <div className="w-px h-8 bg-white/20 mx-2" />}
 
+        {/* Przyciski akcji */}
+        {!isLocal && (
+          <>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
@@ -63,7 +62,7 @@ export function GameControls() {
                   Surrender
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
+              <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure you want to surrender?</AlertDialogTitle>
                   <AlertDialogDescription>If you surrender, your opponent will win the game immediately. This action cannot be undone!</AlertDialogDescription>
@@ -75,26 +74,29 @@ export function GameControls() {
               </AlertDialogContent>
             </AlertDialog>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
-                  <Handshake className="h-4 w-4 mr-2" />
-                  Offer Draw
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90 " : "bg-background "} backdrop-blur-md shadow-lg`}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    If your opponent accepts, the game will end in a draw. If they decline, the game will continue.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {/* Przycisk "Offer Draw" wyświetlamy tylko, gdy nie jesteśmy na stronie /bot */}
+            {!isBot && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
+                    <Handshake className="h-4 w-4 mr-2" />
+                    Offer Draw
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      If your opponent accepts, the game will end in a draw. If they decline, the game will continue.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </>
         )}
       </div>
