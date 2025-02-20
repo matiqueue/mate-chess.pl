@@ -53,10 +53,6 @@ export function RightPanel() {
     localStorage.setItem("panelWidth", newWidth.toString())
   }
 
-  const togglePopover = (id: string) => {
-    setActivePopover(activePopover === id ? null : id)
-  }
-
   const renderMove = (move: string) => {
     switch (notationStyle) {
       case "algebraic":
@@ -133,7 +129,7 @@ export function RightPanel() {
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Game Options</h2>
                 <div className="space-y-2">
-                  <Popover open={activePopover === "view"} onOpenChange={() => togglePopover("view")}>
+                  <Popover open={activePopover === "view"} onOpenChange={(open) => setActivePopover(open ? "view" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -142,15 +138,29 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
-                      <ul className="space-y-1">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
+                      <ul className="flex space-x-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("2D")}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("2D")
+                              setActivePopover(null)
+                            }}
+                          >
                             2D
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => setViewMode("3D")}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("3D")
+                              setActivePopover(null)
+                            }}
+                          >
                             3D
                           </Button>
                         </li>
@@ -158,7 +168,7 @@ export function RightPanel() {
                     </PopoverContent>
                   </Popover>
 
-                  <Popover open={activePopover === "layout"} onOpenChange={() => togglePopover("layout")}>
+                  <Popover open={activePopover === "layout"} onOpenChange={(open) => setActivePopover(open ? "layout" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -167,22 +177,37 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Default layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             Default
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Compact layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             Compact
                           </Button>
                         </li>
                       </ul>
                     </PopoverContent>
                   </Popover>
-                  <Popover open={activePopover === "settings"} onOpenChange={() => togglePopover("settings")}>
+
+                  <Popover open={activePopover === "settings"} onOpenChange={(open) => setActivePopover(open ? "settings" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
@@ -191,15 +216,29 @@ export function RightPanel() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48">
+                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Sound")
+                              setActivePopover(null)
+                            }}
+                          >
                             Sound
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Notifications")
+                              setActivePopover(null)
+                            }}
+                          >
                             Notifications
                           </Button>
                         </li>
