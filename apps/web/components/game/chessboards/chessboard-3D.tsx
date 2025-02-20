@@ -11,7 +11,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
  *  - Ładowanie i centrowanie modelu szachownicy.
  *  - Obliczanie obszaru gry (bez obramówki) oraz rozmiaru pojedynczego pola.
  *  - Asynchroniczne ładowanie modeli figur i rozmieszczenie ich w środkach pól.
- *  - Ustawienie OrbitControls z ograniczeniami obracania i zoomu.
+ *  - Ustawienie OrbitControls z zablokowanym przesuwaniem (panning) oraz ograniczeniem obracania,
+ *    gdzie kąt minimalny jest zmodyfikowany o dodatkowe 5° w porównaniu do pierwotnego ustawienia.
  *  - Ciągłe monitorowanie zmian rozmiaru kontenera (ResizeObserver z debounce) i aktualizacja kamery.
  *
  * @returns {JSX.Element} Element div zawierający renderowaną scenę 3D.
@@ -43,17 +44,25 @@ export function ChessBoard3D() {
     directionalLight.position.set(10, 10, 5)
     scene.add(directionalLight)
 
+    // Inicjalizacja OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
+    controls.enablePan = false // Blokujemy przesuwanie kamery
     controls.target.set(0, 0, 0)
     controls.update()
+
     const initialDistance = camera.position.distanceTo(controls.target)
     controls.maxDistance = initialDistance
     controls.minDistance = initialDistance * 0.8
+
+    // Ustawienie ograniczenia kąta polarnego:
+    // Obliczamy początkowy kąt na podstawie pozycji kamery, jak wcześniej
     const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2)
     const heightY = camera.position.y
     const startPolarAngle = Math.atan2(distXZ, heightY)
-    controls.minPolarAngle = startPolarAngle
+    // Dodajemy dodatkowe 5 stopni (w radianach) do możliwości obracania w górę
+    const extraAngle = 15 * (Math.PI / 180)
+    controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle)
     controls.maxPolarAngle = Math.PI / 2
 
     const loader = new GLTFLoader()
@@ -105,28 +114,12 @@ export function ChessBoard3D() {
       (error) => console.error("Błąd ładowania szachownicy:", error),
     )
 
-    /**
-     * loadPieces
-     * Asynchronicznie ładuje modele figur i rozmieszcza je na szachownicy.
-     *
-     * @param {number} cellSize - Rozmiar pojedynczego pola.
-     * @param {number} playableMinX - Minimalna wartość X obszaru gry (bez ramki).
-     * @param {number} playableMinZ - Minimalna wartość Z obszaru gry (bez ramki).
-     */
     async function loadPieces(cellSize, playableMinX, playableMinZ) {
       const loadModel = (url) =>
         new Promise((resolve, reject) => {
           loader.load(url, (gltf) => resolve(gltf), undefined, reject)
         })
 
-      /**
-       * getPosition
-       * Oblicza środek pola na planszy na podstawie indeksów kolumny (file) i wiersza (rank).
-       *
-       * @param {number} file - Indeks kolumny (0-7).
-       * @param {number} rank - Indeks wiersza (0-7).
-       * @returns {THREE.Vector3} - Pozycja środka pola.
-       */
       const getPosition = (file, rank) => {
         const x = playableMinX + file * cellSize + cellSize * 0.5
         const z = playableMinZ + rank * cellSize + cellSize * 0.5
@@ -202,10 +195,6 @@ export function ChessBoard3D() {
       }
     }
 
-    /**
-     * animate
-     * Główna pętla renderująca scenę, wywoływana rekurencyjnie przez requestAnimationFrame.
-     */
     const animate = () => {
       requestAnimationFrame(animate)
       controls.update()
@@ -213,9 +202,6 @@ export function ChessBoard3D() {
     }
     animate()
 
-    /**
-     * Debounce resize callback, aby nie aktualizować renderera zbyt często.
-     */
     let resizeTimer
     const resizeObserver = new ResizeObserver((entries) => {
       clearTimeout(resizeTimer)
