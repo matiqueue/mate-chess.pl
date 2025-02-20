@@ -178,76 +178,74 @@ export function ChessBoard2D() {
   }
 
   return (
-    <div className="flex items-center justify-center w-full pt-[17%]">
-      <div className="relative w-full h-full max-w-[55%] aspect-square">
-        {/* Overlay z rozmyciem i obramowaniem */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
-          <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
-        </div>
+    <div className="relative w-full max-w-[68vh] aspect-square">
+      {/* Overlay z rozmyciem i obramowaniem */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
+        <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
+      </div>
 
-        <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-          <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-            {boardRows.map((rowData: any[], rowIndex: number) =>
-              rowData.map((_, colIndex) => {
-                // Pobieramy symbol (odwracamy kolumny)
-                const symbol = rowData[7 - colIndex]
-                const notation = getNotation(rowIndex, colIndex)
-                const square = board?.getPositionByNotation(notation)
-                const isSelected = selectedSquare && selectedSquare.notation === notation
-                const isValidMove = validMoves.some((pos) => pos.notation === notation)
+      <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
+        <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
+          {boardRows.map((rowData: any[], rowIndex: number) =>
+            rowData.map((_, colIndex) => {
+              // Pobieramy symbol (odwracamy kolumny)
+              const symbol = rowData[7 - colIndex]
+              const notation = getNotation(rowIndex, colIndex)
+              const square = board?.getPositionByNotation(notation)
+              const isSelected = selectedSquare && selectedSquare.notation === notation
+              const isValidMove = validMoves.some((pos) => pos.notation === notation)
 
-                // Sprawdzamy, czy to pole zawiera króla w szachu
-                let isKingInCheck = false
-                if (square?.figure?.type === "king") {
-                  const isWhite = square.figure.color === "white"
-                  if (isWhite && board?.isKingInCheck("white")) {
-                    isKingInCheck = true
-                  }
-                  if (!isWhite && board?.isKingInCheck("black")) {
-                    isKingInCheck = true
-                  }
+              // Sprawdzamy, czy to pole zawiera króla w szachu
+              let isKingInCheck = false
+              if (square?.figure?.type === "king") {
+                const isWhite = square.figure.color === "white"
+                if (isWhite && board?.isKingInCheck("white")) {
+                  isKingInCheck = true
                 }
+                if (!isWhite && board?.isKingInCheck("black")) {
+                  isKingInCheck = true
+                }
+              }
 
-                // Określamy kolor tła pola.
-                // Dla pól z królem w szachu: czerwone tło z lekkim roundingiem (bez czarnego border).
-                const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600 rounded-sm" : isBlackSquare(rowIndex, colIndex, isDarkMode)
+              // Określamy kolor tła pola.
+              // Dla pól z królem w szachu: czerwone tło z lekkim roundingiem (bez czarnego border).
+              const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600 rounded-sm" : isBlackSquare(rowIndex, colIndex, isDarkMode)
 
-                return (
-                  <div
-                    key={`${rowIndex}-${colIndex}`}
-                    onClick={() => handleSquareClick(rowIndex, colIndex)}
-                    className={clsx("relative flex items-center justify-center", squareBgClasses)}
-                  >
-                    {isValidMove && (
-                      <>
-                        {square?.figure && square.figure.color !== currentPlayer ? (
-                          <div className="absolute inset-0 bg-green-600 opacity-40 pointer-events-none rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md m-2" />
-                        ) : (
-                          <div
-                            className={clsx(
-                              "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
-                              isDarkMode ? "bg-white" : "bg-gray-600",
-                            )}
-                          />
-                        )}
-                      </>
-                    )}
+              return (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  onClick={() => handleSquareClick(rowIndex, colIndex)}
+                  className={clsx("relative flex items-center justify-center", squareBgClasses)}
+                >
+                  {isValidMove && (
+                    <>
+                      {square?.figure && square.figure.color !== currentPlayer ? (
+                        <div className="absolute inset-0 bg-green-600 opacity-40 pointer-events-none rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md m-2" />
+                      ) : (
+                        <div
+                          className={clsx(
+                            "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
+                            isDarkMode ? "bg-white" : "bg-gray-600",
+                          )}
+                        />
+                      )}
+                    </>
+                  )}
 
-                    {/* Nakładka z niebieskim borderem, która nie wpływa na rozmiar figury */}
-                    {isSelected && (
-                      <div
-                        className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 
+                  {/* Nakładka z niebieskim borderem, która nie wpływa na rozmiar figury */}
+                  {isSelected && (
+                    <div
+                      className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 
                  rounded-tl-md rounded-tr-sm rounded-bl-sm rounded-br-none pointer-events-none z-0"
-                      />
-                    )}
+                    />
+                  )}
 
-                    {renderPiece(symbol, rowIndex, colIndex)}
-                  </div>
-                )
-              }),
-            )}
-          </div>
+                  {renderPiece(symbol, rowIndex, colIndex)}
+                </div>
+              )
+            }),
+          )}
         </div>
       </div>
     </div>
