@@ -11,8 +11,16 @@ import { ModeToggle } from "@workspace/ui/components/mode-toggle" // Theme toggl
 import { PanelLeftClose, PanelLeftOpen, Puzzle } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@workspace/ui/components/sidebar"
 import { LeftSidebar } from "@/components/game/left-sidebar"
+import { useTranslation } from "react-i18next"
+import { Resizable } from "re-resizable"
+
+import { 
+  // Jeśli nie są zaimportowane, dodaj poniższe:
+  // Navbar oraz FloatingPaths są lokalnymi komponentami poniżej
+} from "framer-motion" // (używane w Navbar i FloatingPaths)
 
 function Navbar() {
+  const { t } = useTranslation()
   const { open, setOpen } = useSidebar()
   // Załóżmy, że szerokość sidebaru wynosi 256px, więc offset to 128px
   const sidebarOffset = 128
@@ -26,7 +34,7 @@ function Navbar() {
     >
       <Link href="/home" className="text-lg font-bold text-black dark:text-white">
         <div className="flex items-center">
-          <Puzzle className="mr-2 w-4 h-4" /> Home
+          <Puzzle className="mr-2 w-4 h-4" /> {t("linkLobby.home")}
         </div>
       </Link>
       <div className="flex items-center space-x-2">
@@ -52,7 +60,7 @@ function FloatingPaths({ position }: { position: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none">
       <svg className="w-full h-full text-slate-950 dark:text-white" viewBox="0 0 696 316" fill="none">
-        <title>Background Paths</title>
+        <title>{/* Możesz przetłumaczyć tytuł, jeśli chcesz */}Background Paths</title>
         {paths.map((path) => (
           <motion.path
             key={path.id}
@@ -79,6 +87,7 @@ function FloatingPaths({ position }: { position: number }) {
 }
 
 export default function LinkLobby() {
+  const { t } = useTranslation()
   const { isSignedIn, user } = useUser()
   const { theme } = useTheme()
 
@@ -91,21 +100,20 @@ export default function LinkLobby() {
   const [isLargeScreen, setIsLargeScreen] = useState(true)
   useEffect(() => {
     const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 768) // Poniżej 768px navbar będzie schowany
+      setIsLargeScreen(window.innerWidth >= 768)
     }
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Nie renderuj, dopóki nie nastąpi montowanie, aby uniknąć problemów z hydration
   if (!mounted) return null
 
   const defaultAvatarUrl = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
   const profileImage = isSignedIn ? user.imageUrl : defaultAvatarUrl
-  const displayName = isSignedIn ? user.fullName || "User" : "Guest"
+  const displayName = isSignedIn ? (user.fullName || t("linkLobby.user")) : t("linkLobby.guest")
   const guestProfileImage = defaultAvatarUrl
-  const secondDisplayName = "Waiting..."
+  const secondDisplayName = t("linkLobby.waiting")
 
   const borderColor = theme === "dark" ? "border-white" : "border-neutral-500"
   const buttonClasses = theme === "dark" ? "px-8 py-4 bg-white text-black" : "px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white"
@@ -118,7 +126,6 @@ export default function LinkLobby() {
     <SidebarProvider>
       <LeftSidebar />
       <div className="relative min-h-screen w-full bg-white dark:bg-neutral-950">
-        {/* Navbar będzie widoczny tylko na dużych ekranach */}
         {isLargeScreen && <Navbar />}
         <div className="absolute inset-0">
           <FloatingPaths position={1} />
@@ -132,27 +139,29 @@ export default function LinkLobby() {
               transition={{ type: "spring", stiffness: 100, damping: 10 }}
               className="text-5xl sm:text-7xl md:text-8xl font-bold mb-12 tracking-tighter"
             >
-              {"Waiting for the Second Player".split(" ").map((word, wordIndex) => (
-                <span key={wordIndex} className="inline-block mr-4 last:mr-0">
-                  {word.split("").map((letter, letterIndex) => (
-                    <motion.span
-                      key={`${wordIndex}-${letterIndex}`}
-                      initial={{ y: 100, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{
-                        delay: wordIndex * 0.1 + letterIndex * 0.03,
-                        type: "spring",
-                        stiffness: 150,
-                        damping: 25,
-                      }}
-                      className="inline-block text-transparent bg-clip-text 
-                        bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
-                    >
-                      {letter}
-                    </motion.span>
-                  ))}
-                </span>
-              ))}
+              {t("linkLobby.waitingForSecondPlayer")
+                .split(" ")
+                .map((word, wordIndex) => (
+                  <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+                    {word.split("").map((letter, letterIndex) => (
+                      <motion.span
+                        key={`${wordIndex}-${letterIndex}`}
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{
+                          delay: wordIndex * 0.1 + letterIndex * 0.03,
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 25,
+                        }}
+                        className="inline-block text-transparent bg-clip-text 
+                          bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
+                  </span>
+                ))}
             </motion.h1>
 
             <div className="flex flex-row justify-center items-center gap-12 mb-12">
@@ -172,7 +181,7 @@ export default function LinkLobby() {
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <Avatar className="w-32 h-32">
-                    <AvatarImage src={guestProfileImage} alt="Guest" />
+                    <AvatarImage src={guestProfileImage} alt={t("linkLobby.guest")} />
                   </Avatar>
                 </motion.div>
                 <span className="text-2xl font-semibold text-neutral-700 dark:text-white">{secondDisplayName}</span>
@@ -180,7 +189,7 @@ export default function LinkLobby() {
             </div>
 
             <Button onClick={handleAcceptGame} className={buttonClasses}>
-              Accept Game
+              {t("linkLobby.acceptGame")}
             </Button>
           </motion.div>
         </div>

@@ -5,6 +5,7 @@ import { Button } from "@workspace/ui/components/button"
 import { ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 const Circuit = () => {
   const [paths, setPaths] = useState<{ id: number; start: [number, number]; end: [number, number] }[]>([])
@@ -33,7 +34,6 @@ const Circuit = () => {
     }
 
     generatePaths()
-    // Usunięcie setInterval, aby animacja nie była zapętlana
   }, [])
 
   return (
@@ -41,7 +41,7 @@ const Circuit = () => {
       viewBox="0 0 100 100"
       className="absolute inset-0 w-full h-full"
       xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="none" // Zapewnia, że SVG zawsze rozciąga się na całą szerokość i wysokość
+      preserveAspectRatio="none"
     >
       {paths.map((path) => (
         <motion.line
@@ -50,10 +50,10 @@ const Circuit = () => {
           y1={path.start[1]}
           x2={path.end[0]}
           y2={path.end[1]}
-          stroke="#e0e0e0" // Neutralny kolor linii
-          strokeWidth="0.5" // Cienka linia
-          strokeOpacity="0.2" // Zmniejszona przezroczystość
-          strokeLinecap="round" // Zaokrąglone końce linii
+          stroke="#e0e0e0"
+          strokeWidth="0.5"
+          strokeOpacity="0.2"
+          strokeLinecap="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 2, ease: "easeInOut" }}
@@ -64,6 +64,7 @@ const Circuit = () => {
 }
 
 export default function NotFound() {
+  const { t } = useTranslation()
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -112,19 +113,34 @@ export default function NotFound() {
           </motion.span>
           <span className="relative">404</span>
         </motion.div>
-        <motion.h1 className="text-4xl font-bold mb-4 z-10" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-          Page Not Found
+        <motion.h1
+          className="text-4xl font-bold mb-4 z-10"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          {t("notFound.pageNotFound")}
         </motion.h1>
-        <motion.p className="text-xl mb-8 text-center max-w-md z-10" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-        Oops! The page you&apos;re looking for doesn&apos;t exist.
+        <motion.p
+          className="text-xl mb-8 text-center max-w-md z-10"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          {t("notFound.description")}
         </motion.p>
-        <motion.div className="z-10" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
+        <motion.div
+          className="z-10"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
           <Button asChild onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <Link href="/home" className="flex items-center">
               <motion.div animate={{ x: isHovered ? -5 : 0 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
               </motion.div>
-              Return to Home
+              {t("notFound.returnToHome")}
             </Link>
           </Button>
         </motion.div>

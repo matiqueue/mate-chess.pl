@@ -53,5 +53,153 @@
   "mustBeLoggedInToPlayOnline": "Вы должны войти в систему, чтобы играть онлайн",
   "joinGameViaCode": "Присоединиться к игре по коду",
   "enterCodePlaceholder": "Введите 5-значный код",
-  "joinLobby": "Присоединиться к лобби"
+  "joinLobby": "Присоединиться к лобби",
+  "chessboardBattleText": "Шахматная доска установлена, пусть начнется битва умов",
+  "navBrandName": "Mate-Chess",
+  "pauseMusic": "Пауза музыки",
+  "playMusic": "Воспроизвести музыку",
+  "audioPlaybackError": "Ошибка воспроизведения музыки:",
+  "btnPlayMateChess": "играть в MATE-CHESS",
+  "textTab": {
+    "mateChess": {
+      "title": "Mate-Chess",
+      "description": "Битва начинается. Сосредоточьтесь."
+    },
+    "birdEye": {
+      "title": "Стратегия с высоты птичьего полёта",
+      "description": "Стратегический вид сверху."
+    },
+    "analyzeFrontline": {
+      "title": "Анализ передовой линии",
+      "description": "Фронтальный взгляд для анализа ходов."
+    },
+    "opponentPerspective": {
+      "title": "Перспектива противника",
+      "description": "Глубокий взгляд со стороны противника."
+    },
+    "criticalChessInsights": {
+      "title": "Критические шахматные идеи",
+      "description": "Фокус на критически важных деталях."
+    }
+  },
+  "chessTournaments": {
+    "heading": "Шахматные турниры",
+    "participants": "Участников",
+    "startsIn": "Начнется через {{days}} дней",
+    "inProgress": "Турнир в процессе",
+    "finished": "Турнир завершен",
+    "register": "Зарегистрироваться",
+    "registrationClosed": "Регистрация закрыта",
+    "tournamentNames": {
+      "springChessChampionship": "Весенний шахматный чемпионат",
+      "summerBlitzTournament": "Летний блиц-турнир",
+      "autumnRapidChallenge": "Осенний быстрый вызов",
+      "winterChessFestival": "Зимний шахматный фестиваль"
+    }
+  },
+  "playVsBot2": {
+    "playVsBotHeading": "Игра против бота",
+    "aiBotsHeading": "Боты с ИИ",
+    "chessMasterHeading": "Шахматный мастер",
+    "beginnerBot": {
+      "title": "Бот для новичков",
+      "description": "Отлично подходит для начинающих. Бот делает простые ходы, позволяя освоить основы шахматной стратегии."
+    },
+    "advancedBot": {
+      "title": "Продвинутый бот",
+      "description": "Сложное испытание для игроков среднего уровня. Бот использует более сложные стратегии и тактику."
+    },
+    "chessGrandmaster": {
+      "title": "Шахматный гроссмейстер",
+      "description": "Проверьте свои навыки против симулированного гроссмейстера. Будьте готовы к высокоуровневым стратегиям и глубокой позиционной игре."
+    },
+    "playButton": "Играть с {{botName}}",
+    "challengeGrandmaster": "Вызов гроссмейстеру"
+  },
+  "navbar": {
+    "brandName": "Mate Chess",
+    "play": "Играть",
+    "learn": "Учиться",
+    "puzzles": "Загадки",
+    "community": "Сообщество",
+    "quickPlay": "Быстрая игра"
+  },
+  "sidebar": {
+    "brandName": "Mate Chess",
+    "home": "Главная",
+    "playSection": "ИГРА",
+    "playOnline": "Играть онлайн",
+    "playVsBot": "Играть с ботом",
+    "tournaments": "Турниры",
+    "learnSection": "УЧЁБА",
+    "puzzles": "Загадки",
+    "lessons": "Уроки",
+    "openings": "Открытия",
+    "communitySection": "СООБЩЕСТВО",
+    "players": "Игроки",
+    "activity": "Активность",
+    "settings": "Настройки"
+  },
+  "rightPanel": {
+    "localMode": "Локальный режим",
+    "linkMode": "Режим с ссылкой",
+    "onlineMode": "Онлайн режим",
+    "gameInfo": "Информация об игре",
+    "blitz": "Блиц",
+    "gameOptions": "Опции игры",
+    "view": "Вид",
+    "layout": "Макет",
+    "defaultLayout": "По умолчанию",
+    "compactLayout": "Компактный",
+    "settings": "Настройки",
+    "sound": "Звук",
+    "notifications": "Уведомления",
+    "moveHistory": "История ходов",
+    "noMovesYet": "Ходов ещё нет.",
+    "promotePawn": "Продвижение пешки",
+    "rook": "Ладья",
+    "queen": "Ферзь",
+    "bishop": "Слон",
+    "knight": "Конь",
+    "chat": "Чат",
+    "noMessagesYet": "Сообщений нет.",
+    "typeMessage": "Введите сообщение...",
+    "send": "Отправить",
+    "openChat": "Открыть чат",
+    "hideSidebar": "Скрыть панель",
+    "showSidebar": "Показать панель",
+    "lightMode": "Светлый режим",
+    "darkMode": "Тёмный режим"
+  },
+  "playerInfo": {
+    "guest": "Гость",
+    "white": "Белый",
+    "playingWhite": "Играет за белых",
+    "playingBlack": "Играет за черных",
+    "currentTurn": "Сейчас ход"
+  },
+  "gameControls": {
+    "surrender": "Сдаться",
+    "surrenderTitle": "Вы уверены, что хотите сдаться?",
+    "surrenderDescription": "Если вы сдадитесь, ваш соперник немедленно выиграет игру. Это действие нельзя отменить!",
+    "cancel": "Отмена",
+    "confirmSurrender": "Подтвердить сдачу",
+    "offerDraw": "Предложить ничью",
+    "offerDrawTitle": "Вы хотите предложить ничью?",
+    "offerDrawDescription": "Если ваш соперник примет предложение, игра закончится вничью. Если он откажется, игра продолжится.",
+    "sendOffer": "Отправить предложение"
+  },
+  "linkLobby": {
+    "home": "Главная",
+    "user": "Пользователь",
+    "guest": "Гость",
+    "waiting": "Ожидание...",
+    "waitingForSecondPlayer": "Ожидание второго игрока",
+    "acceptGame": "Принять игру"
+  },
+  "notFound": {
+    "pageNotFound": "Страница не найдена",
+    "description": "Упс! Страница, которую вы ищете, не существует.",
+    "returnToHome": "Вернуться на главную"
+  }
 }

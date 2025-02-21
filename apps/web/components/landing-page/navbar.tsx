@@ -5,6 +5,7 @@ import styles from "@/styles/landing-page/navbar.module.css";
 import { Fraunces } from "next/font/google";
 import { FaMusic } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -12,6 +13,7 @@ const fraunces = Fraunces({
 });
 
 const Navbar: React.FC = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -38,7 +40,7 @@ const Navbar: React.FC = () => {
               setIsPlaying(true);
             })
             .catch((error) =>
-              console.error("Błąd odtwarzania muzyki:", error)
+              console.error(t("audioPlaybackError"), error)
             );
         }
       };
@@ -57,7 +59,7 @@ const Navbar: React.FC = () => {
         }
       };
     }
-  }, [pathname]);
+  }, [pathname, t]);
 
   // Jeśli zmieniamy ścieżkę i nie jesteśmy już na stronie głównej, pauzuj muzykę
   useEffect(() => {
@@ -82,7 +84,7 @@ const Navbar: React.FC = () => {
           setIsPlaying(true);
         })
         .catch((error) =>
-          console.error("Błąd odtwarzania muzyki:", error)
+          console.error(t("audioPlaybackError"), error)
         );
     } else {
       audioRef.current.pause();
@@ -104,7 +106,7 @@ const Navbar: React.FC = () => {
           />
         </svg>
         <span className={`${fraunces.className} ${styles.navLogo}`} onClick={toggleMenu}>
-          Mate-Chess
+          {t("navBrandName")}
         </span>
       </div>
 
@@ -124,7 +126,7 @@ const Navbar: React.FC = () => {
           <li className={styles.dropdownItem} onClick={toggleMusic}>
             <FaMusic className={styles.dropdownIcon} />
             <span className={fraunces.className}>
-              {isPlaying ? "Pause Music" : "Play Music"}
+              {isPlaying ? t("pauseMusic") : t("playMusic")}
             </span>
           </li>
         </ul>

@@ -53,5 +53,153 @@
   "mustBeLoggedInToPlayOnline": "Musisz być zalogowany, aby grać online",
   "joinGameViaCode": "Dołącz do gry używając kodu",
   "enterCodePlaceholder": "Wpisz 5-znakowy kod",
-  "joinLobby": "Dołącz do pokoju"
+  "joinLobby": "Dołącz do pokoju",
+  "chessboardBattleText": "Plansza szachowa gotowa, niech bitwa umysłów się rozpocznie",
+  "navBrandName": "Mate-Chess",
+  "pauseMusic": "Zatrzymaj muzykę",
+  "playMusic": "Odtwórz muzykę",
+  "audioPlaybackError": "Błąd odtwarzania muzyki:",
+  "btnPlayMateChess": "Zagraj w MATE-CHESS",
+  "textTab": {
+    "mateChess": {
+      "title": "Mate-Chess",
+      "description": "Bitwa się rozpoczyna. Skup swój umysł."
+    },
+    "birdEye": {
+      "title": "Strategia z lotu ptaka",
+      "description": "Strategiczny widok z góry."
+    },
+    "analyzeFrontline": {
+      "title": "Analiza pierwszej linii",
+      "description": "Frontalne spojrzenie do analizy ruchów."
+    },
+    "opponentPerspective": {
+      "title": "Perspektywa przeciwnika",
+      "description": "Głębokie spojrzenie ze strony przeciwnika."
+    },
+    "criticalChessInsights": {
+      "title": "Krytyczne spostrzeżenia szachowe",
+      "description": "Skupienie się na kluczowych szczegółach."
+    }
+  },
+  "chessTournaments": {
+    "heading": "Turnieje Szachowe",
+    "participants": "Graczy",
+    "startsIn": "Rozpocznie się za {{days}} dni",
+    "inProgress": "Turniej w toku",
+    "finished": "Turniej zakończony",
+    "register": "Zarejestruj się",
+    "registrationClosed": "Rejestracja zamknięta",
+    "tournamentNames": {
+      "springChessChampionship": "Wiosenne Mistrzostwa Szachowe",
+      "summerBlitzTournament": "Letni Blitz Turniej",
+      "autumnRapidChallenge": "Jesienny Szybki Challenge",
+      "winterChessFestival": "Zimowy Festiwal Szachowy"
+    }
+  },
+  "playVsBot2": {
+    "playVsBotHeading": "Zagraj z Botem",
+    "aiBotsHeading": "Boty AI",
+    "chessMasterHeading": "Mistrz Szachowy",
+    "beginnerBot": {
+      "title": "Bot Początkujący",
+      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej."
+    },
+    "advancedBot": {
+      "title": "Bot Zaawansowany",
+      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk."
+    },
+    "chessGrandmaster": {
+      "title": "Arcymistrz Szachowy",
+      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną."
+    },
+    "playButton": "Zagraj z {{botName}}",
+    "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"
+  },
+  "navbar": {
+    "brandName": "Mate Chess",
+    "play": "Graj",
+    "learn": "Ucz się",
+    "puzzles": "Zagadki",
+    "community": "Społeczność",
+    "quickPlay": "Szybka Gra"
+  },
+  "sidebar": {
+    "brandName": "Mate Chess",
+    "home": "Strona główna",
+    "playSection": "GRA",
+    "playOnline": "Graj online",
+    "playVsBot": "Graj z Botem",
+    "tournaments": "Turnieje",
+    "learnSection": "NAUKA",
+    "puzzles": "Zagadki",
+    "lessons": "Lekcje",
+    "openings": "Otwarcia",
+    "communitySection": "SPOŁECZNOŚĆ",
+    "players": "Gracze",
+    "activity": "Aktywność",
+    "settings": "Ustawienia"
+  },
+  "rightPanel": {
+    "localMode": "Tryb lokalny",
+    "linkMode": "Tryb z linkiem",
+    "onlineMode": "Tryb online",
+    "gameInfo": "Informacje o grze",
+    "blitz": "Blitz",
+    "gameOptions": "Opcje gry",
+    "view": "Widok",
+    "layout": "Układ",
+    "defaultLayout": "Domyślny",
+    "compactLayout": "Kompaktowy",
+    "settings": "Ustawienia",
+    "sound": "Dźwięk",
+    "notifications": "Powiadomienia",
+    "moveHistory": "Historia ruchów",
+    "noMovesYet": "Brak ruchów.",
+    "promotePawn": "Promuj pionka",
+    "rook": "Wieża",
+    "queen": "Hetman",
+    "bishop": "Goniec",
+    "knight": "Skoczek",
+    "chat": "Czat",
+    "noMessagesYet": "Brak wiadomości.",
+    "typeMessage": "Wpisz wiadomość...",
+    "send": "Wyślij",
+    "openChat": "Otwórz czat",
+    "hideSidebar": "Ukryj panel",
+    "showSidebar": "Pokaż panel",
+    "lightMode": "Jasny tryb",
+    "darkMode": "Ciemny tryb"
+  },
+  "playerInfo": {
+    "guest": "Gość",
+    "white": "Biały",
+    "playingWhite": "Gra jako Biały",
+    "playingBlack": "Gra jako Czarny",
+    "currentTurn": "Aktualny ruch"
+  },
+  "gameControls": {
+    "surrender": "Poddaj się",
+    "surrenderTitle": "Czy na pewno chcesz się poddać?",
+    "surrenderDescription": "Jeśli się poddasz, przeciwnik natychmiast wygra grę. Tej operacji nie można cofnąć!",
+    "cancel": "Anuluj",
+    "confirmSurrender": "Potwierdź poddanie",
+    "offerDraw": "Zaproponuj remis",
+    "offerDrawTitle": "Czy chcesz zaproponować remis?",
+    "offerDrawDescription": "Jeśli przeciwnik zaakceptuje, gra zakończy się remisem. Jeśli odmówi, gra będzie kontynuowana.",
+    "sendOffer": "Wyślij propozycję"
+  },
+  "linkLobby": {
+    "home": "Strona główna",
+    "user": "Użytkownik",
+    "guest": "Gość",
+    "waiting": "Oczekiwanie...",
+    "waitingForSecondPlayer": "Oczekiwanie na drugiego gracza",
+    "acceptGame": "Akceptuj grę"
+  },
+  "notFound": {
+    "pageNotFound": "Strona nie znaleziona",
+    "description": "Ups! Strona, której szukasz, nie istnieje.",
+    "returnToHome": "Powrót do strony głównej"
+  }
 }

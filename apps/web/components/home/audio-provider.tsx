@@ -8,6 +8,7 @@ import React, {
   ReactNode,
   useContext,
 } from "react";
+import { usePathname } from "next/navigation";
 
 type AudioContextType = {
   isPlaying: boolean;
@@ -22,12 +23,25 @@ const AudioContext = createContext<AudioContextType>({
 export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    audioRef.current = new Audio("/audio/bgMusic.mp3");
-    audioRef.current.volume = 0.1;
-    audioRef.current.loop = true;
-  }, []);
+    if (pathname === "/home") {
+      // Jeśli nie mamy jeszcze audio, tworzymy je
+      if (!audioRef.current) {
+        audioRef.current = new Audio("/audio/bgMusic.mp3");
+        audioRef.current.volume = 0.1;
+        audioRef.current.loop = true;
+      }
+    } else {
+      // Jeśli opuszczamy /home, pauzujemy muzykę i resetujemy stan
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        setIsPlaying(false);
+      }
+    }
+  }, [pathname]);
 
   const toggleMusic = (event?: React.MouseEvent) => {
     event?.stopPropagation();

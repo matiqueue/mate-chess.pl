@@ -53,5 +53,153 @@
   "mustBeLoggedInToPlayOnline": "You must be Logged In to play Online",
   "joinGameViaCode": "Join Game via Code",
   "enterCodePlaceholder": "Enter 5-character code",
-  "joinLobby": "Join Lobby"
+  "joinLobby": "Join Lobby",
+  "chessboardBattleText": "The chessboard is set, let the battle of wits begin",
+  "navBrandName": "Mate-Chess",
+  "pauseMusic": "Pause Music",
+  "playMusic": "Play Music",
+  "audioPlaybackError": "Error playing music:",
+  "btnPlayMateChess": "Play MATE-CHESS",
+  "textTab": {
+    "mateChess": {
+      "title": "Mate-Chess",
+      "description": "The battle begins. Focus your mind."
+    },
+    "birdEye": {
+      "title": "Bird's Eye Strategy",
+      "description": "Strategic view from above."
+    },
+    "analyzeFrontline": {
+      "title": "Analyze the Frontline",
+      "description": "A frontal perspective to analyze moves."
+    },
+    "opponentPerspective": {
+      "title": "Opponent's Perspective",
+      "description": "A deep look from the opponent's side."
+    },
+    "criticalChessInsights": {
+      "title": "Critical Chess Insights",
+      "description": "Zooming in on critical details."
+    }
+  },
+  "chessTournaments": {
+    "heading": "Chess Tournaments",
+    "participants": "Participants",
+    "startsIn": "Starts in {{days}} days",
+    "inProgress": "Tournament in progress",
+    "finished": "Tournament finished",
+    "register": "Register",
+    "registrationClosed": "Registration Closed",
+    "tournamentNames": {
+      "springChessChampionship": "Spring Chess Championship",
+      "summerBlitzTournament": "Summer Blitz Tournament",
+      "autumnRapidChallenge": "Autumn Rapid Challenge",
+      "winterChessFestival": "Winter Chess Festival"
+    }
+  },
+  "playVsBot2": {
+    "playVsBotHeading": "Play vs Bot",
+    "aiBotsHeading": "AI Bots",
+    "chessMasterHeading": "Chess Master",
+    "beginnerBot": {
+      "title": "Beginner Bot",
+      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy."
+    },
+    "advancedBot": {
+      "title": "Advanced Bot",
+      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics."
+    },
+    "chessGrandmaster": {
+      "title": "Chess Grandmaster",
+      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play."
+    },
+    "playButton": "Play {{botName}}",
+    "challengeGrandmaster": "Challenge the Grandmaster"
+  },
+  "navbar": {
+    "brandName": "Mate Chess",
+    "play": "Play",
+    "learn": "Learn",
+    "puzzles": "Puzzles",
+    "community": "Community",
+    "quickPlay": "Quick Play"
+  },
+  "sidebar": {
+    "brandName": "Mate Chess",
+    "home": "Home",
+    "playSection": "PLAY",
+    "playOnline": "Play Online",
+    "playVsBot": "Play vs Bot",
+    "tournaments": "Tournaments",
+    "learnSection": "LEARN",
+    "puzzles": "Puzzles",
+    "lessons": "Lessons",
+    "openings": "Openings",
+    "communitySection": "COMMUNITY",
+    "players": "Players",
+    "activity": "Activity",
+    "settings": "Settings"
+  },
+  "rightPanel": {
+    "localMode": "Local Mode",
+    "linkMode": "Link Mode",
+    "onlineMode": "Online Mode",
+    "gameInfo": "Game Info",
+    "blitz": "Blitz",
+    "gameOptions": "Game Options",
+    "view": "View",
+    "layout": "Layout",
+    "defaultLayout": "Default",
+    "compactLayout": "Compact",
+    "settings": "Settings",
+    "sound": "Sound",
+    "notifications": "Notifications",
+    "moveHistory": "Move History",
+    "noMovesYet": "No moves yet.",
+    "promotePawn": "Promote Pawn",
+    "rook": "Rook",
+    "queen": "Queen",
+    "bishop": "Bishop",
+    "knight": "Knight",
+    "chat": "Chat",
+    "noMessagesYet": "No messages yet.",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "openChat": "Open Chat",
+    "hideSidebar": "Hide Sidebar",
+    "showSidebar": "Show Sidebar",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
+  },
+  "playerInfo": {
+    "guest": "Guest",
+    "white": "White",
+    "playingWhite": "Playing as White",
+    "playingBlack": "Playing as Black",
+    "currentTurn": "Current turn"
+  },
+  "gameControls": {
+    "surrender": "Surrender",
+    "surrenderTitle": "Are you sure you want to surrender?",
+    "surrenderDescription": "If you surrender, your opponent will win the game immediately. This action cannot be undone!",
+    "cancel": "Cancel",
+    "confirmSurrender": "Confirm Surrender",
+    "offerDraw": "Offer Draw",
+    "offerDrawTitle": "Do you want to offer a draw?",
+    "offerDrawDescription": "If your opponent accepts, the game will end in a draw. If they decline, the game will continue.",
+    "sendOffer": "Send Offer"
+  },
+  "linkLobby": {
+    "home": "Home",
+    "user": "User",
+    "guest": "Guest",
+    "waiting": "Waiting...",
+    "waitingForSecondPlayer": "Waiting for the Second Player",
+    "acceptGame": "Accept Game"
+  },
+  "notFound": {
+    "pageNotFound": "Page Not Found",
+    "description": "Oops! The page you're looking for doesn't exist.",
+    "returnToHome": "Return to Home"
+  }
 }
