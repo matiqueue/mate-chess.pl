@@ -248,7 +248,7 @@ class Board {
     const y = king.color === color.White ? 0 : 7
     const isShortCastle = target.x > king.position.x
     const rookStartX = isShortCastle ? 7 : 0
-    const rookEndX = isShortCastle ? 5 : 3
+    // const rookEndX = isShortCastle ? 5 : 3
 
     const rookPos = this.getPositionByCords(rookStartX, y)
     const rook = rookPos?.figure
@@ -312,7 +312,7 @@ class Board {
           row += `[${targetPosition.notation}] ` //invalid
         }
       }
-      // console.debug(row.trim())
+      console.debug(row.trim())
     }
     return validMoves
   }
@@ -618,7 +618,7 @@ class Board {
   }
 
   public getBoardArray(): [string[]] {
-    let result: [string[]] = [[]]
+    const result: [string[]] = [[]]
     let rowArray: string[] = []
     for (const position of this.positions) {
       let symbol: string = ""
