@@ -7,8 +7,10 @@ import { Separator } from "@workspace/ui/components/separator"
 import Link from "next/link"
 import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, useSidebar } from "@workspace/ui/components/sidebar"
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 export function LeftSidebar() {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const { open, setOpen } = useSidebar()
 
@@ -17,7 +19,6 @@ export function LeftSidebar() {
     const storedState = localStorage.getItem("sidebarOpen")
     if (storedState !== null) {
       const value = storedState === "true"
-      // Jeśli aktualny stan jest inny od zapisanego, to ustaw go
       if (open !== value) {
         setOpen(value)
       }
@@ -57,11 +58,18 @@ export function LeftSidebar() {
       <SidebarHeader className="p-6 text-center">
         <h1 className={headerClass}>
           <PuzzleIcon className={titleIconClass} />
-          {open && "Mate Chess"}
+          {open && t("sidebar.brandName")}
         </h1>
       </SidebarHeader>
     )
   }
+
+  const navItems = [
+    { name: t("sidebar.play"), href: "/play" },
+    { name: t("sidebar.learn"), href: "/learn" },
+    { name: t("sidebar.puzzles"), href: "/puzzles" },
+    { name: t("sidebar.community"), href: "/community" },
+  ]
 
   return (
     <Sidebar
@@ -75,26 +83,30 @@ export function LeftSidebar() {
         <Link href="/home">
           <Button variant="ghost" className={buttonClass}>
             <Home className={iconClass} />
-            {open && "Home"}
+            {open && t("sidebar.home")}
           </Button>
         </Link>
 
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
         <div>
-          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>PLAY</h2>}
+          {open && (
+            <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>
+              {t("sidebar.playSection")}
+            </h2>
+          )}
           <div className="space-y-1">
             <Button variant="ghost" className={buttonClass}>
               <Users className={iconClass} />
-              {open && "Play Online"}
+              {open && t("sidebar.playOnline")}
             </Button>
             <Button variant="ghost" className={buttonClass}>
               <Bot className={iconClass} />
-              {open && "Play vs Bot"}
+              {open && t("sidebar.playVsBot")}
             </Button>
             <Button variant="ghost" className={buttonClass}>
               <Trophy className={iconClass} />
-              {open && "Tournaments"}
+              {open && t("sidebar.tournaments")}
             </Button>
           </div>
         </div>
@@ -102,19 +114,23 @@ export function LeftSidebar() {
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
         <div>
-          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>LEARN</h2>}
+          {open && (
+            <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>
+              {t("sidebar.learnSection")}
+            </h2>
+          )}
           <div className="space-y-1">
             <Button variant="ghost" className={buttonClass}>
               <PuzzlePiece className={iconClass} />
-              {open && "Puzzles"}
+              {open && t("sidebar.puzzles")}
             </Button>
             <Button variant="ghost" className={buttonClass}>
               <GraduationCap className={iconClass} />
-              {open && "Lessons"}
+              {open && t("sidebar.lessons")}
             </Button>
             <Button variant="ghost" className={buttonClass}>
               <BookOpen className={iconClass} />
-              {open && "Openings"}
+              {open && t("sidebar.openings")}
             </Button>
           </div>
         </div>
@@ -122,15 +138,19 @@ export function LeftSidebar() {
         <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
         <div>
-          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>COMMUNITY</h2>}
+          {open && (
+            <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>
+              {t("sidebar.communitySection")}
+            </h2>
+          )}
           <div className="space-y-1">
             <Button variant="ghost" className={buttonClass}>
               <Users className={iconClass} />
-              {open && "Players"}
+              {open && t("sidebar.players")}
             </Button>
             <Button variant="ghost" className={buttonClass}>
               <Activity className={iconClass} />
-              {open && "Activity"}
+              {open && t("sidebar.activity")}
             </Button>
           </div>
         </div>
@@ -141,7 +161,7 @@ export function LeftSidebar() {
       <SidebarFooter className="p-4">
         <Button variant="ghost" className={buttonClass}>
           <Settings className={iconClass} />
-          {open && "Settings"}
+          {open && t("sidebar.settings")}
         </Button>
       </SidebarFooter>
     </Sidebar>

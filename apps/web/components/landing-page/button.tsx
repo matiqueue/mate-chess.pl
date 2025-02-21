@@ -3,6 +3,7 @@ import { useRef } from "react"
 import styles from "@/styles/landing-page/button.module.css"
 import { useRouter } from "next/navigation"
 import { Smooch_Sans } from "next/font/google"
+import { useTranslation } from "react-i18next";
 
 const smooch_sans = Smooch_Sans({
   subsets: ["latin"],
@@ -12,6 +13,7 @@ const smooch_sans = Smooch_Sans({
 const Button = () => {
   const buttonRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { t } = useTranslation();
 
   const handleClick = () => {
     const timeLine = gsap.timeline({
@@ -62,7 +64,7 @@ const Button = () => {
   }
   return (
     <div ref={buttonRef} onClick={handleClick} className={styles.button}>
-      <p className={`${smooch_sans.className} button-text`}>PLAY MATE-CHESS</p>
+      <p className={`${smooch_sans.className} button-text`}>{t("btnPlayMateChess")}</p>
     </div>
   )
 }

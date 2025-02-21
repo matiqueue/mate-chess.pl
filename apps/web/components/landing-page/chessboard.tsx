@@ -9,6 +9,7 @@ import Navbar from "@/components/landing-page/navbar"
 import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scroll-animation"
 import SkeletonChessboard from "./skeletonChessboard"
+import { useTranslation } from "react-i18next";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ const Chessboard: React.FC = () => {
   const [lastPosition] = useState(5)
   const [modelLoaded, setModelLoaded] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
+  const { t } = useTranslation();
 
   useEffect(() => {
     let current = 0
@@ -76,26 +78,26 @@ const Chessboard: React.FC = () => {
 
   const [textTab] = useState([
     {
-      title: "Mate-Chess",
-      description: "The battle begins. Focus your mind.",
+      title: t("textTab.mateChess.title"),
+      description: t("textTab.mateChess.description"),
     },
     {
-      title: "Bird's Eye Strategy",
-      description: "Strategic view from above.",
+      title: t("textTab.birdEye.title"),
+      description: t("textTab.birdEye.description"),
     },
     {
-      title: "Analyze the Frontline",
-      description: "A frontal perspective to analyze moves.",
+      title: t("textTab.analyzeFrontline.title"),
+      description: t("textTab.analyzeFrontline.description"),
     },
     {
-      title: "Opponent's Perspective",
-      description: "A deep look from the opponent's side.",
+      title: t("textTab.opponentPerspective.title"),
+      description: t("textTab.opponentPerspective.description"),
     },
     {
-      title: "Critical Chess Insights",
-      description: "Zooming in on critical details.",
+      title: t("textTab.criticalChessInsights.title"),
+      description: t("textTab.criticalChessInsights.description"),
     },
-  ])
+  ]);
 
   const handleDotClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const index = Number(e.currentTarget.getAttribute("data-index"))

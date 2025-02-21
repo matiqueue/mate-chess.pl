@@ -2,7 +2,21 @@
 
 import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
+import {
+  Eye,
+  Layout,
+  Settings2,
+  ChevronDown,
+  Clock,
+  MessageCircle,
+  Flag,
+  X,
+  Moon,
+  Sun,
+  PanelLeftClose,
+  PanelLeftOpen,
+  GripVertical,
+} from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
@@ -14,8 +28,10 @@ import { useSidebar } from "@workspace/ui/components/sidebar"
 import { useGameContext } from "@/contexts/GameContext"
 import { useGameView } from "@/contexts/GameViewContext"
 import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
+import { useTranslation } from "react-i18next"
 
 export function RightPanel() {
+  const { t } = useTranslation()
   const [activePopover, setActivePopover] = useState<string | null>(null)
   const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
@@ -70,13 +86,13 @@ export function RightPanel() {
   let modeText = ""
   let modeColor = ""
   if (pathname.startsWith("/play/local")) {
-    modeText = "Local Mode"
+    modeText = t("rightPanel.localMode")
     modeColor = "text-red-500"
   } else if (pathname.startsWith("/play/link")) {
-    modeText = "Link Mode"
+    modeText = t("rightPanel.linkMode")
     modeColor = "text-blue-500"
   } else if (pathname.startsWith("/play/online")) {
-    modeText = "Online Mode"
+    modeText = t("rightPanel.onlineMode")
     modeColor = "text-green-500"
   }
 
@@ -103,11 +119,10 @@ export function RightPanel() {
           className={`w-full p-6 pr-8 flex flex-col justify-between h-full border-l ${borderColor} ${bgColor} backdrop-blur-sm rounded-tl-2xl rounded-bl-2xl`}
         >
           <ScrollArea>
-            {/* Reszta zawartości komponentu */}
             <div className="space-y-6 flex-grow overflow-auto">
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className={`text-xl font-semibold ${textColor}`}>Game Info</h2>
+                  <h2 className={`text-xl font-semibold ${textColor}`}>{t("rightPanel.gameInfo")}</h2>
                   <span className={`text-base pr-1 font-medium ${modeColor}`}>{modeText}</span>
                 </div>
                 <div className="w-[60%]">
@@ -118,7 +133,7 @@ export function RightPanel() {
                     </div>
                     <div className={`pl-[1rem] flex items-center ${textColor}`}>
                       <Flag className="h-5 w-5 mr-2 flex-shrink-0" />
-                      <span>Blitz</span>
+                      <span>{t("rightPanel.blitz")}</span>
                     </div>
                   </div>
                 </div>
@@ -127,13 +142,13 @@ export function RightPanel() {
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
               <div>
-                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Game Options</h2>
+                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.gameOptions")}</h2>
                 <div className="space-y-2">
                   <Popover open={activePopover === "view"} onOpenChange={(open) => setActivePopover(open ? "view" : null)}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
-                          <Eye className="h-4 w-4 mr-2" /> View
+                          <Eye className="h-4 w-4 mr-2" /> {t("rightPanel.view")}
                         </span>
                         <ChevronDown className="h-4 w-4" />
                       </Button>
@@ -141,26 +156,12 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="flex space-x-1">
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="justify-center"
-                            onClick={() => {
-                              setViewMode("2D")
-                              setActivePopover(null)
-                            }}
-                          >
+                          <Button variant="ghost" className="justify-center" onClick={() => { setViewMode("2D"); setActivePopover(null) }}>
                             2D
                           </Button>
                         </li>
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="justify-center"
-                            onClick={() => {
-                              setViewMode("3D")
-                              setActivePopover(null)
-                            }}
-                          >
+                          <Button variant="ghost" className="justify-center" onClick={() => { setViewMode("3D"); setActivePopover(null) }}>
                             3D
                           </Button>
                         </li>
@@ -172,7 +173,7 @@ export function RightPanel() {
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
-                          <Layout className="h-4 w-4 mr-2" /> Layout
+                          <Layout className="h-4 w-4 mr-2" /> {t("rightPanel.layout")}
                         </span>
                         <ChevronDown className="h-4 w-4" />
                       </Button>
@@ -180,27 +181,13 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => {
-                              console.log("Default layout")
-                              setActivePopover(null)
-                            }}
-                          >
-                            Default
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Default layout"); setActivePopover(null) }}>
+                            {t("rightPanel.defaultLayout")}
                           </Button>
                         </li>
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => {
-                              console.log("Compact layout")
-                              setActivePopover(null)
-                            }}
-                          >
-                            Compact
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Compact layout"); setActivePopover(null) }}>
+                            {t("rightPanel.compactLayout")}
                           </Button>
                         </li>
                       </ul>
@@ -211,7 +198,7 @@ export function RightPanel() {
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm" className="w-full justify-between">
                         <span className="flex items-center">
-                          <Settings2 className="h-4 w-4 mr-2" /> Settings
+                          <Settings2 className="h-4 w-4 mr-2" /> {t("rightPanel.settings")}
                         </span>
                         <ChevronDown className="h-4 w-4" />
                       </Button>
@@ -219,27 +206,13 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => {
-                              console.log("Sound")
-                              setActivePopover(null)
-                            }}
-                          >
-                            Sound
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Sound"); setActivePopover(null) }}>
+                            {t("rightPanel.sound")}
                           </Button>
                         </li>
                         <li>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => {
-                              console.log("Notifications")
-                              setActivePopover(null)
-                            }}
-                          >
-                            Notifications
+                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Notifications"); setActivePopover(null) }}>
+                            {t("rightPanel.notifications")}
                           </Button>
                         </li>
                       </ul>
@@ -251,7 +224,7 @@ export function RightPanel() {
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
               <div>
-                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Move History</h2>
+                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.moveHistory")}</h2>
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
                     moveHistory.map((moveStr, index) => (
@@ -261,7 +234,7 @@ export function RightPanel() {
                       </div>
                     ))
                   ) : (
-                    <p className={`${mutedTextColor} text-center`}>No moves yet.</p>
+                    <p className={`${mutedTextColor} text-center`}>{t("rightPanel.noMovesYet")}</p>
                   )}
                 </div>
               </div>
@@ -269,23 +242,23 @@ export function RightPanel() {
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
               <div>
-                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>Promote Pawn</h2>
+                <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessRook className="h-6 w-6" />
-                    <span className="sr-only">Rook</span>
+                    <span className="sr-only">{t("rightPanel.rook")}</span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessQueen className="h-6 w-6" />
-                    <span className="sr-only">Queen</span>
+                    <span className="sr-only">{t("rightPanel.queen")}</span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessBishop className="h-6 w-6" />
-                    <span className="sr-only">Bishop</span>
+                    <span className="sr-only">{t("rightPanel.bishop")}</span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessKnight className="h-6 w-6" />
-                    <span className="sr-only">Knight</span>
+                    <span className="sr-only">{t("rightPanel.knight")}</span>
                   </Button>
                 </div>
               </div>
@@ -295,17 +268,17 @@ export function RightPanel() {
             {isChatOpen ? (
               <div className="bg-secondary/50 rounded-lg p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className={`text-lg font-semibold ${textColor}`}>Chat</h3>
+                  <h3 className={`text-lg font-semibold ${textColor}`}>{t("rightPanel.chat")}</h3>
                   <Button variant="ghost" size="sm" onClick={() => setIsChatOpen(false)}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="h-40 overflow-y-auto mb-3">
-                  <p className={mutedTextColor}>No messages yet.</p>
+                  <p className={mutedTextColor}>{t("rightPanel.noMessagesYet")}</p>
                 </div>
                 <div className="flex">
-                  <Input type="text" placeholder="Type a message..." className="flex-grow mr-2" />
-                  <Button variant="outline">Send</Button>
+                  <Input type="text" placeholder={t("rightPanel.typeMessage")} className="flex-grow mr-2" />
+                  <Button variant="outline">{t("rightPanel.send")}</Button>
                 </div>
               </div>
             ) : (
@@ -316,19 +289,19 @@ export function RightPanel() {
                 onClick={() => setIsChatOpen(true)}
               >
                 <MessageCircle className="h-4 w-4 flex-shrink-0" />
-                {!isNarrow && <span className="ml-2">Open Chat</span>}
+                {!isNarrow && <span className="ml-2">{t("rightPanel.openChat")}</span>}
               </Button>
             )}
 
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setOpen(!open)}>
                 <span className="flex-shrink-0">{open ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}</span>
-                {!isNarrow && (open ? "Hide Sidebar" : "Show Sidebar")}
+                {!isNarrow && (open ? t("rightPanel.hideSidebar") : t("rightPanel.showSidebar"))}
               </Button>
 
               <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setTheme(isDark ? "light" : "dark")}>
                 <span className="flex-shrink-0">{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</span>
-                {!isNarrow && (isDark ? "Light Mode" : "Dark Mode")}
+                {!isNarrow && (isDark ? t("rightPanel.lightMode") : t("rightPanel.darkMode"))}
               </Button>
             </div>
           </div>

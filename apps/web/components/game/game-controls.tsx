@@ -16,8 +16,10 @@ import {
 import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
+import { useTranslation } from "react-i18next"
 
 export function GameControls() {
+  const { t } = useTranslation()
   const pathname = usePathname()
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
@@ -59,40 +61,42 @@ export function GameControls() {
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
                   <Flag className="h-4 w-4 mr-2" />
-                  Surrender
+                  {t("gameControls.surrender")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to surrender?</AlertDialogTitle>
-                  <AlertDialogDescription>If you surrender, your opponent will win the game immediately. This action cannot be undone!</AlertDialogDescription>
+                  <AlertDialogTitle>{t("gameControls.surrenderTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("gameControls.surrenderDescription")}
+                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={confirmSurrender}>Confirm Surrender</AlertDialogAction>
+                  <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={confirmSurrender}>{t("gameControls.confirmSurrender")}</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
 
-            {/* Przycisk "Offer Draw" wyświetlamy tylko, gdy nie jesteśmy na stronie /bot */}
+            {/* Przyciski akcji: Offer Draw wyświetlamy tylko, gdy nie jesteśmy na stronie /bot */}
             {!isBot && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
                     <Handshake className="h-4 w-4 mr-2" />
-                    Offer Draw
+                    {t("gameControls.offerDraw")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
+                    <AlertDialogTitle>{t("gameControls.offerDrawTitle")}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      If your opponent accepts, the game will end in a draw. If they decline, the game will continue.
+                      {t("gameControls.offerDrawDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
+                    <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>
+                    <AlertDialogAction onClick={sendDrawOffer}>{t("gameControls.sendOffer")}</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
