@@ -1,18 +1,18 @@
-import React, { useRef, useEffect, useContext } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { useGameContext } from "@/contexts/GameContext";
-import { color } from "@shared/types/colorType";
-import { figureType } from "@shared/types/figureType";
+import React, { useRef, useEffect } from "react"
+import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { useGameContext } from "@/contexts/GameContext"
+import { color } from "@shared/types/colorType"
+import { figureType } from "@shared/types/figureType"
 
 interface Pieces {
-  pawn: THREE.Object3D;
-  rook: THREE.Object3D;
-  knight: THREE.Object3D;
-  bishop: THREE.Object3D;
-  queen: THREE.Object3D;
-  king: THREE.Object3D;
+  pawn: THREE.Object3D
+  rook: THREE.Object3D
+  knight: THREE.Object3D
+  bishop: THREE.Object3D
+  queen: THREE.Object3D
+  king: THREE.Object3D
 }
 
 /**
@@ -20,206 +20,173 @@ interface Pieces {
  * rozmieszczonymi według stanu planszy pobranego z GameContext.
  */
 export function ChessBoard3D(): JSX.Element {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Pobieramy dane gry oraz metodę movePiece z GameContext
-  const { board, movePiece } = useGameContext();
+  const { board, movePiece } = useGameContext()
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) return
 
     if (!board) {
-      console.warn("Board jest undefined.");
+      console.warn("Board jest undefined.")
     } else {
-      console.log("Board instance:", board);
+      console.log("Board instance:", board)
       if (typeof board.getPositionById !== "function") {
-        console.warn("board.getPositionById nie jest funkcją. Upewnij się, że board jest poprawną instancją.");
+        console.warn("board.getPositionById nie jest funkcją. Upewnij się, że board jest poprawną instancją.")
       }
     }
 
-    const BOARD_SCALE = 14;
-    const PIECE_SCALE = 15;
-    const PIECE_OFFSET = 0.2;
+    const BOARD_SCALE = 14
+    const PIECE_SCALE = 15
 
-    const scene = new THREE.Scene();
-    const container = containerRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    const scene = new THREE.Scene()
+    const container = containerRef.current
+    const width = container.clientWidth
+    const height = container.clientHeight
 
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
-    camera.position.set(0, 10, 15);
+    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
+    camera.position.set(0, 10, 15)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    renderer.setSize(width, height)
+    renderer.setClearColor(0x000000, 0)
+    container.appendChild(renderer.domElement)
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(10, 10, 5);
-    scene.add(directionalLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    scene.add(ambientLight)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    directionalLight.position.set(10, 10, 5)
+    scene.add(directionalLight)
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.target.set(0, 0, 0);
-    controls.update();
-    const initialDistance = camera.position.distanceTo(controls.target);
-    controls.maxDistance = initialDistance;
-    controls.minDistance = initialDistance * 0.8;
-    const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2);
-    const heightY = camera.position.y;
-    const startPolarAngle = Math.atan2(distXZ, heightY);
-    const extraAngle = 15 * (Math.PI / 180);
-    controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle);
-    controls.maxPolarAngle = Math.PI / 2;
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.enablePan = false
+    controls.target.set(0, 0, 0)
+    controls.update()
+    const initialDistance = camera.position.distanceTo(controls.target)
+    controls.maxDistance = initialDistance
+    controls.minDistance = initialDistance * 0.8
+    const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2)
+    const heightY = camera.position.y
+    const startPolarAngle = Math.atan2(distXZ, heightY)
+    const extraAngle = 15 * (Math.PI / 180)
+    controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle)
+    controls.maxPolarAngle = Math.PI / 2
 
-    const loader = new GLTFLoader();
+    const loader = new GLTFLoader()
 
     /**
      * adjustPiecePivot
      * Ustawia pivot modelu figury, aby jej dolna krawędź znalazła się na poziomie 0.
      */
     const adjustPiecePivot = (piece: THREE.Object3D): void => {
-      piece.updateMatrixWorld(true);
-      const box = new THREE.Box3().setFromObject(piece);
-      const deltaY = -box.min.y;
-      piece.position.y += deltaY;
-    };
+      piece.updateMatrixWorld(true)
+      const box = new THREE.Box3().setFromObject(piece)
+      const deltaY = -box.min.y
+      piece.position.y += deltaY
+    }
 
-    const easeInOutQuad = (t: number): number =>
-      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    const easeInOutQuad = (t: number): number => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t)
 
-    const animatePieceMovement = (
-      piece: THREE.Object3D,
-      target: THREE.Vector3,
-      duration: number
-    ) => {
-      const initialPosition = piece.position.clone();
-      const startTime = performance.now();
+    const animatePieceMovement = (piece: THREE.Object3D, target: THREE.Vector3, duration: number) => {
+      const initialPosition = piece.position.clone()
+      const startTime = performance.now()
       const animate = (now: number) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeInOutQuad(progress);
-        piece.position.x =
-          initialPosition.x + (target.x - initialPosition.x) * easedProgress;
-        piece.position.y =
-          initialPosition.y + (target.y - initialPosition.y) * easedProgress;
-        piece.position.z =
-          initialPosition.z + (target.z - initialPosition.z) * easedProgress;
+        const elapsed = now - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const easedProgress = easeInOutQuad(progress)
+        piece.position.x = initialPosition.x + (target.x - initialPosition.x) * easedProgress
+        piece.position.y = initialPosition.y + (target.y - initialPosition.y) * easedProgress
+        piece.position.z = initialPosition.z + (target.z - initialPosition.z) * easedProgress
         if (progress < 1) {
-          requestAnimationFrame(animate);
+          requestAnimationFrame(animate)
         }
-      };
-      requestAnimationFrame(animate);
-    };
+      }
+      requestAnimationFrame(animate)
+    }
 
-    const animatePieceY = (
-      piece: THREE.Object3D,
-      targetY: number,
-      duration: number
-    ) => {
-      const initialY = piece.position.y;
-      const startTime = performance.now();
+    const animatePieceY = (piece: THREE.Object3D, targetY: number, duration: number) => {
+      const initialY = piece.position.y
+      const startTime = performance.now()
       const animate = (now: number) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeInOutQuad(progress);
-        piece.position.y = initialY + (targetY - initialY) * easedProgress;
+        const elapsed = now - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const easedProgress = easeInOutQuad(progress)
+        piece.position.y = initialY + (targetY - initialY) * easedProgress
         if (progress < 1) {
-          requestAnimationFrame(animate);
+          requestAnimationFrame(animate)
         }
-      };
-      requestAnimationFrame(animate);
-    };
+      }
+      requestAnimationFrame(animate)
+    }
 
-    let playableMinX: number = 0;
-    let playableMinZ: number = 0;
-    let cellSize: number = 1;
-    const selectablePieces: THREE.Object3D[] = [];
-    let boardBox: THREE.Box3 | null = null;
+    let playableMinX: number = 0
+    let playableMinZ: number = 0
+    let cellSize: number = 1
+    const selectablePieces: THREE.Object3D[] = []
+    let boardBox: THREE.Box3 | null = null
 
     loader.load(
       "/models/game/game-chessboard.glb",
       (gltf: GLTF) => {
-        const boardModel = gltf.scene;
-        boardModel.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE);
-        boardModel.updateMatrixWorld(true);
+        const boardModel = gltf.scene
+        boardModel.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE)
+        boardModel.updateMatrixWorld(true)
 
-        boardBox = new THREE.Box3().setFromObject(boardModel);
-        const boardCenter = new THREE.Vector3();
-        boardBox.getCenter(boardCenter);
-        boardModel.position.x -= boardCenter.x;
-        boardModel.position.y -= boardCenter.y;
-        boardModel.position.z -= boardCenter.z;
-        boardModel.updateMatrixWorld(true);
-        boardBox.setFromObject(boardModel);
-        scene.add(boardModel);
+        boardBox = new THREE.Box3().setFromObject(boardModel)
+        const boardCenter = new THREE.Vector3()
+        boardBox.getCenter(boardCenter)
+        boardModel.position.x -= boardCenter.x
+        boardModel.position.y -= boardCenter.y
+        boardModel.position.z -= boardCenter.z
+        boardModel.updateMatrixWorld(true)
+        boardBox.setFromObject(boardModel)
+        scene.add(boardModel)
 
-        const borderRatio = 0.08;
-        const widthFull = boardBox.max.x - boardBox.min.x;
-        const heightFull = boardBox.max.z - boardBox.min.z;
-        const borderX = widthFull * borderRatio;
-        const borderZ = heightFull * borderRatio;
-        playableMinX = boardBox.min.x + borderX;
-        playableMinZ = boardBox.min.z + borderZ;
-        const playableMaxX = boardBox.max.x - borderX;
-        const playableMaxZ = boardBox.max.z - borderZ;
-        const playableWidth = Math.min(
-          playableMaxX - playableMinX,
-          playableMaxZ - playableMinZ
-        );
-        cellSize = playableWidth / 8;
+        const borderRatio = 0.08
+        const widthFull = boardBox.max.x - boardBox.min.x
+        const heightFull = boardBox.max.z - boardBox.min.z
+        const borderX = widthFull * borderRatio
+        const borderZ = heightFull * borderRatio
+        playableMinX = boardBox.min.x + borderX
+        playableMinZ = boardBox.min.z + borderZ
+        const playableMaxX = boardBox.max.x - borderX
+        const playableMaxZ = boardBox.max.z - borderZ
+        const playableWidth = Math.min(playableMaxX - playableMinX, playableMaxZ - playableMinZ)
+        cellSize = playableWidth / 8
 
         if (!board || typeof board.getPositionById !== "function") {
-          console.warn("Brak instancji Board lub board jest nieprawidłowy.");
+          console.warn("Brak instancji Board lub board jest nieprawidłowy.")
         } else {
-          loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox);
+          loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox)
         }
       },
       undefined,
-      (error) => console.error("Błąd ładowania szachownicy:", error)
-    );
+      (error) => console.error("Błąd ładowania szachownicy:", error),
+    )
 
-    async function loadPiecesFromBoard(
-      cellSize: number,
-      playableMinX: number,
-      playableMinZ: number,
-      boardBox: THREE.Box3
-    ): Promise<void> {
+    async function loadPiecesFromBoard(cellSize: number, playableMinX: number, playableMinZ: number, boardBox: THREE.Box3): Promise<void> {
       const loadModel = (url: string): Promise<GLTF> =>
         new Promise((resolve, reject) => {
-          loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject);
-        });
+          loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject)
+        })
 
-      const [
-        whitePawn,
-        whiteRook,
-        whiteKnight,
-        whiteBishop,
-        whiteQueen,
-        whiteKing,
-        blackPawn,
-        blackRook,
-        blackKnight,
-        blackBishop,
-        blackQueen,
-        blackKing,
-      ] = await Promise.all([
-        loadModel("/models/game/white-pawns/pawn_white.glb"),
-        loadModel("/models/game/white-pawns/rook_white.glb"),
-        loadModel("/models/game/white-pawns/knight_white.glb"),
-        loadModel("/models/game/white-pawns/bishop_white.glb"),
-        loadModel("/models/game/white-pawns/queen_white.glb"),
-        loadModel("/models/game/white-pawns/king_white.glb"),
-        loadModel("/models/game/black-pawns/pawn_black.glb"),
-        loadModel("/models/game/black-pawns/rook_black.glb"),
-        loadModel("/models/game/black-pawns/knight_black.glb"),
-        loadModel("/models/game/black-pawns/bishop_black.glb"),
-        loadModel("/models/game/black-pawns/queen_black.glb"),
-        loadModel("/models/game/black-pawns/king_black.glb"),
-      ]);
+      const [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing] =
+        await Promise.all([
+          loadModel("/models/game/white-pawns/pawn_white.glb"),
+          loadModel("/models/game/white-pawns/rook_white.glb"),
+          loadModel("/models/game/white-pawns/knight_white.glb"),
+          loadModel("/models/game/white-pawns/bishop_white.glb"),
+          loadModel("/models/game/white-pawns/queen_white.glb"),
+          loadModel("/models/game/white-pawns/king_white.glb"),
+          loadModel("/models/game/black-pawns/pawn_black.glb"),
+          loadModel("/models/game/black-pawns/rook_black.glb"),
+          loadModel("/models/game/black-pawns/knight_black.glb"),
+          loadModel("/models/game/black-pawns/bishop_black.glb"),
+          loadModel("/models/game/black-pawns/queen_black.glb"),
+          loadModel("/models/game/black-pawns/king_black.glb"),
+        ])
 
       const pieceModels: { white: Pieces; black: Pieces } = {
         white: {
@@ -238,175 +205,160 @@ export function ChessBoard3D(): JSX.Element {
           queen: blackQueen.scene,
           king: blackKing.scene,
         },
-      };
+      }
 
-      const boardTopY = boardBox.max.y;
-      const letters = "abcdefgh";
+      const boardTopY = boardBox.max.y
+      const letters = "abcdefgh"
 
       for (let id = 0; id < 64; id++) {
-        const pos = board.getPositionById(id);
-        if (!pos) continue;
+        const pos = board.getPositionById(id)
+        if (!pos) continue
         if (pos.figure) {
-          const figure = pos.figure;
-          const colorKey = figure.color === color.White ? "white" : "black";
-          let model: THREE.Object3D;
+          const figure = pos.figure
+          const colorKey = figure.color === color.White ? "white" : "black"
+          let model: THREE.Object3D
           switch (figure.type) {
             case figureType.pawn:
-              model = pieceModels[colorKey].pawn.clone();
-              break;
+              model = pieceModels[colorKey].pawn.clone()
+              break
             case figureType.rook:
-              model = pieceModels[colorKey].rook.clone();
-              break;
+              model = pieceModels[colorKey].rook.clone()
+              break
             case figureType.knight:
-              model = pieceModels[colorKey].knight.clone();
-              break;
+              model = pieceModels[colorKey].knight.clone()
+              break
             case figureType.bishop:
-              model = pieceModels[colorKey].bishop.clone();
-              break;
+              model = pieceModels[colorKey].bishop.clone()
+              break
             case figureType.queen:
-              model = pieceModels[colorKey].queen.clone();
-              break;
+              model = pieceModels[colorKey].queen.clone()
+              break
             case figureType.king:
-              model = pieceModels[colorKey].king.clone();
-              break;
+              model = pieceModels[colorKey].king.clone()
+              break
             default:
-              continue;
+              continue
           }
-          model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE);
+          model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
 
           // Obliczamy współrzędne 3D
-          const xCoord = playableMinX + pos.x * cellSize + cellSize * 0.5;
-          const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5;
-          model.position.set(xCoord, 0, zCoord);
-          adjustPiecePivot(model);
+          const xCoord = playableMinX + pos.x * cellSize + cellSize * 0.5
+          const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5
+          model.position.set(xCoord, 0, zCoord)
+          adjustPiecePivot(model)
 
           // Ustawiamy figurę na poziomie planszy + offset
-          model.position.y = boardTopY;
+          model.position.y = boardTopY
 
           // Ustawiamy notację szachową na figurze, aby móc synchronizować ruchy
-          const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString();
-          model.userData.notation = notation;
+          const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString()
+          model.userData.notation = notation
 
-          scene.add(model);
-          selectablePieces.push(model);
+          scene.add(model)
+          selectablePieces.push(model)
 
-          console.log(
-            `Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`
-          );
+          console.log(`Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`)
         }
       }
     }
 
     // Obsługa kliknięć – logika wyboru i ruchu z synchronizacją silnika gry
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    let selectedPiece: THREE.Object3D | null = null;
+    const raycaster = new THREE.Raycaster()
+    const pointer = new THREE.Vector2()
+    let selectedPiece: THREE.Object3D | null = null
 
     function handleClick(event: MouseEvent) {
-      const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(pointer, camera);
+      const rect = renderer.domElement.getBoundingClientRect()
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+      raycaster.setFromCamera(pointer, camera)
 
       if (!selectedPiece) {
-        const intersects = raycaster.intersectObjects(selectablePieces, true);
-        if (intersects.length > 0) {
-          selectedPiece = intersects[0].object;
-          while (
-            selectedPiece.parent &&
-            !selectablePieces.includes(selectedPiece)
-          ) {
-            selectedPiece = selectedPiece.parent;
+        const intersects = raycaster.intersectObjects(selectablePieces, true)
+        if (intersects.length > 0 && intersects[0]) {
+          selectedPiece = intersects[0].object
+          while (selectedPiece.parent && !selectablePieces.includes(selectedPiece)) {
+            selectedPiece = selectedPiece.parent
           }
-          console.log("Wybrano figurę:", selectedPiece);
-          animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500);
+          console.log("Wybrano figurę:", selectedPiece)
+          animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
         }
       } else {
-        const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-        const intersectionPoint = new THREE.Vector3();
-        raycaster.ray.intersectPlane(plane, intersectionPoint);
+        const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+        const intersectionPoint = new THREE.Vector3()
+        raycaster.ray.intersectPlane(plane, intersectionPoint)
 
         if (intersectionPoint && boardBox) {
-          const boardTopY = boardBox.max.y;
-          const col = Math.floor((intersectionPoint.x - playableMinX) / cellSize);
-          const row = Math.floor((intersectionPoint.z - playableMinZ) / cellSize);
-          const clampedCol = Math.min(Math.max(col, 0), 7);
-          const clampedRow = Math.min(Math.max(row, 0), 7);
+          const boardTopY = boardBox.max.y
+          const col = Math.floor((intersectionPoint.x - playableMinX) / cellSize)
+          const row = Math.floor((intersectionPoint.z - playableMinZ) / cellSize)
+          const clampedCol = Math.min(Math.max(col, 0), 7)
+          const clampedRow = Math.min(Math.max(row, 0), 7)
 
-          const targetX = playableMinX + clampedCol * cellSize + cellSize / 2;
-          const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2;
-          const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ);
+          const targetX = playableMinX + clampedCol * cellSize + cellSize / 2
+          const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2
+          const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ)
 
           // Obliczamy notację docelową – odwracając rząd (rowIndex = 7 - clampedRow)
-          const letters = "abcdefgh";
-          const targetRowIndex = 7 - clampedRow;
-          const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString();
+          const letters = "abcdefgh"
+          const targetRowIndex = 7 - clampedRow
+          const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString()
 
-          console.log(
-            "Przenosimy figurę do:",
-            targetX,
-            boardTopY,
-            targetZ,
-            "notacja:",
-            targetNotation
-          );
+          console.log("Przenosimy figurę do:", targetX, boardTopY, targetZ, "notacja:", targetNotation)
 
           // Pobieramy oryginalny i docelowy kwadrat z silnika gry i wykonujemy ruch
-          const originSquare = board.getPositionByNotation(selectedPiece.userData.notation);
-          const targetSquare = board.getPositionByNotation(targetNotation);
+          const originSquare = board.getPositionByNotation(selectedPiece.userData.notation)
+          const targetSquare = board.getPositionByNotation(targetNotation)
           if (originSquare && targetSquare) {
-            movePiece(originSquare, targetSquare);
+            movePiece(originSquare, targetSquare)
           }
 
           // Aktualizujemy notację figury, aby synchronizować przyszłe ruchy
-          selectedPiece.userData.notation = targetNotation;
+          selectedPiece.userData.notation = targetNotation
 
-          animatePieceMovement(selectedPiece, targetPosition, 1000);
+          animatePieceMovement(selectedPiece, targetPosition, 1000)
         }
-        selectedPiece = null;
+        selectedPiece = null
       }
     }
 
-    renderer.domElement.addEventListener("click", handleClick, false);
+    renderer.domElement.addEventListener("click", handleClick, false)
 
     const animate = (): void => {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
+      requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    }
+    animate()
 
-    let resizeTimer: number;
+    let resizeTimer: number
     const resizeObserver = new ResizeObserver((entries) => {
-      clearTimeout(resizeTimer);
+      clearTimeout(resizeTimer)
       resizeTimer = window.setTimeout(() => {
         for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          renderer.setSize(width, height);
-          camera.aspect = width / height;
-          camera.updateProjectionMatrix();
+          const { width, height } = entry.contentRect
+          renderer.setSize(width, height)
+          camera.aspect = width / height
+          camera.updateProjectionMatrix()
         }
-      }, 100);
-    });
-    resizeObserver.observe(container);
+      }, 100)
+    })
+    resizeObserver.observe(container)
 
     return () => {
-      resizeObserver.disconnect();
-      renderer.domElement.removeEventListener("click", handleClick);
-      renderer.dispose();
-      controls.dispose();
+      resizeObserver.disconnect()
+      renderer.domElement.removeEventListener("click", handleClick)
+      renderer.dispose()
+      controls.dispose()
       if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+        container.removeChild(renderer.domElement)
       }
-    };
-  }, [board, movePiece]);
+    }
+  }, [board, movePiece])
 
   return (
     <div className="flex items-center justify-center h-full">
-      <div
-        ref={containerRef}
-        style={{ width: "100%", height: "100%", aspectRatio: "2" }}
-      />
+      <div ref={containerRef} style={{ width: "100%", height: "100%", aspectRatio: "2" }} />
     </div>
-  );
+  )
 }

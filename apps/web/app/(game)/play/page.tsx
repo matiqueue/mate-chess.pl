@@ -153,18 +153,10 @@ export default function GameModeSelector() {
                       onClick={() => handleModeSelect(mode.key)}
                       disabled={isOnline && !user}
                     >
-                      <motion.span
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                      >
+                      <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
                         {t("startGame", { mode: mode.title })}
                       </motion.span>
-                      <motion.div
-                        className="ml-2"
-                        initial={{ x: -5, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                      >
+                      <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
                         <ArrowRight className="w-4 h-4" />
                       </motion.div>
                     </MotionButton>
@@ -185,11 +177,7 @@ export default function GameModeSelector() {
             })}
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8 w-full max-w-4xl flex flex-col items-center gap-4"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 w-full max-w-4xl flex flex-col items-center gap-4">
             <MotionButton
               className="w-1/2 bg-popover-foreground hover:bg-primary border"
               onClick={() => setShowJoinInput((prev) => !prev)}
