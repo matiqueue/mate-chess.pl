@@ -1,14 +1,11 @@
-import React, { useRef, useEffect, useContext } from "react"; // [DODANE] useContext
+import React, { useRef, useEffect, useContext } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
-
-// [ZMIENIONE] zamiast importowania Board, importujemy GameContext
 import { useGameContext } from "@/contexts/GameContext";
 import { color } from "@shared/types/colorType";
 import { figureType } from "@shared/types/figureType";
 
-// Definicja interfejsu dla modeli figur
 interface Pieces {
   pawn: THREE.Object3D;
   rook: THREE.Object3D;
@@ -25,13 +22,12 @@ interface Pieces {
 export function ChessBoard3D(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // [DODANE] Pobieramy dane gry z GameContext
-  const { board } = useGameContext();
+  // Pobieramy dane gry oraz metodę movePiece z GameContext
+  const { board, movePiece } = useGameContext();
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Sprawdzamy, czy board jest dostępny – logujemy jego wartość
     if (!board) {
       console.warn("Board jest undefined.");
     } else {
@@ -41,10 +37,9 @@ export function ChessBoard3D(): JSX.Element {
       }
     }
 
-    // Parametry skalowania – możesz je dostosować
     const BOARD_SCALE = 14;
     const PIECE_SCALE = 15;
-    const PIECE_OFFSET = 0.2; // [ZMIENIONE] - niewielki offset, by figury nie wtapialy się w planszę
+    const PIECE_OFFSET = 0.2;
 
     const scene = new THREE.Scene();
     const container = containerRef.current;
@@ -59,14 +54,12 @@ export function ChessBoard3D(): JSX.Element {
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // Dodajemy oświetlenie
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(10, 10, 5);
     scene.add(directionalLight);
 
-    // Inicjalizacja OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
@@ -95,11 +88,9 @@ export function ChessBoard3D(): JSX.Element {
       piece.position.y += deltaY;
     };
 
-    // Funkcja easing – dla płynnych animacji
     const easeInOutQuad = (t: number): number =>
       t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-    // Animacja przemieszczania całego obiektu (x, y, z)
     const animatePieceMovement = (
       piece: THREE.Object3D,
       target: THREE.Vector3,
@@ -124,7 +115,6 @@ export function ChessBoard3D(): JSX.Element {
       requestAnimationFrame(animate);
     };
 
-    // Animacja zmiany tylko osi Y – np. przy podnoszeniu figury
     const animatePieceY = (
       piece: THREE.Object3D,
       targetY: number,
@@ -144,14 +134,12 @@ export function ChessBoard3D(): JSX.Element {
       requestAnimationFrame(animate);
     };
 
-    // Zmienne dotyczące planszy (siatki pól)
     let playableMinX: number = 0;
     let playableMinZ: number = 0;
     let cellSize: number = 1;
     const selectablePieces: THREE.Object3D[] = [];
     let boardBox: THREE.Box3 | null = null;
 
-    // Ładujemy model planszy (szachownicy)
     loader.load(
       "/models/game/game-chessboard.glb",
       (gltf: GLTF) => {
@@ -162,7 +150,6 @@ export function ChessBoard3D(): JSX.Element {
         boardBox = new THREE.Box3().setFromObject(boardModel);
         const boardCenter = new THREE.Vector3();
         boardBox.getCenter(boardCenter);
-        // Centrujemy planszę
         boardModel.position.x -= boardCenter.x;
         boardModel.position.y -= boardCenter.y;
         boardModel.position.z -= boardCenter.z;
@@ -185,7 +172,6 @@ export function ChessBoard3D(): JSX.Element {
         );
         cellSize = playableWidth / 8;
 
-        // Jeśli board jest prawidłowy, ładujemy figury; w przeciwnym razie tylko wyświetlamy planszę
         if (!board || typeof board.getPositionById !== "function") {
           console.warn("Brak instancji Board lub board jest nieprawidłowy.");
         } else {
@@ -196,14 +182,12 @@ export function ChessBoard3D(): JSX.Element {
       (error) => console.error("Błąd ładowania szachownicy:", error)
     );
 
-    // Funkcja asynchroniczna ładująca modele figur oraz rozmieszczająca je zgodnie z danymi z board
     async function loadPiecesFromBoard(
       cellSize: number,
       playableMinX: number,
       playableMinZ: number,
       boardBox: THREE.Box3
     ): Promise<void> {
-      // Ładujemy modele figur (dla białych i czarnych)
       const loadModel = (url: string): Promise<GLTF> =>
         new Promise((resolve, reject) => {
           loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject);
@@ -256,10 +240,9 @@ export function ChessBoard3D(): JSX.Element {
         },
       };
 
-      // Ustalamy wysokość górnej krawędzi planszy
       const boardTopY = boardBox.max.y;
+      const letters = "abcdefgh";
 
-      // Rozkładamy figury – iterujemy przez wszystkie 64 pola
       for (let id = 0; id < 64; id++) {
         const pos = board.getPositionById(id);
         if (!pos) continue;
@@ -267,7 +250,6 @@ export function ChessBoard3D(): JSX.Element {
           const figure = pos.figure;
           const colorKey = figure.color === color.White ? "white" : "black";
           let model: THREE.Object3D;
-          // Wybieramy odpowiedni model na podstawie typu figury
           switch (figure.type) {
             case figureType.pawn:
               model = pieceModels[colorKey].pawn.clone();
@@ -292,29 +274,30 @@ export function ChessBoard3D(): JSX.Element {
           }
           model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE);
 
-          // Obliczamy współrzędne 3D (zakładamy, że górny rząd to pos.y=0)
+          // Obliczamy współrzędne 3D
           const xCoord = playableMinX + pos.x * cellSize + cellSize * 0.5;
           const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5;
-
-          // 1) Ustawiamy figurę w (xCoord, 0, zCoord), pivotujemy, a następnie
-          // 2) Podnosimy na wysokość planszy + offset
           model.position.set(xCoord, 0, zCoord);
           adjustPiecePivot(model);
 
-          // [DODANE] – ustawiamy figurę na poziomie planszy + offset
+          // Ustawiamy figurę na poziomie planszy + offset
           model.position.y = boardTopY;
+
+          // Ustawiamy notację szachową na figurze, aby móc synchronizować ruchy
+          const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString();
+          model.userData.notation = notation;
 
           scene.add(model);
           selectablePieces.push(model);
 
           console.log(
-            `Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord}`
+            `Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`
           );
         }
       }
     }
 
-    // Obsługa kliknięć – przykładowa logika wyboru i animacji
+    // Obsługa kliknięć – logika wyboru i ruchu z synchronizacją silnika gry
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
     let selectedPiece: THREE.Object3D | null = null;
@@ -336,7 +319,6 @@ export function ChessBoard3D(): JSX.Element {
             selectedPiece = selectedPiece.parent;
           }
           console.log("Wybrano figurę:", selectedPiece);
-          // Podniesienie figury o 0.5 jednostki (animacja 500ms)
           animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500);
         }
       } else {
@@ -346,31 +328,39 @@ export function ChessBoard3D(): JSX.Element {
 
         if (intersectionPoint && boardBox) {
           const boardTopY = boardBox.max.y;
-          const col = Math.floor(
-            (intersectionPoint.x - playableMinX) / cellSize
-          );
-          const row = Math.floor(
-            (intersectionPoint.z - playableMinZ) / cellSize
-          );
+          const col = Math.floor((intersectionPoint.x - playableMinX) / cellSize);
+          const row = Math.floor((intersectionPoint.z - playableMinZ) / cellSize);
           const clampedCol = Math.min(Math.max(col, 0), 7);
           const clampedRow = Math.min(Math.max(row, 0), 7);
 
           const targetX = playableMinX + clampedCol * cellSize + cellSize / 2;
           const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2;
+          const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ);
 
-          // [ZMIENIONE] – figurę też ustawiamy na boardTopY + PIECE_OFFSET
-          const targetPosition = new THREE.Vector3(
-            targetX,
-            boardTopY,
-            targetZ
-          );
+          // Obliczamy notację docelową – odwracając rząd (rowIndex = 7 - clampedRow)
+          const letters = "abcdefgh";
+          const targetRowIndex = 7 - clampedRow;
+          const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString();
 
           console.log(
             "Przenosimy figurę do:",
             targetX,
             boardTopY,
-            targetZ
+            targetZ,
+            "notacja:",
+            targetNotation
           );
+
+          // Pobieramy oryginalny i docelowy kwadrat z silnika gry i wykonujemy ruch
+          const originSquare = board.getPositionByNotation(selectedPiece.userData.notation);
+          const targetSquare = board.getPositionByNotation(targetNotation);
+          if (originSquare && targetSquare) {
+            movePiece(originSquare, targetSquare);
+          }
+
+          // Aktualizujemy notację figury, aby synchronizować przyszłe ruchy
+          selectedPiece.userData.notation = targetNotation;
+
           animatePieceMovement(selectedPiece, targetPosition, 1000);
         }
         selectedPiece = null;
@@ -409,7 +399,7 @@ export function ChessBoard3D(): JSX.Element {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [board]);
+  }, [board, movePiece]);
 
   return (
     <div className="flex items-center justify-center h-full">
