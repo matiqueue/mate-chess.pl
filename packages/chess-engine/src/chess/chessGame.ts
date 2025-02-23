@@ -38,20 +38,10 @@ class chessGame {
       this._gameStatus = "stalemate"
       this._isGameOn = false
     }
-    // this._board.printFigures()
-    // this._board.printBoard()
-    // this._board.printCords()
-    // this._board.printIds()
-    //
-    // const move: Move = {
-    //   from: this._board.getPositionByNotation("e2")!,
-    //   to: this._board.getPositionByNotation("e3")!,
-    // }
-    // this._board.moveFigure(move)
-    // this._board.printFigures()
+
     this._moves = this._board.moveHistory
-    console.log(this.getMoveHistory())
   }
+
   public makeMove(move: Move): boolean {
     if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
