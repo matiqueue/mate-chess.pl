@@ -14,18 +14,21 @@ import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
 
+// Typy dla pozycji (dostosuj do swojego GameContext)
+interface Position {
+  notation: string
+  figure: { type: string; color: string } | null
+}
+
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
 
-  // Hook z silnika
   const { board, movePiece, getValidMoves, currentPlayer } = useGameContext()
 
-  // Lokalne stany
-  const [selectedSquare, setSelectedSquare] = useState<any>(null)
-  const [validMoves, setValidMoves] = useState<any[]>([])
+  const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
+  const [validMoves, setValidMoves] = useState<Position[]>([])
 
-  // Domyślna plansza (gdy silnik niegotowy)
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -37,30 +40,16 @@ export function ChessBoard2D() {
     ["R", "N", "B", "Q", "K", "B", "N", "R"],
   ]
 
-  // Tablica z silnika (9 wierszy, pierwszy pusty)
-  const rawBoard = board ? board.getBoardArray() : (initialBoard as [string[]])
-  // Usuwamy pierwszy pusty wiersz
-  const boardRows = rawBoard.slice(1) // teraz 8 wierszy, 0..7
+  const rawBoard = board ? board.getBoardArray() : initialBoard
+  const boardRows = rawBoard.slice(rawBoard.length - 8) // Bierzemy ostatnie 8 wierszy
 
-  // Sprawdzamy, czy król w szachu
-  // const whiteInCheck = board?.isKingInCheck("white") ?? false
-  // const blackInCheck = board?.isKingInCheck("black") ?? false
-
-  /**
-   * Oblicza notację (np. "a8") na podstawie wiersza i kolumny.
-   * Tutaj rowIndex=0 => górny wiersz, rowIndex=7 => dolny.
-   * colIndex=0 => lewa kolumna, colIndex=7 => prawa.
-   * Silnik w `setupBoard()` ustawia y=0 jako górę (rank=8), y=7 jako dół (rank=1).
-   * Więc rank = 8 - rowIndex, file = letters[7 - colIndex].
-   */
   const getNotation = (rowIndex: number, colIndex: number) => {
     const letters = "abcdefgh"
     const rank = 8 - rowIndex
-    const file = letters.charAt(7 - colIndex)
+    const file = letters.charAt(colIndex) // Bez odwrócenia
     return file + rank
   }
 
-  // Kliknięcie w pole
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
     if (!board) return
     const notation = getNotation(rowIndex, colIndex)
@@ -97,10 +86,6 @@ export function ChessBoard2D() {
     }
   }
 
-  /**
-   * Render figury. Jeśli silnik jest gotowy, pobieramy info z `board`.
-   * W przeciwnym razie używamy symbolu z initialBoard.
-   */
   const renderPiece = (symbol: string, rowIndex: number, colIndex: number) => {
     if (board) {
       const notation = getNotation(rowIndex, colIndex)
@@ -167,19 +152,19 @@ export function ChessBoard2D() {
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
-  // Funkcja pomocnicza do określenia koloru tła dla zwykłych pól
   function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
     const isBlack = (rowIndex + colIndex) % 2 === 1
-    if (isBlack) {
-      return darkMode ? "bg-neutral-400 hover:bg-neutral-500" : "bg-gray-400 hover:bg-neutral-500"
-    } else {
-      return darkMode ? "bg-stone-700 hover:bg-neutral-500" : "bg-zinc-200 hover:bg-neutral-500"
-    }
+    return isBlack
+      ? darkMode
+        ? "bg-neutral-400 hover:bg-neutral-500"
+        : "bg-gray-400 hover:bg-neutral-500"
+      : darkMode
+        ? "bg-stone-700 hover:bg-neutral-500"
+        : "bg-zinc-200 hover:bg-neutral-500"
   }
 
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
-      {/* Overlay z rozmyciem i obramowaniem */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
         <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
@@ -187,29 +172,19 @@ export function ChessBoard2D() {
 
       <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
         <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-          {boardRows.map((rowData: any[], rowIndex: number) =>
-            rowData.map((_, colIndex) => {
-              // Pobieramy symbol (odwracamy kolumny)
-              const symbol = rowData[7 - colIndex]
+          {boardRows.map((rowData: string[], rowIndex: number) =>
+            rowData.map((symbol, colIndex) => {
               const notation = getNotation(rowIndex, colIndex)
               const square = board?.getPositionByNotation(notation)
               const isSelected = selectedSquare && selectedSquare.notation === notation
               const isValidMove = validMoves.some((pos) => pos.notation === notation)
 
-              // Sprawdzamy, czy to pole zawiera króla w szachu
               let isKingInCheck = false
               if (square?.figure?.type === "king") {
                 const isWhite = square.figure.color === "white"
-                if (isWhite && board?.isKingInCheck("white")) {
-                  isKingInCheck = true
-                }
-                if (!isWhite && board?.isKingInCheck("black")) {
-                  isKingInCheck = true
-                }
+                isKingInCheck = isWhite ? board?.isKingInCheck("white") : board?.isKingInCheck("black")
               }
 
-              // Określamy kolor tła pola.
-              // Dla pól z królem w szachu: czerwone tło z lekkim roundingiem (bez czarnego border).
               const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600 rounded-sm" : isBlackSquare(rowIndex, colIndex, isDarkMode)
 
               return (
@@ -233,7 +208,6 @@ export function ChessBoard2D() {
                     </>
                   )}
 
-                  {/* Nakładka z niebieskim borderem, która nie wpływa na rozmiar figury */}
                   {isSelected && (
                     <div
                       className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 
