@@ -22,17 +22,29 @@ interface Pieces {
 export function ChessBoard3D(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Pobieramy dane gry oraz metodę movePiece z GameContext
-  const { board, movePiece } = useGameContext()
+  // Pobieramy dane gry z kontekstu – dodajemy też getValidMoves
+  const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
+
+  // Utwórz referencje do aktualnych wartości, które będą używane w event handlerze
+  const boardRef = useRef(board)
+  const movePieceRef = useRef(movePiece)
+  const currentPlayerRef = useRef(currentPlayer)
+  const getValidMovesRef = useRef(getValidMoves)
+
+  // Aktualizujemy referencje przy zmianie wartości
+  useEffect(() => { boardRef.current = board }, [board])
+  useEffect(() => { movePieceRef.current = movePiece }, [movePiece])
+  useEffect(() => { currentPlayerRef.current = currentPlayer }, [currentPlayer])
+  useEffect(() => { getValidMovesRef.current = getValidMoves }, [getValidMoves])
 
   useEffect(() => {
     if (!containerRef.current) return
 
-    if (!board) {
+    if (!boardRef.current) {
       console.warn("Board jest undefined.")
     } else {
-      console.log("Board instance:", board)
-      if (typeof board.getPositionById !== "function") {
+      console.log("Board instance:", boardRef.current)
+      if (typeof boardRef.current.getPositionById !== "function") {
         console.warn("board.getPositionById nie jest funkcją. Upewnij się, że board jest poprawną instancją.")
       }
     }
@@ -74,11 +86,17 @@ export function ChessBoard3D(): JSX.Element {
     controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle)
     controls.maxPolarAngle = Math.PI / 2
 
+    // Ustawiamy obrót kamery prawym przyciskiem
+    controls.mouseButtons = {
+      LEFT: THREE.MOUSE.PAN,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.ROTATE,
+    }
+
     const loader = new GLTFLoader()
 
     /**
-     * adjustPiecePivot
-     * Ustawia pivot modelu figury, aby jej dolna krawędź znalazła się na poziomie 0.
+     * adjustPiecePivot - Ustawia pivot modelu figury, aby jej dolna krawędź znalazła się na poziomie 0.
      */
     const adjustPiecePivot = (piece: THREE.Object3D): void => {
       piece.updateMatrixWorld(true)
@@ -87,7 +105,8 @@ export function ChessBoard3D(): JSX.Element {
       piece.position.y += deltaY
     }
 
-    const easeInOutQuad = (t: number): number => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t)
+    const easeInOutQuad = (t: number): number =>
+      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 
     const animatePieceMovement = (piece: THREE.Object3D, target: THREE.Vector3, duration: number) => {
       const initialPosition = piece.position.clone()
@@ -127,6 +146,62 @@ export function ChessBoard3D(): JSX.Element {
     const selectablePieces: THREE.Object3D[] = []
     let boardBox: THREE.Box3 | null = null
 
+    // Zmienne przechowujące dozwolone ruchy i oryginalną pozycję wybranej figury
+    let validMoves: any[] = []
+    let originPosition: THREE.Vector3 | null = null
+
+    // Tablica do przechowywania zielonych markerów
+    let highlightMeshes: THREE.Mesh[] = []
+
+    function addHighlights(moves: any[]) {
+      // clearHighlights();
+      moves.forEach(move => {
+        const square = boardRef.current.getPositionByNotation(move.notation);
+        if (!square) return;
+    
+        // 🔥 Poprawione współrzędne - TERAZ POWINNO DZIAŁAĆ DOBRZE
+        const x = playableMinX + square.x * cellSize + cellSize * 0.5;
+        const z = playableMinZ + (7 - square.y) * cellSize + cellSize * 0.5;
+    
+        // Tworzymy zielony okrąg jako marker
+        const geometry = new THREE.CircleGeometry(cellSize / 4, 32);
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+          transparent: true,
+          opacity: 0.5,
+        });
+        const circle = new THREE.Mesh(geometry, material);
+        circle.rotation.x = -Math.PI / 2;
+        circle.position.set(x, boardBox!.max.y + 0.01, z);
+        scene.add(circle);
+        highlightMeshes.push(circle);
+      });
+    }
+    
+    
+    function clearHighlights() {
+      while (highlightMeshes.length) {
+        const mesh = highlightMeshes.pop()
+        if (mesh) {
+          if (mesh.parent) mesh.parent.remove(mesh)
+          if (mesh.geometry) {
+            mesh.geometry.dispose()
+          }
+          if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach(mat => {
+                if (mat && typeof mat.dispose === "function") {
+                  mat.dispose()
+                }
+              })
+            } else if (typeof mesh.material.dispose === "function") {
+              mesh.material.dispose()
+            }
+          }
+        }
+      }
+    }
+
     loader.load(
       "/models/game/game-chessboard.glb",
       (gltf: GLTF) => {
@@ -156,37 +231,54 @@ export function ChessBoard3D(): JSX.Element {
         const playableWidth = Math.min(playableMaxX - playableMinX, playableMaxZ - playableMinZ)
         cellSize = playableWidth / 8
 
-        if (!board || typeof board.getPositionById !== "function") {
+        if (!boardRef.current || typeof boardRef.current.getPositionById !== "function") {
           console.warn("Brak instancji Board lub board jest nieprawidłowy.")
         } else {
           loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox)
         }
       },
       undefined,
-      (error) => console.error("Błąd ładowania szachownicy:", error),
+      (error) => console.error("Błąd ładowania szachownicy:", error)
     )
 
-    async function loadPiecesFromBoard(cellSize: number, playableMinX: number, playableMinZ: number, boardBox: THREE.Box3): Promise<void> {
+    async function loadPiecesFromBoard(
+      cellSize: number,
+      playableMinX: number,
+      playableMinZ: number,
+      boardBox: THREE.Box3
+    ): Promise<void> {
       const loadModel = (url: string): Promise<GLTF> =>
         new Promise((resolve, reject) => {
           loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject)
         })
 
-      const [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing] =
-        await Promise.all([
-          loadModel("/models/game/white-pawns/pawn_white.glb"),
-          loadModel("/models/game/white-pawns/rook_white.glb"),
-          loadModel("/models/game/white-pawns/knight_white.glb"),
-          loadModel("/models/game/white-pawns/bishop_white.glb"),
-          loadModel("/models/game/white-pawns/queen_white.glb"),
-          loadModel("/models/game/white-pawns/king_white.glb"),
-          loadModel("/models/game/black-pawns/pawn_black.glb"),
-          loadModel("/models/game/black-pawns/rook_black.glb"),
-          loadModel("/models/game/black-pawns/knight_black.glb"),
-          loadModel("/models/game/black-pawns/bishop_black.glb"),
-          loadModel("/models/game/black-pawns/queen_black.glb"),
-          loadModel("/models/game/black-pawns/king_black.glb"),
-        ])
+      const [
+        whitePawn,
+        whiteRook,
+        whiteKnight,
+        whiteBishop,
+        whiteQueen,
+        whiteKing,
+        blackPawn,
+        blackRook,
+        blackKnight,
+        blackBishop,
+        blackQueen,
+        blackKing
+      ] = await Promise.all([
+        loadModel("/models/game/white-pawns/pawn_white.glb"),
+        loadModel("/models/game/white-pawns/rook_white.glb"),
+        loadModel("/models/game/white-pawns/knight_white.glb"),
+        loadModel("/models/game/white-pawns/bishop_white.glb"),
+        loadModel("/models/game/white-pawns/queen_white.glb"),
+        loadModel("/models/game/white-pawns/king_white.glb"),
+        loadModel("/models/game/black-pawns/pawn_black.glb"),
+        loadModel("/models/game/black-pawns/rook_black.glb"),
+        loadModel("/models/game/black-pawns/knight_black.glb"),
+        loadModel("/models/game/black-pawns/bishop_black.glb"),
+        loadModel("/models/game/black-pawns/queen_black.glb"),
+        loadModel("/models/game/black-pawns/king_black.glb"),
+      ])
 
       const pieceModels: { white: Pieces; black: Pieces } = {
         white: {
@@ -211,7 +303,7 @@ export function ChessBoard3D(): JSX.Element {
       const letters = "abcdefgh"
 
       for (let id = 0; id < 64; id++) {
-        const pos = board.getPositionById(id)
+        const pos = boardRef.current.getPositionById(id)
         if (!pos) continue
         if (pos.figure) {
           const figure = pos.figure
@@ -240,29 +332,26 @@ export function ChessBoard3D(): JSX.Element {
               continue
           }
           model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
-
-          // Obliczamy współrzędne 3D
           const xCoord = playableMinX + pos.x * cellSize + cellSize * 0.5
           const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5
           model.position.set(xCoord, 0, zCoord)
           adjustPiecePivot(model)
-
-          // Ustawiamy figurę na poziomie planszy + offset
           model.position.y = boardTopY
 
-          // Ustawiamy notację szachową na figurze, aby móc synchronizować ruchy
           const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString()
           model.userData.notation = notation
+          model.userData.figureColor = figure.color
 
           scene.add(model)
           selectablePieces.push(model)
-
-          console.log(`Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`)
+          console.log(
+            `Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`
+          )
         }
       }
     }
 
-    // Obsługa kliknięć – logika wyboru i ruchu z synchronizacją silnika gry
+    // Obsługa kliknięć – logika wyboru i ruchu z zabezpieczeniem przed wnikaniem pionka
     const raycaster = new THREE.Raycaster()
     const pointer = new THREE.Vector2()
     let selectedPiece: THREE.Object3D | null = null
@@ -273,6 +362,7 @@ export function ChessBoard3D(): JSX.Element {
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(pointer, camera)
 
+      // Jeśli nie wybrano jeszcze figury
       if (!selectedPiece) {
         const intersects = raycaster.intersectObjects(selectablePieces, true)
         if (intersects.length > 0 && intersects[0]) {
@@ -280,10 +370,21 @@ export function ChessBoard3D(): JSX.Element {
           while (selectedPiece.parent && !selectablePieces.includes(selectedPiece)) {
             selectedPiece = selectedPiece.parent
           }
+          if (selectedPiece.userData.figureColor !== currentPlayerRef.current) {
+            console.log("Próba wyboru figury przeciwnika. Ruch odrzucony.")
+            selectedPiece = null
+            return
+          }
           console.log("Wybrano figurę:", selectedPiece)
+          const originSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+          originPosition = selectedPiece.position.clone()
+          validMoves = getValidMovesRef.current(originSquare)
+          // Dodajemy wizualne zaznaczenie dozwolonych ruchów
+          // addHighlights(validMoves)
           animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
         }
       } else {
+        // Drugi klik – wybór celu ruchu
         const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
         const intersectionPoint = new THREE.Vector3()
         raycaster.ray.intersectPlane(plane, intersectionPoint)
@@ -299,26 +400,56 @@ export function ChessBoard3D(): JSX.Element {
           const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2
           const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ)
 
-          // Obliczamy notację docelową – odwracając rząd (rowIndex = 7 - clampedRow)
           const letters = "abcdefgh"
           const targetRowIndex = 7 - clampedRow
           const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString()
 
           console.log("Przenosimy figurę do:", targetX, boardTopY, targetZ, "notacja:", targetNotation)
 
-          // Pobieramy oryginalny i docelowy kwadrat z silnika gry i wykonujemy ruch
-          const originSquare = board.getPositionByNotation(selectedPiece.userData.notation)
-          const targetSquare = board.getPositionByNotation(targetNotation)
-          if (originSquare && targetSquare) {
-            movePiece(originSquare, targetSquare)
+          // Sprawdzamy, czy na docelowym polu znajduje się figura tego samego koloru
+          const targetSquare = boardRef.current.getPositionByNotation(targetNotation)
+          if (targetSquare.figure && targetSquare.figure.color === selectedPiece.userData.figureColor) {
+            console.log("Na tym polu znajduje się figura tego samego koloru. Zmiana zaznaczenia.")
+            if (originPosition) {
+              animatePieceMovement(selectedPiece, originPosition, 500)
+            }
+            const newSelected = selectablePieces.find(piece => piece.userData.notation === targetNotation)
+            if (newSelected) {
+              selectedPiece = newSelected
+              originPosition = selectedPiece.position.clone()
+              const newOriginSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+              validMoves = getValidMovesRef.current(newOriginSquare)
+              // clearHighlights()
+              // addHighlights(validMoves)
+              animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
+            } else {
+              selectedPiece = null
+              validMoves = []
+              // clearHighlights()
+            }
+            return
           }
 
-          // Aktualizujemy notację figury, aby synchronizować przyszłe ruchy
-          selectedPiece.userData.notation = targetNotation
-
-          animatePieceMovement(selectedPiece, targetPosition, 1000)
+          // Sprawdzamy, czy docelowa notacja znajduje się w dozwolonych ruchach
+          const isValid = validMoves.some((pos) => pos.notation === targetNotation)
+          if (isValid) {
+            const originSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+            const targetSquare = boardRef.current.getPositionByNotation(targetNotation)
+            if (originSquare && targetSquare) {
+              movePieceRef.current(originSquare, targetSquare)
+            }
+            selectedPiece.userData.notation = targetNotation
+            animatePieceMovement(selectedPiece, targetPosition, 1000)
+          } else {
+            console.log("Ruch niepoprawny – pionek wraca na swoje miejsce.")
+            if (originPosition) {
+              animatePieceMovement(selectedPiece, originPosition, 500)
+            }
+          }
         }
         selectedPiece = null
+        validMoves = []
+        // clearHighlights()
       }
     }
 
@@ -354,7 +485,7 @@ export function ChessBoard3D(): JSX.Element {
         container.removeChild(renderer.domElement)
       }
     }
-  }, [board, movePiece])
+  }, []) // Inicjalizacja tylko raz
 
   return (
     <div className="flex items-center justify-center h-full">
