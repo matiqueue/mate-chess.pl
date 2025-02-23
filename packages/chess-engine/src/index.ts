@@ -6,6 +6,7 @@ import { startGame } from "@shared/destruct/rootFunc"
 import { rewindMove } from "@shared/destruct/movementFunctions/undoMove"
 import { getMoveHistory } from "@shared/destruct/movementFunctions/getMoveHistory"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
+import { promote } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
@@ -28,4 +29,5 @@ export {
   getMoveHistory,
   isStalemate,
   getGameStatus,
+  promote,
 }
