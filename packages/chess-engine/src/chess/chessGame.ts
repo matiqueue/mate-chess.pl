@@ -55,13 +55,14 @@ class chessGame {
   public makeMove(move: Move): boolean {
     if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
-      const figure = this._board.getFigureAtPosition(move.from)
-      // const targetFigure = this._board.getFigureAtPosition(move.to)
       if (this._board?.moveFigure(move)) {
-        this.switchCurrentPlayer()
-        if (figure) {
-          // this._moveRecorder.recordMove(figure.type, move, targetFigure?.type)
+        const figures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
+        for (const figure of figures) {
+          if (figure instanceof Pawn) {
+            figure.isEnPassantPossible = false
+          }
         }
+        this.switchCurrentPlayer()
         return true
       }
     }

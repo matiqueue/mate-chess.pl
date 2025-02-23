@@ -4,6 +4,9 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 import MoveRecord from "@shared/types/moveRecord"
+import Bishop from "@modules/chess/figure/figures/bishop"
+import Knight from "@modules/chess/figure/figures/knight"
+import Queen from "@modules/chess/figure/figures/queen"
 
 class Board {
   private positions: Map<string, Position>
@@ -110,24 +113,53 @@ class Board {
     } else if (fromPos.figure instanceof King || fromPos.figure instanceof Rook) {
       wasFirstMove = !fromPos.figure.hasMoved
     }
-    const performingfigure = fromPos.figure
-    if (!performingfigure) throw new Error("No figure performing the move")
-    this._moveHistory.push(new MoveRecord(move, performingfigure, toPos.figure, wasFirstMove))
+
+    const performingFigure = fromPos.figure
+    if (!performingFigure) throw new Error("No figure performing the move")
+    let capturedFigure = toPos.figure
 
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
       toPos.figure = null
     }
 
-    figure.position = toPos
-    fromPos.figure = null
-    toPos.figure = figure
-
     if (figure instanceof Pawn) {
       figure.isFirstMove = false
-      if (Math.abs(move.from.y - move.to.y) === 2) {
+      // If moving two squares forward, mark en passant possible on this pawn
+      if (Math.abs(move.from.y - move.to.y) === 2 && move.from.x === move.to.x) {
         figure.isEnPassantPossible = true
       }
+      //DO NOT DELETE
+      // if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure) {
+      //   if (this.isMoveEnPassant(move)) {
+      //     console.error("en passant true")
+      //     const { from, to } = move
+      //     const performingFigure = this.getFigureAtPosition(from)
+      //     if (!performingFigure) return false
+      //
+      //     // Get adjacent positions (left and right of the starting position)
+      //     const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+      //     const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+      //
+      //     // Ensure we have at least one valid adjacent position
+      //     if (!leftPosition && !rightPosition) return false
+      //
+      //     // Get figures only if the positions exist
+      //     const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
+      //     const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
+      //
+      //     // Check left side for en passant capture
+      //     if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
+      //       capturedFigure = leftFigure
+      //       leftPosition!.figure = null
+      //     }
+      //     // Check right side for en passant capture
+      //     else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
+      //       capturedFigure = rightFigure
+      //       rightPosition!.figure = null
+      //     }
+      //   }
+      // }
     }
     if (figure instanceof King) {
       figure.hasMoved = true
@@ -135,12 +167,18 @@ class Board {
     if (figure instanceof Rook) {
       figure.hasMoved = true
     }
+
+    figure.position = toPos
+    fromPos.figure = null
+    toPos.figure = figure
+
+    this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+
     return true
   }
 
   public undoLastMove(): boolean {
     if (this._moveHistory.length === 0) return false
-    if (!this._moveHistory) return false
 
     const lastMove = this._moveHistory[this._moveHistory.length - 1]
     if (!lastMove) return false
@@ -162,8 +200,10 @@ class Board {
     }
 
     if (capturedFigure) {
-      afterPosition.figure = capturedFigure
-      capturedFigure.position = afterPosition
+      const pos = this.getPosition(capturedFigure.position)
+      if (!pos) return false
+      pos.figure = capturedFigure
+      capturedFigure.position = pos
     } else {
       afterPosition.figure = null
     }
@@ -625,6 +665,32 @@ class Board {
 
   get moveHistory(): MoveRecord[] {
     return this._moveHistory
+  }
+  private isMoveEnPassant(move: Move): boolean {
+    const { from, to } = move
+    const performingFigure = this.getFigureAtPosition(from)
+
+    if (!performingFigure) return false
+    // Ensure the move is a diagonal move by 1 in the x-axis
+    if (Math.abs(to.x - from.x) !== 1 || Math.abs(to.y - from.y) !== 1) return false
+
+    // Get adjacent positions (left and right)
+    const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+    const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+
+    // Check if the adjacent figure is a Pawn with en passant possibility
+    const leftFigure = leftPosition?.figure
+    const rightFigure = rightPosition?.figure
+
+    if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
+      return true
+    }
+
+    if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
+      return true
+    }
+
+    return false
   }
 }
 export default Board
