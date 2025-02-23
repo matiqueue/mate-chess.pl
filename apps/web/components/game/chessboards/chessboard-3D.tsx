@@ -16,22 +16,17 @@ interface Pieces {
 }
 
 /**
- * ChessBoard3D - Komponent renderujący trójwymiarową szachownicę wraz z figurami,
- * rozmieszczonymi według stanu planszy pobranego z GameContext.
+ * Komponent odpowiedzialny za renderowanie trójwymiarowej szachownicy wraz z figurami.
+ * @returns {JSX.Element} JSX element zawierający szachownicę 3D
  */
 export function ChessBoard3D(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null)
-
-  // Pobieramy dane gry z kontekstu – dodajemy też getValidMoves
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
-
-  // Utwórz referencje do aktualnych wartości, które będą używane w event handlerze
   const boardRef = useRef(board)
   const movePieceRef = useRef(movePiece)
   const currentPlayerRef = useRef(currentPlayer)
   const getValidMovesRef = useRef(getValidMoves)
 
-  // Aktualizujemy referencje przy zmianie wartości
   useEffect(() => { boardRef.current = board }, [board])
   useEffect(() => { movePieceRef.current = movePiece }, [movePiece])
   useEffect(() => { currentPlayerRef.current = currentPlayer }, [currentPlayer])
@@ -40,31 +35,18 @@ export function ChessBoard3D(): JSX.Element {
   useEffect(() => {
     if (!containerRef.current) return
 
-    if (!boardRef.current) {
-      console.warn("Board jest undefined.")
-    } else {
-      console.log("Board instance:", boardRef.current)
-      if (typeof boardRef.current.getPositionById !== "function") {
-        console.warn("board.getPositionById nie jest funkcją. Upewnij się, że board jest poprawną instancją.")
-      }
-    }
-
     const BOARD_SCALE = 14
     const PIECE_SCALE = 15
-
     const scene = new THREE.Scene()
     const container = containerRef.current
     const width = container.clientWidth
     const height = container.clientHeight
-
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
     camera.position.set(0, 10, 15)
-
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(width, height)
     renderer.setClearColor(0x000000, 0)
     container.appendChild(renderer.domElement)
-
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
     scene.add(ambientLight)
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
@@ -85,8 +67,6 @@ export function ChessBoard3D(): JSX.Element {
     const extraAngle = 15 * (Math.PI / 180)
     controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle)
     controls.maxPolarAngle = Math.PI / 2
-
-    // Ustawiamy obrót kamery prawym przyciskiem
     controls.mouseButtons = {
       LEFT: THREE.MOUSE.PAN,
       MIDDLE: THREE.MOUSE.DOLLY,
@@ -96,19 +76,32 @@ export function ChessBoard3D(): JSX.Element {
     const loader = new GLTFLoader()
 
     /**
-     * adjustPiecePivot - Ustawia pivot modelu figury, aby jej dolna krawędź znalazła się na poziomie 0.
+     * Ustawia pivot modelu figury tak, aby dolna krawędź znajdowała się na poziomie 0.
+     * @param {THREE.Object3D} piece - Obiekt 3D figury
      */
-    const adjustPiecePivot = (piece: THREE.Object3D): void => {
+    function adjustPiecePivot(piece: THREE.Object3D): void {
       piece.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(piece)
       const deltaY = -box.min.y
       piece.position.y += deltaY
     }
 
-    const easeInOutQuad = (t: number): number =>
-      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+    /**
+     * Funkcja easingu dla animacji (easeInOutQuad).
+     * @param {number} t - Wartość od 0 do 1 określająca postęp animacji
+     * @returns {number} - Przeliczona wartość easing
+     */
+    function easeInOutQuad(t: number): number {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+    }
 
-    const animatePieceMovement = (piece: THREE.Object3D, target: THREE.Vector3, duration: number) => {
+    /**
+     * Animuje ruch figury między dwoma punktami w czasie.
+     * @param {THREE.Object3D} piece - Obiekt 3D figury
+     * @param {THREE.Vector3} target - Wektor docelowej pozycji
+     * @param {number} duration - Czas trwania animacji w ms
+     */
+    function animatePieceMovement(piece: THREE.Object3D, target: THREE.Vector3, duration: number) {
       const initialPosition = piece.position.clone()
       const startTime = performance.now()
       const animate = (now: number) => {
@@ -125,7 +118,13 @@ export function ChessBoard3D(): JSX.Element {
       requestAnimationFrame(animate)
     }
 
-    const animatePieceY = (piece: THREE.Object3D, targetY: number, duration: number) => {
+    /**
+     * Animuje zmianę współrzędnej Y figury w czasie (np. unoszenie).
+     * @param {THREE.Object3D} piece - Obiekt 3D figury
+     * @param {number} targetY - Docelowa wartość Y
+     * @param {number} duration - Czas trwania animacji w ms
+     */
+    function animatePieceY(piece: THREE.Object3D, targetY: number, duration: number) {
       const initialY = piece.position.y
       const startTime = performance.now()
       const animate = (now: number) => {
@@ -140,45 +139,45 @@ export function ChessBoard3D(): JSX.Element {
       requestAnimationFrame(animate)
     }
 
-    let playableMinX: number = 0
-    let playableMinZ: number = 0
-    let cellSize: number = 1
+    let playableMinX = 0
+    let playableMinZ = 0
+    let cellSize = 1
     const selectablePieces: THREE.Object3D[] = []
     let boardBox: THREE.Box3 | null = null
-
-    // Zmienne przechowujące dozwolone ruchy i oryginalną pozycję wybranej figury
     let validMoves: any[] = []
     let originPosition: THREE.Vector3 | null = null
-
-    // Tablica do przechowywania zielonych markerów
     let highlightMeshes: THREE.Mesh[] = []
 
+    /**
+     * Dodaje zielone markery na polach dozwolonych ruchów.
+     * @param {any[]} moves - Tablica obiektów zawierających informacje o możliwych ruchach
+     */
     function addHighlights(moves: any[]) {
       // clearHighlights();
       moves.forEach(move => {
-        const square = boardRef.current.getPositionByNotation(move.notation);
-        if (!square) return;
-    
-        // 🔥 Poprawione współrzędne - TERAZ POWINNO DZIAŁAĆ DOBRZE
-        const x = playableMinX + square.x * cellSize + cellSize * 0.5;
-        const z = playableMinZ + (7 - square.y) * cellSize + cellSize * 0.5;
-    
-        // Tworzymy zielony okrąg jako marker
-        const geometry = new THREE.CircleGeometry(cellSize / 4, 32);
+        const square = boardRef.current.getPositionByNotation(move.notation)
+        if (!square) return
+        const x = playableMinX + square.x * cellSize + cellSize * 0.5
+        const z = playableMinZ + (7 - square.y) * cellSize + cellSize * 0.5
+        const geometry = new THREE.CircleGeometry(cellSize / 4, 32)
         const material = new THREE.MeshBasicMaterial({
           color: 0x00ff00,
           transparent: true,
           opacity: 0.5,
-        });
-        const circle = new THREE.Mesh(geometry, material);
-        circle.rotation.x = -Math.PI / 2;
-        circle.position.set(x, boardBox!.max.y + 0.01, z);
-        scene.add(circle);
-        highlightMeshes.push(circle);
-      });
+        })
+        const circle = new THREE.Mesh(geometry, material)
+        circle.rotation.x = -Math.PI / 2
+        circle.position.set(x, boardBox!.max.y + 0.01, z)
+        scene.add(circle)
+        highlightMeshes.push(circle)
+      })
     }
-    
-    
+
+    /**
+     * Funkcja usuwająca wszystkie podświetlone pola z planszy.
+     * (Zostawiona w formie komentarza zgodnie z instrukcją)
+     */
+    /*
     function clearHighlights() {
       while (highlightMeshes.length) {
         const mesh = highlightMeshes.pop()
@@ -201,6 +200,7 @@ export function ChessBoard3D(): JSX.Element {
         }
       }
     }
+    */
 
     loader.load(
       "/models/game/game-chessboard.glb",
@@ -208,7 +208,6 @@ export function ChessBoard3D(): JSX.Element {
         const boardModel = gltf.scene
         boardModel.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE)
         boardModel.updateMatrixWorld(true)
-
         boardBox = new THREE.Box3().setFromObject(boardModel)
         const boardCenter = new THREE.Vector3()
         boardBox.getCenter(boardCenter)
@@ -231,9 +230,7 @@ export function ChessBoard3D(): JSX.Element {
         const playableWidth = Math.min(playableMaxX - playableMinX, playableMaxZ - playableMinZ)
         cellSize = playableWidth / 8
 
-        if (!boardRef.current || typeof boardRef.current.getPositionById !== "function") {
-          console.warn("Brak instancji Board lub board jest nieprawidłowy.")
-        } else {
+        if (boardRef.current && typeof boardRef.current.getPositionById === "function") {
           loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox)
         }
       },
@@ -241,6 +238,13 @@ export function ChessBoard3D(): JSX.Element {
       (error) => console.error("Błąd ładowania szachownicy:", error)
     )
 
+    /**
+     * Ładuje figury z modelu 3D i umieszcza je na planszy zgodnie z pozycją w Board.
+     * @param {number} cellSize - Rozmiar pojedynczego pola szachownicy
+     * @param {number} playableMinX - Minimalna współrzędna X obszaru gry
+     * @param {number} playableMinZ - Minimalna współrzędna Z obszaru gry
+     * @param {THREE.Box3} boardBox - Skrzynka opisująca rozmiar całej planszy
+     */
     async function loadPiecesFromBoard(
       cellSize: number,
       playableMinX: number,
@@ -303,7 +307,7 @@ export function ChessBoard3D(): JSX.Element {
       const letters = "abcdefgh"
 
       for (let id = 0; id < 64; id++) {
-        const pos = boardRef.current.getPositionById(id)
+        const pos = boardRef.current?.getPositionById(id)
         if (!pos) continue
         if (pos.figure) {
           const figure = pos.figure
@@ -337,11 +341,9 @@ export function ChessBoard3D(): JSX.Element {
           model.position.set(xCoord, 0, zCoord)
           adjustPiecePivot(model)
           model.position.y = boardTopY
-
           const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString()
           model.userData.notation = notation
           model.userData.figureColor = figure.color
-
           scene.add(model)
           selectablePieces.push(model)
           console.log(
@@ -351,18 +353,20 @@ export function ChessBoard3D(): JSX.Element {
       }
     }
 
-    // Obsługa kliknięć – logika wyboru i ruchu z zabezpieczeniem przed wnikaniem pionka
     const raycaster = new THREE.Raycaster()
     const pointer = new THREE.Vector2()
     let selectedPiece: THREE.Object3D | null = null
 
+    /**
+     * Obsługuje kliknięcia myszą na scenie w celu wyboru figury i wybrania pola ruchu.
+     * @param {MouseEvent} event - Obiekt zdarzenia myszy
+     */
     function handleClick(event: MouseEvent) {
       const rect = renderer.domElement.getBoundingClientRect()
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(pointer, camera)
 
-      // Jeśli nie wybrano jeszcze figury
       if (!selectedPiece) {
         const intersects = raycaster.intersectObjects(selectablePieces, true)
         if (intersects.length > 0 && intersects[0]) {
@@ -376,39 +380,31 @@ export function ChessBoard3D(): JSX.Element {
             return
           }
           console.log("Wybrano figurę:", selectedPiece)
-          const originSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+          const originSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
           originPosition = selectedPiece.position.clone()
           validMoves = getValidMovesRef.current(originSquare)
-          // Dodajemy wizualne zaznaczenie dozwolonych ruchów
           // addHighlights(validMoves)
           animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
         }
       } else {
-        // Drugi klik – wybór celu ruchu
         const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
         const intersectionPoint = new THREE.Vector3()
         raycaster.ray.intersectPlane(plane, intersectionPoint)
-
         if (intersectionPoint && boardBox) {
           const boardTopY = boardBox.max.y
           const col = Math.floor((intersectionPoint.x - playableMinX) / cellSize)
           const row = Math.floor((intersectionPoint.z - playableMinZ) / cellSize)
           const clampedCol = Math.min(Math.max(col, 0), 7)
           const clampedRow = Math.min(Math.max(row, 0), 7)
-
           const targetX = playableMinX + clampedCol * cellSize + cellSize / 2
           const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2
           const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ)
-
           const letters = "abcdefgh"
           const targetRowIndex = 7 - clampedRow
           const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString()
-
           console.log("Przenosimy figurę do:", targetX, boardTopY, targetZ, "notacja:", targetNotation)
-
-          // Sprawdzamy, czy na docelowym polu znajduje się figura tego samego koloru
-          const targetSquare = boardRef.current.getPositionByNotation(targetNotation)
-          if (targetSquare.figure && targetSquare.figure.color === selectedPiece.userData.figureColor) {
+          const targetSquare = boardRef.current?.getPositionByNotation(targetNotation)
+          if (targetSquare?.figure && targetSquare.figure.color === selectedPiece.userData.figureColor) {
             console.log("Na tym polu znajduje się figura tego samego koloru. Zmiana zaznaczenia.")
             if (originPosition) {
               animatePieceMovement(selectedPiece, originPosition, 500)
@@ -417,7 +413,7 @@ export function ChessBoard3D(): JSX.Element {
             if (newSelected) {
               selectedPiece = newSelected
               originPosition = selectedPiece.position.clone()
-              const newOriginSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+              const newOriginSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
               validMoves = getValidMovesRef.current(newOriginSquare)
               // clearHighlights()
               // addHighlights(validMoves)
@@ -429,12 +425,10 @@ export function ChessBoard3D(): JSX.Element {
             }
             return
           }
-
-          // Sprawdzamy, czy docelowa notacja znajduje się w dozwolonych ruchach
           const isValid = validMoves.some((pos) => pos.notation === targetNotation)
           if (isValid) {
-            const originSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
-            const targetSquare = boardRef.current.getPositionByNotation(targetNotation)
+            const originSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
+            const targetSquare = boardRef.current?.getPositionByNotation(targetNotation)
             if (originSquare && targetSquare) {
               movePieceRef.current(originSquare, targetSquare)
             }
@@ -485,7 +479,7 @@ export function ChessBoard3D(): JSX.Element {
         container.removeChild(renderer.domElement)
       }
     }
-  }, []) // Inicjalizacja tylko raz
+  }, [])
 
   return (
     <div className="flex items-center justify-center h-full">
