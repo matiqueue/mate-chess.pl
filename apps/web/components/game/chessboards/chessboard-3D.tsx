@@ -3,8 +3,14 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { useGameContext } from "@/contexts/GameContext"
-import { color } from "@shared/types/colorType"
-import { figureType } from "@shared/types/figureType"
+
+// Typy (dostosuj do swojego GameContext)
+interface Position {
+  x: number
+  y: number
+  notation: string
+  figure: { type: string; color: string } | null
+}
 
 interface Pieces {
   pawn: THREE.Object3D
@@ -15,10 +21,6 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-/**
- * Komponent odpowiedzialny za renderowanie trójwymiarowej szachownicy wraz z figurami.
- * @returns {JSX.Element} JSX element zawierający szachownicę 3D
- */
 export function ChessBoard3D(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null)
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
@@ -27,10 +29,12 @@ export function ChessBoard3D(): JSX.Element {
   const currentPlayerRef = useRef(currentPlayer)
   const getValidMovesRef = useRef(getValidMoves)
 
-  useEffect(() => { boardRef.current = board }, [board])
-  useEffect(() => { movePieceRef.current = movePiece }, [movePiece])
-  useEffect(() => { currentPlayerRef.current = currentPlayer }, [currentPlayer])
-  useEffect(() => { getValidMovesRef.current = getValidMoves }, [getValidMoves])
+  useEffect(() => {
+    boardRef.current = board
+    movePieceRef.current = movePiece
+    currentPlayerRef.current = currentPlayer
+    getValidMovesRef.current = getValidMoves
+  }, [board, movePiece, currentPlayer, getValidMoves])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -42,7 +46,7 @@ export function ChessBoard3D(): JSX.Element {
     const width = container.clientWidth
     const height = container.clientHeight
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
-    camera.position.set(0, 10, 15)
+    camera.position.set(0, 10, -15) // Start od strony białych
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(width, height)
     renderer.setClearColor(0x000000, 0)
@@ -59,8 +63,8 @@ export function ChessBoard3D(): JSX.Element {
     controls.target.set(0, 0, 0)
     controls.update()
     const initialDistance = camera.position.distanceTo(controls.target)
-    controls.maxDistance = initialDistance
-    controls.minDistance = initialDistance * 0.8
+    controls.maxDistance = initialDistance * 1.2
+    controls.minDistance = initialDistance * 0.7
     const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2)
     const heightY = camera.position.y
     const startPolarAngle = Math.atan2(distXZ, heightY)
@@ -75,10 +79,6 @@ export function ChessBoard3D(): JSX.Element {
 
     const loader = new GLTFLoader()
 
-    /**
-     * Ustawia pivot modelu figury tak, aby dolna krawędź znajdowała się na poziomie 0.
-     * @param {THREE.Object3D} piece - Obiekt 3D figury
-     */
     function adjustPiecePivot(piece: THREE.Object3D): void {
       piece.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(piece)
@@ -86,44 +86,27 @@ export function ChessBoard3D(): JSX.Element {
       piece.position.y += deltaY
     }
 
-    /**
-     * Funkcja easingu dla animacji (easeInOutQuad).
-     * @param {number} t - Wartość od 0 do 1 określająca postęp animacji
-     * @returns {number} - Przeliczona wartość easing
-     */
     function easeInOutQuad(t: number): number {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
     }
 
-    /**
-     * Animuje ruch figury między dwoma punktami w czasie.
-     * @param {THREE.Object3D} piece - Obiekt 3D figury
-     * @param {THREE.Vector3} target - Wektor docelowej pozycji
-     * @param {number} duration - Czas trwania animacji w ms
-     */
-    function animatePieceMovement(piece: THREE.Object3D, target: THREE.Vector3, duration: number) {
+    function animatePieceMovement(piece: THREE.Object3D, target: THREE.Vector3, duration: number, onComplete?: () => void) {
       const initialPosition = piece.position.clone()
       const startTime = performance.now()
       const animate = (now: number) => {
         const elapsed = now - startTime
         const progress = Math.min(elapsed / duration, 1)
         const easedProgress = easeInOutQuad(progress)
-        piece.position.x = initialPosition.x + (target.x - initialPosition.x) * easedProgress
-        piece.position.y = initialPosition.y + (target.y - initialPosition.y) * easedProgress
-        piece.position.z = initialPosition.z + (target.z - initialPosition.z) * easedProgress
+        piece.position.lerpVectors(initialPosition, target, easedProgress)
         if (progress < 1) {
           requestAnimationFrame(animate)
+        } else if (onComplete) {
+          onComplete()
         }
       }
       requestAnimationFrame(animate)
     }
 
-    /**
-     * Animuje zmianę współrzędnej Y figury w czasie (np. unoszenie).
-     * @param {THREE.Object3D} piece - Obiekt 3D figury
-     * @param {number} targetY - Docelowa wartość Y
-     * @param {number} duration - Czas trwania animacji w ms
-     */
     function animatePieceY(piece: THREE.Object3D, targetY: number, duration: number) {
       const initialY = piece.position.y
       const startTime = performance.now()
@@ -132,9 +115,7 @@ export function ChessBoard3D(): JSX.Element {
         const progress = Math.min(elapsed / duration, 1)
         const easedProgress = easeInOutQuad(progress)
         piece.position.y = initialY + (targetY - initialY) * easedProgress
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        }
+        if (progress < 1) requestAnimationFrame(animate)
       }
       requestAnimationFrame(animate)
     }
@@ -144,66 +125,134 @@ export function ChessBoard3D(): JSX.Element {
     let cellSize = 1
     const selectablePieces: THREE.Object3D[] = []
     let boardBox: THREE.Box3 | null = null
-    let validMoves: any[] = []
+    let validMoves: Position[] = []
     let originPosition: THREE.Vector3 | null = null
-    let highlightMeshes: THREE.Mesh[] = []
+    const highlightMeshes: THREE.Mesh[] = []
+    let checkHighlight: { plane: THREE.Mesh; border: THREE.Line } | null = null
 
-    /**
-     * Dodaje zielone markery na polach dozwolonych ruchów.
-     * @param {any[]} moves - Tablica obiektów zawierających informacje o możliwych ruchach
-     */
-    function addHighlights(moves: any[]) {
-      // clearHighlights();
-      moves.forEach(move => {
-        const square = boardRef.current.getPositionByNotation(move.notation)
-        if (!square) return
-        const x = playableMinX + square.x * cellSize + cellSize * 0.5
-        const z = playableMinZ + (7 - square.y) * cellSize + cellSize * 0.5
-        const geometry = new THREE.CircleGeometry(cellSize / 4, 32)
-        const material = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
-          transparent: true,
-          opacity: 0.5,
-        })
-        const circle = new THREE.Mesh(geometry, material)
-        circle.rotation.x = -Math.PI / 2
-        circle.position.set(x, boardBox!.max.y + 0.01, z)
-        scene.add(circle)
-        highlightMeshes.push(circle)
-      })
-    }
+    function updateCheckHighlight() {
+      if (checkHighlight) {
+        scene.remove(checkHighlight.plane)
+        scene.remove(checkHighlight.border)
+        checkHighlight.plane.geometry.dispose()
+        if (checkHighlight.plane.material instanceof THREE.Material) checkHighlight.plane.material.dispose()
+        checkHighlight.border.geometry.dispose()
+        if (checkHighlight.border.material instanceof THREE.Material) checkHighlight.border.material.dispose()
+        checkHighlight = null
+      }
 
-    /**
-     * Funkcja usuwająca wszystkie podświetlone pola z planszy.
-     * (Zostawiona w formie komentarza zgodnie z instrukcją)
-     */
-    /*
-    function clearHighlights() {
-      while (highlightMeshes.length) {
-        const mesh = highlightMeshes.pop()
-        if (mesh) {
-          if (mesh.parent) mesh.parent.remove(mesh)
-          if (mesh.geometry) {
-            mesh.geometry.dispose()
-          }
-          if (mesh.material) {
-            if (Array.isArray(mesh.material)) {
-              mesh.material.forEach(mat => {
-                if (mat && typeof mat.dispose === "function") {
-                  mat.dispose()
-                }
-              })
-            } else if (typeof mesh.material.dispose === "function") {
-              mesh.material.dispose()
-            }
+      if (!boardRef.current) return
+
+      const whiteInCheck = boardRef.current.isKingInCheck("white")
+      const blackInCheck = boardRef.current.isKingInCheck("black")
+
+      for (let id = 0; id < 64; id++) {
+        const pos = boardRef.current.getPositionById(id)
+        if (pos?.figure?.type === "king") {
+          const isWhite = pos.figure.color === "white"
+          if ((isWhite && whiteInCheck) || (!isWhite && blackInCheck)) {
+            const x = playableMinX + (7 - pos.x) * cellSize + cellSize * 0.5
+            const z = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5
+            const y = boardBox!.max.y + 0.005
+
+            // Czerwone tło na całe pole
+            const geometry = new THREE.PlaneGeometry(cellSize, cellSize)
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.7 })
+            const plane = new THREE.Mesh(geometry, material)
+            plane.rotation.x = -Math.PI / 2
+            plane.position.set(x, y, z)
+
+            // Czarny border 2px wokół całego pola
+            const borderGeometry = new THREE.BufferGeometry()
+            const offset = cellSize / 2
+            const vertices = new Float32Array([
+              -offset,
+              0,
+              -offset, // Bottom-left
+              offset,
+              0,
+              -offset, // Bottom-right
+              offset,
+              0,
+              offset, // Top-right
+              -offset,
+              0,
+              offset, // Top-left
+              -offset,
+              0,
+              -offset, // Zamknięcie pętli
+            ])
+            borderGeometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3))
+            const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })
+            const border = new THREE.Line(borderGeometry, lineMaterial)
+            border.position.set(x, y + 0.01, z)
+
+            scene.add(plane)
+            scene.add(border)
+            checkHighlight = { plane, border }
+            break
           }
         }
       }
     }
-    */
+
+    function addHighlights(moves: Position[]) {
+      clearHighlights()
+      moves.forEach((move) => {
+        const square = boardRef.current?.getPositionByNotation(move.notation)
+        if (!square) return
+        const x = playableMinX + (7 - square.x) * cellSize + cellSize * 0.5
+        const z = playableMinZ + (7 - square.y) * cellSize + cellSize * 0.5
+        const y = boardBox!.max.y + 0.01
+
+        if (square.figure && square.figure.color !== currentPlayerRef.current) {
+          const shape = new THREE.Shape()
+          const size = cellSize * 0.8
+          const largeRadius = cellSize * 0.25
+          const smallRadius = cellSize * 0.125
+
+          shape.moveTo(-size / 2 + largeRadius, -size / 2)
+          shape.lineTo(size / 2 - smallRadius, -size / 2)
+          shape.quadraticCurveTo(size / 2, -size / 2, size / 2, -size / 2 + smallRadius)
+          shape.lineTo(size / 2, size / 2 - largeRadius)
+          shape.quadraticCurveTo(size / 2, size / 2, size / 2 - largeRadius, size / 2)
+          shape.lineTo(-size / 2 + largeRadius, size / 2)
+          shape.quadraticCurveTo(-size / 2, size / 2, -size / 2, size / 2 - largeRadius)
+          shape.lineTo(-size / 2, -size / 2 + smallRadius)
+          shape.quadraticCurveTo(-size / 2, -size / 2, -size / 2 + largeRadius, -size / 2)
+
+          const geometry = new THREE.ShapeGeometry(shape)
+          const material = new THREE.MeshBasicMaterial({ color: 0x16a34a, transparent: true, opacity: 0.4 })
+          const highlight = new THREE.Mesh(geometry, material)
+          highlight.rotation.x = -Math.PI / 2
+          highlight.position.set(x, y, z)
+          scene.add(highlight)
+          highlightMeshes.push(highlight)
+        } else {
+          const geometry = new THREE.CircleGeometry(cellSize / 5, 32)
+          const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 })
+          const circle = new THREE.Mesh(geometry, material)
+          circle.rotation.x = -Math.PI / 2
+          circle.position.set(x, y, z)
+          scene.add(circle)
+          highlightMeshes.push(circle)
+        }
+      })
+    }
+
+    function clearHighlights() {
+      while (highlightMeshes.length) {
+        const mesh = highlightMeshes.pop()
+        if (mesh) {
+          scene.remove(mesh)
+          mesh.geometry.dispose()
+          if (mesh.material instanceof THREE.Material) mesh.material.dispose()
+        }
+      }
+    }
 
     loader.load(
-      "/models/game/game-chessboard.glb",
+      "/models/game/chessboards/dark-game-chessboard.glb",
       (gltf: GLTF) => {
         const boardModel = gltf.scene
         boardModel.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE)
@@ -211,9 +260,7 @@ export function ChessBoard3D(): JSX.Element {
         boardBox = new THREE.Box3().setFromObject(boardModel)
         const boardCenter = new THREE.Vector3()
         boardBox.getCenter(boardCenter)
-        boardModel.position.x -= boardCenter.x
-        boardModel.position.y -= boardCenter.y
-        boardModel.position.z -= boardCenter.z
+        boardModel.position.sub(boardCenter)
         boardModel.updateMatrixWorld(true)
         boardBox.setFromObject(boardModel)
         scene.add(boardModel)
@@ -230,59 +277,30 @@ export function ChessBoard3D(): JSX.Element {
         const playableWidth = Math.min(playableMaxX - playableMinX, playableMaxZ - playableMinZ)
         cellSize = playableWidth / 8
 
-        if (boardRef.current && typeof boardRef.current.getPositionById === "function") {
-          loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox)
-        }
+        if (boardRef.current) loadPiecesFromBoard(cellSize, playableMinX, playableMinZ, boardBox)
       },
       undefined,
-      (error) => console.error("Błąd ładowania szachownicy:", error)
+      (error) => console.error("Błąd ładowania szachownicy:", error),
     )
 
-    /**
-     * Ładuje figury z modelu 3D i umieszcza je na planszy zgodnie z pozycją w Board.
-     * @param {number} cellSize - Rozmiar pojedynczego pola szachownicy
-     * @param {number} playableMinX - Minimalna współrzędna X obszaru gry
-     * @param {number} playableMinZ - Minimalna współrzędna Z obszaru gry
-     * @param {THREE.Box3} boardBox - Skrzynka opisująca rozmiar całej planszy
-     */
-    async function loadPiecesFromBoard(
-      cellSize: number,
-      playableMinX: number,
-      playableMinZ: number,
-      boardBox: THREE.Box3
-    ): Promise<void> {
-      const loadModel = (url: string): Promise<GLTF> =>
-        new Promise((resolve, reject) => {
-          loader.load(url, (gltf: GLTF) => resolve(gltf), undefined, reject)
-        })
+    async function loadPiecesFromBoard(cellSize: number, playableMinX: number, playableMinZ: number, boardBox: THREE.Box3): Promise<void> {
+      const loadModel = (url: string): Promise<GLTF> => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject))
 
-      const [
-        whitePawn,
-        whiteRook,
-        whiteKnight,
-        whiteBishop,
-        whiteQueen,
-        whiteKing,
-        blackPawn,
-        blackRook,
-        blackKnight,
-        blackBishop,
-        blackQueen,
-        blackKing
-      ] = await Promise.all([
-        loadModel("/models/game/white-pawns/pawn_white.glb"),
-        loadModel("/models/game/white-pawns/rook_white.glb"),
-        loadModel("/models/game/white-pawns/knight_white.glb"),
-        loadModel("/models/game/white-pawns/bishop_white.glb"),
-        loadModel("/models/game/white-pawns/queen_white.glb"),
-        loadModel("/models/game/white-pawns/king_white.glb"),
-        loadModel("/models/game/black-pawns/pawn_black.glb"),
-        loadModel("/models/game/black-pawns/rook_black.glb"),
-        loadModel("/models/game/black-pawns/knight_black.glb"),
-        loadModel("/models/game/black-pawns/bishop_black.glb"),
-        loadModel("/models/game/black-pawns/queen_black.glb"),
-        loadModel("/models/game/black-pawns/king_black.glb"),
-      ])
+      const [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing] =
+        await Promise.all([
+          loadModel("/models/game/white-pawns/pawn_white.glb"),
+          loadModel("/models/game/white-pawns/rook_white.glb"),
+          loadModel("/models/game/white-pawns/knight_white.glb"),
+          loadModel("/models/game/white-pawns/bishop_white.glb"),
+          loadModel("/models/game/white-pawns/queen_white.glb"),
+          loadModel("/models/game/white-pawns/king_white.glb"),
+          loadModel("/models/game/black-pawns/pawn_black.glb"),
+          loadModel("/models/game/black-pawns/rook_black.glb"),
+          loadModel("/models/game/black-pawns/knight_black.glb"),
+          loadModel("/models/game/black-pawns/bishop_black.glb"),
+          loadModel("/models/game/black-pawns/queen_black.glb"),
+          loadModel("/models/game/black-pawns/king_black.glb"),
+        ])
 
       const pieceModels: { white: Pieces; black: Pieces } = {
         white: {
@@ -308,85 +326,86 @@ export function ChessBoard3D(): JSX.Element {
 
       for (let id = 0; id < 64; id++) {
         const pos = boardRef.current?.getPositionById(id)
-        if (!pos) continue
-        if (pos.figure) {
-          const figure = pos.figure
-          const colorKey = figure.color === color.White ? "white" : "black"
-          let model: THREE.Object3D
-          switch (figure.type) {
-            case figureType.pawn:
-              model = pieceModels[colorKey].pawn.clone()
-              break
-            case figureType.rook:
-              model = pieceModels[colorKey].rook.clone()
-              break
-            case figureType.knight:
-              model = pieceModels[colorKey].knight.clone()
-              break
-            case figureType.bishop:
-              model = pieceModels[colorKey].bishop.clone()
-              break
-            case figureType.queen:
-              model = pieceModels[colorKey].queen.clone()
-              break
-            case figureType.king:
-              model = pieceModels[colorKey].king.clone()
-              break
-            default:
-              continue
-          }
-          model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
-          const xCoord = playableMinX + pos.x * cellSize + cellSize * 0.5
-          const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5
-          model.position.set(xCoord, 0, zCoord)
-          adjustPiecePivot(model)
-          model.position.y = boardTopY
-          const notation = letters.charAt(7 - pos.x) + (8 - pos.y).toString()
-          model.userData.notation = notation
-          model.userData.figureColor = figure.color
-          scene.add(model)
-          selectablePieces.push(model)
-          console.log(
-            `Umieszczono figurę ${figure.type} na ${xCoord}, ${boardTopY}, ${zCoord} z notacją ${notation}`
-          )
+        if (!pos || !pos.figure) continue
+        const colorKey = pos.figure.color === "white" ? "white" : "black"
+        let model: THREE.Object3D
+        switch (pos.figure.type) {
+          case "pawn":
+            model = pieceModels[colorKey].pawn.clone()
+            break
+          case "rook":
+            model = pieceModels[colorKey].rook.clone()
+            break
+          case "knight":
+            model = pieceModels[colorKey].knight.clone()
+            break
+          case "bishop":
+            model = pieceModels[colorKey].bishop.clone()
+            break
+          case "queen":
+            model = pieceModels[colorKey].queen.clone()
+            break
+          case "king":
+            model = pieceModels[colorKey].king.clone()
+            break
+          default:
+            continue
         }
+        model.scale.set(PIECE_SCALE, PIECE_SCALE, PIECE_SCALE)
+        const xCoord = playableMinX + (7 - pos.x) * cellSize + cellSize * 0.5
+        const zCoord = playableMinZ + (7 - pos.y) * cellSize + cellSize * 0.5
+        model.position.set(xCoord, 0, zCoord)
+        adjustPiecePivot(model)
+        model.position.y = boardTopY
+        const notation = letters.charAt(pos.x) + (8 - pos.y).toString()
+        model.userData.notation = notation
+        model.userData.figureColor = pos.figure.color
+        model.userData.originalY = boardTopY
+        scene.add(model)
+        selectablePieces.push(model)
       }
+
+      updateCheckHighlight()
     }
 
     const raycaster = new THREE.Raycaster()
     const pointer = new THREE.Vector2()
     let selectedPiece: THREE.Object3D | null = null
 
-    /**
-     * Obsługuje kliknięcia myszą na scenie w celu wyboru figury i wybrania pola ruchu.
-     * @param {MouseEvent} event - Obiekt zdarzenia myszy
-     */
     function handleClick(event: MouseEvent) {
       const rect = renderer.domElement.getBoundingClientRect()
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(pointer, camera)
 
-      if (!selectedPiece) {
-        const intersects = raycaster.intersectObjects(selectablePieces, true)
-        if (intersects.length > 0 && intersects[0]) {
-          selectedPiece = intersects[0].object
-          while (selectedPiece.parent && !selectablePieces.includes(selectedPiece)) {
-            selectedPiece = selectedPiece.parent
-          }
-          if (selectedPiece.userData.figureColor !== currentPlayerRef.current) {
-            console.log("Próba wyboru figury przeciwnika. Ruch odrzucony.")
-            selectedPiece = null
-            return
-          }
-          console.log("Wybrano figurę:", selectedPiece)
+      const intersects = raycaster.intersectObjects(selectablePieces, true)
+      if (intersects.length > 0 && intersects[0]?.object) {
+        let clickedPiece = intersects[0].object
+        while (clickedPiece.parent && !selectablePieces.includes(clickedPiece)) {
+          clickedPiece = clickedPiece.parent
+        }
+
+        if (selectedPiece === clickedPiece) {
+          animatePieceY(selectedPiece, selectedPiece.userData.originalY, 500)
+          selectedPiece = null
+          validMoves = []
+          clearHighlights()
+          return
+        }
+
+        if (!selectedPiece) {
+          if (clickedPiece.userData.figureColor !== currentPlayerRef.current) return
+          selectedPiece = clickedPiece
           const originSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
           originPosition = selectedPiece.position.clone()
-          validMoves = getValidMovesRef.current(originSquare)
-          // addHighlights(validMoves)
-          animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
+          validMoves = getValidMovesRef.current(originSquare) || []
+          addHighlights(validMoves)
+          animatePieceY(selectedPiece, selectedPiece.userData.originalY + 0.5, 500)
+          return
         }
-      } else {
+      }
+
+      if (selectedPiece) {
         const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
         const intersectionPoint = new THREE.Vector3()
         raycaster.ray.intersectPlane(plane, intersectionPoint)
@@ -396,77 +415,87 @@ export function ChessBoard3D(): JSX.Element {
           const row = Math.floor((intersectionPoint.z - playableMinZ) / cellSize)
           const clampedCol = Math.min(Math.max(col, 0), 7)
           const clampedRow = Math.min(Math.max(row, 0), 7)
-          const targetX = playableMinX + clampedCol * cellSize + cellSize / 2
+          const logicalCol = 7 - clampedCol
+          const targetX = playableMinX + (7 - logicalCol) * cellSize + cellSize / 2
           const targetZ = playableMinZ + clampedRow * cellSize + cellSize / 2
           const targetPosition = new THREE.Vector3(targetX, boardTopY, targetZ)
           const letters = "abcdefgh"
           const targetRowIndex = 7 - clampedRow
-          const targetNotation = letters.charAt(7 - clampedCol) + (8 - targetRowIndex).toString()
-          console.log("Przenosimy figurę do:", targetX, boardTopY, targetZ, "notacja:", targetNotation)
+          const targetNotation = letters.charAt(logicalCol) + (8 - targetRowIndex).toString()
+
           const targetSquare = boardRef.current?.getPositionByNotation(targetNotation)
           if (targetSquare?.figure && targetSquare.figure.color === selectedPiece.userData.figureColor) {
-            console.log("Na tym polu znajduje się figura tego samego koloru. Zmiana zaznaczenia.")
-            if (originPosition) {
-              animatePieceMovement(selectedPiece, originPosition, 500)
-            }
-            const newSelected = selectablePieces.find(piece => piece.userData.notation === targetNotation)
-            if (newSelected) {
+            const newSelected = selectablePieces.find((piece) => piece.userData.notation === targetNotation)
+            if (newSelected && newSelected !== selectedPiece) {
+              animatePieceY(selectedPiece, selectedPiece.userData.originalY, 500)
               selectedPiece = newSelected
               originPosition = selectedPiece.position.clone()
               const newOriginSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
-              validMoves = getValidMovesRef.current(newOriginSquare)
-              // clearHighlights()
-              // addHighlights(validMoves)
-              animatePieceY(selectedPiece, selectedPiece.position.y + 0.5, 500)
+              validMoves = getValidMovesRef.current(newOriginSquare) || []
+              clearHighlights()
+              addHighlights(validMoves)
+              animatePieceY(selectedPiece, selectedPiece.userData.originalY + 0.5, 500)
             } else {
+              animatePieceY(selectedPiece, selectedPiece.userData.originalY, 500)
               selectedPiece = null
               validMoves = []
-              // clearHighlights()
+              clearHighlights()
             }
             return
           }
+
           const isValid = validMoves.some((pos) => pos.notation === targetNotation)
-          if (isValid) {
-            const originSquare = boardRef.current?.getPositionByNotation(selectedPiece.userData.notation)
-            const targetSquare = boardRef.current?.getPositionByNotation(targetNotation)
-            if (originSquare && targetSquare) {
-              movePieceRef.current(originSquare, targetSquare)
+          if (isValid && boardRef.current) {
+            const originSquare = boardRef.current.getPositionByNotation(selectedPiece.userData.notation)
+            const targetSquareBeforeMove = boardRef.current.getPositionByNotation(targetNotation)
+            if (originSquare && targetSquareBeforeMove) {
+              const isCapture = targetSquareBeforeMove.figure && targetSquareBeforeMove.figure.color !== selectedPiece.userData.figureColor
+              const capturedPiece = isCapture ? selectablePieces.find((piece) => piece.userData.notation === targetNotation) : null
+
+              movePieceRef.current(originSquare, targetSquareBeforeMove)
+              selectedPiece.userData.notation = targetNotation
+
+              if (isCapture && capturedPiece) {
+                animatePieceMovement(selectedPiece, targetPosition, 1000, () => {
+                  if (capturedPiece && capturedPiece !== selectedPiece) {
+                    scene.remove(capturedPiece)
+                    const capturedIndex = selectablePieces.indexOf(capturedPiece)
+                    if (capturedIndex !== -1) selectablePieces.splice(capturedIndex, 1)
+                  }
+                  updateCheckHighlight()
+                })
+              } else {
+                animatePieceMovement(selectedPiece, targetPosition, 1000, () => {
+                  updateCheckHighlight()
+                })
+              }
             }
-            selectedPiece.userData.notation = targetNotation
-            animatePieceMovement(selectedPiece, targetPosition, 1000)
-          } else {
-            console.log("Ruch niepoprawny – pionek wraca na swoje miejsce.")
-            if (originPosition) {
-              animatePieceMovement(selectedPiece, originPosition, 500)
-            }
+          } else if (originPosition) {
+            animatePieceMovement(selectedPiece, originPosition, 500)
           }
+          selectedPiece = null
+          validMoves = []
+          clearHighlights()
         }
-        selectedPiece = null
-        validMoves = []
-        // clearHighlights()
       }
     }
 
     renderer.domElement.addEventListener("click", handleClick, false)
 
-    const animate = (): void => {
+    const animate = () => {
       requestAnimationFrame(animate)
       controls.update()
       renderer.render(scene, camera)
     }
     animate()
 
-    let resizeTimer: number
     const resizeObserver = new ResizeObserver((entries) => {
-      clearTimeout(resizeTimer)
-      resizeTimer = window.setTimeout(() => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect
-          renderer.setSize(width, height)
-          camera.aspect = width / height
-          camera.updateProjectionMatrix()
-        }
-      }, 100)
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        renderer.setSize(width, height)
+        camera.aspect = width / height
+        camera.updateProjectionMatrix()
+      }
     })
     resizeObserver.observe(container)
 
@@ -475,9 +504,7 @@ export function ChessBoard3D(): JSX.Element {
       renderer.domElement.removeEventListener("click", handleClick)
       renderer.dispose()
       controls.dispose()
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement)
-      }
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement)
     }
   }, [])
 
