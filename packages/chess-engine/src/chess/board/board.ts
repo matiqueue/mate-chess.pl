@@ -7,6 +7,7 @@ import MoveRecord from "@shared/types/moveRecord"
 import Bishop from "@modules/chess/figure/figures/bishop"
 import Knight from "@modules/chess/figure/figures/knight"
 import Queen from "@modules/chess/figure/figures/queen"
+import figure from "@modules/chess/figure/figure"
 
 class Board {
   private positions: Map<string, Position>
@@ -691,6 +692,30 @@ class Board {
     }
 
     return false
+  }
+  public promote(position: Position, figure: figureType.knight | figureType.queen | figureType.rook | figureType.bishop): boolean {
+    if (!position) return false
+    if (!(position.figure instanceof Pawn)) return false
+    const color = position.figure.color
+    position.figure = null
+    let fig: Figure
+    switch (figure) {
+      case figureType.knight:
+        fig = new Knight(color, position, this)
+        break
+      case figureType.queen:
+        fig = new Queen(color, position, this)
+        break
+      case figureType.rook:
+        fig = new Rook(color, position, this)
+        break
+      case figureType.bishop:
+        fig = new Bishop(color, position, this)
+        break
+    }
+
+    position.figure = fig
+    return true
   }
 }
 export default Board
