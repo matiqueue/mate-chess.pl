@@ -288,10 +288,10 @@ class Board {
    * */
   public getValidMovesForPosition(position: Position): Position[] {
     const validMoves: Position[] = []
-    console.debug("\nValidating moves for position: ", position.notation)
-    console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
+    // console.debug("\nValidating moves for position: ", position.notation)
+    // console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
     for (let y = 0; y < 8; y++) {
-      let row = ""
+      // let row = ""
       for (let x = 0; x < 8; x++) {
         const letter = this.letters[x]
         if (!letter) {
@@ -300,19 +300,19 @@ class Board {
         }
         const targetPosition = this.getPositionByNotation(letter + (8 - y))
         if (!targetPosition) {
-          row += "[null]"
+          // row += "[null]"
           break
         }
         if (targetPosition === position) {
-          row += "[&&] " //starting pos
+          // row += "[&&] " //starting pos
         } else if (position.figure?.isMoveValid(targetPosition)) {
-          row += "[--] " //valid
+          // row += "[--] " //valid
           validMoves.push(targetPosition)
         } else {
-          row += `[${targetPosition.notation}] ` //invalid
+          // row += `[${targetPosition.notation}] ` //invalid
         }
       }
-      console.debug(row.trim())
+      // console.debug(row.trim())
     }
     return validMoves
   }
