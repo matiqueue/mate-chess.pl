@@ -113,7 +113,6 @@
       "title": "Arcymistrz Szachowy",
       "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną."
     },
-    "playButton": "Zagraj z {{botName}}",
     "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"
   },
   "navbar": {
@@ -172,10 +171,11 @@
     "darkMode": "Ciemny tryb"
   },
   "playerInfo": {
+    "white": "Białe",
+    "black": "Czarne",
     "guest": "Gość",
-    "white": "Biały",
-    "playingWhite": "Gra jako Biały",
-    "playingBlack": "Gra jako Czarny",
+    "playingWhite": "Gra jako Białe",
+    "playingBlack": "Gra jako Czarne",
     "currentTurn": "Aktualny ruch"
   },
   "gameControls": {

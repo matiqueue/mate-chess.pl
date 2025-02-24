@@ -27,7 +27,9 @@ export function PlayerInfo() {
   const secondUserName = t("playerInfo.guest")
 
   // Jeśli currentPlayer jest dostępny, wyświetlamy go, w przeciwnym razie "White"
-  const currentTurn = currentPlayer ?? t("playerInfo.white")
+  const currentTurn = currentPlayer 
+  ? t(`playerInfo.${currentPlayer.toLowerCase()}`)
+  : t("playerInfo.white")
 
   return (
     <div className="w-full py-6 px-8 z-10">

@@ -1,7 +1,6 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import type React from "react";
 
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Users, Calendar, RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@workspace/ui/components/card";
@@ -14,7 +13,6 @@ const MotionCard = motion(Card);
 
 interface Tournament {
   id: number;
-  /** Zamiast przechowywać pełną nazwę turnieju, trzymamy klucz tłumaczenia */
   nameKey: string;
   startDate: Date;
   endDate: Date;
@@ -29,8 +27,9 @@ const tournaments: Tournament[] = [
   {
     id: 1,
     nameKey: "springChessChampionship",
-    startDate: new Date(2024, 2, 1),
-    endDate: new Date(2024, 2, 15),
+    // Ustawiamy daty w UTC, żeby serwer i klient liczyły tak samo
+    startDate: new Date(Date.UTC(2024, 2, 1)),
+    endDate: new Date(Date.UTC(2024, 2, 15)),
     participants: 64,
     maxParticipants: 64,
     status: "finished",
@@ -40,8 +39,8 @@ const tournaments: Tournament[] = [
   {
     id: 2,
     nameKey: "summerBlitzTournament",
-    startDate: new Date(2024, 5, 1),
-    endDate: new Date(2024, 5, 7),
+    startDate: new Date(Date.UTC(2024, 5, 1)),
+    endDate: new Date(Date.UTC(2024, 5, 7)),
     participants: 32,
     maxParticipants: 32,
     status: "active",
@@ -50,8 +49,8 @@ const tournaments: Tournament[] = [
   {
     id: 3,
     nameKey: "autumnRapidChallenge",
-    startDate: new Date(2024, 8, 15),
-    endDate: new Date(2024, 8, 22),
+    startDate: new Date(Date.UTC(2024, 8, 15)),
+    endDate: new Date(Date.UTC(2024, 8, 22)),
     participants: 16,
     maxParticipants: 32,
     status: "active",
@@ -60,8 +59,8 @@ const tournaments: Tournament[] = [
   {
     id: 4,
     nameKey: "winterChessFestival",
-    startDate: new Date(2024, 11, 26),
-    endDate: new Date(2025, 0, 2),
+    startDate: new Date(Date.UTC(2024, 11, 26)),
+    endDate: new Date(Date.UTC(2025, 0, 2)),
     participants: 0,
     maxParticipants: 128,
     status: "upcoming",
@@ -85,9 +84,28 @@ export default function ChessTournaments() {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef(0);
   const { theme } = useTheme();
-  const [isWideScreen, setIsWideScreen] = useState(false);
+
+  // Na starcie isWideScreen jest null, więc serwer i klient zwrócą identyczny HTML (placeholder).
+  // Potem dopiero w useEffect pobieramy szerokość okna.
+  const [isWideScreen, setIsWideScreen] = useState<boolean | null>(null);
+
+  // Przechowujemy w tablicy dni do startu każdego turnieju, liczone dopiero na kliencie.
+  const [daysUntilStart, setDaysUntilStart] = useState<number[]>([]);
 
   useEffect(() => {
+    // Liczymy dni do startu dopiero w przeglądarce, unikamy różnic z SSR
+    const now = new Date();
+    const updated = tournaments.map((t) => {
+      if (t.status === "upcoming") {
+        return Math.ceil((t.startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      }
+      return 0;
+    });
+    setDaysUntilStart(updated);
+  }, []);
+
+  useEffect(() => {
+    // Dopiero w przeglądarce sprawdzamy szerokość
     const handleResize = () => {
       setIsWideScreen(window.innerWidth >= 1400);
     };
@@ -95,6 +113,16 @@ export default function ChessTournaments() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Jeśli isWideScreen jest null, znaczy że jeszcze nie wiemy, czy ekran jest szeroki.
+  // Zwracamy placeholder, który będzie identyczny na serwerze i kliencie (unikanie błędu hydracji).
+  if (isWideScreen === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   const handlePrev = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
   const handleNext = () => setCurrentIndex((prev) => Math.min(prev + 1, tournaments.length - 1));
@@ -115,8 +143,14 @@ export default function ChessTournaments() {
     }
   };
 
+  // Formatowanie dat w strefie UTC, żeby serwer i klient mieli identyczne wartości
   const formatDate = (date: Date) =>
-    date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(date);
 
   const isRegistrationActive = (tournament: Tournament) => {
     const now = new Date();
@@ -126,10 +160,6 @@ export default function ChessTournaments() {
       tournament.startDate > now
     );
   };
-
-  if (!tournaments[0]) {
-    return "";
-  }
 
   return (
     <ScrollArea className="w-full">
@@ -168,7 +198,7 @@ export default function ChessTournaments() {
                 {tournaments.map((tournament, index) => (
                   <MotionCard
                     key={tournament.id}
-                    className={`absolute w-full max-w-[400px] h-[450px] transition-all duration-300`}
+                    className="absolute w-full max-w-[400px] h-[450px] transition-all duration-300"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{
                       opacity:
@@ -185,12 +215,12 @@ export default function ChessTournaments() {
                     <CardContent className="p-6 flex flex-col items-center justify-between h-full">
                       <motion.img
                         src={tournament.logo}
-                        alt={t(`chessTournaments.tournamentNames.${tournament.nameKey}`) + " logo"}
+                        alt={`${t("chessTournaments.tournamentNames." + tournament.nameKey)} logo`}
                         className="w-32 h-32 mb-4"
                         animate={floatingAnimation}
                       />
                       <h3 className="text-2xl font-semibold mb-4 text-center">
-                        {t(`chessTournaments.tournamentNames.${tournament.nameKey}`)}
+                        {t("chessTournaments.tournamentNames." + tournament.nameKey)}
                       </h3>
                       <div className="flex items-center mb-2">
                         <Calendar className="mr-2 h-5 w-5" />
@@ -208,9 +238,7 @@ export default function ChessTournaments() {
                       {tournament.status === "upcoming" && (
                         <span className="text-yellow-500">
                           {t("chessTournaments.startsIn", {
-                            days: Math.ceil(
-                              (tournament.startDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
-                            ),
+                            days: daysUntilStart[index],
                           })}
                         </span>
                       )}
@@ -224,7 +252,9 @@ export default function ChessTournaments() {
                         className="mt-4 w-full"
                         disabled={!isRegistrationActive(tournament)}
                         onClick={() =>
-                          console.log(`Registered for ${t(`chessTournaments.tournamentNames.${tournament.nameKey}`)}`)
+                          console.log(
+                            `Registered for ${t("chessTournaments.tournamentNames." + tournament.nameKey)}`
+                          )
                         }
                       >
                         {isRegistrationActive(tournament)

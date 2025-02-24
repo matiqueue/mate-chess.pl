@@ -70,18 +70,28 @@ export function RightPanel() {
   }
 
   const renderMove = (move: string) => {
+    let translatedMove = move;
+  
+    // Najpierw zamieniamy "White:" na tłumaczenie, np. "Biały:"
+    if (move.includes("White:")) {
+      translatedMove = move.replace("White:", t("playerInfo.white") + ":");
+    } if (move.includes("Black:")) {
+      translatedMove = move.replace("Black:", t("playerInfo.black") + ":");
+    }
+  
+    // Teraz (opcjonalnie) reszta logiki dla stylów notacji
     switch (notationStyle) {
       case "algebraic":
-        return move
+        return translatedMove;
       case "long":
-        return move.length > 2 ? move : `P${move}`
+        return translatedMove.length > 2 ? translatedMove : `P${translatedMove}`;
       case "descriptive":
-        return `P-${move}`
+        return `P-${translatedMove}`;
       default:
-        return move
+        return translatedMove;
     }
-  }
-
+  };
+  
   const pathname = usePathname()
   let modeText = ""
   let modeColor = ""
