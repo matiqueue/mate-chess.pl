@@ -131,36 +131,51 @@ class Board {
         figure.isEnPassantPossible = true
       }
       //DO NOT DELETE
-      // if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure) {
-      //   if (this.isMoveEnPassant(move)) {
-      //     console.error("en passant true")
-      //     const { from, to } = move
-      //     const performingFigure = this.getFigureAtPosition(from)
-      //     if (!performingFigure) return false
-      //
-      //     // Get adjacent positions (left and right of the starting position)
-      //     const leftPosition = this.getPositionByCords(from.x - 1, from.y)
-      //     const rightPosition = this.getPositionByCords(from.x + 1, from.y)
-      //
-      //     // Ensure we have at least one valid adjacent position
-      //     if (!leftPosition && !rightPosition) return false
-      //
-      //     // Get figures only if the positions exist
-      //     const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
-      //     const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
-      //
-      //     // Check left side for en passant capture
-      //     if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
-      //       capturedFigure = leftFigure
-      //       leftPosition!.figure = null
-      //     }
-      //     // Check right side for en passant capture
-      //     else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
-      //       capturedFigure = rightFigure
-      //       rightPosition!.figure = null
-      //     }
-      //   }
-      // }
+      if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure) {
+        if (this.isMoveEnPassant(move)) {
+          const { from, to } = move
+          const performingFigure = this.getFigureAtPosition(from)
+          if (!performingFigure) return false
+
+          // Get adjacent positions (left and right of the starting position)
+          const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+          const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+
+          // Ensure we have at least one valid adjacent position
+          if (!leftPosition && !rightPosition) return false
+
+          // Get figures only if the positions exist
+          const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
+          const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
+
+          // Check left side for en passant capture
+          if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
+            capturedFigure = leftFigure
+            leftPosition!.figure = null
+
+            figure.position = toPos
+            fromPos.figure = null
+            toPos.figure = figure
+
+            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+
+            return true
+          }
+          // Check right side for en passant capture
+          else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
+            capturedFigure = rightFigure
+            rightPosition!.figure = null
+
+            figure.position = toPos
+            fromPos.figure = null
+            toPos.figure = figure
+
+            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+
+            return true
+          }
+        }
+      }
     }
     if (figure instanceof King) {
       figure.hasMoved = true
@@ -186,28 +201,30 @@ class Board {
 
     const beforePosition = this.getPosition(lastMove.move.from)
     const afterPosition = this.getPosition(lastMove.move.to)
-    const capturedFigure = lastMove.figureCaptured
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
 
-    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
-    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
-    figureToUndo.position = beforePosition
-    beforePosition.figure = figureToUndo
+    const figurePerforming = lastMove.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    if (figureToUndo instanceof Pawn) {
-      figureToUndo.isFirstMove = lastMove.wasFirstMove
-    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
-      figureToUndo.hasMoved = !lastMove.wasFirstMove
+    beforePosition.figure = figurePerforming
+    figurePerforming.position = beforePosition
+    afterPosition.figure = null
+
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = lastMove.wasFirstMove
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = !lastMove.wasFirstMove
     }
 
+    const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
-      const pos = this.getPosition(capturedFigure.position)
-      if (!pos) return false
-      pos.figure = capturedFigure
-      capturedFigure.position = pos
-    } else {
-      afterPosition.figure = null
+      const capPos = this.getPosition(capturedFigure.position)
+      if (!capPos) throw new Error("Critical error: no position for captured figure")
+
+      capPos.figure = capturedFigure
+      capturedFigure.position = capPos
     }
+
     this._moveHistory.pop()
     return true
   }
