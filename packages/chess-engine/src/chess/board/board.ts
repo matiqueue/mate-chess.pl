@@ -89,7 +89,7 @@ class Board {
 
   public moveFigure(move: Move, simulate: boolean = false): boolean {
     const fromPos = this.getPosition(move.from)
-    const toPos = this.getPosition(move.to)
+    let toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
       return false
@@ -97,7 +97,7 @@ class Board {
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      return false
+      throw new Error("No figure performing the move")
     }
 
     if (!simulate) {
@@ -115,8 +115,6 @@ class Board {
       wasFirstMove = !fromPos.figure.hasMoved
     }
 
-    const performingFigure = fromPos.figure
-    if (!performingFigure) throw new Error("No figure performing the move")
     let capturedFigure = toPos.figure
 
     if (toPos.figure) {
@@ -178,6 +176,39 @@ class Board {
       }
     }
     if (figure instanceof King) {
+      if (capturedFigure instanceof Rook && capturedFigure.color === figure.color) {
+        if (!capturedFigure.hasMoved && !figure.hasMoved) {
+          const deltaX = toPos.x - fromPos.x
+          const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
+
+          const newPosKing = this.getPositionByCords(fromPos.x + 2 * signX, toPos.y)
+          const newPosRook = this.getPositionByCords(fromPos.x + signX, toPos.y)
+          if (newPosKing && newPosRook) {
+            figure.position = newPosKing
+            fromPos.figure = null
+
+            newPosKing.figure = figure
+            newPosRook.figure = capturedFigure
+
+            figure.hasMoved = true
+            capturedFigure.hasMoved = true
+
+            const kingMove = {
+              from: fromPos,
+              to: newPosKing,
+            }
+            this._moveHistory.push(new MoveRecord(kingMove, figure, null, wasFirstMove))
+
+            const rookMove = {
+              from: toPos,
+              to: newPosRook,
+            }
+            this._moveHistory.push(new MoveRecord(rookMove, capturedFigure, null, wasFirstMove, true))
+            return true
+          } else throw new Error("Terrible error when getting castle position")
+        }
+      }
+
       figure.hasMoved = true
     }
     if (figure instanceof Rook) {
@@ -188,7 +219,7 @@ class Board {
     fromPos.figure = null
     toPos.figure = figure
 
-    this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+    this._moveHistory.push(new MoveRecord(move, figure, capturedFigure, wasFirstMove))
 
     return true
   }
@@ -224,8 +255,10 @@ class Board {
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
     }
-
     this._moveHistory.pop()
+    if (lastMove.castleMove) {
+      this.undoLastMove()
+    }
     return true
   }
   //===================================== AI GENERATED CODE BELOW =====================================
@@ -326,6 +359,18 @@ class Board {
         if (targetPosition === position) {
           // row += "[&&] " //starting pos
         } else if (position.figure?.isMoveValid(targetPosition)) {
+          // if (position.figure instanceof King) {
+          //   if (targetPosition.figure instanceof Rook && !targetPosition.figure.hasMoved) {
+          //     const deltaX = targetPosition.x - position.x
+          //     const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
+          //
+          //     const newPos = this.getPositionByCords(position.x + 2 * signX, targetPosition.y)
+          //     if (newPos) {
+          //       validMoves.push(newPos)
+          //       continue
+          //     }
+          //   }
+          // }
           // row += "[--] " //valid
           validMoves.push(targetPosition)
         } else {

@@ -1,4 +1,4 @@
-import { Figure, Pawn } from "@utils/figureUtils"
+import { Figure, Pawn, Rook } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
@@ -6,20 +6,19 @@ import { Board, Position } from "@utils/boardUtils"
 class King extends Figure {
   private _isCheck: boolean = false
   private _hasMoved: boolean
-  constructor(color: color, position: Position, board: Board) {
+  constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
     super(figureType.king, color, position, board)
-    this._hasMoved = this.position === this._board.getPositionByNotation("e1") || this.position === this._board.getPositionByNotation("e8")
+    this._hasMoved = hasMoved
   }
 
   override isPositionValid(target: Position): boolean {
     if (!this.isPositionExisting(target)) return false
+    if (target.figure instanceof Rook && !target.figure.hasMoved && !this._hasMoved && target.figure.color === this.color && target.y === this.position.y) {
+      return true
+    }
     //standard movement
     if (Math.abs(target.x - this.position.x) <= 1 && Math.abs(target.y - this.position.y) <= 1) {
       return true
-    }
-    //roszada
-    if (!this._hasMoved && Math.abs(target.x - this.position.x) === 2) {
-      return this._board.canCastle(this, target)
     }
     return false
   }
@@ -30,6 +29,28 @@ class King extends Figure {
     // Sprawdzenie, czy król nie wchodzi na szachowane pole
     const opponentFigures = this.color === color.White ? this._board.blackFigures : this._board.whiteFigures
 
+    if (target.figure instanceof Rook && target.figure.color === this.color) {
+      if (target.figure.hasMoved || this.hasMoved) return false
+
+      const deltaX = target.x - this.position.x
+      const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
+
+      let currentX = target.x - signX
+
+      if (currentX > 7 || currentX < 0) {
+        return false
+      }
+
+      while (currentX !== this.position.x) {
+        const currentPosition = this._board.getPositionByCords(currentX, target.y)
+        if (!currentPosition) return false
+        if (currentPosition.figure) return false
+        currentX -= signX
+      }
+
+      const newPos = this._board.getPositionByCords(this.position.x + 2 * signX, target.y)
+      return true
+    } else if (target.figure && target.figure.color === this.color) return false
     for (const opponentFigure of opponentFigures) {
       if (opponentFigure instanceof Pawn && opponentFigure.isPositionValid(target)) {
         return false
@@ -39,7 +60,7 @@ class King extends Figure {
       }
     }
 
-    return !(target.figure && target.figure.color === this.color)
+    return true
   }
 
   get isCheck(): boolean {
