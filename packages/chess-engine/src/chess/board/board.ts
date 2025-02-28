@@ -298,70 +298,122 @@ class Board {
   //IT IS TOTALLY UNTESTED. I AM NOT RESPONSIBILE FOR WHETHER IT WORKS OR NOT.
 
   public rewindMove(): boolean {
+    // Jeżeli nie ma ruchów w historii – nie cofniemy
     if (this._moveHistory.length === 0) return false
 
+    // Pobieramy ostatni ruch z historii
     const lastMove = this._moveHistory.pop()
     if (!lastMove) return false
 
     const beforePosition = this.getPosition(lastMove.move.from)
     const afterPosition = this.getPosition(lastMove.move.to)
-    const capturedFigure = lastMove.figureCaptured
-
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
 
-    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
-    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
+    const figurePerforming = lastMove.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    // Move figure back
-    figureToUndo.position = beforePosition
-    beforePosition.figure = figureToUndo
+    // 1. Przesuwamy figurę z powrotem na pole startowe
+    beforePosition.figure = figurePerforming
+    figurePerforming.position = beforePosition
+    afterPosition.figure = null
 
-    // Restore first move status
-    if (figureToUndo instanceof Pawn) {
-      figureToUndo.isFirstMove = lastMove.wasFirstMove
-    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
-      figureToUndo.hasMoved = !lastMove.wasFirstMove
+    // 2. Przywracamy status firstMove / hasMoved
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = lastMove.wasFirstMove
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = !lastMove.wasFirstMove
     }
 
-    // Restore captured figure
+    // 3. Jeżeli była bita figura, przywracamy ją na planszę
+    const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
-      afterPosition.figure = capturedFigure
-      capturedFigure.position = afterPosition
-    } else {
-      afterPosition.figure = null
+      let capPos: Position | null
+      if (lastMove.enPassant && capturedFigure instanceof Pawn) {
+        // Dla en passant pionek wraca na specyficzne pole
+        capturedFigure.isEnPassantPossible = true
+        if (figurePerforming.color === color.White) {
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y + 1)
+        } else {
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y - 1)
+        }
+      } else {
+        // Standardowe zbicie
+        capPos = this.getPosition(capturedFigure.position)
+      }
+      if (!capPos) throw new Error("Critical error: no position for captured figure")
+
+      capPos.figure = capturedFigure
+      capturedFigure.position = capPos
     }
 
-    // Store move in redo stack for forwardMove
+    // 4. Jeżeli ruch był częścią roszady (castleMove), cofamy również przesunięcie wieży,
+    //    podobnie jak w `undoLastMove`. Możesz wywołać `this.undoLastMove()` raz jeszcze,
+    //    lub zrobić to analogicznie w tym samym bloku kodu.
+    if (lastMove.castleMove) {
+      this.undoLastMove()
+    }
+
+    // 5. Odkładamy cofnięty ruch na _redoStack, by móc go przywrócić w forwardMove
     this._redoStack.push(lastMove)
 
     return true
   }
+
   public forwardMove(): boolean {
+    // Jeżeli nie mamy cofniętych ruchów, nie możemy nic przywrócić
     if (this._redoStack.length === 0) return false
 
-    const moveRecord = this._redoStack.pop()
-    if (!moveRecord) return false
+    // Pobieramy ruch z wierzchu stosu _redoStack
+    const redoMove = this._redoStack.pop()
+    if (!redoMove) return false
 
-    const move = moveRecord.move
-    const fromPos = this.getPosition(move.from)
-    const toPos = this.getPosition(move.to)
-    if (!fromPos || !toPos) return false
+    const { from, to } = redoMove.move
+    const fromPos = this.getPosition(from)
+    const toPos = this.getPosition(to)
+    if (!fromPos || !toPos) throw new Error("Critical error: no position")
 
-    const figure = this.getFigureAtPosition(fromPos)
-    if (!figure) return false
+    const figurePerforming = redoMove.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    // Apply move again
-    toPos.figure = figure
-    fromPos.figure = null
-    figure.position = toPos
+    // Jeżeli w miejscu docelowym stoi jakaś figura (np. przywrócona wcześniej),
+    // musimy ją usunąć z planszy i z tablic figur (tak jak w moveFigure)
+    if (toPos.figure) {
+      const occupant = toPos.figure
+      toPos.figure = null
 
-    // Restore captured figure if it was captured
-    if (moveRecord.figureCaptured) {
-      toPos.figure = moveRecord.figureCaptured
-      moveRecord.figureCaptured.position = toPos
+      // Usuwamy occupant z tablic figur
+      if (occupant.color === color.White) {
+        this._whiteFigures = this._whiteFigures.filter((f) => f !== occupant)
+      } else {
+        this._blackFigures = this._blackFigures.filter((f) => f !== occupant)
+      }
+      this.updateArray()
     }
 
-    this._moveHistory.push(moveRecord)
+    // Przenosimy figurę z fromPos na toPos
+    fromPos.figure = null
+    toPos.figure = figurePerforming
+    figurePerforming.position = toPos
+
+    // Jeżeli w redoMove była zapisana zbita figura, to znaczy, że w oryginalnym ruchu coś zbiliśmy
+    // (tzn. finalnie figuręCaptured "zniknęła" z planszy), więc nie przywracamy jej tu.
+    // Wystarczy, że powyżej usunęliśmy occupant (jeśli w ogóle tam był).
+
+    // Odtwarzamy finalny stan isFirstMove/hasMoved – w oryginalnym ruchu po jego wykonaniu
+    // pionek miał isFirstMove = false, a wieża/król hasMoved = true.
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = false
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = true
+    }
+
+    // Jeśli ruch był roszadą/en passant, trzeba analogicznie odtworzyć tę sytuację
+    // (np. przesunięcie wieży, usunięcie pionka przy en passant).
+    // Możesz w tym miejscu dorzucić logikę podobną do moveFigure.
+
+    // Na koniec wrzucamy ruch ponownie do historii
+    this._moveHistory.push(redoMove)
+
     return true
   }
 

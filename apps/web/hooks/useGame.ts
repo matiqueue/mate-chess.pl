@@ -8,7 +8,7 @@ import {
   getValidMoves,
   whosTurn,
   makeMove,
-  rewindMove,
+  undoMove,
   getMoveHistory,
   isStalemate,
   getGameStatus,
@@ -47,7 +47,7 @@ const useGame = () => {
   }
 
   const undoMove = (): boolean => {
-    if (rewindMove(game)) {
+    if (undoMove(game)) {
       setBoard(getBoard(game))
       setMoveHistory(getMoveHistory(game))
       setCurrentPlayer(whosTurn(game))
