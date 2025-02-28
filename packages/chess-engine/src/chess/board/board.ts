@@ -614,6 +614,7 @@ class Board {
           return true
         }
       }
+      this.undoLastMove()
     }
 
     return false
@@ -683,7 +684,7 @@ class Board {
   }
 
   public getBoardArray(): [string[]] {
-    const result: [string[]] = [[]]
+    let result: [string[]] = [[]]
     let rowArray: string[] = []
     for (const position of this.positions) {
       let symbol: string = ""
@@ -755,28 +756,53 @@ class Board {
 
     return false
   }
-  public promote(position: Position, figure: figureType.knight | figureType.queen | figureType.rook | figureType.bishop): boolean {
-    if (!position) return false
-    if (!(position.figure instanceof Pawn)) return false
-    const color = position.figure.color
-    position.figure = null
-    let fig: Figure
-    switch (figure) {
-      case figureType.knight:
-        fig = new Knight(color, position, this)
-        break
-      case figureType.queen:
-        fig = new Queen(color, position, this)
-        break
-      case figureType.rook:
-        fig = new Rook(color, position, this)
-        break
-      case figureType.bishop:
-        fig = new Bishop(color, position, this)
-        break
+  public promote(position: Position, promotionType: figureType.knight | figureType.queen | figureType.rook | figureType.bishop): boolean {
+    if (!position || !(position.figure instanceof Pawn)) return false
+    const pawn = position.figure as Pawn
+    const pawnColor = pawn.color
+
+    // Usuń pionka z odpowiedniej tablicy figur
+    if (pawnColor === color.White) {
+      this._whiteFigures = this._whiteFigures.filter((fig) => fig !== pawn)
+    } else {
+      this._blackFigures = this._blackFigures.filter((fig) => fig !== pawn)
     }
 
-    position.figure = fig
+    // Utwórz nową figurę zgodnie z typem promocji
+    let promotedFigure: Figure
+    switch (promotionType) {
+      case figureType.knight:
+        promotedFigure = new Knight(pawnColor, position, this)
+        break
+      case figureType.queen:
+        promotedFigure = new Queen(pawnColor, position, this)
+        break
+      case figureType.rook:
+        promotedFigure = new Rook(pawnColor, position, this)
+        break
+      case figureType.bishop:
+        promotedFigure = new Bishop(pawnColor, position, this)
+        break
+      default:
+        return false
+    }
+
+    // Przypisz nowy unikalny identyfikator na podstawie długości _allFigures
+    promotedFigure.id = this._allFigures.length
+
+    // Ustaw nową figurę na danej pozycji
+    position.figure = promotedFigure
+
+    // Dodaj nową figurę do odpowiedniej tablicy
+    if (pawnColor === color.White) {
+      this._whiteFigures.push(promotedFigure)
+    } else {
+      this._blackFigures.push(promotedFigure)
+    }
+
+    // Zaktualizuj tablicę wszystkich figur
+    this.updateArray()
+
     return true
   }
 }

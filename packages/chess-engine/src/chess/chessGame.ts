@@ -38,6 +38,23 @@ class chessGame {
       this._gameStatus = "stalemate"
       this._isGameOn = false
     }
+    //testing purposes
+    for (const figure of this._board.allFigures) {
+      if (figure instanceof Pawn) {
+        switch (figure.color) {
+          case color.White:
+            if (figure.position.y === 0) {
+              this.board.promote(figure.position, figureType.queen)
+            }
+            break
+          case color.Black:
+            if (figure.position.y === 7) {
+              this.board.promote(figure.position, figureType.queen)
+            }
+            break
+        }
+      }
+    }
 
     this._moves = this._board.moveHistory
   }
