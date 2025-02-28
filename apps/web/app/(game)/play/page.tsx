@@ -25,7 +25,7 @@ export default function Play() {
       body: JSON.stringify({ player }),
     })
     const data = await res.json()
-    router.push(`/play/link?code=${data.code}`)
+    router.push(`/play/link?code=${data.code}&lobbyId=${data.lobbyId}`)
   }
 
   const handleJoinLinkLobby = async () => {
@@ -44,7 +44,7 @@ export default function Play() {
     })
     const data = await res.json()
     if (data.lobbyId) {
-      router.push(`/play/link?code=${code}`)
+      router.push(`/play/link?code=${code}&lobbyId=${data.lobbyId}`)
     } else {
       alert(data.error)
     }
@@ -52,7 +52,7 @@ export default function Play() {
 
   const handleJoinOnlineLobby = async () => {
     if (!user) {
-      alert("You need to be logged in to play online")
+      alert("Musisz być zalogowany, aby grać online")
       return
     }
 

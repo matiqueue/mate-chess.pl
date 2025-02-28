@@ -17,6 +17,8 @@ router.post("/join-online-lobby", (req, res) => {
       id: lobbyId,
       players: [player],
       mode: "online",
+      creator: player.id,
+      banned: [],
     }
     lobbies[lobbyId] = lobby
     console.log(`[ONLINE] Utworzono nowe lobby online: ID=${lobbyId}, Gracz=${player.name}`)

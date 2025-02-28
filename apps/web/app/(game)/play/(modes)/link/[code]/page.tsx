@@ -1,21 +1,20 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { use } from "react"
 import io from "socket.io-client"
 
 const socket = io("http://localhost:4000")
 
-export default function Game({ params }: { params: { code: string } }) {
-  const { code } = params
+export default function Game({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = use(params)
   const [messages, setMessages] = useState<string[]>([])
   const [message, setMessage] = useState("")
 
   useEffect(() => {
     socket.emit("joinLobby", code)
     socket.on("newMessage", (msg) => setMessages((prev) => [...prev, msg]))
-    return () => {
-      socket.off("newMessage")
-    }
+    return () => socket.off("newMessage")
   }, [code])
 
   const handleSendMessage = () => {

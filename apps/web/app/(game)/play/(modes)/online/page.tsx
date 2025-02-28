@@ -16,16 +16,26 @@ export default function OnlineLobby() {
   const [countdown, setCountdown] = useState<number | null>(null)
 
   useEffect(() => {
-    if (lobbyId && user) {
-      socket.emit("joinLobby", lobbyId)
-      socket.on("playerJoined", (players) => setLobby(players))
-      socket.on("countdown", (count) => setCountdown(count))
-      socket.on("gameStarted", (gameUrl) => router.push(gameUrl))
-      return () => {
-        socket.off("playerJoined")
-        socket.off("countdown")
-        socket.off("gameStarted")
-      }
+    if (!lobbyId || !user) return
+
+    socket.emit("joinLobby", lobbyId)
+    socket.on("playerJoined", (players) => {
+      console.log("[FRONT] Zaktualizowano listę graczy:", players)
+      setLobby(players)
+    })
+    socket.on("countdown", (count) => {
+      console.log("[FRONT] Odliczanie:", count)
+      setCountdown(count)
+    })
+    socket.on("gameStarted", (gameUrl) => {
+      console.log("[FRONT] Gra rozpoczęta, przekierowanie do:", gameUrl)
+      router.push(gameUrl)
+    })
+
+    return () => {
+      socket.off("playerJoined")
+      socket.off("countdown")
+      socket.off("gameStarted")
     }
   }, [lobbyId, user, router])
 

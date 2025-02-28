@@ -12,16 +12,17 @@ export default function LinkLobby() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const code = searchParams.get("code")
+  const lobbyId = searchParams.get("lobbyId")
   const [lobby, setLobby] = useState<Player[]>([])
   const [countdown, setCountdown] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!code) return
+    if (!lobbyId) return
 
-    socket.emit("joinLobby", code)
+    socket.emit("joinLobby", lobbyId)
     socket.on("playerJoined", (players) => {
       console.log("[FRONT] Zaktualizowano listę graczy:", players)
-      setLobby(players) // Aktualizacja stanu lobby
+      setLobby(players)
     })
     socket.on("playerKicked", (playerId) => {
       const myId = user?.id || localStorage.getItem("guestId")
@@ -45,14 +46,14 @@ export default function LinkLobby() {
       socket.off("countdown")
       socket.off("gameStarted")
     }
-  }, [code, user, router])
+  }, [lobbyId, user, router])
 
   const handleStartGame = async () => {
     const myId = user?.id || localStorage.getItem("guestId")
     const res = await fetch("http://localhost:4000/api/start-game", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lobbyId: code, creatorId: myId }),
+      body: JSON.stringify({ lobbyId, creatorId: myId }),
     })
     const data = await res.json()
     if (!data.success) alert(data.error)
@@ -63,7 +64,7 @@ export default function LinkLobby() {
     const res = await fetch("http://localhost:4000/api/kick-player", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lobbyId: code, playerId, creatorId: myId }),
+      body: JSON.stringify({ lobbyId, playerId, creatorId: myId }),
     })
     const data = await res.json()
     if (!data.success) alert(data.error)

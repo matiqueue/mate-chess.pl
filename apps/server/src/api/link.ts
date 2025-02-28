@@ -1,6 +1,6 @@
 import express from "express"
 import { v4 as uuidv4 } from "uuid"
-import { lobbies, io } from "../index" // Import z index.ts
+import { lobbies, io } from "../index"
 import { Lobby, Player } from "../types"
 
 const router = express.Router()
@@ -46,9 +46,9 @@ router.post("/join-link-lobby", (req, res) => {
   }
 
   lobby.players.push(player)
-  io.to(lobby.id).emit("playerJoined", lobby.players) // Aktualizacja dla wszystkich w lobby
+  io.to(lobby.id).emit("playerJoined", lobby.players) // Emituj do lobbyId
   console.log(`[JOIN] Gracz ${player.name} (ID=${player.id}) dołączył do lobby: ID=${lobby.id}`)
-  res.json({ lobbyId: lobby.id })
+  res.json({ lobbyId: lobby.id, code })
 })
 
 // Wyrzucanie gracza (Link)
@@ -67,7 +67,7 @@ router.post("/kick-player", (req, res) => {
     lobby.players.splice(playerIndex, 1)
     lobby.banned.push(playerId)
     io.to(lobby.id).emit("playerKicked", playerId)
-    io.to(lobby.id).emit("playerJoined", lobby.players) // Aktualizacja listy graczy po wyrzuceniu
+    io.to(lobby.id).emit("playerJoined", lobby.players) // Aktualizacja listy graczy
     console.log(`[KICK] Gracz ${kickedPlayer.name} (ID=${playerId}) wyrzucony z lobby: ID=${lobby.id}`)
     res.json({ success: true })
   } else {

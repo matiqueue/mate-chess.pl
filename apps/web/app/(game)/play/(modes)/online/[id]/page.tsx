@@ -1,21 +1,20 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { use } from "react"
 import io from "socket.io-client"
 
 const socket = io("http://localhost:4000")
 
-export default function Game({ params }: { params: { id: string } }) {
-  const { id } = params
+export default function Game({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params) // Poprawione dla Next.js 15
   const [messages, setMessages] = useState<string[]>([])
   const [message, setMessage] = useState("")
 
   useEffect(() => {
     socket.emit("joinLobby", id)
     socket.on("newMessage", (msg) => setMessages((prev) => [...prev, msg]))
-    return () => {
-      socket.off("newMessage")
-    }
+    return () => socket.off("newMessage")
   }, [id])
 
   const handleSendMessage = () => {
