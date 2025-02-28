@@ -66,11 +66,7 @@ export function ChessBoard2D() {
   }
 
   // Prawy przycisk myszy (PPM) – tworzenie strzałek
-  const handleSquareRightClick = (
-    e: React.MouseEvent<HTMLDivElement>,
-    rowIndex: number,
-    colIndex: number
-  ) => {
+  const handleSquareRightClick = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault() // Blokujemy menu kontekstowe
     if (!board) return
 
@@ -167,15 +163,8 @@ export function ChessBoard2D() {
           default:
             return null
         }
-        const dropShadow = isWhite
-          ? "drop-shadow(0 0 6px #000)"
-          : "drop-shadow(0 0 6px #fff)"
-        return (
-          <IconComponent
-            className={clsx("w-[60%] h-[60%] z-10", iconColor)}
-            style={{ filter: dropShadow }}
-          />
-        )
+        const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
       }
     }
 
@@ -205,31 +194,20 @@ export function ChessBoard2D() {
       default:
         return null
     }
-    const dropShadow = isWhite
-      ? "drop-shadow(0 0 6px #000)"
-      : "drop-shadow(0 0 6px #fff)"
-    return (
-      <IconComponent
-        className={clsx("w-[60%] h-[60%] z-10", iconColor)}
-        style={{ filter: dropShadow }}
-      />
-    )
+    const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+    return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
   // Ustalanie koloru pól szachownicy
-  function isBlackSquare(
-    rowIndex: number,
-    colIndex: number,
-    darkMode: boolean
-  ) {
-    const isBlack = (rowIndex + colIndex) % 2 === 1
+  function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
+    const isBlack = (rowIndex + colIndex) % 2 === 0
     return isBlack
       ? darkMode
         ? "bg-neutral-400 hover:bg-neutral-500"
         : "bg-gray-400 hover:bg-neutral-500"
       : darkMode
-      ? "bg-stone-700 hover:bg-neutral-500"
-      : "bg-zinc-200 hover:bg-neutral-500"
+        ? "bg-stone-700 hover:bg-neutral-500"
+        : "bg-zinc-200 hover:bg-neutral-500"
   }
 
   // Renderowanie wszystkich strzałek
@@ -310,54 +288,32 @@ export function ChessBoard2D() {
       </div>
 
       {/* Kontener szachownicy */}
-      <div
-        className={clsx(
-          "relative z-10 w-full h-full rounded-xl p-4 shadow-2xl",
-          isDarkMode ? "bg-stone-600" : "bg-gray-300"
-        )}
-      >
+      <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
         {/* Tutaj renderujemy wszystkie strzałki */}
         {renderArrows()}
 
-        <div
-          className={clsx(
-            "grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl",
-            isDarkMode ? "bg-stone-600" : "bg-gray-300"
-          )}
-        >
+        <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           {boardRows.map((rowData: string[], rowIndex: number) =>
             rowData.map((symbol, colIndex) => {
               const notation = getNotation(rowIndex, colIndex)
               const square = board?.getPositionByNotation(notation)
-              const isSelected =
-                selectedSquare && selectedSquare.notation === notation
-              const isValidMove = validMoves.some(
-                (pos) => pos.notation === notation
-              )
+              const isSelected = selectedSquare && selectedSquare.notation === notation
+              const isValidMove = validMoves.some((pos) => pos.notation === notation)
 
               let isKingInCheck = false
               if (square?.figure?.type === "king") {
                 const isWhite = square.figure.color === "white"
-                isKingInCheck = isWhite
-                  ? board?.isKingInCheck("white")
-                  : board?.isKingInCheck("black")
+                isKingInCheck = isWhite ? board?.isKingInCheck("white") : board?.isKingInCheck("black")
               }
 
-              const squareBgClasses = isKingInCheck
-                ? "bg-red-500 hover:bg-red-600 rounded-sm"
-                : isBlackSquare(rowIndex, colIndex, isDarkMode)
+              const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600 rounded-sm" : isBlackSquare(rowIndex, colIndex, isDarkMode)
 
               return (
                 <div
                   key={`${rowIndex}-${colIndex}`}
                   onClick={() => handleSquareClick(rowIndex, colIndex)}
-                  onContextMenu={(e) =>
-                    handleSquareRightClick(e, rowIndex, colIndex)
-                  }
-                  className={clsx(
-                    "relative flex items-center justify-center",
-                    squareBgClasses
-                  )}
+                  onContextMenu={(e) => handleSquareRightClick(e, rowIndex, colIndex)}
+                  className={clsx("relative flex items-center justify-center", squareBgClasses)}
                 >
                   {isValidMove && (
                     <>
@@ -367,7 +323,7 @@ export function ChessBoard2D() {
                         <div
                           className={clsx(
                             "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
-                            isDarkMode ? "bg-white" : "bg-gray-600"
+                            isDarkMode ? "bg-white" : "bg-gray-600",
                           )}
                         />
                       )}
@@ -384,7 +340,7 @@ export function ChessBoard2D() {
                   {renderPiece(symbol, rowIndex, colIndex)}
                 </div>
               )
-            })
+            }),
           )}
         </div>
       </div>
