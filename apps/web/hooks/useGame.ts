@@ -17,6 +17,7 @@ import {
   getPositionById,
   rewindMove,
   forwardMove,
+  returnToCurrentState,
 } from "@modules/index"
 
 const useGame = () => {
@@ -78,6 +79,14 @@ const useGame = () => {
     }
     return false
   }
+  const returnToCurrentGameState = () => {
+    if (returnToCurrentState(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+    }
+  }
   return {
     game,
     board,
@@ -88,6 +97,7 @@ const useGame = () => {
     undoLastMove,
     forwardLastMove,
     reviewLastMove,
+    returnToCurrentGameState,
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),

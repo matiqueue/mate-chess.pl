@@ -17,6 +17,7 @@ import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
 import { useTranslation } from "react-i18next"
+import { returnToCurrentState } from "@chess-engine/functions"
 
 export function GameControls() {
   const { t } = useTranslation()
@@ -24,7 +25,7 @@ export function GameControls() {
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
-  const { undoLastMove, reviewLastMove, forwardLastMove } = useGameContext() // pobieramy funkcję cofania ruchu
+  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState } = useGameContext() // pobieramy funkcję cofania ruchu
 
   function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
     throw new Error("Function not implemented.")
@@ -47,7 +48,7 @@ export function GameControls() {
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={forwardLastMove}>
           <ChevronRight className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={returnToCurrentGameState}>
           <FastForward className="h-5 w-5" />
         </Button>
 

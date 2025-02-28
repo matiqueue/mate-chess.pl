@@ -7,7 +7,7 @@ import { undoMove } from "@shared/destruct/movementFunctions/undoMove"
 import { getMoveHistory } from "@shared/destruct/movementFunctions/getMoveHistory"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { promote } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
-import { forwardMove, rewindMove } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
+import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
@@ -33,4 +33,5 @@ export {
   promote,
   forwardMove,
   rewindMove,
+  returnToCurrentState,
 }
