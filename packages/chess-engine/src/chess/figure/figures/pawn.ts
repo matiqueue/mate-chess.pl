@@ -66,13 +66,17 @@ class Pawn extends Figure {
     // En passant capture for left-side pawn
     if (leftFigure instanceof Pawn && leftFigure.color !== this.color && leftFigure.isEnPassantPossible) {
       if (target.x === leftFigure.position.x && Math.abs(target.y - this.position.y) === 1 && !target.figure) {
-        return true
+        if (!(this.position.y !== 3 && this.position.y !== 4)) {
+          return true
+        }
       }
     }
     // En passant capture for right-side pawn
     else if (rightFigure instanceof Pawn && rightFigure.color !== this.color && rightFigure.isEnPassantPossible) {
       if (target.x === rightFigure.position.x && Math.abs(target.y - this.position.y) === 1 && !target.figure) {
-        return true
+        if (!(this.position.y !== 3 && this.position.y !== 4)) {
+          return true
+        }
       }
     }
 

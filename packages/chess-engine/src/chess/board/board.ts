@@ -109,10 +109,10 @@ class Board {
       }
     }
     let wasFirstMove = false
-    if (fromPos.figure instanceof Pawn) {
-      wasFirstMove = fromPos.figure.isFirstMove
-    } else if (fromPos.figure instanceof King || fromPos.figure instanceof Rook) {
-      wasFirstMove = !fromPos.figure.hasMoved
+    if (fromPos.figure instanceof Pawn && fromPos.figure.isFirstMove) {
+      wasFirstMove = true
+    } else if ((fromPos.figure instanceof King || fromPos.figure instanceof Rook) && !fromPos.figure.hasMoved) {
+      wasFirstMove = true
     }
 
     let capturedFigure = toPos.figure
@@ -124,6 +124,7 @@ class Board {
 
     if (figure instanceof Pawn) {
       figure.isFirstMove = false
+
       // If moving two squares forward, mark en passant possible on this pawn
       if (Math.abs(move.from.y - move.to.y) === 2 && move.from.x === move.to.x) {
         figure.isEnPassantPossible = true
@@ -155,7 +156,7 @@ class Board {
             fromPos.figure = null
             toPos.figure = figure
 
-            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
 
             return true
           }
@@ -168,7 +169,7 @@ class Board {
             fromPos.figure = null
             toPos.figure = figure
 
-            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove))
+            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
 
             return true
           }
@@ -249,9 +250,22 @@ class Board {
 
     const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
-      const capPos = this.getPosition(capturedFigure.position)
+      let capPos: Position | null = null
+      if (lastMove.enPassant && capturedFigure instanceof Pawn) {
+        capturedFigure.isEnPassantPossible = true
+        // Dla en passant wyliczamy oryginalną pozycję zbitego pionka
+        if (figurePerforming.color === color.White) {
+          // Dla białego pionka – captured była poniżej pola docelowego
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y + 1)
+        } else {
+          // Dla czarnego pionka – captured była powyżej pola docelowego
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y - 1)
+        }
+      } else {
+        // Standardowe zbicie – używamy pozycji zapisanej w obiekcie zbitej figury
+        capPos = this.getPosition(capturedFigure.position)
+      }
       if (!capPos) throw new Error("Critical error: no position for captured figure")
-
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
     }
@@ -620,7 +634,7 @@ class Board {
     return false
   }
 
-  public getLegalMovesForPosition(from: Position) {
+  public getLegalMovesForPosition(from: Position): Position[] {
     const king = from.figure?.color === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = from.figure?.color === color.Black ? this._blackFigures : this._whiteFigures
     const legalMoves: Position[] = []
