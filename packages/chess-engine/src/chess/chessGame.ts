@@ -5,7 +5,7 @@ import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
 
-class chessGame {
+class ChessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
   // private _moveRecorder: MoveRecorder
@@ -229,4 +229,4 @@ class chessGame {
   }
 }
 
-export default chessGame
+export default ChessGame
