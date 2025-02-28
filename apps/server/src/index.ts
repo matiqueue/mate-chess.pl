@@ -1,21 +1,36 @@
-import { createServer } from "http"
 import express from "express"
-import { Server as SocketIOServer } from "socket.io"
-import { initGameManager } from "./gameManager"
+import http from "http"
+import { Server } from "socket.io"
+import cors from "cors"
+import linkRouter from "./api/link"
+import onlineRouter from "./api/online"
+import { setupSockets } from "./sockets/lobby"
+import { Lobby } from "./types"
 
 const app = express()
-const httpServer = createServer(app)
+const server = http.createServer(app)
 
-// Konfiguracja Socket.IO z CORS (dla testu otwarte połączenia)
-const io = new SocketIOServer(httpServer, {
-  cors: { origin: "*" },
+// Eksportuję io i lobbies, żeby były dostępne w innych modułach
+export const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // Frontend URL
+    methods: ["GET", "POST"],
+  },
 })
 
+export const lobbies: { [key: string]: Lobby } = {}
+
+app.use(cors())
 app.use(express.json())
 
-initGameManager(io)
+// Rejestruję endpointy API
+app.use("/api", linkRouter)
+app.use("/api", onlineRouter)
 
-const PORT = process.env.PORT || 4000
-httpServer.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`)
+// Inicjalizuję Socket.io
+setupSockets(io)
+
+// Start serwera
+server.listen(4000, () => {
+  console.log("[SERVER] Serwer uruchomiony na porcie 4000")
 })

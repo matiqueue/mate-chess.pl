@@ -5,27 +5,27 @@ import io from "socket.io-client"
 
 const socket = io("http://localhost:4000")
 
-export default function Game({ params }: { params: { id: string } }) {
-  const { id } = params
+export default function Game({ params }: { params: { code: string } }) {
+  const { code } = params
   const [messages, setMessages] = useState<string[]>([])
   const [message, setMessage] = useState("")
 
   useEffect(() => {
-    socket.emit("joinLobby", id)
+    socket.emit("joinLobby", code)
     socket.on("newMessage", (msg) => setMessages((prev) => [...prev, msg]))
     return () => {
       socket.off("newMessage")
     }
-  }, [id])
+  }, [code])
 
   const handleSendMessage = () => {
-    socket.emit("sendMessage", id, message)
+    socket.emit("sendMessage", code, message)
     setMessage("")
   }
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Gra: {id}</h1>
+      <h1 className="text-2xl font-bold">Gra: {code}</h1>
       <div className="my-4 h-64 overflow-y-auto border p-2">
         {messages.map((msg, index) => (
           <p key={index}>{msg}</p>
