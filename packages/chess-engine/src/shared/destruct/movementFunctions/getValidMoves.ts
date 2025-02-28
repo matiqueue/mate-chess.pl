@@ -8,7 +8,11 @@ export const isMoveValid = (board: Board, move: Move): boolean => {
 }
 export const getValidMoves = (board: Board, from: Position): Position[] => {
   if (!from.figure) return []
-
+  if (board.previewMode) {
+    while (board.previewMode) {
+      board.forwardMove()
+    }
+  }
   return board.getLegalMovesForPosition(from)
 }
 export const whosTurn = (game: ChessGameExtraLayer): color => {

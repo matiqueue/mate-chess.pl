@@ -24,7 +24,7 @@ export function GameControls() {
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
-  const { undoMove } = useGameContext() // pobieramy funkcję cofania ruchu
+  const { undoLastMove, reviewLastMove, forwardLastMove } = useGameContext() // pobieramy funkcję cofania ruchu
 
   function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
     throw new Error("Function not implemented.")
@@ -38,13 +38,13 @@ export function GameControls() {
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
         {/* Przyciski sterujące (strzałki) widoczne wszędzie */}
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoMove}>
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
           <ChevronLeft className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoLastMove}>
           <RotateCcw className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={forwardLastMove}>
           <ChevronRight className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
@@ -67,9 +67,7 @@ export function GameControls() {
               <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                 <AlertDialogHeader>
                   <AlertDialogTitle>{t("gameControls.surrenderTitle")}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {t("gameControls.surrenderDescription")}
-                  </AlertDialogDescription>
+                  <AlertDialogDescription>{t("gameControls.surrenderDescription")}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>
@@ -90,9 +88,7 @@ export function GameControls() {
                 <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                   <AlertDialogHeader>
                     <AlertDialogTitle>{t("gameControls.offerDrawTitle")}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t("gameControls.offerDrawDescription")}
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>{t("gameControls.offerDrawDescription")}</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>

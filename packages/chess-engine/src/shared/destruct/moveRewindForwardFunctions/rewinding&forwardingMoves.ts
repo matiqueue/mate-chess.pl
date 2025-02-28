@@ -1,8 +1,8 @@
-import Board from "@modules/chess/board/board"
+import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-export const rewindMove = (board: Board): boolean => {
-  return board.rewindMove()
+export const rewindMove = (game: ChessGameExtraLayer): boolean => {
+  return game.board.rewindMove()
 }
-export const forwardMove = (board: Board): boolean => {
-  return board.forwardMove()
+export const forwardMove = (game: ChessGameExtraLayer): boolean => {
+  return game.board.forwardMove()
 }

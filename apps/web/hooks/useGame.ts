@@ -15,6 +15,8 @@ import {
   getPositionByCords,
   getPositionByNotation,
   getPositionById,
+  rewindMove,
+  forwardMove,
 } from "@modules/index"
 
 const useGame = () => {
@@ -46,7 +48,7 @@ const useGame = () => {
     return false
   }
 
-  const undoMove = (): boolean => {
+  const undoLastMove = (): boolean => {
     if (undoMove(game)) {
       setBoard(getBoard(game))
       setMoveHistory(getMoveHistory(game))
@@ -56,7 +58,26 @@ const useGame = () => {
     }
     return false
   }
-
+  const reviewLastMove = (): boolean => {
+    if (rewindMove(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+      return true
+    }
+    return false
+  }
+  const forwardLastMove = (): boolean => {
+    if (forwardMove(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+      return true
+    }
+    return false
+  }
   return {
     game,
     board,
@@ -64,7 +85,9 @@ const useGame = () => {
     currentPlayer,
     gameStatus,
     movePiece,
-    undoMove,
+    undoLastMove,
+    forwardLastMove,
+    reviewLastMove,
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),

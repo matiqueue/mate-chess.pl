@@ -60,6 +60,11 @@ class ChessGame {
   }
 
   public makeMove(move: Move): boolean {
+    if (this.board.previewIndex > 0) {
+      while (this.board.previewMode) {
+        this.board.forwardMove()
+      }
+    }
     if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
       if (this._board?.moveFigure(move)) {
@@ -70,6 +75,7 @@ class ChessGame {
           }
         }
         this.switchCurrentPlayer()
+        this.board.initPreview()
         return true
       }
     }
