@@ -6,6 +6,7 @@ import linkRouter from "./api/link"
 import onlineRouter from "./api/online"
 import { setupSockets } from "./sockets/lobby"
 import { Lobby } from "./types"
+import chalk from "chalk"
 
 const app = express()
 const server = http.createServer(app)
@@ -28,5 +29,5 @@ app.use("/api", onlineRouter)
 setupSockets(io)
 
 server.listen(4000, () => {
-  console.log("[SERVER] Serwer uruchomiony na porcie 4000")
+  console.log(chalk.bgGreen.black.bold(" [SERVER] ") + chalk.green(" Serwer uruchomiony na porcie 4000 "))
 })

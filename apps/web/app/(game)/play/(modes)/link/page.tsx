@@ -22,6 +22,11 @@ function Navbar({ code }: { code: string }) {
   const { t } = useTranslation()
   const sidebarOffset = 128
 
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(code)
+    alert("Code copied to clipboard!")
+  }
+
   return (
     <motion.nav
       initial={{ y: -50, opacity: 0, x: 0 }}
@@ -37,16 +42,19 @@ function Navbar({ code }: { code: string }) {
         </Link>
       </div>
 
-      <div className="flex-1 text-center">
-        <div className="inline-block border-l-[3px] border-r-[3px] border-black dark:border-white rounded-md px-5">
+      <div className="flex-1 text-center relative group">
+        <div className="inline-block border-l-[3px] border-r-[3px] border-black dark:border-white rounded-md px-5 cursor-pointer" onClick={handleCopyCode}>
           <motion.span
             initial={{ scale: 1 }}
             animate={{ scale: [1, 1, 1, 1.1, 1.0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             className="text-lg font-bold text-black dark:text-white inline-block"
           >
-            {t("linkLobby.link")}: {code}
+            Link: {code}
           </motion.span>
+        </div>
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 hidden group-hover:block bg-gray-800 text-white text-sm py-1 px-2 rounded">
+          Click to copy code
         </div>
       </div>
 
@@ -130,7 +138,7 @@ export default function LinkLobby() {
     socket.on("playerKicked", (playerId) => {
       const myId = user?.id || localStorage.getItem("guestId")
       if (playerId === myId) {
-        alert(t("linkLobby.kickedMessage"))
+        alert("You have been kicked from the lobby")
         router.push("/play")
       }
     })
@@ -149,7 +157,7 @@ export default function LinkLobby() {
       socket.off("countdown")
       socket.off("gameStarted")
     }
-  }, [lobbyId, user, router, t])
+  }, [lobbyId, user, router])
 
   const handleStartGame = async () => {
     const myId = user?.id || localStorage.getItem("guestId")
@@ -198,28 +206,49 @@ export default function LinkLobby() {
               transition={{ type: "spring", stiffness: 100, damping: 10 }}
               className="text-5xl sm:text-7xl md:text-8xl font-bold mb-12 tracking-tighter"
             >
-              {t("linkLobby.waitingForSecondPlayer")
-                .split(" ")
-                .map((word, wordIndex) => (
-                  <span key={wordIndex} className="inline-block mr-4 last:mr-0">
-                    {word.split("").map((letter, letterIndex) => (
-                      <motion.span
-                        key={`${wordIndex}-${letterIndex}`}
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{
-                          delay: wordIndex * 0.1 + letterIndex * 0.03,
-                          type: "spring",
-                          stiffness: 150,
-                          damping: 25,
-                        }}
-                        className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
-                      >
-                        {letter}
-                      </motion.span>
-                    ))}
-                  </span>
-                ))}
+              {lobby.length < 2
+                ? t("linkLobby.waitingForSecondPlayer")
+                    .split(" ")
+                    .map((word, wordIndex) => (
+                      <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+                        {word.split("").map((letter, letterIndex) => (
+                          <motion.span
+                            key={`${wordIndex}-${letterIndex}`}
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{
+                              delay: wordIndex * 0.1 + letterIndex * 0.03,
+                              type: "spring",
+                              stiffness: 150,
+                              damping: 25,
+                            }}
+                            className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
+                          >
+                            {letter}
+                          </motion.span>
+                        ))}
+                      </span>
+                    ))
+                : "Both players are in the lobby".split(" ").map((word, wordIndex) => (
+                    <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+                      {word.split("").map((letter, letterIndex) => (
+                        <motion.span
+                          key={`${wordIndex}-${letterIndex}`}
+                          initial={{ y: 100, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            delay: wordIndex * 0.1 + letterIndex * 0.03,
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 25,
+                          }}
+                          className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
+                        >
+                          {letter}
+                        </motion.span>
+                      ))}
+                    </span>
+                  ))}
             </motion.h1>
 
             <div className="flex flex-row justify-center items-center gap-12 mb-12">
@@ -235,11 +264,6 @@ export default function LinkLobby() {
                     </Avatar>
                   </div>
                   <span className="text-2xl font-semibold text-neutral-700 dark:text-white">{player.name}</span>
-                  {isCreator && player.id !== myId && lobby.length > 1 && (
-                    <Button onClick={() => handleKickPlayer(player.id)} className="mt-2 bg-red-500 text-white px-4 py-1 rounded">
-                      {t("linkLobby.kickPlayer")}
-                    </Button>
-                  )}
                 </div>
               ))}
               {lobby.length === 1 && (
@@ -259,11 +283,18 @@ export default function LinkLobby() {
             </div>
 
             {lobby.length === 2 && isCreator && (
-              <Button onClick={handleStartGame} className={buttonClasses}>
-                {t("linkLobby.startGame")}
-              </Button>
+              <div className="flex justify-center gap-4">
+                <Button onClick={handleStartGame} className={buttonClasses}>
+                  Start Game
+                </Button>
+                {lobby[1] && (
+                  <Button onClick={() => handleKickPlayer(lobby[1].id)} className="px-8 py-4 bg-red-500 text-white">
+                    Kick Player
+                  </Button>
+                )}
+              </div>
             )}
-            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">{t("linkLobby.startCountdown", { count: countdown })}</p>}
+            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">Start za {countdown}...</p>}
           </motion.div>
         </div>
       </div>

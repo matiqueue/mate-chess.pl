@@ -151,28 +151,49 @@ export default function OnlineLobby() {
               transition={{ type: "spring", stiffness: 100, damping: 10 }}
               className="text-5xl sm:text-7xl md:text-8xl font-bold mb-12 tracking-tighter"
             >
-              {t("linkLobby.waitingForSecondPlayer")
-                .split(" ")
-                .map((word, wordIndex) => (
-                  <span key={wordIndex} className="inline-block mr-4 last:mr-0">
-                    {word.split("").map((letter, letterIndex) => (
-                      <motion.span
-                        key={`${wordIndex}-${letterIndex}`}
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{
-                          delay: wordIndex * 0.1 + letterIndex * 0.03,
-                          type: "spring",
-                          stiffness: 150,
-                          damping: 25,
-                        }}
-                        className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
-                      >
-                        {letter}
-                      </motion.span>
-                    ))}
-                  </span>
-                ))}
+              {lobby.length < 2
+                ? t("linkLobby.waitingForSecondPlayer")
+                    .split(" ")
+                    .map((word, wordIndex) => (
+                      <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+                        {word.split("").map((letter, letterIndex) => (
+                          <motion.span
+                            key={`${wordIndex}-${letterIndex}`}
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{
+                              delay: wordIndex * 0.1 + letterIndex * 0.03,
+                              type: "spring",
+                              stiffness: 150,
+                              damping: 25,
+                            }}
+                            className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
+                          >
+                            {letter}
+                          </motion.span>
+                        ))}
+                      </span>
+                    ))
+                : "Both players are in the lobby".split(" ").map((word, wordIndex) => (
+                    <span key={wordIndex} className="inline-block mr-4 last:mr-0">
+                      {word.split("").map((letter, letterIndex) => (
+                        <motion.span
+                          key={`${wordIndex}-${letterIndex}`}
+                          initial={{ y: 100, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            delay: wordIndex * 0.1 + letterIndex * 0.03,
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 25,
+                          }}
+                          className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 dark:from-white dark:to-white"
+                        >
+                          {letter}
+                        </motion.span>
+                      ))}
+                    </span>
+                  ))}
             </motion.h1>
 
             <div className="flex flex-row justify-center items-center gap-12 mb-12">
@@ -206,7 +227,7 @@ export default function OnlineLobby() {
               )}
             </div>
 
-            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">{t("linkLobby.startCountdown", { count: countdown })}</p>}
+            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">Start za {countdown}...</p>}
           </motion.div>
         </div>
       </div>
