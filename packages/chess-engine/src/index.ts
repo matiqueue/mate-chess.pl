@@ -8,6 +8,7 @@ import { getMoveHistory } from "@shared/destruct/movementFunctions/getMoveHistor
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { promote } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
+import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
@@ -34,4 +35,5 @@ export {
   forwardMove,
   rewindMove,
   returnToCurrentState,
+  isMoveEnPassant,
 }

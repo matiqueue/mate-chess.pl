@@ -1,4 +1,4 @@
-import { Figure, King, Pawn, Rook, Bishop, Queen, Knight } from "@utils/figureUtils"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { Position } from "@utils/boardUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
@@ -861,11 +861,11 @@ class Board {
   get moveHistory(): MoveRecord[] {
     return this._moveHistory
   }
-  private isMoveEnPassant(move: Move): boolean {
+  public isMoveEnPassant(move: Move): boolean {
     const { from, to } = move
     const performingFigure = this.getFigureAtPosition(from)
 
-    if (!performingFigure) return false
+    if (!performingFigure || performingFigure.type !== figureType.pawn) return false
     if (
       (performingFigure.color === color.White && performingFigure.position.y !== 3) ||
       (performingFigure.color === color.Black && performingFigure.position.y !== 4)

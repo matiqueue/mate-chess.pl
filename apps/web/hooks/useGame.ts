@@ -18,6 +18,7 @@ import {
   rewindMove,
   forwardMove,
   returnToCurrentState,
+  isMoveEnPassant,
 } from "@modules/index"
 
 const useGame = () => {
@@ -98,6 +99,7 @@ const useGame = () => {
     forwardLastMove,
     reviewLastMove,
     returnToCurrentGameState,
+    isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),

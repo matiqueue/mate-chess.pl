@@ -13,17 +13,15 @@ import { SiChessdotcom as ChessPawn } from "react-icons/si"
 import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
+import { isMoveEnPassant } from "@chess-engine/functions"
 
-// Typy dla pozycji (dostosuj do swojego GameContext)
 interface Position {
   notation: string
   figure: { type: string; color: string } | null
-  // Indeksy, żeby łatwo rysować strzałkę
   rowIndex?: number
   colIndex?: number
 }
 
-// Typ na pojedynczą strzałkę
 interface ArrowData {
   start: Position
   end: Position
@@ -33,15 +31,11 @@ export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
 
-  const { board, movePiece, getValidMoves, currentPlayer } = useGameContext()
+  const { board, movePiece, getValidMoves, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
-  // Stan pionka wybranego lewym przyciskiem (do normalnych ruchów)
   const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
-
-  // Stan do zaznaczania początkowego pola strzałki prawym przyciskiem
   const [arrowStart, setArrowStart] = useState<Position | null>(null)
-  // Tablica wszystkich narysowanych strzałek
   const [arrows, setArrows] = useState<ArrowData[]>([])
 
   const initialBoard = [
@@ -56,7 +50,7 @@ export function ChessBoard2D() {
   ]
 
   const rawBoard = board ? board.getBoardArray() : initialBoard
-  const boardRows = rawBoard.slice(rawBoard.length - 8) // Bierzemy ostatnie 8 wierszy
+  const boardRows = rawBoard.slice(rawBoard.length - 8)
 
   const getNotation = (rowIndex: number, colIndex: number) => {
     const letters = "abcdefgh"
@@ -65,35 +59,26 @@ export function ChessBoard2D() {
     return file + rank
   }
 
-  // Prawy przycisk myszy (PPM) – tworzenie strzałek
   const handleSquareRightClick = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    e.preventDefault() // Blokujemy menu kontekstowe
+    e.preventDefault()
     if (!board) return
 
     const notation = getNotation(rowIndex, colIndex)
     const square = board.getPositionByNotation(notation)
     if (!square) return
 
-    // Rozszerzamy square o rowIndex i colIndex
-    const extendedSquare: Position = {
-      ...square,
-      rowIndex,
-      colIndex,
-    }
+    const extendedSquare: Position = { ...square, rowIndex, colIndex }
 
-    // Pierwszy klik PPM
     if (!arrowStart) {
       setArrowStart(extendedSquare)
       return
     }
 
-    // Drugi klik PPM – tworzymy nową strzałkę i odznaczamy pionka
     setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
     setArrowStart(null)
     setSelectedSquare(null)
   }
 
-  // Lewy przycisk myszy (LPM) – standardowy ruch figur
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
     if (!board) return
 
@@ -131,7 +116,6 @@ export function ChessBoard2D() {
     }
   }
 
-  // Renderowanie figur
   const renderPiece = (symbol: string, rowIndex: number, colIndex: number) => {
     if (board) {
       const notation = getNotation(rowIndex, colIndex)
@@ -198,7 +182,6 @@ export function ChessBoard2D() {
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
-  // Ustalanie koloru pól szachownicy
   function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
     const isBlack = (rowIndex + colIndex) % 2 === 0
     return isBlack
@@ -210,7 +193,6 @@ export function ChessBoard2D() {
         : "bg-zinc-200 hover:bg-neutral-500"
   }
 
-  // Renderowanie wszystkich strzałek
   function renderArrows() {
     return arrows.map((arrow, index) => {
       const { start, end } = arrow
@@ -219,16 +201,13 @@ export function ChessBoard2D() {
       const endTop = (end.rowIndex ?? 0) * 12.5 + 6.25
       const endLeft = (end.colIndex ?? 0) * 12.5 + 6.25
 
-      // Segment pionowy
       const verticalTop = Math.min(startTop, endTop)
       const verticalHeight = Math.abs(endTop - startTop)
-      // Segment poziomy
       const horizontalLeft = Math.min(startLeft, endLeft)
       const horizontalWidth = Math.abs(endLeft - startLeft)
       const cornerTop = endTop
       const cornerLeft = startLeft
 
-      // Style odcinków i grot
       const verticalStyle: React.CSSProperties = {
         position: "absolute",
         background: "linear-gradient(to bottom, #555, #999)",
@@ -281,15 +260,12 @@ export function ChessBoard2D() {
 
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
-      {/* Warstwa dekoracyjna */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
         <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
       </div>
 
-      {/* Kontener szachownicy */}
       <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-        {/* Tutaj renderujemy wszystkie strzałki */}
         {renderArrows()}
 
         <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
@@ -299,6 +275,9 @@ export function ChessBoard2D() {
               const square = board?.getPositionByNotation(notation)
               const isSelected = selectedSquare && selectedSquare.notation === notation
               const isValidMove = validMoves.some((pos) => pos.notation === notation)
+
+              // Sprawdzamy, czy ruch na to pole to en passant
+              const isEnPassantMove = selectedSquare && checkEnPassant({ from: selectedSquare, to: square })
 
               let isKingInCheck = false
               if (square?.figure?.type === "king") {
@@ -330,9 +309,16 @@ export function ChessBoard2D() {
                     </>
                   )}
 
+                  {/* Specjalne podświetlenie dla en passant */}
+                  {isEnPassantMove && (
+                    <div
+                      className={clsx("absolute inset-0 bg-yellow-500 opacity-50 pointer-events-none rounded-md", "border-2 border-dashed border-yellow-700")}
+                    />
+                  )}
+
                   {isSelected && (
                     <div
-                      className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 
+                      className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500
                  rounded-tl-md rounded-tr-sm rounded-bl-sm rounded-br-none pointer-events-none z-0"
                     />
                   )}
