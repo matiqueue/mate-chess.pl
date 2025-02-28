@@ -82,10 +82,7 @@ class ChessGame {
     return false
   }
   public undoMove(): boolean {
-    const succes = this._board.undoLastMove()
-    if (succes) this.switchCurrentPlayer()
-
-    return succes
+    return this.board.previewLastMove()
   }
   public getMoveHistory(): string[] {
     const result: string[] = []

@@ -240,7 +240,7 @@ class Board {
     return true
   }
 
-  public undoLastMove(): boolean {
+  private undoLastMove(): boolean {
     if (this._moveHistory.length === 0) return false
 
     const lastMove = this._moveHistory[this._moveHistory.length - 1]
@@ -937,6 +937,15 @@ class Board {
     return true
   }
 
+  public previewLastMove(): boolean {
+    if (this.previewIndex > 0) {
+      while (this.previewIndex !== 0) {
+        this.rewindMove()
+      }
+      return true
+    }
+    return false
+  }
   get previewIndex(): number {
     return this._previewIndex
   }
