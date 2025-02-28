@@ -128,59 +128,57 @@ class Board {
         figure.isEnPassantPossible = true
       }
       // En passant
-      if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure) {
-        if (this.isMoveEnPassant(move)) {
-          const { from, to } = move
-          const performingFigure = this.getFigureAtPosition(from)
-          if (!performingFigure) return false
+      if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure && this.isMoveEnPassant(move)) {
+        const { from, to } = move
+        const performingFigure = this.getFigureAtPosition(from)
+        if (!performingFigure) return false
 
-          const leftPosition = this.getPositionByCords(from.x - 1, from.y)
-          const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+        const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+        const rightPosition = this.getPositionByCords(from.x + 1, from.y)
 
-          if (!leftPosition && !rightPosition) return false
+        if (!leftPosition && !rightPosition) return false
 
-          const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
-          const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
+        const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
+        const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
 
-          // Sprawdzamy lewą stronę en passant
-          if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
-            capturedFigure = leftFigure
-            leftPosition!.figure = null
-            if (!simulate) {
-              // Usuwamy zbity pionek z odpowiedniej tablicy
-              if (capturedFigure.color === color.White) {
-                this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
-              } else {
-                this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
-              }
-              this.updateArray()
+        // Sprawdzamy lewą stronę en passant
+        if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
+          capturedFigure = leftFigure
+          leftPosition!.figure = null
+          if (!simulate) {
+            // Usuwamy zbity pionek z odpowiedniej tablicy
+            if (capturedFigure.color === color.White) {
+              this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+            } else {
+              this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
             }
-            figure.position = toPos
-            fromPos.figure = null
-            toPos.figure = figure
-
-            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
-            return true
+            this.updateArray()
           }
-          // Sprawdzamy prawą stronę en passant
-          else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
-            capturedFigure = rightFigure
-            rightPosition!.figure = null
-            if (!simulate) {
-              if (capturedFigure.color === color.White) {
-                this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
-              } else {
-                this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
-              }
-              this.updateArray()
+          figure.position = toPos
+          fromPos.figure = null
+          toPos.figure = figure
+
+          this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
+          return true
+        }
+        // Sprawdzamy prawą stronę en passant
+        else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
+          capturedFigure = rightFigure
+          rightPosition!.figure = null
+          if (!simulate) {
+            if (capturedFigure.color === color.White) {
+              this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+            } else {
+              this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
             }
-            figure.position = toPos
-            fromPos.figure = null
-            toPos.figure = figure
-
-            this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
-            return true
+            this.updateArray()
           }
+          figure.position = toPos
+          fromPos.figure = null
+          toPos.figure = figure
+
+          this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
+          return true
         }
       }
     }
@@ -868,6 +866,11 @@ class Board {
     const performingFigure = this.getFigureAtPosition(from)
 
     if (!performingFigure) return false
+    if (
+      (performingFigure.color === color.White && performingFigure.position.y !== 3) ||
+      (performingFigure.color === color.Black && performingFigure.position.y !== 4)
+    )
+      return false
     // Ensure the move is a diagonal move by 1 in the x-axis
     if (Math.abs(to.x - from.x) !== 1 || Math.abs(to.y - from.y) !== 1) return false
 
