@@ -118,58 +118,69 @@ class Board {
 
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
+      // Usuwamy referencję z pozycji – dalsze usunięcie z tablicy nastąpi poniżej
       toPos.figure = null
     }
 
     if (figure instanceof Pawn) {
       figure.isFirstMove = false
 
-      // If moving two squares forward, mark en passant possible on this pawn
+      // Jeśli ruch o dwa pola do przodu – oznacz en passant
       if (Math.abs(move.from.y - move.to.y) === 2 && move.from.x === move.to.x) {
         figure.isEnPassantPossible = true
       }
-      //DO NOT DELETE
+      // En passant
       if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure) {
         if (this.isMoveEnPassant(move)) {
           const { from, to } = move
           const performingFigure = this.getFigureAtPosition(from)
           if (!performingFigure) return false
 
-          // Get adjacent positions (left and right of the starting position)
           const leftPosition = this.getPositionByCords(from.x - 1, from.y)
           const rightPosition = this.getPositionByCords(from.x + 1, from.y)
 
-          // Ensure we have at least one valid adjacent position
           if (!leftPosition && !rightPosition) return false
 
-          // Get figures only if the positions exist
           const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
           const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
 
-          // Check left side for en passant capture
+          // Sprawdzamy lewą stronę en passant
           if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
             capturedFigure = leftFigure
             leftPosition!.figure = null
-
+            if (!simulate) {
+              // Usuwamy zbity pionek z odpowiedniej tablicy
+              if (capturedFigure.color === color.White) {
+                this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+              } else {
+                this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+              }
+              this.updateArray()
+            }
             figure.position = toPos
             fromPos.figure = null
             toPos.figure = figure
 
             this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
-
             return true
           }
-          // Check right side for en passant capture
+          // Sprawdzamy prawą stronę en passant
           else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
             capturedFigure = rightFigure
             rightPosition!.figure = null
-
+            if (!simulate) {
+              if (capturedFigure.color === color.White) {
+                this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+              } else {
+                this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+              }
+              this.updateArray()
+            }
             figure.position = toPos
             fromPos.figure = null
             toPos.figure = figure
 
             this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
-
             return true
           }
         }
@@ -215,12 +226,21 @@ class Board {
       figure.hasMoved = true
     }
 
+    // Przy standardowym ruchu – jeśli nastąpiło bicie, usuń figurę z tablicy przeciwnika
+    if (!simulate && capturedFigure && capturedFigure.color !== figure.color) {
+      if (capturedFigure.color === color.White) {
+        this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+      } else {
+        this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+      }
+      this.updateArray()
+    }
+
     figure.position = toPos
     fromPos.figure = null
     toPos.figure = figure
 
     this._moveHistory.push(new MoveRecord(move, figure, capturedFigure, wasFirstMove))
-
     return true
   }
 
@@ -580,13 +600,18 @@ class Board {
 
   public isKingInCheck(colorType: color.White | color.Black): boolean {
     const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
-    const enemyFigures = colorType === color.White ? this._blackFigures : this._whiteFigures
-
     if (!king) return false
 
+    const enemyFigures = colorType === color.White ? this._blackFigures : this._whiteFigures
+
     for (const figure of enemyFigures) {
-      // Zamiast wywoływać isLegalMove (które symuluje ruch i sprawdza króla)
-      // sprawdzamy, czy dana figura może (pseudo)legalnie zaatakować pole króla.
+      // Sprawdź, czy figura jest "fizycznie" na planszy:
+      // 1. Ma jakąś pozycję
+      // 2. Ta pozycja faktycznie wskazuje na tę figurę
+      if (!figure.position || figure.position.figure !== figure) {
+        continue
+      }
+      // Dopiero wtedy sprawdzamy, czy atakuje króla
       if (figure.isMoveValid(king.position)) {
         return true
       }
