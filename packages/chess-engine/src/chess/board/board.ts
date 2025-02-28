@@ -7,7 +7,6 @@ import MoveRecord from "@shared/types/moveRecord"
 import Bishop from "@modules/chess/figure/figures/bishop"
 import Knight from "@modules/chess/figure/figures/knight"
 import Queen from "@modules/chess/figure/figures/queen"
-import figure from "@modules/chess/figure/figure"
 
 class Board {
   private positions: Map<string, Position>
@@ -250,7 +249,7 @@ class Board {
 
     const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
-      let capPos: Position | null = null
+      let capPos: Position | null
       if (lastMove.enPassant && capturedFigure instanceof Pawn) {
         capturedFigure.isEnPassantPossible = true
         // Dla en passant wyliczamy oryginalną pozycję zbitego pionka
@@ -760,15 +759,10 @@ class Board {
     const leftFigure = leftPosition?.figure
     const rightFigure = rightPosition?.figure
 
-    if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
-      return true
-    }
-
-    if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
-      return true
-    }
-
-    return false
+    return (
+      (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) ||
+      (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1)
+    )
   }
   public promote(position: Position, promotionType: figureType.knight | figureType.queen | figureType.rook | figureType.bishop): boolean {
     if (!position || !(position.figure instanceof Pawn)) return false
