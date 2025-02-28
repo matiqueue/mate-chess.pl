@@ -9,6 +9,7 @@ import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
+import { v4 as uuidv4 } from "uuid"
 
 const container = {
   hidden: { opacity: 0 },
@@ -49,39 +50,88 @@ export default function GameModeSelector() {
   const gameModes = [
     {
       key: "local",
-      title: t("gameModeLocal"), // np. "Local"
-      description: t("gameModeLocalDescription"), // np. "Play with a friend on the same computer."
+      title: t("gameModeLocal"),
+      description: t("gameModeLocalDescription"),
       icon: Users,
     },
     {
       key: "withLink",
-      title: t("gameModeWithLink"), // np. "With Link"
-      description: t("gameModeWithLinkDescription"), // np. "Create a lobby and share the link with your friend."
+      title: t("gameModeWithLink"),
+      description: t("gameModeWithLinkDescription"),
       icon: Link2,
     },
     {
       key: "online",
-      title: t("gameModeOnline"), // np. "Online"
-      description: t("gameModeOnlineDescription"), // np. "Play against a random opponent online."
+      title: t("gameModeOnline"),
+      description: t("gameModeOnlineDescription"),
       icon: Server,
     },
   ]
 
-  const handleModeSelect = (mode: string) => {
-    // Jeśli tryb Online i brak użytkownika – nie rób nic
-    if (mode === "Online" && !user) return
-    const route = mode === "With Link" ? "/play/link" : `/play/${mode.toLowerCase()}`
-    router.push(route)
+  const handleCreateLinkLobby = async () => {
+    const player = user
+      ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
+      : { id: localStorage.getItem("guestId") || uuidv4(), name: "Guest", avatar: "/default-avatar.png", isGuest: true }
+
+    if (player.isGuest && !localStorage.getItem("guestId")) {
+      localStorage.setItem("guestId", player.id)
+    }
+
+    const res = await fetch("http://localhost:4000/api/create-link-lobby", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ player }),
+    })
+    const data = await res.json()
+    router.push(`/play/link?code=${data.code}&lobbyId=${data.lobbyId}`)
   }
 
-  const handleJoinLobby = () => {
-    console.log("Joining lobby with code:", joinCode)
+  const handleJoinLinkLobby = async () => {
+    const player = user
+      ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
+      : { id: localStorage.getItem("guestId") || uuidv4(), name: "Guest", avatar: "/default-avatar.png", isGuest: true }
+
+    if (player.isGuest && !localStorage.getItem("guestId")) {
+      localStorage.setItem("guestId", player.id)
+    }
+
+    const res = await fetch("http://localhost:4000/api/join-link-lobby", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: joinCode, player }),
+    })
+    const data = await res.json()
+    if (data.lobbyId) {
+      router.push(`/play/link?code=${joinCode}&lobbyId=${data.lobbyId}`)
+    } else {
+      alert(data.error)
+    }
+  }
+
+  const handleJoinOnlineLobby = async () => {
+    if (!user) {
+      setShowOnlineTooltip(true)
+      return
+    }
+
+    const player = { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
+
+    const res = await fetch("http://localhost:4000/api/join-online-lobby", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ player }),
+    })
+    const data = await res.json()
+    if (data.lobbyId) {
+      router.push(`/play/online?lobbyId=${data.lobbyId}`)
+    } else {
+      alert(data.error)
+    }
   }
 
   return (
     <ScrollArea>
       <div className="relative w-full" style={{ height: "calc(100vh - 64px)" }}>
-        {/* Background Image: widoczne tylko w trybie ciemnym */}
         {theme === "dark" && (
           <motion.div
             className="absolute inset-0 sm:m-[5%] rounded-[70%_10%_90%_15%_/25%_60%_35%_50%]"
@@ -95,7 +145,6 @@ export default function GameModeSelector() {
           />
         )}
 
-        {/* Content */}
         <motion.div
           initial={{ y: 30 }}
           animate={{ y: 0 }}
@@ -150,7 +199,13 @@ export default function GameModeSelector() {
                       className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => handleModeSelect(mode.key)}
+                      onClick={
+                        mode.key === "withLink"
+                          ? handleCreateLinkLobby
+                          : mode.key === "online"
+                            ? handleJoinOnlineLobby
+                            : () => router.push(`/play/${mode.key.toLowerCase()}`)
+                      }
                       disabled={isOnline && !user}
                     >
                       <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
@@ -197,7 +252,7 @@ export default function GameModeSelector() {
                 <motion.input
                   type="text"
                   value={joinCode}
-                  onChange={(e) => setJoinCode(e.target.value.slice(0, 5))}
+                  onChange={(e) => setJoinCode(e.target.value.slice(0, 6).toUpperCase())}
                   placeholder={t("enterCodePlaceholder")}
                   className="flex-1 p-2 border border-gray-300 rounded shadow-lg text-center bg-background text-foreground"
                   initial={{ opacity: 0, x: -10 }}
@@ -206,7 +261,7 @@ export default function GameModeSelector() {
                 />
                 <MotionButton
                   className="flex-1 bg-popover-foreground hover:bg-primary border"
-                  onClick={handleJoinLobby}
+                  onClick={handleJoinLinkLobby}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.5 }}

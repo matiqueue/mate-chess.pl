@@ -30,9 +30,15 @@ importers:
 
   apps/server:
     dependencies:
+      '@types/chalk':
+        specifier: ^2.2.4
+        version: 2.2.4
       '@workspace/chess-engine':
         specifier: workspace:*
         version: link:../../packages/chess-engine
+      chalk:
+        specifier: ^5.4.1
+        version: 5.4.1
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -82,9 +88,15 @@ importers:
       '@react-three/fiber':
         specifier: ^8.17.12
         version: 8.17.12(@types/react@18.3.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(three@0.172.0)
+      '@types/chalk':
+        specifier: ^2.2.4
+        version: 2.2.4
       '@types/tailwindcss':
         specifier: ^3.1.0
         version: 3.1.0(ts-node@10.9.2(@types/node@20.17.10)(typescript@5.7.2))
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
       '@vercel/analytics':
         specifier: ^1.4.1
         version: 1.4.1(next@15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -100,6 +112,9 @@ importers:
       axios:
         specifier: ^1.7.9
         version: 1.7.9
+      chalk:
+        specifier: ^5.4.1
+        version: 5.4.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -157,6 +172,9 @@ importers:
       three:
         specifier: ^0.172.0
         version: 0.172.0
+      uuid:
+        specifier: ^11.0.5
+        version: 11.0.5
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -1698,6 +1716,10 @@ packages:
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
+  '@types/chalk@2.2.4':
+    resolution: {integrity: sha512-pb/QoGqtCpH2famSp72qEsXkNzcErlVmiXlQ/ww+5AddD8TmmYS7EWg5T20YiNCAiTgs8pMf2G8SJG5h/ER1ZQ==}
+    deprecated: This is a stub types definition. chalk provides its own type definitions, so you do not need this installed.
+
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
@@ -1817,6 +1839,9 @@ packages:
 
   '@types/tinycolor2@1.4.6':
     resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
+
+  '@types/uuid@10.0.0':
+    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
 
   '@types/webxr@0.5.21':
     resolution: {integrity: sha512-geZIAtLzjGmgY2JUi6VxXdCrTb99A7yP49lxLr2Nm/uIK0PkkxcEi4OGhoGDO4pxCf3JwGz2GiJL2Ej4K2bKaA==}
@@ -2243,6 +2268,10 @@ packages:
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
+
+  chalk@5.4.1:
+    resolution: {integrity: sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   change-case@3.1.0:
     resolution: {integrity: sha512-2AZp7uJZbYEzRPsFoa+ijKdvp9zsrnnt6+yFokfwEpeJm0xuJDVoxiRCAaTzyJND8GJkofo2IcKWaUZ/OECVzw==}
@@ -6523,6 +6552,10 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 22.12.0
 
+  '@types/chalk@2.2.4':
+    dependencies:
+      chalk: 5.4.1
+
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.12.0
@@ -6672,6 +6705,8 @@ snapshots:
       '@types/node': 22.12.0
 
   '@types/tinycolor2@1.4.6': {}
+
+  '@types/uuid@10.0.0': {}
 
   '@types/webxr@0.5.21': {}
 
@@ -7272,6 +7307,8 @@ snapshots:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+
+  chalk@5.4.1: {}
 
   change-case@3.1.0:
     dependencies:
