@@ -11,7 +11,7 @@
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "prettier": "^3.5.1",
+    "prettier": "^3.5.2",
     "turbo": "^2.4.4"
   },
   "packageManager": "pnpm@9.12.3",
@@ -19,7 +19,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@eslint/js": "^9.20.0",
+    "@eslint/js": "^9.21.0",
     "autoprefixer": "^10.4.20"
   }
 }
