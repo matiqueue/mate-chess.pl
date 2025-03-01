@@ -15,6 +15,7 @@ export const io = new Server(server, {
   cors: {
     origin: ["http://localhost:3000", "http://localhost:3001"],
     methods: ["GET", "POST"],
+    credentials: true, // Dodaj, jeśli używasz ciasteczek lub autoryzacji
   },
 })
 
@@ -36,19 +37,19 @@ const stripAnsi = (str: string): string => {
 const originalConsoleLog = console.log
 console.log = function (...args: any[]) {
   const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
-  originalConsoleLog(message) // Wyświetl w konsoli serwera z kolorami
-  const cleanMessage = stripAnsi(message) // Usuń kody ANSI dla admina
+  originalConsoleLog(message)
+  const cleanMessage = stripAnsi(message)
   if (serverLogs.length >= MAX_LOGS) {
-    serverLogs.shift() // Usuń najstarszy log
+    serverLogs.shift()
   }
-  serverLogs.push(cleanMessage) // Zapisz czysty log
-  adminLogsNamespace.emit("log", cleanMessage) // Wyślij czysty log do admina
+  serverLogs.push(cleanMessage)
+  adminLogsNamespace.emit("log", cleanMessage)
 }
 
 // Połączenie admina - wyślij wszystkie dotychczasowe logi
 adminLogsNamespace.on("connection", (socket) => {
   originalConsoleLog(chalk.bgYellow.black.bold(" [ADMIN] ") + chalk.yellow(" Admin podłączony do logów "))
-  socket.emit("initial_logs", serverLogs) // Wyślij początkowe logi
+  socket.emit("initial_logs", serverLogs)
   socket.on("disconnect", () => {
     originalConsoleLog(chalk.bgYellow.black.bold(" [ADMIN] ") + chalk.yellow(" Admin odłączony "))
   })
