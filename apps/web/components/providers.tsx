@@ -13,7 +13,7 @@ type ProvidersProps = {
   children: ReactNode
 }
 
-export function Providers({ children }: ProvidersProps) {
+export const Providers: React.FC<ProvidersProps> = ({ children }) => {
   const pathname = usePathname()
 
   if (pathname === "/") {
