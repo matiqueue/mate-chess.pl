@@ -192,11 +192,17 @@
   },
   "linkLobby": {
     "home": "Home",
-    "user": "User",
+    "waitingForSecondPlayer": "Waiting for the Second Player",
+    "bothPlayersInLobby": "Both players are in the lobby",
     "guest": "Guest",
     "waiting": "Waiting...",
-    "waitingForSecondPlayer": "Waiting for the Second Player",
-    "acceptGame": "Accept Game"
+    "acceptGame": "Accept Game",
+    "kickPlayer": "Kick Player",
+    "countdown": "Start in {{count}}...",
+    "linkLabel": "Link: {{code}}",
+    "copyTooltip": "Click to copy code",
+    "kickedFromLobby": "You have been kicked from the lobby",
+    "startingIn": "Starting in: "
   },
   "notFound": {
     "pageNotFound": "Page Not Found",

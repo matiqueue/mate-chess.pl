@@ -174,7 +174,7 @@ export default function OnlineLobby() {
                         ))}
                       </span>
                     ))
-                : "Both players are in the lobby".split(" ").map((word, wordIndex) => (
+                : t("linkLobby.bothPlayersInLobby").split(" ").map((word, wordIndex) => (
                     <span key={wordIndex} className="inline-block mr-4 last:mr-0">
                       {word.split("").map((letter, letterIndex) => (
                         <motion.span
@@ -227,7 +227,7 @@ export default function OnlineLobby() {
               )}
             </div>
 
-            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">Start za {countdown}...</p>}
+            {countdown !== null && <p className="mt-2 text-xl text-neutral-700 dark:text-white">{t("linkLobby.startingIn")}{countdown}...</p>}
           </motion.div>
         </div>
       </div>

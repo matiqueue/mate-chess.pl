@@ -189,14 +189,20 @@
     "offerDrawDescription": "Jeśli przeciwnik zaakceptuje, gra zakończy się remisem. Jeśli odmówi, gra będzie kontynuowana.",
     "sendOffer": "Wyślij propozycję"
   },
-  "linkLobby": {
-    "home": "Strona główna",
-    "user": "Użytkownik",
-    "guest": "Gość",
-    "waiting": "Oczekiwanie...",
-    "waitingForSecondPlayer": "Oczekiwanie na drugiego gracza",
-    "acceptGame": "Akceptuj grę"
-  },
+    "linkLobby": {
+      "home": "Strona główna",
+      "waitingForSecondPlayer": "Oczekiwanie na drugiego gracza",
+      "bothPlayersInLobby": "Obaj gracze są w lobby",
+      "guest": "Gość",
+      "waiting": "Oczekiwanie...",
+      "acceptGame": "Akceptuj grę",
+      "kickPlayer": "Wyrzuć gracza",
+      "countdown": "Start za {{count}}...",
+      "linkLabel": "Link: {{code}}",
+      "copyTooltip": "Kliknij, aby skopiować kod",
+      "kickedFromLobby": "Zostałeś wyrzucony z lobby",
+      "startingIn": "Start za: "
+    },
   "notFound": {
     "pageNotFound": "Strona nie znaleziona",
     "description": "Ups! Strona, której szukasz, nie istnieje.",
