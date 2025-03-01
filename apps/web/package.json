@@ -25,7 +25,6 @@
     "GLTFLoader": "link:three/examples/jsm/loaders/GLTFLoader",
     "OrbitControls": "link:three/examples/jsm/controls/OrbitControls",
     "axios": "^1.7.9",
-    "chalk": "^5.4.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.0.6",
     "gsap": "^3.12.7",
