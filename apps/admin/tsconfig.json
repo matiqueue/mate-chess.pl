@@ -1,27 +1,22 @@
 {
+  "extends": "@workspace/typescript-config/nextjs.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["../../packages/chess-engine/src/*"],
+      "@utils/*": ["../../packages/chess-engine/src/utils/*"],
+      "@shared/*": ["../../packages/chess-engine/src/shared/*"],
+      "@/*": ["./*"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"],
+      "@chess-engine/functions": ["../../packages/chess-engine/src/index.ts"],
+      "@chess-engine/types": ["../../packages/chess-engine/src/types.ts"]
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "next.config.mjs", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
