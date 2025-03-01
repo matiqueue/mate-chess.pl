@@ -193,9 +193,11 @@ class Board {
           if (newPosKing && newPosRook) {
             figure.position = newPosKing
             fromPos.figure = null
+            toPos.figure = null
 
             newPosKing.figure = figure
             newPosRook.figure = capturedFigure
+            capturedFigure.position = newPosRook
 
             figure.hasMoved = true
             capturedFigure.hasMoved = true
