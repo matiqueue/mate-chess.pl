@@ -2,21 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Eye,
-  Layout,
-  Settings2,
-  ChevronDown,
-  Clock,
-  MessageCircle,
-  Flag,
-  X,
-  Moon,
-  Sun,
-  PanelLeftClose,
-  PanelLeftOpen,
-  GripVertical,
-} from "lucide-react"
+import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
@@ -29,6 +15,7 @@ import { useGameContext } from "@/contexts/GameContext"
 import { useGameView } from "@/contexts/GameViewContext"
 import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 import { useTranslation } from "react-i18next"
+import { figureType } from "@modules/types"
 
 export function RightPanel() {
   const { t } = useTranslation()
@@ -46,7 +33,7 @@ export function RightPanel() {
   })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory } = useGameContext()
+  const { moveHistory, promote, isAwaitingPromotion } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -70,28 +57,29 @@ export function RightPanel() {
   }
 
   const renderMove = (move: string) => {
-    let translatedMove = move;
-  
+    let translatedMove = move
+
     // Najpierw zamieniamy "White:" na tłumaczenie, np. "Biały:"
     if (move.includes("White:")) {
-      translatedMove = move.replace("White:", t("playerInfo.white") + ":");
-    } if (move.includes("Black:")) {
-      translatedMove = move.replace("Black:", t("playerInfo.black") + ":");
+      translatedMove = move.replace("White:", t("playerInfo.white") + ":")
     }
-  
+    if (move.includes("Black:")) {
+      translatedMove = move.replace("Black:", t("playerInfo.black") + ":")
+    }
+
     // Teraz (opcjonalnie) reszta logiki dla stylów notacji
     switch (notationStyle) {
       case "algebraic":
-        return translatedMove;
+        return translatedMove
       case "long":
-        return translatedMove.length > 2 ? translatedMove : `P${translatedMove}`;
+        return translatedMove.length > 2 ? translatedMove : `P${translatedMove}`
       case "descriptive":
-        return `P-${translatedMove}`;
+        return `P-${translatedMove}`
       default:
-        return translatedMove;
+        return translatedMove
     }
-  };
-  
+  }
+
   const pathname = usePathname()
   let modeText = ""
   let modeColor = ""
@@ -166,12 +154,26 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="flex space-x-1">
                         <li>
-                          <Button variant="ghost" className="justify-center" onClick={() => { setViewMode("2D"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("2D")
+                              setActivePopover(null)
+                            }}
+                          >
                             2D
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="justify-center" onClick={() => { setViewMode("3D"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="justify-center"
+                            onClick={() => {
+                              setViewMode("3D")
+                              setActivePopover(null)
+                            }}
+                          >
                             3D
                           </Button>
                         </li>
@@ -191,12 +193,26 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Default layout"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Default layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             {t("rightPanel.defaultLayout")}
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Compact layout"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Compact layout")
+                              setActivePopover(null)
+                            }}
+                          >
                             {t("rightPanel.compactLayout")}
                           </Button>
                         </li>
@@ -216,12 +232,26 @@ export function RightPanel() {
                     <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
                       <ul className="space-y-1">
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Sound"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Sound")
+                              setActivePopover(null)
+                            }}
+                          >
                             {t("rightPanel.sound")}
                           </Button>
                         </li>
                         <li>
-                          <Button variant="ghost" className="w-full justify-start" onClick={() => { console.log("Notifications"); setActivePopover(null) }}>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              console.log("Notifications")
+                              setActivePopover(null)
+                            }}
+                          >
                             {t("rightPanel.notifications")}
                           </Button>
                         </li>
@@ -251,24 +281,32 @@ export function RightPanel() {
 
               <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
 
-              <div>
+              <div className={isAwaitingPromotion() ? "block" : "hidden"}>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessRook className="h-6 w-6" />
-                    <span className="sr-only">{t("rightPanel.rook")}</span>
+                    <span className="sr-only" onClick={() => promote(figureType.rook)}>
+                      {t("rightPanel.rook")}
+                    </span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessQueen className="h-6 w-6" />
-                    <span className="sr-only">{t("rightPanel.queen")}</span>
+                    <span className="sr-only" onClick={() => promote(figureType.queen)}>
+                      {t("rightPanel.queen")}
+                    </span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessBishop className="h-6 w-6" />
-                    <span className="sr-only">{t("rightPanel.bishop")}</span>
+                    <span className="sr-only" onClick={() => promote(figureType.bishop)}>
+                      {t("rightPanel.bishop")}
+                    </span>
                   </Button>
                   <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
                     <ChessKnight className="h-6 w-6" />
-                    <span className="sr-only">{t("rightPanel.knight")}</span>
+                    <span className="sr-only" onClick={() => promote(figureType.knight)}>
+                      {t("rightPanel.knight")}
+                    </span>
                   </Button>
                 </div>
               </div>

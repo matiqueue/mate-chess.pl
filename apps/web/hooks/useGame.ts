@@ -19,7 +19,10 @@ import {
   forwardMove,
   returnToCurrentState,
   isMoveEnPassant,
+  promote,
+  isAwaitingPromotion,
 } from "@modules/index"
+import { figureType } from "@chess-engine/types"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
@@ -99,6 +102,8 @@ const useGame = () => {
     forwardLastMove,
     reviewLastMove,
     returnToCurrentGameState,
+    isAwaitingPromotion: () => isAwaitingPromotion(game),
+    promote: (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => promote(game, figure),
     isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),

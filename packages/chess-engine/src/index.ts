@@ -6,7 +6,7 @@ import { startGame } from "@shared/destruct/rootFunc"
 import { undoMove } from "@shared/destruct/movementFunctions/undoMove"
 import { getMoveHistory } from "@shared/destruct/movementFunctions/getMoveHistory"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import { promote } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
+import { promote, isAwaitingPromotion } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
 
@@ -36,4 +36,5 @@ export {
   rewindMove,
   returnToCurrentState,
   isMoveEnPassant,
+  isAwaitingPromotion,
 }
