@@ -38,6 +38,9 @@ export function ChessBoard2D() {
   const [arrowStart, setArrowStart] = useState<Position | null>(null)
   const [arrows, setArrows] = useState<ArrowData[]>([])
 
+  // Nowy stan do obsługi rysowania strzałki (drag-and-drop)
+  const [isDrawingArrow, setIsDrawingArrow] = useState<boolean>(false)
+
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -59,6 +62,8 @@ export function ChessBoard2D() {
     return file + rank
   }
 
+  // STARA funkcja do rysowania strzałki na 2 kliknięcia:
+  // (Pozostawiona w kodzie, ale nieużywana w <div>)
   const handleSquareRightClick = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault()
     if (!board) return
@@ -77,6 +82,46 @@ export function ChessBoard2D() {
     setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
     setArrowStart(null)
     setSelectedSquare(null)
+  }
+
+  // NOWA logika – rysowanie strzałki przy przeciągnięciu prawego przycisku myszy:
+  const handleMouseDownSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    // e.button === 2 => prawy przycisk myszy
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
+
+      const notation = getNotation(rowIndex, colIndex)
+      const square = board.getPositionByNotation(notation)
+      if (!square) return
+
+      const extendedSquare: Position = { ...square, rowIndex, colIndex }
+      setArrowStart(extendedSquare)
+      setIsDrawingArrow(true)
+    }
+  }
+
+  const handleMouseUpSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    // Zwalniamy prawy przycisk
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
+
+      // Jeżeli jesteśmy w trakcie rysowania i mamy punkt startowy...
+      if (isDrawingArrow && arrowStart) {
+        const notation = getNotation(rowIndex, colIndex)
+        const square = board.getPositionByNotation(notation)
+        if (!square) return
+
+        const extendedSquare: Position = { ...square, rowIndex, colIndex }
+        setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
+      }
+
+      // Resetujemy stan rysowania
+      setArrowStart(null)
+      setIsDrawingArrow(false)
+      setSelectedSquare(null)
+    }
   }
 
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
@@ -196,11 +241,22 @@ export function ChessBoard2D() {
   function renderArrows() {
     return arrows.map((arrow, index) => {
       const { start, end } = arrow
+
+      // Pozycje w % (każde pole to 12.5% w pionie/poziomie)
       const startTop = (start.rowIndex ?? 0) * 12.5 + 6.25
       const startLeft = (start.colIndex ?? 0) * 12.5 + 6.25
       const endTop = (end.rowIndex ?? 0) * 12.5 + 6.25
       const endLeft = (end.colIndex ?? 0) * 12.5 + 6.25
 
+      // Różnice w indeksach pól (ile "pól" w pionie/poziomie)
+      const rowDiff = Math.abs((start.rowIndex ?? 0) - (end.rowIndex ?? 0))
+      const colDiff = Math.abs((start.colIndex ?? 0) - (end.colIndex ?? 0))
+
+      // Kolor, grubość i ogólne style strzałki
+      const arrowColor = "rgba(255, 165, 0, 0.8)" // lekka przezroczystość
+      const lineThickness = 12 // pogrubione
+
+      // Wspólne do L-kształtu
       const verticalTop = Math.min(startTop, endTop)
       const verticalHeight = Math.abs(endTop - startTop)
       const horizontalLeft = Math.min(startLeft, endLeft)
@@ -208,53 +264,117 @@ export function ChessBoard2D() {
       const cornerTop = endTop
       const cornerLeft = startLeft
 
+      // Definicje stylów L-kształtu (pion + poziom + grot)
       const verticalStyle: React.CSSProperties = {
         position: "absolute",
-        background: "linear-gradient(to bottom, #555, #999)",
-        width: "8px",
+        backgroundColor: arrowColor,
+        width: `${lineThickness}px`,
         top: `${verticalTop}%`,
         left: `${startLeft}%`,
         height: `${verticalHeight}%`,
         transform: "translate(-50%, 0)",
-        border: "1px solid #222",
         borderRadius: "4px",
         zIndex: 50,
       }
-
       const horizontalStyle: React.CSSProperties = {
         position: "absolute",
-        background: "linear-gradient(to right, #555, #999)",
-        height: "8px",
+        backgroundColor: arrowColor,
+        height: `${lineThickness}px`,
         top: `${cornerTop}%`,
         left: `${horizontalLeft}%`,
         width: `${horizontalWidth}%`,
         transform: "translate(0, -50%)",
-        border: "1px solid #222",
         borderRadius: "4px",
         zIndex: 50,
       }
 
       const arrowHeadSize = 18
-      const arrowHeadStyle: React.CSSProperties = {
+      let arrowRotation = 0
+      if (endLeft > cornerLeft) {
+        arrowRotation = 90 // w prawo
+      } else if (endLeft < cornerLeft) {
+        arrowRotation = -90 // w lewo
+      } else {
+        if (endTop > startTop) {
+          arrowRotation = 180 // w dół
+        } else {
+          arrowRotation = 0 // w górę
+        }
+      }
+      const arrowHeadStyleL: React.CSSProperties = {
         position: "absolute",
-        width: arrowHeadSize,
-        height: arrowHeadSize,
-        background: "linear-gradient(45deg, #555, #999)",
-        border: "1px solid #222",
-        borderRadius: "3px",
+        width: 0,
+        height: 0,
+        borderLeft: `${arrowHeadSize / 2}px solid transparent`,
+        borderRight: `${arrowHeadSize / 2}px solid transparent`,
+        borderBottom: `${arrowHeadSize}px solid ${arrowColor}`,
         top: `${endTop}%`,
         left: `${endLeft}%`,
-        transform: "translate(-50%, -50%) rotate(45deg)",
+        transform: `translate(-50%, -50%) rotate(${arrowRotation}deg)`,
         zIndex: 50,
       }
 
-      return (
-        <React.Fragment key={index}>
-          <div style={verticalStyle} />
-          <div style={horizontalStyle} />
-          <div style={arrowHeadStyle} />
-        </React.Fragment>
-      )
+      // Jeśli strzałka jest "duża" (rowDiff > 2 i colDiff > 1),
+      // rysujemy pojedynczą linię pod kątem, zamiast L-kształtu.
+      if (rowDiff > 2 && colDiff > 1) {
+        // Wyliczamy odległość i kąt w stopniach (standard math: 0 => w prawo, 90 => w górę)
+        const deltaX = endLeft - startLeft
+        const deltaY = endTop - startTop
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+        const angleRad = Math.atan2(deltaY, deltaX)
+        const angleDeg = (angleRad * 180) / Math.PI
+
+        // Środek linii – w połowie drogi
+        const midTop = (startTop + endTop) / 2
+        const midLeft = (startLeft + endLeft) / 2
+
+        // Styl pojedynczej ukośnej linii
+        const diagonalSegmentStyle: React.CSSProperties = {
+          position: "absolute",
+          backgroundColor: arrowColor,
+          height: `${lineThickness}px`,
+          width: `${distance}%`,
+          top: `${midTop}%`,
+          left: `${midLeft}%`,
+          transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
+          transformOrigin: "center",
+          borderRadius: "4px",
+          zIndex: 50,
+        }
+
+        // Grot na końcu – definiujemy go jako "strzałkę w prawo" (borderRight),
+        // bo wtedy rotate(angleDeg) idealnie pokryje się z linią.
+        const arrowHeadStyleDiagonal: React.CSSProperties = {
+          position: "absolute",
+          width: 0,
+          height: 0,
+          borderTop: `${arrowHeadSize / 2}px solid transparent`,
+          borderBottom: `${arrowHeadSize / 2}px solid transparent`,
+          borderRight: `${arrowHeadSize}px solid ${arrowColor}`, // Grot w prawo
+          top: `${endTop}%`,
+          left: `${endLeft}%`,
+          transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
+          zIndex: 50,
+        }
+
+        return (
+          <React.Fragment key={index}>
+            {/* Pojedyncza linia ukośna */}
+            <div style={diagonalSegmentStyle} />
+            {/* Grot (idealnie dopasowany do kąta) */}
+            <div style={arrowHeadStyleDiagonal} />
+          </React.Fragment>
+        )
+      } else {
+        // Dla "krótkich" strzałek zostaje nasz stary L-kształt
+        return (
+          <React.Fragment key={index}>
+            {verticalHeight > 0 && <div style={verticalStyle} />}
+            {horizontalWidth > 0 && <div style={horizontalStyle} />}
+            <div style={arrowHeadStyleL} />
+          </React.Fragment>
+        )
+      }
     })
   }
 
@@ -291,7 +411,9 @@ export function ChessBoard2D() {
                 <div
                   key={`${rowIndex}-${colIndex}`}
                   onClick={() => handleSquareClick(rowIndex, colIndex)}
-                  onContextMenu={(e) => handleSquareRightClick(e, rowIndex, colIndex)}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onMouseDown={(e) => handleMouseDownSquare(e, rowIndex, colIndex)}
+                  onMouseUp={(e) => handleMouseUpSquare(e, rowIndex, colIndex)}
                   className={clsx("relative flex items-center justify-center", squareBgClasses)}
                 >
                   {isValidMove && (
