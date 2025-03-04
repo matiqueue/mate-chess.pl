@@ -4,7 +4,7 @@ import { lobbies, io } from "../index"
 import { Lobby, Player } from "../types"
 import chalk from "chalk"
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 // Tworzenie/dołączanie do lobby (Online)
 router.post("/join-online-lobby", (req, res) => {
