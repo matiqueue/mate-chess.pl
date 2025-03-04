@@ -131,15 +131,12 @@ importers:
 
   apps/server:
     dependencies:
-      '@types/chalk':
-        specifier: ^2.2.4
-        version: 2.2.4
       '@workspace/chess-engine':
         specifier: workspace:*
         version: link:../../packages/chess-engine
       chalk:
-        specifier: ^5.4.1
-        version: 5.4.1
+        specifier: ^4.1.2
+        version: 4.1.2
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -159,6 +156,9 @@ importers:
         specifier: ^8.18.1
         version: 8.18.1
     devDependencies:
+      '@types/chalk':
+        specifier: ^2.2.0
+        version: 2.2.4
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -6947,7 +6947,7 @@ snapshots:
 
   '@types/chalk@2.2.4':
     dependencies:
-      chalk: 5.4.1
+      chalk: 4.1.2
 
   '@types/connect@3.4.38':
     dependencies:
