@@ -84,6 +84,11 @@ const useGame = () => {
     setCurrentPlayer(whosTurn(game))
     setGameStatus(getGameStatus(game))
   }
+
+  const promoteFigure = (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => {
+    promote(game, figure)
+    updateBoard()
+  }
   return {
     game,
     board,
@@ -95,8 +100,8 @@ const useGame = () => {
     forwardLastMove,
     reviewLastMove,
     returnToCurrentGameState,
+    promoteFigure,
     isAwaitingPromotion: () => isAwaitingPromotion(game),
-    promote: (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => promote(game, figure),
     isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),

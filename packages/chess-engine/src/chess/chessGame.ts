@@ -4,8 +4,8 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
-import MoveRecordPublic from "@modules/chess/history/move"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
+
 type PromotionFigureType = figureType.knight | figureType.queen | figureType.rook | figureType.bishop
 
 class ChessGame {
@@ -22,6 +22,7 @@ class ChessGame {
     this.setupFigures()
     this._currentPlayer = color.White
     this._moveRecorder = new MoveRecorder(this)
+    this.promotionTo = this.promotionTo.bind(this)
   }
   start(): void {
     this._gameStatus = "active"
@@ -60,17 +61,21 @@ class ChessGame {
   private promotionPromiseResolver: ((figure: PromotionFigureType) => void) | null = null
 
   private promotionFigure(): Promise<PromotionFigureType> {
+    console.log("Tworzę nowy Promise do promocji")
     if (!this.promotionPromise) {
       this.promotionPromise = new Promise((resolve) => {
-        this.promotionPromiseResolver = resolve
+        this.promotionPromiseResolver = (figure) => {
+          console.log("Rozwiązuję promisa z figurą:", figure)
+          resolve(figure)
+        }
       })
     }
-    console.log("promotionPromise", this.promotionPromise)
-    console.log("awaitingPromotion", this._awaitingPromotion)
     return this.promotionPromise
   }
   // Metoda wywoływana przez front-end, np. poprzez API
-  public promotionTo(selectedFigure: PromotionFigureType): boolean {
+  public promotionTo = (selectedFigure: PromotionFigureType): boolean => {
+    console.log("promotionTo wywołane. this:", this)
+    console.log("this.promotionPromiseResolver:", this.promotionPromiseResolver)
     if (this.promotionPromiseResolver) {
       this.promotionPromiseResolver(selectedFigure)
       // Resetujemy promise oraz flagę oczekiwania, aby możliwe było kolejne promowanie
@@ -79,7 +84,8 @@ class ChessGame {
       this._awaitingPromotion = false
       return true
     }
-    return false
+    console.error("Brak resolvera dla promocji")
+    throw new Error("No promotion resolver")
   }
 
   public makeMove(move: Move): boolean {
@@ -158,6 +164,11 @@ class ChessGame {
       }
     }
 
+    const position = this._board.getPositionByNotation("a7")
+    if (position) {
+      this._board.addFigureAtPosition(position, new Pawn(color.White, position, this._board))
+    }
+
     // Place White Major Pieces
     this._board.addFigureAtPosition(this._board.getPositionByNotation("a1")!, new Rook(color.White, this._board.getPositionByNotation("a1")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("h1")!, new Rook(color.White, this._board.getPositionByNotation("h1")!, this._board))
@@ -169,21 +180,21 @@ class ChessGame {
     this._board.addFigureAtPosition(this._board.getPositionByNotation("e1")!, new King(color.White, this._board.getPositionByNotation("e1")!, this._board))
 
     // Place Black Pawns
-    for (let i = 0; i < 8; i++) {
-      const position = this._board.getPositionByNotation(letters[i] + "7")
-      if (position) {
-        this._board.addFigureAtPosition(position, new Pawn(color.Black, position, this._board))
-      }
-    }
+    // for (let i = 0; i < 8; i++) {
+    //   const position = this._board.getPositionByNotation(letters[i] + "7")
+    //   if (position) {
+    //     this._board.addFigureAtPosition(position, new Pawn(color.Black, position, this._board))
+    //   }
+    // }
 
     // Place Black Major Pieces
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("a8")!, new Rook(color.Black, this._board.getPositionByNotation("a8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("h8")!, new Rook(color.Black, this._board.getPositionByNotation("h8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("b8")!, new Knight(color.Black, this._board.getPositionByNotation("b8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("g8")!, new Knight(color.Black, this._board.getPositionByNotation("g8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("c8")!, new Bishop(color.Black, this._board.getPositionByNotation("c8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("f8")!, new Bishop(color.Black, this._board.getPositionByNotation("f8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("d8")!, new Queen(color.Black, this._board.getPositionByNotation("d8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("a8")!, new Rook(color.Black, this._board.getPositionByNotation("a8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("h8")!, new Rook(color.Black, this._board.getPositionByNotation("h8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("b8")!, new Knight(color.Black, this._board.getPositionByNotation("b8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("g8")!, new Knight(color.Black, this._board.getPositionByNotation("g8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("c8")!, new Bishop(color.Black, this._board.getPositionByNotation("c8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("f8")!, new Bishop(color.Black, this._board.getPositionByNotation("f8")!, this._board))
+    // this._board.addFigureAtPosition(this._board.getPositionByNotation("d8")!, new Queen(color.Black, this._board.getPositionByNotation("d8")!, this._board))
     this._board.addFigureAtPosition(this._board.getPositionByNotation("e8")!, new King(color.Black, this._board.getPositionByNotation("e8")!, this._board))
 
     console.log(this.board.getBoardArray())

@@ -35,7 +35,7 @@ export function RightPanel() {
   })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory, promote, isAwaitingPromotion } = useGameContext()
+  const { moveHistory, promoteFigure, isAwaitingPromotion } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -296,29 +296,37 @@ export function RightPanel() {
               <div className={isAwaitingPromotion() ? "block" : "hidden"}>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.rook)}
+                  >
                     <ChessRook className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.rook)}>
-                      {t("rightPanel.rook")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.rook")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.queen)}
+                  >
                     <ChessQueen className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.queen)}>
-                      {t("rightPanel.queen")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.queen")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.bishop)}
+                  >
                     <ChessBishop className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.bishop)}>
-                      {t("rightPanel.bishop")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.bishop")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.knight)}
+                  >
                     <ChessKnight className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.knight)}>
-                      {t("rightPanel.knight")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.knight")}</span>
                   </Button>
                 </div>
               </div>
