@@ -46,10 +46,7 @@ const useGame = () => {
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
     if (makeMove(game, move)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
@@ -57,41 +54,35 @@ const useGame = () => {
 
   const undoLastMove = (): boolean => {
     if (undoMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const reviewLastMove = (): boolean => {
     if (rewindMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const forwardLastMove = (): boolean => {
     if (forwardMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const returnToCurrentGameState = () => {
     if (returnToCurrentState(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
     }
+  }
+  const updateBoard = () => {
+    setBoard(getBoard(game))
+    setMoveHistory(getMoveHistory(game))
+    setCurrentPlayer(whosTurn(game))
+    setGameStatus(getGameStatus(game))
   }
   return {
     game,
