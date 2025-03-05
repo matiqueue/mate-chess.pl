@@ -1,7 +1,6 @@
 // apps/web/app/layout.tsx
 import { Providers } from "@/components/providers"
 import { ClerkProvider } from "@clerk/nextjs"
-import { ErrorContextProvider } from "@/contexts/ErrorContextProvider" // Poprawiona ścieżka
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -14,9 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body>
-          <Providers>
-            <ErrorContextProvider>{children}</ErrorContextProvider>
-          </Providers>
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ClerkProvider>

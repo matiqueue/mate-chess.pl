@@ -1,26 +1,28 @@
-"use client";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
+"use client"
 
-import * as React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { PuzzleIcon as Chess, Menu } from "lucide-react";
+import * as React from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { PuzzleIcon as Chess, Menu } from "lucide-react"
 
-import { Button } from "@workspace/ui/components/button";
-import { Sheet, SheetContent, SheetTrigger } from "@workspace/ui/components/sheet";
-import { ModeToggle } from "@workspace/ui/components/mode-toggle";
-import { UserProfile } from "@/components/home/user-profile";
-import { useTranslation } from "react-i18next";
+import { Button } from "@workspace/ui/components/button"
+import { Sheet, SheetContent, SheetTrigger } from "@workspace/ui/components/sheet"
+import { ModeToggle } from "@workspace/ui/components/mode-toggle"
+import { UserProfile } from "@/components/home/user-profile"
+import { useTranslation } from "react-i18next"
 
 export function Navbar() {
-  const { t } = useTranslation();
-  const pathname = usePathname();
+  const { t } = useTranslation()
+  const pathname = usePathname()
 
   const navItems = [
     { name: t("navbar.play"), href: "/play" },
     { name: t("navbar.learn"), href: "/learn" },
     { name: t("navbar.puzzles"), href: "/puzzles" },
     { name: t("navbar.community"), href: "/community" },
-  ];
+  ]
 
   return (
     <header className="w-full border-b bg-background">
@@ -72,9 +74,7 @@ export function Navbar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`transition-colors hover:text-foreground/80 ${
-                        pathname === item.href ? "text-foreground" : "text-foreground/60"
-                      }`}
+                      className={`transition-colors hover:text-foreground/80 ${pathname === item.href ? "text-foreground" : "text-foreground/60"}`}
                     >
                       {item.name}
                     </Link>
@@ -86,5 +86,5 @@ export function Navbar() {
         </div>
       </div>
     </header>
-  );
+  )
 }

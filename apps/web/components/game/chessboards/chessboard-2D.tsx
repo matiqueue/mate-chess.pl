@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useState } from "react"
@@ -13,8 +12,6 @@ import { SiChessdotcom as ChessPawn } from "react-icons/si"
 import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
-import { isMoveEnPassant } from "@chess-engine/functions"
-
 interface Position {
   notation: string
   figure: { type: string; color: string } | null
@@ -84,10 +81,7 @@ export function ChessBoard2D() {
 
       if (isDrawingArrow && arrowStart) {
         const notation = getNotation(rowIndex, colIndex)
-        if (
-          arrowStart.rowIndex === rowIndex &&
-          arrowStart.colIndex === colIndex
-        ) {
+        if (arrowStart.rowIndex === rowIndex && arrowStart.colIndex === colIndex) {
           // Klik w to samo pole – ignorujemy
         } else if (arrowStart.notation !== notation) {
           const square = board.getPositionByNotation(notation)
@@ -291,7 +285,6 @@ export function ChessBoard2D() {
             <div style={arrowHeadStyleDiagonal} />
           </div>
         )
-
       } else {
         // === RUCH L-KSZTAŁTNY ===
         const verticalTop = Math.min(startTop, endTop)
@@ -375,33 +368,16 @@ export function ChessBoard2D() {
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
       {/* Zewnętrzny kontener jako obramówka */}
-      <div
-        className={clsx(
-          "p-4 bg-white/30 rounded-3xl shadow-2xl",
-          isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30"
-        )}
-      >
+      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")}>
         {/* Kontener główny szachownicy z aspect-square */}
-        <div
-          className={clsx(
-            "relative z-10 w-full aspect-square rounded-xl shadow-2xl",
-            isDarkMode ? "bg-stone-600" : "bg-gray-300"
-          )}
-        >
+        <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           {/* Bez paddingu, by strzałki miały pełną przestrzeń */}
           <div className="relative w-full h-full box-border">
             {/* Kontener na strzałki – pełna przestrzeń bez ograniczeń */}
-            <div className="absolute inset-0 pointer-events-none">
-              {renderArrows()}
-            </div>
+            <div className="absolute inset-0 pointer-events-none">{renderArrows()}</div>
 
             {/* Szachownica */}
-            <div
-              className={clsx(
-                "grid grid-cols-8 grid-rows-8 w-full h-full rounded-xl",
-                isDarkMode ? "bg-stone-600" : "bg-gray-300"
-              )}
-            >
+            <div className={clsx("grid grid-cols-8 grid-rows-8 w-full h-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
               {boardRows.map((rowData: string[], rowIndex: number) =>
                 rowData.map((symbol, colIndex) => {
                   const notation = getNotation(rowIndex, colIndex)
@@ -413,14 +389,10 @@ export function ChessBoard2D() {
                   let isKingInCheck = false
                   if (square?.figure?.type === "king") {
                     const isWhite = square.figure.color === "white"
-                    isKingInCheck = isWhite
-                      ? board?.isKingInCheck("white")
-                      : board?.isKingInCheck("black")
+                    isKingInCheck = isWhite ? board?.isKingInCheck("white") : board?.isKingInCheck("black")
                   }
 
-                  const squareBgClasses = isKingInCheck
-                    ? "bg-red-500 hover:bg-red-600"
-                    : isBlackSquare(rowIndex, colIndex, isDarkMode)
+                  const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600" : isBlackSquare(rowIndex, colIndex, isDarkMode)
 
                   return (
                     <div
@@ -429,10 +401,7 @@ export function ChessBoard2D() {
                       onContextMenu={(e) => e.preventDefault()}
                       onMouseDown={(e) => handleMouseDownSquare(e, rowIndex, colIndex)}
                       onMouseUp={(e) => handleMouseUpSquare(e, rowIndex, colIndex)}
-                      className={clsx(
-                        "relative flex items-center justify-center",
-                        squareBgClasses
-                      )}
+                      className={clsx("relative flex items-center justify-center", squareBgClasses)}
                     >
                       {isValidMove && (
                         <>
@@ -442,7 +411,7 @@ export function ChessBoard2D() {
                             <div
                               className={clsx(
                                 "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
-                                isDarkMode ? "bg-white" : "bg-gray-600"
+                                isDarkMode ? "bg-white" : "bg-gray-600",
                               )}
                             />
                           )}
@@ -453,19 +422,17 @@ export function ChessBoard2D() {
                         <div
                           className={clsx(
                             "absolute inset-0 bg-yellow-500 opacity-50 pointer-events-none rounded-md",
-                            "border-2 border-dashed border-yellow-700"
+                            "border-2 border-dashed border-yellow-700",
                           )}
                         />
                       )}
 
-                      {isSelected && (
-                        <div className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 pointer-events-none z-0 rounded-tl-md" />
-                      )}
+                      {isSelected && <div className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 pointer-events-none z-0 rounded-tl-md" />}
 
                       {renderPiece(symbol, rowIndex, colIndex)}
                     </div>
                   )
-                })
+                }),
               )}
             </div>
           </div>

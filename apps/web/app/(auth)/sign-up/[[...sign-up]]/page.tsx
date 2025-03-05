@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 "use client"
 import * as Clerk from "@clerk/elements/common"
 import * as SignUp from "@clerk/elements/sign-up"

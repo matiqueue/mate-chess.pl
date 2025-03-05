@@ -17,7 +17,6 @@ import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
 import { useTranslation } from "react-i18next"
-import { returnToCurrentState } from "@chess-engine/functions"
 
 export function GameControls() {
   const { t } = useTranslation()
