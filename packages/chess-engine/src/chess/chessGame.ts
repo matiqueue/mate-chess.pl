@@ -111,75 +111,7 @@ class ChessGame {
     console.log(this._moveRecorder.generateMoveHistory(this._moves))
     return this._moveRecorder.generateMoveHistory(this._moves)
   }
-  // public getMoveHistory(): string[] {
-  //   const result: string[] = []
-  //   for (let i = 0; i < this._moves.length; i += 2) {
-  //     // Biały ruch
-  //     const whiteRecord = this._moves[i]!
-  //     const whiteFigure = whiteRecord!.figurePerforming
-  //     const whiteCaptured = whiteRecord!.figureCaptured
-  //     let whiteNotation = ""
-  //     switch (whiteFigure.type) {
-  //       case figureType.queen:
-  //         whiteNotation = "Q"
-  //         break
-  //       case figureType.rook:
-  //         whiteNotation = "R"
-  //         break
-  //       case figureType.knight:
-  //         whiteNotation = "N"
-  //         break
-  //       case figureType.king:
-  //         whiteNotation = "K"
-  //         break
-  //       case figureType.bishop:
-  //         whiteNotation = "B"
-  //         break
-  //       default:
-  //         whiteNotation = ""
-  //     }
-  //     const whiteCapture = whiteCaptured ? "x" : ""
-  //     const whitePos = this.board.getPosition(whiteRecord!.move.to)?.notation ?? ""
-  //     const whiteMove = `${whiteNotation}${whiteCapture}${whitePos}${this._board.isCheckmate() === color.Black ? "#" : ""}`
-  //
-  //     let line = `${i / 2 + 1}. White: ${whiteMove}`
-  //
-  //     // Czarny ruch, jeśli istnieje
-  //     if (i + 1 < this._moves.length) {
-  //       const blackRecord = this._moves[i + 1]!
-  //       const blackFigure = blackRecord!.figurePerforming
-  //       const blackCaptured = blackRecord!.figureCaptured
-  //       let blackNotation = ""
-  //       switch (blackFigure.type) {
-  //         case figureType.queen:
-  //           blackNotation = "Q"
-  //           break
-  //         case figureType.rook:
-  //           blackNotation = "R"
-  //           break
-  //         case figureType.knight:
-  //           blackNotation = "N"
-  //           break
-  //         case figureType.king:
-  //           blackNotation = "K"
-  //           break
-  //         case figureType.bishop:
-  //           blackNotation = "B"
-  //           break
-  //         default:
-  //           blackNotation = ""
-  //       }
-  //       const blackCapture = blackCaptured ? "x" : ""
-  //       const blackPos = this.board.getPosition(blackRecord!.move.to)?.notation ?? ""
-  //       const blackMove = `${blackNotation}${blackCapture}${blackPos}${this._board.isCheckmate() === color.White ? "#" : ""}`
-  //
-  //       line += ` Black: ${blackMove}`
-  //     }
-  //
-  //     result.push(line)
-  //   }
-  //   return result
-  // }
+
   public gameDraw() {
     this._gameStatus = "draw"
     this._isGameOn = false
