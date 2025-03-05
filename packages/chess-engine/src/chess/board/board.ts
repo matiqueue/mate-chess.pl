@@ -8,8 +8,8 @@ import MoveRecord from "@shared/types/moveRecord"
 class Board {
   private positions: Map<string, Position>
   private letters: string = "abcdefgh"
-  _whiteFigures: Figure[] = []
-  _blackFigures: Figure[] = []
+  private _whiteFigures: Figure[] = []
+  private _blackFigures: Figure[] = []
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
   private _moveHistory: MoveRecord[] = []
@@ -808,14 +808,6 @@ class Board {
     this._allFigures = this._whiteFigures.concat(this._blackFigures)
   }
 
-  get whiteFigures(): Figure[] {
-    return this._whiteFigures
-  }
-
-  get blackFigures(): Figure[] {
-    return this._blackFigures
-  }
-
   public getBoardArray(): [string[]] {
     let result: [string[]] = [[]]
     let rowArray: string[] = []
@@ -856,13 +848,7 @@ class Board {
     }
     return result
   }
-  get allFigures(): Figure[] {
-    return this._allFigures
-  }
 
-  get moveHistory(): MoveRecord[] {
-    return this._moveHistory
-  }
   public isMoveEnPassant(move: Move): boolean {
     const { from, to } = move
     const performingFigure = this.getFigureAtPosition(from)
@@ -962,6 +948,20 @@ class Board {
 
   set previewMode(value: boolean) {
     this._previewMode = value
+  }
+  get allFigures(): Figure[] {
+    return this._allFigures
+  }
+
+  get moveHistory(): MoveRecord[] {
+    return this._moveHistory
+  }
+  get whiteFigures(): Figure[] {
+    return this._whiteFigures
+  }
+
+  get blackFigures(): Figure[] {
+    return this._blackFigures
   }
 }
 export default Board

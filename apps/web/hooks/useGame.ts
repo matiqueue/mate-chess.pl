@@ -23,11 +23,13 @@ import {
   isAwaitingPromotion,
 } from "@modules/index"
 import { figureType } from "@chess-engine/types"
+import MoveRecordPublic from "@modules/chess/history/move"
+import MovePair from "@shared/types/movePair"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
-  const [moveHistory, setMoveHistory] = useState<string[]>([])
+  const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<string>("stop")
 

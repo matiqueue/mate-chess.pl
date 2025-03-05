@@ -16,6 +16,8 @@ import { useGameView } from "@/contexts/GameViewContext"
 import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 import { useTranslation } from "react-i18next"
 import { figureType } from "@modules/types"
+import MoveRecordPublic from "@modules/chess/history/move"
+import { color } from "@modules/types"
 
 export function RightPanel() {
   const { t } = useTranslation()
@@ -56,18 +58,11 @@ export function RightPanel() {
     localStorage.setItem("panelWidth", newWidth.toString())
   }
 
-  const renderMove = (move: string) => {
-    let translatedMove = move
+  const renderMove = (moveRecord: MoveRecordPublic): string => {
+    const playerTranslated = moveRecord.playerColor === color.White ? t("playerInfo.white") : t("playerInfo.black")
 
-    // Najpierw zamieniamy "White:" na tłumaczenie, np. "Biały:"
-    if (move.includes("White:")) {
-      translatedMove = move.replace("White:", t("playerInfo.white") + ":")
-    }
-    if (move.includes("Black:")) {
-      translatedMove = move.replace("Black:", t("playerInfo.black") + ":")
-    }
+    let translatedMove = `${playerTranslated}: ${moveRecord.moveString}`
 
-    // Teraz (opcjonalnie) reszta logiki dla stylów notacji
     switch (notationStyle) {
       case "algebraic":
         return translatedMove
@@ -267,12 +262,29 @@ export function RightPanel() {
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.moveHistory")}</h2>
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
-                    moveHistory.map((moveStr, index) => (
-                      <div key={index} className="hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
-                        <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
-                        <span className={`w-full ${textColor}`}>{renderMove(moveStr)}</span>
-                      </div>
-                    ))
+                    moveHistory.map((movePair, index) => {
+                      // Numer ruchu dla białych = 2*index + 1
+                      // Numer ruchu dla czarnych = 2*index + 2
+                      const whiteMoveNumber = 2 * index + 1
+                      const blackMoveNumber = 2 * index + 2
+
+                      return (
+                        <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
+                          {/* Ruch białych */}
+                          <span>
+                            {whiteMoveNumber}. Biały: {movePair.white}
+                          </span>
+
+                          {/* Ruch czarnych */}
+                          {/* Jeżeli zdarzyłoby się, że czarny ruch jest pusty (np. nieparzysta liczba ruchów), można warunkowo wyświetlać */}
+                          {movePair.black && (
+                            <span className="ml-4">
+                              {blackMoveNumber}. Czarny: {movePair.black}
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })
                   ) : (
                     <p className={`${mutedTextColor} text-center`}>{t("rightPanel.noMovesYet")}</p>
                   )}
