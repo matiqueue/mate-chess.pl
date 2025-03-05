@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useState } from "react"
@@ -13,19 +12,31 @@ import { SiChessdotcom as ChessPawn } from "react-icons/si"
 import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
+interface Position {
+  notation: string
+  figure: { type: string; color: string } | null
+  rowIndex?: number
+  colIndex?: number
+}
+
+interface ArrowData {
+  start: Position
+  end: Position
+}
 
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
 
-  // Hook z silnika
-  const { board, movePiece, getValidMoves, currentPlayer } = useGameContext()
+  const { board, movePiece, getValidMoves, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
-  // Lokalne stany
-  const [selectedSquare, setSelectedSquare] = useState<any>(null)
-  const [validMoves, setValidMoves] = useState<any[]>([])
+  const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
+  const [validMoves, setValidMoves] = useState<Position[]>([])
+  const [arrowStart, setArrowStart] = useState<Position | null>(null)
+  const [arrows, setArrows] = useState<ArrowData[]>([])
 
-  // Domyślna plansza (gdy silnik niegotowy)
+  const [isDrawingArrow, setIsDrawingArrow] = useState<boolean>(false)
+
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -37,32 +48,59 @@ export function ChessBoard2D() {
     ["R", "N", "B", "Q", "K", "B", "N", "R"],
   ]
 
-  // Tablica z silnika (9 wierszy, pierwszy pusty)
-  const rawBoard = board ? board.getBoardArray() : (initialBoard as [string[]])
-  // Usuwamy pierwszy pusty wiersz
-  const boardRows = rawBoard.slice(1) // teraz 8 wierszy, 0..7
+  const rawBoard = board ? board.getBoardArray() : initialBoard
+  const boardRows = rawBoard.slice(rawBoard.length - 8)
 
-  // Sprawdzamy, czy król w szachu
-  // const whiteInCheck = board?.isKingInCheck("white") ?? false
-  // const blackInCheck = board?.isKingInCheck("black") ?? false
-
-  /**
-   * Oblicza notację (np. "a8") na podstawie wiersza i kolumny.
-   * Tutaj rowIndex=0 => górny wiersz, rowIndex=7 => dolny.
-   * colIndex=0 => lewa kolumna, colIndex=7 => prawa.
-   * Silnik w `setupBoard()` ustawia y=0 jako górę (rank=8), y=7 jako dół (rank=1).
-   * Więc rank = 8 - rowIndex, file = letters[7 - colIndex].
-   */
   const getNotation = (rowIndex: number, colIndex: number) => {
     const letters = "abcdefgh"
     const rank = 8 - rowIndex
-    const file = letters.charAt(7 - colIndex)
+    const file = letters.charAt(colIndex)
     return file + rank
   }
 
-  // Kliknięcie w pole
+  // Obsługa rysowania strzałki (prawy przycisk myszy)
+  const handleMouseDownSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
+
+      const notation = getNotation(rowIndex, colIndex)
+      const square = board.getPositionByNotation(notation)
+      if (!square) return
+
+      const extendedSquare: Position = { ...square, rowIndex, colIndex }
+      setArrowStart(extendedSquare)
+      setIsDrawingArrow(true)
+    }
+  }
+
+  const handleMouseUpSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
+
+      if (isDrawingArrow && arrowStart) {
+        const notation = getNotation(rowIndex, colIndex)
+        if (arrowStart.rowIndex === rowIndex && arrowStart.colIndex === colIndex) {
+          // Klik w to samo pole – ignorujemy
+        } else if (arrowStart.notation !== notation) {
+          const square = board.getPositionByNotation(notation)
+          if (!square) return
+
+          const extendedSquare: Position = { ...square, rowIndex, colIndex }
+          setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
+        }
+      }
+
+      setArrowStart(null)
+      setIsDrawingArrow(false)
+      setSelectedSquare(null)
+    }
+  }
+
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
     if (!board) return
+
     const notation = getNotation(rowIndex, colIndex)
     const square = board.getPositionByNotation(notation)
     if (!square) return
@@ -86,6 +124,7 @@ export function ChessBoard2D() {
       movePiece(selectedSquare, square)
       setSelectedSquare(null)
       setValidMoves([])
+      setArrows([])
     } else {
       if (square.figure && square.figure.color === currentPlayer) {
         setSelectedSquare(square)
@@ -97,10 +136,6 @@ export function ChessBoard2D() {
     }
   }
 
-  /**
-   * Render figury. Jeśli silnik jest gotowy, pobieramy info z `board`.
-   * W przeciwnym razie używamy symbolu z initialBoard.
-   */
   const renderPiece = (symbol: string, rowIndex: number, colIndex: number) => {
     if (board) {
       const notation = getNotation(rowIndex, colIndex)
@@ -167,85 +202,240 @@ export function ChessBoard2D() {
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
-  // Funkcja pomocnicza do określenia koloru tła dla zwykłych pól
   function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
-    const isBlack = (rowIndex + colIndex) % 2 === 1
-    if (isBlack) {
-      return darkMode ? "bg-neutral-400 hover:bg-neutral-500" : "bg-gray-400 hover:bg-neutral-500"
-    } else {
-      return darkMode ? "bg-stone-700 hover:bg-neutral-500" : "bg-zinc-200 hover:bg-neutral-500"
+    const isBlack = (rowIndex + colIndex) % 2 === 0
+    return isBlack
+      ? darkMode
+        ? "bg-neutral-400 hover:bg-neutral-500"
+        : "bg-gray-400 hover:bg-neutral-500"
+      : darkMode
+        ? "bg-stone-700 hover:bg-neutral-500"
+        : "bg-zinc-200 hover:bg-neutral-500"
+  }
+
+  function renderArrows() {
+    // Pełny kolor bez alpha
+    const arrowColorSolid = "#ffa500"
+    // Kontener dla całej strzałki – z opacity, by nie nakładały się alfa
+    const arrowContainerBase: React.CSSProperties = {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      pointerEvents: "none",
+      opacity: 0.6, // Tutaj kontrolujesz przezroczystość całości
+      zIndex: 50,
     }
+
+    return arrows.map((arrow, index) => {
+      const { start, end } = arrow
+
+      // Każde pole = 12.5%, 6.25% to środek
+      const startTop = (start.rowIndex ?? 0) * 12.5 + 6.25
+      const startLeft = (start.colIndex ?? 0) * 12.5 + 6.25
+      const endTop = (end.rowIndex ?? 0) * 12.5 + 6.25
+      const endLeft = (end.colIndex ?? 0) * 12.5 + 6.25
+
+      const rowDiff = Math.abs((start.rowIndex ?? 0) - (end.rowIndex ?? 0))
+      const colDiff = Math.abs((start.colIndex ?? 0) - (end.colIndex ?? 0))
+
+      // Style wspólne
+      const lineThickness = 18
+      const arrowHeadSize = 40
+
+      if (rowDiff === colDiff) {
+        // === RUCH UKOŚNY (diagonal) ===
+        const deltaX = endLeft - startLeft
+        const deltaY = endTop - startTop
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+        const angleRad = Math.atan2(deltaY, deltaX)
+        const angleDeg = (angleRad * 180) / Math.PI
+
+        const midTop = (startTop + endTop) / 2
+        const midLeft = (startLeft + endLeft) / 2
+
+        const diagonalSegmentStyle: React.CSSProperties = {
+          position: "absolute",
+          backgroundColor: arrowColorSolid,
+          height: `${lineThickness}px`,
+          width: `${distance}%`,
+          top: `${midTop}%`,
+          left: `${midLeft}%`,
+          transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
+          transformOrigin: "center",
+          borderRadius: "8px",
+        }
+
+        const arrowHeadStyleDiagonal: React.CSSProperties = {
+          position: "absolute",
+          width: 0,
+          height: 0,
+          borderTop: `${arrowHeadSize / 2}px solid transparent`,
+          borderBottom: `${arrowHeadSize / 2}px solid transparent`,
+          borderRight: `${arrowHeadSize}px solid ${arrowColorSolid}`,
+          top: `${endTop}%`,
+          left: `${endLeft}%`,
+          transform: `translate(-50%, -50%) rotate(${angleDeg + 180}deg)`,
+        }
+
+        return (
+          <div key={index} style={arrowContainerBase}>
+            <div style={diagonalSegmentStyle} />
+            <div style={arrowHeadStyleDiagonal} />
+          </div>
+        )
+      } else {
+        // === RUCH L-KSZTAŁTNY ===
+        const verticalTop = Math.min(startTop, endTop)
+        const verticalHeight = Math.abs(endTop - startTop)
+        const horizontalLeft = Math.min(startLeft, endLeft)
+        const horizontalWidth = Math.abs(endLeft - startLeft)
+
+        const cornerTop = endTop
+        const cornerLeft = startLeft
+
+        const verticalStyle: React.CSSProperties = {
+          position: "absolute",
+          backgroundColor: arrowColorSolid,
+          width: `${lineThickness}px`,
+          top: `${verticalTop}%`,
+          left: `${startLeft}%`,
+          height: `${verticalHeight}%`,
+          transform: "translate(-50%, 0)",
+          borderRadius: "10px",
+        }
+
+        const horizontalStyle: React.CSSProperties = {
+          position: "absolute",
+          backgroundColor: arrowColorSolid,
+          height: `${lineThickness}px`,
+          top: `${cornerTop}%`,
+          left: `${horizontalLeft}%`,
+          width: `${horizontalWidth}%`,
+          transform: "translate(0, -50%)",
+          borderRadius: "4px",
+        }
+
+        const cornerConnectorStyle: React.CSSProperties = {
+          position: "absolute",
+          backgroundColor: arrowColorSolid,
+          width: `${lineThickness}px`,
+          height: `${lineThickness}px`,
+          top: `${cornerTop}%`,
+          left: `${cornerLeft}%`,
+          transform: "translate(-50%, -50%)",
+          borderRadius: "8px",
+        }
+
+        let arrowRotation = 0
+        if (endLeft > cornerLeft) {
+          arrowRotation = 90
+        } else if (endLeft < cornerLeft) {
+          arrowRotation = -90
+        } else {
+          if (endTop > startTop) {
+            arrowRotation = 180
+          } else {
+            arrowRotation = 0
+          }
+        }
+
+        const arrowHeadStyleL: React.CSSProperties = {
+          position: "absolute",
+          width: 0,
+          height: 0,
+          borderLeft: `${arrowHeadSize / 2}px solid transparent`,
+          borderRight: `${arrowHeadSize / 2}px solid transparent`,
+          borderBottom: `${arrowHeadSize}px solid ${arrowColorSolid}`,
+          top: `${endTop}%`,
+          left: `${endLeft}%`,
+          transform: `translate(-50%, -50%) rotate(${arrowRotation}deg)`,
+        }
+
+        return (
+          <div key={index} style={arrowContainerBase}>
+            {verticalHeight > 0 && <div style={verticalStyle} />}
+            {horizontalWidth > 0 && <div style={horizontalStyle} />}
+            <div style={cornerConnectorStyle} />
+            <div style={arrowHeadStyleL} />
+          </div>
+        )
+      }
+    })
   }
 
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
-      {/* Overlay z rozmyciem i obramowaniem */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-white/30 blur-2xl rounded-3xl" />
-        <div className="absolute inset-0 border-4 border-white/50 rounded-3xl" />
-      </div>
+      {/* Zewnętrzny kontener jako obramówka */}
+      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")}>
+        {/* Kontener główny szachownicy z aspect-square */}
+        <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
+          {/* Bez paddingu, by strzałki miały pełną przestrzeń */}
+          <div className="relative w-full h-full box-border">
+            {/* Kontener na strzałki – pełna przestrzeń bez ograniczeń */}
+            <div className="absolute inset-0 pointer-events-none">{renderArrows()}</div>
 
-      <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-        <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-          {boardRows.map((rowData: any[], rowIndex: number) =>
-            rowData.map((_, colIndex) => {
-              // Pobieramy symbol (odwracamy kolumny)
-              const symbol = rowData[7 - colIndex]
-              const notation = getNotation(rowIndex, colIndex)
-              const square = board?.getPositionByNotation(notation)
-              const isSelected = selectedSquare && selectedSquare.notation === notation
-              const isValidMove = validMoves.some((pos) => pos.notation === notation)
+            {/* Szachownica */}
+            <div className={clsx("grid grid-cols-8 grid-rows-8 w-full h-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
+              {boardRows.map((rowData: string[], rowIndex: number) =>
+                rowData.map((symbol, colIndex) => {
+                  const notation = getNotation(rowIndex, colIndex)
+                  const square = board?.getPositionByNotation(notation)
+                  const isSelected = selectedSquare && selectedSquare.notation === notation
+                  const isValidMove = validMoves.some((pos) => pos.notation === notation)
+                  const isEnPassantMove = selectedSquare && checkEnPassant({ from: selectedSquare, to: square })
 
-              // Sprawdzamy, czy to pole zawiera króla w szachu
-              let isKingInCheck = false
-              if (square?.figure?.type === "king") {
-                const isWhite = square.figure.color === "white"
-                if (isWhite && board?.isKingInCheck("white")) {
-                  isKingInCheck = true
-                }
-                if (!isWhite && board?.isKingInCheck("black")) {
-                  isKingInCheck = true
-                }
-              }
+                  let isKingInCheck = false
+                  if (square?.figure?.type === "king") {
+                    const isWhite = square.figure.color === "white"
+                    isKingInCheck = isWhite ? board?.isKingInCheck("white") : board?.isKingInCheck("black")
+                  }
 
-              // Określamy kolor tła pola.
-              // Dla pól z królem w szachu: czerwone tło z lekkim roundingiem (bez czarnego border).
-              const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600 rounded-sm" : isBlackSquare(rowIndex, colIndex, isDarkMode)
+                  const squareBgClasses = isKingInCheck ? "bg-red-500 hover:bg-red-600" : isBlackSquare(rowIndex, colIndex, isDarkMode)
 
-              return (
-                <div
-                  key={`${rowIndex}-${colIndex}`}
-                  onClick={() => handleSquareClick(rowIndex, colIndex)}
-                  className={clsx("relative flex items-center justify-center", squareBgClasses)}
-                >
-                  {isValidMove && (
-                    <>
-                      {square?.figure && square.figure.color !== currentPlayer ? (
-                        <div className="absolute inset-0 bg-green-600 opacity-40 pointer-events-none rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md m-2" />
-                      ) : (
+                  return (
+                    <div
+                      key={`${rowIndex}-${colIndex}`}
+                      onClick={() => handleSquareClick(rowIndex, colIndex)}
+                      onContextMenu={(e) => e.preventDefault()}
+                      onMouseDown={(e) => handleMouseDownSquare(e, rowIndex, colIndex)}
+                      onMouseUp={(e) => handleMouseUpSquare(e, rowIndex, colIndex)}
+                      className={clsx("relative flex items-center justify-center", squareBgClasses)}
+                    >
+                      {isValidMove && (
+                        <>
+                          {square?.figure && square.figure.color !== currentPlayer ? (
+                            <div className="absolute inset-0 bg-green-600 opacity-40 pointer-events-none m-2 rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md" />
+                          ) : (
+                            <div
+                              className={clsx(
+                                "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
+                                isDarkMode ? "bg-white" : "bg-gray-600",
+                              )}
+                            />
+                          )}
+                        </>
+                      )}
+
+                      {isEnPassantMove && (
                         <div
                           className={clsx(
-                            "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[18%] h-[18%] rounded-full pointer-events-none",
-                            isDarkMode ? "bg-white" : "bg-gray-600",
+                            "absolute inset-0 bg-yellow-500 opacity-50 pointer-events-none rounded-md",
+                            "border-2 border-dashed border-yellow-700",
                           )}
                         />
                       )}
-                    </>
-                  )}
 
-                  {/* Nakładka z niebieskim borderem, która nie wpływa na rozmiar figury */}
-                  {isSelected && (
-                    <div
-                      className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 
-                 rounded-tl-md rounded-tr-sm rounded-bl-sm rounded-br-none pointer-events-none z-0"
-                    />
-                  )}
+                      {isSelected && <div className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 pointer-events-none z-0 rounded-tl-md" />}
 
-                  {renderPiece(symbol, rowIndex, colIndex)}
-                </div>
-              )
-            }),
-          )}
+                      {renderPiece(symbol, rowIndex, colIndex)}
+                    </div>
+                  )
+                }),
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

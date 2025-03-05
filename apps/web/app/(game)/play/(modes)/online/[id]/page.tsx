@@ -1,43 +1,45 @@
+// "use client"
+
+// import { useEffect, useState } from "react"
+// import { use } from "react"
+// import io from "socket.io-client"
+
+// const socket = io("http://localhost:4000")
+
+// export default function Game({ params }: { params: Promise<{ id: string }> }) {
+//   const { id } = use(params) // Poprawione dla Next.js 15
+//   const [messages, setMessages] = useState<string[]>([])
+//   const [message, setMessage] = useState("")
+
+//   useEffect(() => {
+//     socket.emit("joinLobby", id)
+//     socket.on("newMessage", (msg) => setMessages((prev) => [...prev, msg]))
+//     return () => socket.off("newMessage")
+//   }, [id])
+
+//   const handleSendMessage = () => {
+//     socket.emit("sendMessage", id, message)
+//     setMessage("")
+//   }
+
+//   return (
+//     <div className="p-4">
+//       <h1 className="text-2xl font-bold">Gra: {id}</h1>
+//       <div className="my-4 h-64 overflow-y-auto border p-2">
+//         {messages.map((msg, index) => (
+//           <p key={index}>{msg}</p>
+//         ))}
+//       </div>
+//       <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} className="p-2 border w-full" />
+//       <button onClick={handleSendMessage} className="mt-2 p-2 bg-blue-500 text-white rounded">
+//         Wyślij
+//       </button>
+//     </div>
+//   )
+// }
+
 "use client"
 
-import ChessBoardContainer from "@/components/game/chessboard-container"
-import { GameProvider } from "@/contexts/GameContext"
-import { GameViewProvider } from "@/contexts/GameViewContext"
-
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
-
-function ChessPageContent() {
-  const [mounted, setMounted] = useState(false)
-  const { theme } = useTheme()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
-  return (
-    <div className="relative flex h-screen overflow-hidden">
-      <div
-        className={`absolute inset-0 bg-cover bg-center ${
-          theme === "dark"
-            ? "bg-[url('/backgrounds/darkThemeBg.png')]"
-            : "bg-[url('https://images.unsplash.com/photo-1601297183305-6df142704ea2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2674&q=80')]"
-        }`}
-      />
-      <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/30"} backdrop-blur-sm`} />
-      <ChessBoardContainer />
-    </div>
-  )
-}
-
-export default function ChessPage() {
-  return (
-    <GameProvider>
-      <GameViewProvider>
-        <ChessPageContent />
-      </GameViewProvider>
-    </GameProvider>
-  )
+export default function Page() {
+  return <div>Online</div>
 }

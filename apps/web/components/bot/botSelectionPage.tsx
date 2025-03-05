@@ -7,6 +7,7 @@ import { Button } from "@workspace/ui/components/button"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
+import { useTranslation } from "react-i18next"
 
 const container = {
   hidden: { opacity: 0 },
@@ -23,16 +24,30 @@ const item = {
 
 const floatingAnimation = {
   y: [0, 5, 0],
-  transition: { duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" as const, ease: "easeInOut" },
+  transition: {
+    duration: 1.5,
+    repeat: Number.POSITIVE_INFINITY,
+    repeatType: "reverse" as const,
+    ease: "easeInOut",
+  },
 }
 
 const MotionButton = motion(Button)
 const MotionCard = motion(Card)
 
-export default function PlayVsBotPage() {
+interface BotOption {
+  slug: string
+  titleKey: string
+  descriptionKey: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: React.ComponentType<any>
+}
+
+export default function PlayVsBot2Page() {
   const router = useRouter()
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
     setMounted(true)
@@ -40,35 +55,37 @@ export default function PlayVsBotPage() {
 
   if (!mounted) return null
 
-  const handleModeSelect = (mode: string) => {
-    console.log(`Selected mode: ${mode}`)
-    const route =
-    mode === "Chess Grandmaster"
-      ? "/bot/chess-master"
-      : `/bot/ai/${mode.replace(" Bot", "").toLowerCase()}`;
-
-  router.push(route);
-  }
-
-  const botOptions = [
+  // Tablica botów z kluczami tłumaczeń
+  const botOptions: BotOption[] = [
     {
-      title: "Beginner Bot",
-      description:
-        "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy.",
+      slug: "beginner",
+      titleKey: "playVsBot2.beginnerBot.title",
+      descriptionKey: "playVsBot2.beginnerBot.description",
       icon: Bot,
     },
     {
-      title: "Advanced Bot",
-      description: "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
+      slug: "advanced",
+      titleKey: "playVsBot2.advancedBot.title",
+      descriptionKey: "playVsBot2.advancedBot.description",
       icon: Brain,
     },
   ]
 
+  // Grandmaster – osobno, żeby wyróżnić w UI
   const masterOption = {
-    title: "Chess Grandmaster",
-    description:
-      "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play.",
+    slug: "chess-master",
+    titleKey: "playVsBot2.chessGrandmaster.title",
+    descriptionKey: "playVsBot2.chessGrandmaster.description",
     icon: Trophy,
+  }
+
+  const handleModeSelect = (slug: string) => {
+    console.log(`Selected mode: ${slug}`)
+    if (slug === "chess-master") {
+      router.push("/bot/chess-master")
+    } else {
+      router.push(`/bot/ai/${slug}`)
+    }
   }
 
   return (
@@ -93,23 +110,22 @@ export default function PlayVsBotPage() {
           transition={{ duration: 0.5 }}
           className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[10vh] overflow-hidden flex-grow"
         >
-        <motion.h1
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 "
-        >
-        Play vs Bot
-        </motion.h1>
-
+          <motion.h1
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8"
+          >
+            {t("playVsBot2.playVsBotHeading")}
+          </motion.h1>
 
           {/* AI Bots Section */}
           <motion.div variants={container} initial="hidden" animate="show" className="w-full max-w-4xl mb-8">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">AI Bots</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">{t("playVsBot2.aiBotsHeading")}</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {botOptions.map((bot) => (
                 <MotionCard
-                  key={bot.title}
+                  key={bot.slug}
                   variants={item}
                   whileHover={{ scale: 1.05 }}
                   className="bg-card/50 border border-border transition-transform duration-300"
@@ -124,7 +140,7 @@ export default function PlayVsBotPage() {
                       transition={{ delay: 0.3, duration: 0.5 }}
                       className="text-xl md:text-2xl font-semibold"
                     >
-                      {bot.title}
+                      {t(bot.titleKey)}
                     </motion.h3>
                     <motion.p
                       initial={{ opacity: 0, x: 10 }}
@@ -132,20 +148,16 @@ export default function PlayVsBotPage() {
                       transition={{ delay: 0.4, duration: 0.5 }}
                       className="text-muted-foreground text-center mb-4 text-sm md:text-base"
                     >
-                      {bot.description}
+                      {t(bot.descriptionKey)}
                     </motion.p>
                     <MotionButton
                       className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => handleModeSelect(bot.title)}
+                      onClick={() => handleModeSelect(bot.slug)}
                     >
-                      <motion.span
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                      >
-                        Play {bot.title}
+                      <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
+                        {t("playVsBot2.playButton", { botName: t(bot.titleKey) })}
                       </motion.span>
                       <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
                         <ArrowRight className="w-4 h-4" />
@@ -159,44 +171,36 @@ export default function PlayVsBotPage() {
 
           {/* Chess Master Section */}
           <motion.div variants={container} initial="hidden" animate="show" className="w-full max-w-4xl">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">Chess Master</h2>
-            <MotionCard
-              variants={item}
-              whileHover={{ scale: 1.05 }}
-              className="bg-card/50 border border-border transition-transform duration-300"
-            >
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">{t("playVsBot2.chessMasterHeading")}</h2>
+            <MotionCard variants={item} whileHover={{ scale: 1.05 }} className="bg-card/50 border border-border transition-transform duration-300">
               <CardContent className="p-6 md:p-8 flex flex-col items-center justify-center gap-4 h-full">
                 <motion.div animate={floatingAnimation} className="p-3 rounded-full bg-background mb-2">
-                  <masterOption.icon className="w-12 h-12" /> {/* Larger icon for emphasis */}
+                  <masterOption.icon className="w-12 h-12" />
                 </motion.div>
                 <motion.h3
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  className="text-2xl md:text-3xl font-semibold" // Larger text for emphasis
+                  className="text-2xl md:text-3xl font-semibold"
                 >
-                  {masterOption.title}
+                  {t(masterOption.titleKey)}
                 </motion.h3>
                 <motion.p
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
-                  className="text-muted-foreground text-center mb-4 text-base md:text-lg" // Larger text for emphasis
+                  className="text-muted-foreground text-center mb-4 text-base md:text-lg"
                 >
-                  {masterOption.description}
+                  {t(masterOption.descriptionKey)}
                 </motion.p>
                 <MotionButton
                   className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleModeSelect(masterOption.title)}
+                  onClick={() => handleModeSelect(masterOption.slug)}
                 >
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
-                  >
-                    Challenge the Grandmaster
+                  <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
+                    {t("playVsBot2.challengeGrandmaster")}
                   </motion.span>
                   <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
                     <ArrowRight className="w-4 h-4" />

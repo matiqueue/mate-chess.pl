@@ -63,6 +63,33 @@ class Pawn extends Figure {
     const leftFigure = leftPosition?.figure
     const rightFigure = rightPosition?.figure
 
+    // En passant capture for left-side pawn
+    if (leftFigure instanceof Pawn && leftFigure.color !== this.color && leftFigure.isEnPassantPossible) {
+      if (target.x === leftFigure.position.x && Math.abs(target.y - this.position.y) === 1 && !target.figure) {
+        switch (this.color) {
+          case color.White:
+            if (this.position.y === 3) return true
+            break
+          case color.Black:
+            if (this.position.y === 4) return true
+            break
+        }
+      }
+    }
+    // En passant capture for right-side pawn
+    else if (rightFigure instanceof Pawn && rightFigure.color !== this.color && rightFigure.isEnPassantPossible) {
+      if (target.x === rightFigure.position.x && Math.abs(target.y - this.position.y) === 1 && !target.figure) {
+        switch (this.color) {
+          case color.White:
+            if (this.position.y === 3) return true
+            break
+          case color.Black:
+            if (this.position.y === 4) return true
+            break
+        }
+      }
+    }
+
     //standard fwd move
     if (target.x === this.position.x && !target.figure && Math.abs(target.y - this.position.y) === 1) {
       return true
@@ -96,6 +123,7 @@ class Pawn extends Figure {
           break
       }
     }
+
     return false
   }
 

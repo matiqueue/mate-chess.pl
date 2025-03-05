@@ -1,5 +1,5 @@
-import chessGame from "@modules/chess/chessGame"
+import chessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-export const getMoveHistory = (gameInstance: chessGame): string[] => {
+export const getMoveHistory = (gameInstance: chessGameExtraLayer): string[] => {
   return gameInstance.getMoveHistory()
 }

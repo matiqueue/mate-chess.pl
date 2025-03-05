@@ -1,0 +1,39 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.2",
+    "@radix-ui/react-progress": "^1.1.2",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@types/tailwindcss": "^3.1.0",
+    "@types/ws": "^8.5.14",
+    "@workspace/ui": "workspace:*",
+    "clsx": "^2.1.1",
+    "input-otp": "^1.4.2",
+    "lucide-react": "0.456.0",
+    "next": "^15.1.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^1.7.4",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "18.3.0",
+    "@types/react-dom": "18.3.1",
+    "@workspace/eslint-config": "workspace:^",
+    "@workspace/typescript-config": "workspace:*",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

@@ -8,14 +8,21 @@ import {
   getValidMoves,
   whosTurn,
   makeMove,
-  rewindMove,
+  undoMove,
   getMoveHistory,
   isStalemate,
   getGameStatus,
   getPositionByCords,
   getPositionByNotation,
   getPositionById,
+  rewindMove,
+  forwardMove,
+  returnToCurrentState,
+  isMoveEnPassant,
+  promote,
+  isAwaitingPromotion,
 } from "@modules/index"
+import { figureType } from "@chess-engine/types"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
@@ -46,7 +53,17 @@ const useGame = () => {
     return false
   }
 
-  const undoMove = (): boolean => {
+  const undoLastMove = (): boolean => {
+    if (undoMove(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+      return true
+    }
+    return false
+  }
+  const reviewLastMove = (): boolean => {
     if (rewindMove(game)) {
       setBoard(getBoard(game))
       setMoveHistory(getMoveHistory(game))
@@ -56,7 +73,24 @@ const useGame = () => {
     }
     return false
   }
-
+  const forwardLastMove = (): boolean => {
+    if (forwardMove(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+      return true
+    }
+    return false
+  }
+  const returnToCurrentGameState = () => {
+    if (returnToCurrentState(game)) {
+      setBoard(getBoard(game))
+      setMoveHistory(getMoveHistory(game))
+      setCurrentPlayer(whosTurn(game))
+      setGameStatus(getGameStatus(game))
+    }
+  }
   return {
     game,
     board,
@@ -64,7 +98,13 @@ const useGame = () => {
     currentPlayer,
     gameStatus,
     movePiece,
-    undoMove,
+    undoLastMove,
+    forwardLastMove,
+    reviewLastMove,
+    returnToCurrentGameState,
+    isAwaitingPromotion: () => isAwaitingPromotion(game),
+    promote: (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => promote(game, figure),
+    isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),

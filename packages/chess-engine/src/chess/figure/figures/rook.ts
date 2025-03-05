@@ -6,9 +6,9 @@ import { Board, Position } from "@utils/boardUtils"
 class Rook extends Figure {
   private _hasMoved: boolean
 
-  constructor(color: color, position: Position, board: Board) {
+  constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
     super(figureType.rook, color, position, board)
-    this._hasMoved = ["a1", "h1", "a8", "h8"].includes(this.position.notation)
+    this._hasMoved = hasMoved
   }
 
   override isPositionValid(target: Position): boolean {

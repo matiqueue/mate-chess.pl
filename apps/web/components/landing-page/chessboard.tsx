@@ -9,6 +9,7 @@ import Navbar from "@/components/landing-page/navbar"
 import { Fraunces } from "next/font/google"
 import ScrollAnimation from "@/components/landing-page/scroll-animation"
 import SkeletonChessboard from "./skeletonChessboard"
+import { useTranslation } from "react-i18next";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ const Chessboard: React.FC = () => {
   const [lastPosition] = useState(5)
   const [modelLoaded, setModelLoaded] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
+  const { t } = useTranslation();
 
   useEffect(() => {
     let current = 0
@@ -76,26 +78,26 @@ const Chessboard: React.FC = () => {
 
   const [textTab] = useState([
     {
-      title: "Mate-Chess",
-      description: "The battle begins. Focus your mind.",
+      title: t("textTab.mateChess.title"),
+      description: t("textTab.mateChess.description"),
     },
     {
-      title: "Bird's Eye Strategy",
-      description: "Strategic view from above.",
+      title: t("textTab.birdEye.title"),
+      description: t("textTab.birdEye.description"),
     },
     {
-      title: "Analyze the Frontline",
-      description: "A frontal perspective to analyze moves.",
+      title: t("textTab.analyzeFrontline.title"),
+      description: t("textTab.analyzeFrontline.description"),
     },
     {
-      title: "Opponent's Perspective",
-      description: "A deep look from the opponent's side.",
+      title: t("textTab.opponentPerspective.title"),
+      description: t("textTab.opponentPerspective.description"),
     },
     {
-      title: "Critical Chess Insights",
-      description: "Zooming in on critical details.",
+      title: t("textTab.criticalChessInsights.title"),
+      description: t("textTab.criticalChessInsights.description"),
     },
-  ])
+  ]);
 
   const handleDotClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const index = Number(e.currentTarget.getAttribute("data-index"))
@@ -396,10 +398,50 @@ const Chessboard: React.FC = () => {
       }
     }
 
+    // Dodana obsługa klawiszy strzałek góra/dół
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (transitioning.current || !cameraRef.current) return;
+      let direction = 0;
+      if (event.key === "ArrowDown") {
+        direction = 1;
+      } else if (event.key === "ArrowUp") {
+        direction = -1;
+      }
+      if (direction === 0) return;
+
+      const newIndex = (currentPositionIndex.current + direction + cameraPositions.current.length) % cameraPositions.current.length;
+      const newPosition = cameraPositions.current[newIndex];
+      if (!newPosition) return;
+
+      startPosition.current.copy(cameraRef.current.position);
+      targetPosition.current.copy(newPosition.position);
+
+      startRotation.current = chessModel.current?.rotation.y || 0;
+      if (newIndex === 3) {
+        targetRotation.current = startRotation.current + Math.PI / 4;
+      } else if (newIndex === 2) {
+        targetRotation.current = 0;
+      } else {
+        targetRotation.current = startRotation.current;
+      }
+
+      currentPositionIndex.current = newIndex;
+      setCurrentIndex(newIndex);
+      transitioning.current = true;
+      startTransitionTime.current = performance.now();
+
+      if (newIndex === lastPosition) {
+        setShowButton(true);
+      } else {
+        setShowButton(false);
+      }
+    };
+
     window.addEventListener("touchstart", handleTouchStart)
     window.addEventListener("touchmove", handleTouchMove)
     window.addEventListener("touchend", handleTouchEnd)
     window.addEventListener("wheel", handleScroll)
+    window.addEventListener("keydown", handleKeyDown)
 
     const animate = () => {
       requestAnimationFrame(animate)
@@ -436,11 +478,12 @@ const Chessboard: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize)
       window.removeEventListener("wheel", handleScroll)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      mountRef.current?.removeChild(renderer.domElement)
       window.removeEventListener("touchstart", handleTouchStart)
       window.removeEventListener("touchmove", handleTouchMove)
       window.removeEventListener("touchend", handleTouchEnd)
+      window.removeEventListener("keydown", handleKeyDown)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      mountRef.current?.removeChild(renderer.domElement)
     }
   }, [lastPosition])
 

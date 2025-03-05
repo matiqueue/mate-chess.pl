@@ -181,7 +181,7 @@ describe("Chess Pieces Movement", () => {
   test("King can castle", () => {
     const move: Move = {
       from: board.getPositionByNotation("e1")!,
-      to: board.getPositionByNotation("g1")!,
+      to: board.getPositionByNotation("h1")!,
     }
     expect(board.moveFigure(move)).toBe(true)
   })

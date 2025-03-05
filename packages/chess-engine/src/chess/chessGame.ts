@@ -4,13 +4,15 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
+type PromotionFigureType = figureType.knight | figureType.queen | figureType.rook | figureType.bishop
 
-class chessGame {
+class ChessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
   // private _moveRecorder: MoveRecorder
   private _moves: MoveRecord[] = []
   private _isGameOn: boolean = false
+  private _awaitingPromotion: boolean = false
   private _gameStatus: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" = "stop"
   constructor() {
     this._board = new Board()
@@ -24,7 +26,7 @@ class chessGame {
     this._isGameOn = true
     this.process()
   }
-  protected process() {
+  protected async process() {
     if (this._board.isCheckmate() === this.currentPlayer) {
       console.error(`${this.currentPlayer} is checkmated!`)
       if (this.currentPlayer === color.Black) {
@@ -38,40 +40,70 @@ class chessGame {
       this._gameStatus = "stalemate"
       this._isGameOn = false
     }
-    // this._board.printFigures()
-    // this._board.printBoard()
-    // this._board.printCords()
-    // this._board.printIds()
-    //
-    // const move: Move = {
-    //   from: this._board.getPositionByNotation("e2")!,
-    //   to: this._board.getPositionByNotation("e3")!,
-    // }
-    // this._board.moveFigure(move)
-    // this._board.printFigures()
+
+    for (const figure of this._board.allFigures) {
+      if (figure instanceof Pawn && !this._awaitingPromotion) {
+        if ((figure.color === color.White && figure.position.y === 0) || (figure.color === color.Black && figure.position.y === 7)) {
+          this._awaitingPromotion = true
+          const promotionType = await this.promotionFigure()
+          this.board.promote(figure.position, promotionType)
+          break
+        }
+      }
+    }
+
     this._moves = this._board.moveHistory
-    console.log(this.getMoveHistory())
   }
+  private promotionPromise: Promise<PromotionFigureType> | null = null
+  private promotionPromiseResolver: ((figure: PromotionFigureType) => void) | null = null
+
+  private promotionFigure(): Promise<PromotionFigureType> {
+    if (!this.promotionPromise) {
+      this.promotionPromise = new Promise((resolve) => {
+        this.promotionPromiseResolver = resolve
+      })
+    }
+    console.log("promotionPromise", this.promotionPromise)
+    console.log("awaitingPromotion", this._awaitingPromotion)
+    return this.promotionPromise
+  }
+  // Metoda wywoływana przez front-end, np. poprzez API
+  public promotionTo(selectedFigure: PromotionFigureType): boolean {
+    if (this.promotionPromiseResolver) {
+      this.promotionPromiseResolver(selectedFigure)
+      // Resetujemy promise oraz flagę oczekiwania, aby możliwe było kolejne promowanie
+      this.promotionPromise = null
+      this.promotionPromiseResolver = null
+      this._awaitingPromotion = false
+      return true
+    }
+    return false
+  }
+
   public makeMove(move: Move): boolean {
+    if (this.board.previewIndex > 0) {
+      while (this.board.previewMode) {
+        this.board.forwardMove()
+      }
+    }
     if (!this._isGameOn) return false
     if (move.from.figure?.color === this.currentPlayer) {
-      const figure = this._board.getFigureAtPosition(move.from)
-      // const targetFigure = this._board.getFigureAtPosition(move.to)
       if (this._board?.moveFigure(move)) {
-        this.switchCurrentPlayer()
-        if (figure) {
-          // this._moveRecorder.recordMove(figure.type, move, targetFigure?.type)
+        const figures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
+        for (const figure of figures) {
+          if (figure instanceof Pawn) {
+            figure.isEnPassantPossible = false
+          }
         }
+        this.switchCurrentPlayer()
+        this.board.initPreview()
         return true
       }
     }
     return false
   }
   public undoMove(): boolean {
-    const succes = this._board.undoLastMove()
-    if (succes) this.switchCurrentPlayer()
-
-    return succes
+    return this.board.previewLastMove()
   }
   public getMoveHistory(): string[] {
     const result: string[] = []
@@ -102,7 +134,7 @@ class chessGame {
       }
       const whiteCapture = whiteCaptured ? "x" : ""
       const whitePos = this.board.getPosition(whiteRecord!.move.to)?.notation ?? ""
-      const whiteMove = `${whiteNotation}${whiteCapture}${whitePos}`
+      const whiteMove = `${whiteNotation}${whiteCapture}${whitePos}${this._board.isCheckmate() === color.Black ? "#" : ""}`
 
       let line = `${i / 2 + 1}. White: ${whiteMove}`
 
@@ -133,7 +165,7 @@ class chessGame {
         }
         const blackCapture = blackCaptured ? "x" : ""
         const blackPos = this.board.getPosition(blackRecord!.move.to)?.notation ?? ""
-        const blackMove = `${blackNotation}${blackCapture}${blackPos}`
+        const blackMove = `${blackNotation}${blackCapture}${blackPos}${this._board.isCheckmate() === color.White ? "#" : ""}`
 
         line += ` Black: ${blackMove}`
       }
@@ -219,6 +251,10 @@ class chessGame {
     console.log(this.board.getBoardArray())
     console.trace()
   }
+
+  get awaitingPromotion(): boolean {
+    return this._awaitingPromotion
+  }
 }
 
-export default chessGame
+export default ChessGame

@@ -16,13 +16,15 @@ import {
 import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
+import { useTranslation } from "react-i18next"
 
 export function GameControls() {
+  const { t } = useTranslation()
   const pathname = usePathname()
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
-  const { undoMove } = useGameContext() // pobieramy funkcję cofania ruchu
+  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState } = useGameContext() // pobieramy funkcję cofania ruchu
 
   function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
     throw new Error("Function not implemented.")
@@ -36,16 +38,16 @@ export function GameControls() {
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
         {/* Przyciski sterujące (strzałki) widoczne wszędzie */}
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoMove}>
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
           <ChevronLeft className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoLastMove}>
           <RotateCcw className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={forwardLastMove}>
           <ChevronRight className="h-6 w-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10">
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={returnToCurrentGameState}>
           <FastForward className="h-5 w-5" />
         </Button>
 
@@ -59,40 +61,38 @@ export function GameControls() {
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="sm" className="text-red-400 border-red-400/50 hover:bg-red-400/10">
                   <Flag className="h-4 w-4 mr-2" />
-                  Surrender
+                  {t("gameControls.surrender")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to surrender?</AlertDialogTitle>
-                  <AlertDialogDescription>If you surrender, your opponent will win the game immediately. This action cannot be undone!</AlertDialogDescription>
+                  <AlertDialogTitle>{t("gameControls.surrenderTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>{t("gameControls.surrenderDescription")}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={confirmSurrender}>Confirm Surrender</AlertDialogAction>
+                  <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={confirmSurrender}>{t("gameControls.confirmSurrender")}</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
 
-            {/* Przycisk "Offer Draw" wyświetlamy tylko, gdy nie jesteśmy na stronie /bot */}
+            {/* Przyciski akcji: Offer Draw wyświetlamy tylko, gdy nie jesteśmy na stronie /bot */}
             {!isBot && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="outline" size="sm" className="text-blue-400 border-blue-400/50 hover:bg-blue-400/10">
                     <Handshake className="h-4 w-4 mr-2" />
-                    Offer Draw
+                    {t("gameControls.offerDraw")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className={`${theme === "dark" ? "bg-background/20 opacity-90" : "bg-background"} backdrop-blur-md shadow-lg`}>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Do you want to offer a draw?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      If your opponent accepts, the game will end in a draw. If they decline, the game will continue.
-                    </AlertDialogDescription>
+                    <AlertDialogTitle>{t("gameControls.offerDrawTitle")}</AlertDialogTitle>
+                    <AlertDialogDescription>{t("gameControls.offerDrawDescription")}</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={sendDrawOffer}>Send Offer</AlertDialogAction>
+                    <AlertDialogCancel>{t("gameControls.cancel")}</AlertDialogCancel>
+                    <AlertDialogAction onClick={sendDrawOffer}>{t("gameControls.sendOffer")}</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

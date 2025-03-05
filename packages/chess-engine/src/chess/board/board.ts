@@ -1,4 +1,4 @@
-import { Figure, King, Pawn, Rook } from "@utils/figureUtils"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { Position } from "@utils/boardUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
@@ -14,7 +14,8 @@ class Board {
   private positionsById: Position[] = []
   private _moveHistory: MoveRecord[] = []
   private _redoStack: MoveRecord[] = []
-
+  private _previewIndex: number = 0
+  private _previewMode: boolean = false
   constructor() {
     this.positions = new Map()
   }
@@ -85,7 +86,7 @@ class Board {
 
   public moveFigure(move: Move, simulate: boolean = false): boolean {
     const fromPos = this.getPosition(move.from)
-    const toPos = this.getPosition(move.to)
+    let toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
       return false
@@ -93,7 +94,7 @@ class Board {
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      return false
+      throw new Error("No figure performing the move")
     }
 
     if (!simulate) {
@@ -105,181 +106,361 @@ class Board {
       }
     }
     let wasFirstMove = false
-    if (fromPos.figure instanceof Pawn) {
-      wasFirstMove = fromPos.figure.isFirstMove
-    } else if (fromPos.figure instanceof King || fromPos.figure instanceof Rook) {
-      wasFirstMove = !fromPos.figure.hasMoved
+    if (fromPos.figure instanceof Pawn && fromPos.figure.isFirstMove) {
+      wasFirstMove = true
+    } else if ((fromPos.figure instanceof King || fromPos.figure instanceof Rook) && !fromPos.figure.hasMoved) {
+      wasFirstMove = true
     }
-    const performingfigure = fromPos.figure
-    if (!performingfigure) throw new Error("No figure performing the move")
-    this._moveHistory.push(new MoveRecord(move, performingfigure, toPos.figure, wasFirstMove))
+
+    let capturedFigure = toPos.figure
 
     if (toPos.figure) {
       console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
+      // Usuwamy referencję z pozycji – dalsze usunięcie z tablicy nastąpi poniżej
       toPos.figure = null
+    }
+
+    if (figure instanceof Pawn) {
+      figure.isFirstMove = false
+
+      // Jeśli ruch o dwa pola do przodu – oznacz en passant
+      if (Math.abs(move.from.y - move.to.y) === 2 && move.from.x === move.to.x) {
+        figure.isEnPassantPossible = true
+      }
+      // En passant
+      if (Math.abs(move.from.x - move.to.x) === 1 && Math.abs(move.from.y - move.to.y) === 1 && !toPos.figure && this.isMoveEnPassant(move)) {
+        const { from, to } = move
+        const performingFigure = this.getFigureAtPosition(from)
+        if (!performingFigure) return false
+
+        const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+        const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+
+        if (!leftPosition && !rightPosition) return false
+
+        const leftFigure = leftPosition ? this.getFigureAtPosition(leftPosition) : null
+        const rightFigure = rightPosition ? this.getFigureAtPosition(rightPosition) : null
+
+        // Sprawdzamy lewą stronę en passant
+        if (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) {
+          capturedFigure = leftFigure
+          leftPosition!.figure = null
+          if (!simulate) {
+            // Usuwamy zbity pionek z odpowiedniej tablicy
+            if (capturedFigure.color === color.White) {
+              this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+            } else {
+              this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+            }
+            this.updateArray()
+          }
+          figure.position = toPos
+          fromPos.figure = null
+          toPos.figure = figure
+
+          this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
+          return true
+        }
+        // Sprawdzamy prawą stronę en passant
+        else if (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1) {
+          capturedFigure = rightFigure
+          rightPosition!.figure = null
+          if (!simulate) {
+            if (capturedFigure.color === color.White) {
+              this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+            } else {
+              this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+            }
+            this.updateArray()
+          }
+          figure.position = toPos
+          fromPos.figure = null
+          toPos.figure = figure
+
+          this._moveHistory.push(new MoveRecord(move, performingFigure, capturedFigure, wasFirstMove, false, true))
+          return true
+        }
+      }
+    }
+    if (figure instanceof King) {
+      if (capturedFigure instanceof Rook && capturedFigure.color === figure.color) {
+        if (!capturedFigure.hasMoved && !figure.hasMoved) {
+          const deltaX = toPos.x - fromPos.x
+          const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
+
+          const newPosKing = this.getPositionByCords(fromPos.x + 2 * signX, toPos.y)
+          const newPosRook = this.getPositionByCords(fromPos.x + signX, toPos.y)
+          if (newPosKing && newPosRook) {
+            figure.position = newPosKing
+            fromPos.figure = null
+            toPos.figure = null
+
+            newPosKing.figure = figure
+            newPosRook.figure = capturedFigure
+            capturedFigure.position = newPosRook
+
+            figure.hasMoved = true
+            capturedFigure.hasMoved = true
+
+            const kingMove = {
+              from: fromPos,
+              to: newPosKing,
+            }
+            this._moveHistory.push(new MoveRecord(kingMove, figure, null, wasFirstMove))
+
+            const rookMove = {
+              from: toPos,
+              to: newPosRook,
+            }
+            this._moveHistory.push(new MoveRecord(rookMove, capturedFigure, null, wasFirstMove, true))
+            return true
+          } else throw new Error("Terrible error when getting castle position")
+        }
+      }
+
+      figure.hasMoved = true
+    }
+    if (figure instanceof Rook) {
+      figure.hasMoved = true
+    }
+
+    // Przy standardowym ruchu – jeśli nastąpiło bicie, usuń figurę z tablicy przeciwnika
+    if (!simulate && capturedFigure && capturedFigure.color !== figure.color) {
+      if (capturedFigure.color === color.White) {
+        this._whiteFigures = this._whiteFigures.filter((fig) => fig !== capturedFigure)
+      } else {
+        this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
+      }
+      this.updateArray()
     }
 
     figure.position = toPos
     fromPos.figure = null
     toPos.figure = figure
 
-    if (figure instanceof Pawn) {
-      figure.isFirstMove = false
-      if (Math.abs(move.from.y - move.to.y) === 2) {
-        figure.isEnPassantPossible = true
-      }
-    }
-    if (figure instanceof King) {
-      figure.hasMoved = true
-    }
-    if (figure instanceof Rook) {
-      figure.hasMoved = true
-    }
+    this._moveHistory.push(new MoveRecord(move, figure, capturedFigure, wasFirstMove))
     return true
   }
 
-  public undoLastMove(): boolean {
+  private undoLastMove(): boolean {
     if (this._moveHistory.length === 0) return false
-    if (!this._moveHistory) return false
 
     const lastMove = this._moveHistory[this._moveHistory.length - 1]
     if (!lastMove) return false
 
     const beforePosition = this.getPosition(lastMove.move.from)
     const afterPosition = this.getPosition(lastMove.move.to)
-    const capturedFigure = lastMove.figureCaptured
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
 
-    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
-    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
-    figureToUndo.position = beforePosition
-    beforePosition.figure = figureToUndo
+    const figurePerforming = lastMove.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    if (figureToUndo instanceof Pawn) {
-      figureToUndo.isFirstMove = lastMove.wasFirstMove
-    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
-      figureToUndo.hasMoved = !lastMove.wasFirstMove
+    beforePosition.figure = figurePerforming
+    figurePerforming.position = beforePosition
+    afterPosition.figure = null
+
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = lastMove.wasFirstMove
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = !lastMove.wasFirstMove
     }
 
+    const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
-      afterPosition.figure = capturedFigure
-      capturedFigure.position = afterPosition
-    } else {
-      afterPosition.figure = null
+      let capPos: Position | null
+      if (lastMove.enPassant && capturedFigure instanceof Pawn) {
+        capturedFigure.isEnPassantPossible = true
+        // Dla en passant wyliczamy oryginalną pozycję zbitego pionka
+        if (figurePerforming.color === color.White) {
+          // Dla białego pionka – captured była poniżej pola docelowego
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y + 1)
+        } else {
+          // Dla czarnego pionka – captured była powyżej pola docelowego
+          capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y - 1)
+        }
+      } else {
+        // Standardowe zbicie – używamy pozycji zapisanej w obiekcie zbitej figury
+        capPos = this.getPosition(capturedFigure.position)
+      }
+      if (!capPos) throw new Error("Critical error: no position for captured figure")
+      capPos.figure = capturedFigure
+      capturedFigure.position = capPos
     }
     this._moveHistory.pop()
+    if (lastMove.castleMove) {
+      this.undoLastMove()
+    }
     return true
   }
   //===================================== AI GENERATED CODE BELOW =====================================
   //IT IS TOTALLY UNTESTED. I AM NOT RESPONSIBILE FOR WHETHER IT WORKS OR NOT.
 
-  public rewindMove(): boolean {
-    if (this._moveHistory.length === 0) return false
-
-    const lastMove = this._moveHistory.pop()
-    if (!lastMove) return false
-
-    const beforePosition = this.getPosition(lastMove.move.from)
-    const afterPosition = this.getPosition(lastMove.move.to)
-    const capturedFigure = lastMove.figureCaptured
-
-    if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
-
-    const figureToUndo = this.getFigureAtPosition(lastMove.move.to)
-    if (!figureToUndo) throw new Error("Critical error: no figure found to undo")
-
-    // Move figure back
-    figureToUndo.position = beforePosition
-    beforePosition.figure = figureToUndo
-
-    // Restore first move status
-    if (figureToUndo instanceof Pawn) {
-      figureToUndo.isFirstMove = lastMove.wasFirstMove
-    } else if (figureToUndo instanceof King || figureToUndo instanceof Rook) {
-      figureToUndo.hasMoved = !lastMove.wasFirstMove
-    }
-
-    // Restore captured figure
-    if (capturedFigure) {
-      afterPosition.figure = capturedFigure
-      capturedFigure.position = afterPosition
-    } else {
-      afterPosition.figure = null
-    }
-
-    // Store move in redo stack for forwardMove
-    this._redoStack.push(lastMove)
-
-    return true
+  public initPreview(): void {
+    this._previewIndex = this._moveHistory.length
   }
-  public forwardMove(): boolean {
-    if (this._redoStack.length === 0) return false
 
-    const moveRecord = this._redoStack.pop()
+  /**
+   * Cofnij PODGLĄD o jeden ruch wstecz – nie usuwa wpisu z _moveHistory.
+   * Zwraca true, jeśli udało się cofnąć, false w przeciwnym razie.
+   */
+  public rewindMove(): boolean {
+    // Jeśli jesteśmy na początku partii, nie da się cofnąć dalej
+    if (this._previewIndex === 0) return false
+    else this.previewMode = true
+    // Bierzemy ruch, który chcemy cofnąć
+    const moveRecord = this._moveHistory[this._previewIndex - 1]
     if (!moveRecord) return false
 
-    const move = moveRecord.move
-    const fromPos = this.getPosition(move.from)
-    const toPos = this.getPosition(move.to)
-    if (!fromPos || !toPos) return false
+    // Wykonujemy cofnięcie podobne do undoLastMove, ALE:
+    //  - Nie usuwamy nic z _moveHistory
+    //  - Po prostu cofamy fizycznie ruch na planszy
+    this._unapplyMoveRecord(moveRecord)
 
-    const figure = this.getFigureAtPosition(fromPos)
-    if (!figure) return false
+    // Zmniejszamy _previewIndex, bo jesteśmy teraz „o ruch wstecz”
+    this._previewIndex -= 1
 
-    // Apply move again
-    toPos.figure = figure
-    fromPos.figure = null
-    figure.position = toPos
-
-    // Restore captured figure if it was captured
-    if (moveRecord.figureCaptured) {
-      toPos.figure = moveRecord.figureCaptured
-      moveRecord.figureCaptured.position = toPos
-    }
-
-    this._moveHistory.push(moveRecord)
     return true
   }
 
-  //===================================== AI GENERATED ENDS HERE =====================================
-  public canCastle(king: King, target: Position): boolean {
-    if (king.hasMoved) return false
-
-    const y = king.color === color.White ? 0 : 7
-    const isShortCastle = target.x > king.position.x
-    const rookStartX = isShortCastle ? 7 : 0
-    const rookEndX = isShortCastle ? 5 : 3
-
-    const rookPos = this.getPositionByCords(rookStartX, y)
-    const rook = rookPos?.figure
-
-    if (!(rook instanceof Rook) || (rook as Rook).hasMoved) {
+  /**
+   * Przywróć PODGLĄD o jeden ruch do przodu – nie dodaje wpisu do _moveHistory.
+   * Zwraca true, jeśli udało się „pójść w przód”, false w przeciwnym razie.
+   */
+  public forwardMove(): boolean {
+    // Jeśli jesteśmy już na końcu historii (stan aktualny), nie ma co przywracać
+    if (this._previewIndex === this._moveHistory.length) {
+      this.previewMode = false
       return false
     }
 
-    // Sprawdzenie, czy pola między królem a wieżą są puste
-    const direction = isShortCastle ? 1 : -1
-    for (let x = king.position.x + direction; x !== rookPos?.x; x += direction) {
-      if (this.getPositionByCords(x, y)?.figure) {
-        return false
-      }
-    }
+    // Bierzemy ruch, który chcemy „odtworzyć”
+    const moveRecord = this._moveHistory[this._previewIndex]
+    if (!moveRecord) return false
 
-    // Sprawdzenie, czy król nie przechodzi przez szachowane pole
-    const opponentFigures = king.color === color.White ? this._blackFigures : this._whiteFigures
-    for (let x = king.position.x; x !== target.x + direction; x += direction) {
-      const testPosition = this.getPositionByCords(x, y)
-      if (!testPosition) continue
+    // Fizycznie aplikujemy ruch na planszy, ale nie zmieniamy _moveHistory
+    this._applyMoveRecord(moveRecord)
 
-      for (const opponentFigure of opponentFigures) {
-        if (opponentFigure.isMoveValid(testPosition)) {
-          return false
-        }
-      }
-    }
+    // Zwiększamy _previewIndex, bo jesteśmy „o ruch do przodu”
+    this._previewIndex += 1
 
     return true
   }
+
+  /**
+   * Odpowiednik undoLastMove, ale NIE usuwa wpisu z _moveHistory.
+   * Po prostu cofa ruch moveRecord na planszy.
+   */
+  private _unapplyMoveRecord(moveRecord: MoveRecord): void {
+    const beforePosition = this.getPosition(moveRecord.move.from)
+    const afterPosition = this.getPosition(moveRecord.move.to)
+    if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
+
+    const figurePerforming = moveRecord.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
+
+    // Cofamy figurę na pole startowe
+    beforePosition.figure = figurePerforming
+    figurePerforming.position = beforePosition
+    afterPosition.figure = null
+
+    // Przywróć status isFirstMove/hasMoved
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = moveRecord.wasFirstMove
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = !moveRecord.wasFirstMove
+    }
+
+    // Jeżeli była bita figura – przywróć ją
+    const capturedFigure = moveRecord.figureCaptured
+    if (capturedFigure) {
+      let capPos: Position | null
+      if (moveRecord.enPassant && capturedFigure instanceof Pawn) {
+        capturedFigure.isEnPassantPossible = true
+        // Ustal właściwą pozycję pionka (poniżej/powyżej) analogicznie do undoLastMove
+        if (figurePerforming.color === color.White) {
+          capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y + 1)
+        } else {
+          capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y - 1)
+        }
+      } else {
+        // Normalne bicie – przywróć figurę na jej (poprzednią) pozycję
+        capPos = this.getPosition(capturedFigure.position)
+      }
+      if (!capPos) throw new Error("Critical error: no position for captured figure")
+
+      capPos.figure = capturedFigure
+      capturedFigure.position = capPos
+
+      // (Opcjonalnie) jeżeli w normalnym ruchu usuwałeś figurę z tablicy,
+      // tu należałoby dodać ją ponownie do _whiteFigures / _blackFigures, jeśli
+      // chcesz, by stan tablic też odzwierciedlał podgląd.
+      if (capturedFigure.color === color.White && !this._whiteFigures.includes(capturedFigure)) {
+        this._whiteFigures.push(capturedFigure)
+      }
+      if (capturedFigure.color === color.Black && !this._blackFigures.includes(capturedFigure)) {
+        this._blackFigures.push(capturedFigure)
+      }
+      this.updateArray()
+    }
+
+    // Jeśli ruch był roszadą (castleMove), trzeba też cofnąć wieżę –
+    // analogicznie jak w undoLastMove, ale bez manipulacji w _moveHistory.
+    if (moveRecord.castleMove) {
+      // UWAGA: w Twoim kodzie roszada bywa zapisywana w 2 MoveRecordach (król i wieża)
+      // Tutaj musisz sam zadecydować, jak to odwzorować w podglądzie
+      // (np. wyszukać poprzedni MoveRecord i cofnąć wieżę).
+      // Możesz też trzymać w moveRecord informację o pozycji wieży, by cofnąć ją w tej metodzie.
+    }
+  }
+
+  /**
+   * Odpowiednik moveFigure, ale NIE dopisuje ruchu do _moveHistory.
+   * Po prostu fizycznie przesuwa figurę z moveRecord na planszy.
+   */
+  private _applyMoveRecord(moveRecord: MoveRecord): void {
+    const beforePosition = this.getPosition(moveRecord.move.from)
+    const afterPosition = this.getPosition(moveRecord.move.to)
+    if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
+
+    const figurePerforming = moveRecord.figurePerforming
+    if (!figurePerforming) throw new Error("Critical error: no performing figure")
+
+    // Jeśli na docelowym polu jest jakaś figura, usuń ją (podgląd bicie)
+    const occupant = afterPosition.figure
+    if (occupant) {
+      afterPosition.figure = null
+      // (Opcjonalnie) usuń occupant z tablic figur, jeśli chcesz odzwierciedlać to w podglądzie
+      if (occupant.color === color.White) {
+        this._whiteFigures = this._whiteFigures.filter((f) => f !== occupant)
+      } else {
+        this._blackFigures = this._blackFigures.filter((f) => f !== occupant)
+      }
+    }
+
+    // Przesuń figurę
+    beforePosition.figure = null
+    afterPosition.figure = figurePerforming
+    figurePerforming.position = afterPosition
+
+    // Ustaw status isFirstMove/hasMoved tak, jakby ruch został wykonany
+    if (figurePerforming instanceof Pawn) {
+      figurePerforming.isFirstMove = false
+    } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
+      figurePerforming.hasMoved = true
+    }
+
+    // Jeśli oryginalny ruch zbijał figurę (moveRecord.figureCaptured),
+    // to w finalnym stanie po ruchu ta figura powinna zniknąć z planszy,
+    // więc tu nic nie przywracamy.
+    // Ale np. enPassant – musisz odwzorować analogicznie jak w moveFigure.
+
+    // Roszada – jeśli moveRecord.castleMove, trzeba też przesunąć wieżę
+    // analogicznie do moveFigure. Podgląd to odzwierciedli.
+
+    this.updateArray()
+  }
+
+  //===================================== AI GENERATED ENDS HERE =====================================
 
   /**
    * returns an array of positions, on which a move is possible to be made from given position
@@ -288,10 +469,10 @@ class Board {
    * */
   public getValidMovesForPosition(position: Position): Position[] {
     const validMoves: Position[] = []
-    console.debug("\nValidating moves for position: ", position.notation)
-    console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
+    // console.debug("\nValidating moves for position: ", position.notation)
+    // console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
     for (let y = 0; y < 8; y++) {
-      let row = ""
+      // let row = ""
       for (let x = 0; x < 8; x++) {
         const letter = this.letters[x]
         if (!letter) {
@@ -300,16 +481,28 @@ class Board {
         }
         const targetPosition = this.getPositionByNotation(letter + (8 - y))
         if (!targetPosition) {
-          row += "[null]"
+          // row += "[null]"
           break
         }
         if (targetPosition === position) {
-          row += "[&&] " //starting pos
+          // row += "[&&] " //starting pos
         } else if (position.figure?.isMoveValid(targetPosition)) {
-          row += "[--] " //valid
+          // if (position.figure instanceof King) {
+          //   if (targetPosition.figure instanceof Rook && !targetPosition.figure.hasMoved) {
+          //     const deltaX = targetPosition.x - position.x
+          //     const signX = deltaX === 0 ? 0 : deltaX > 0 ? 1 : -1
+          //
+          //     const newPos = this.getPositionByCords(position.x + 2 * signX, targetPosition.y)
+          //     if (newPos) {
+          //       validMoves.push(newPos)
+          //       continue
+          //     }
+          //   }
+          // }
+          // row += "[--] " //valid
           validMoves.push(targetPosition)
         } else {
-          row += `[${targetPosition.notation}] ` //invalid
+          // row += `[${targetPosition.notation}] ` //invalid
         }
       }
       // console.debug(row.trim())
@@ -502,13 +695,18 @@ class Board {
 
   public isKingInCheck(colorType: color.White | color.Black): boolean {
     const king = colorType === color.White ? this.getWhiteKing() : this.getBlackKing()
-    const enemyFigures = colorType === color.White ? this._blackFigures : this._whiteFigures
-
     if (!king) return false
 
+    const enemyFigures = colorType === color.White ? this._blackFigures : this._whiteFigures
+
     for (const figure of enemyFigures) {
-      // Zamiast wywoływać isLegalMove (które symuluje ruch i sprawdza króla)
-      // sprawdzamy, czy dana figura może (pseudo)legalnie zaatakować pole króla.
+      // Sprawdź, czy figura jest "fizycznie" na planszy:
+      // 1. Ma jakąś pozycję
+      // 2. Ta pozycja faktycznie wskazuje na tę figurę
+      if (!figure.position || figure.position.figure !== figure) {
+        continue
+      }
+      // Dopiero wtedy sprawdzamy, czy atakuje króla
       if (figure.isMoveValid(king.position)) {
         return true
       }
@@ -549,12 +747,13 @@ class Board {
           return true
         }
       }
+      this.undoLastMove()
     }
 
     return false
   }
 
-  public getLegalMovesForPosition(from: Position) {
+  public getLegalMovesForPosition(from: Position): Position[] {
     const king = from.figure?.color === color.White ? this.getWhiteKing() : this.getBlackKing()
     const figures = from.figure?.color === color.Black ? this._blackFigures : this._whiteFigures
     const legalMoves: Position[] = []
@@ -663,6 +862,106 @@ class Board {
 
   get moveHistory(): MoveRecord[] {
     return this._moveHistory
+  }
+  public isMoveEnPassant(move: Move): boolean {
+    const { from, to } = move
+    const performingFigure = this.getFigureAtPosition(from)
+
+    if (!performingFigure || performingFigure.type !== figureType.pawn) return false
+    if (
+      (performingFigure.color === color.White && performingFigure.position.y !== 3) ||
+      (performingFigure.color === color.Black && performingFigure.position.y !== 4)
+    )
+      return false
+    // Ensure the move is a diagonal move by 1 in the x-axis
+    if (Math.abs(to.x - from.x) !== 1 || Math.abs(to.y - from.y) !== 1) return false
+
+    // Get adjacent positions (left and right)
+    const leftPosition = this.getPositionByCords(from.x - 1, from.y)
+    const rightPosition = this.getPositionByCords(from.x + 1, from.y)
+
+    // Check if the adjacent figure is a Pawn with en passant possibility
+    const leftFigure = leftPosition?.figure
+    const rightFigure = rightPosition?.figure
+
+    return (
+      (leftFigure instanceof Pawn && leftFigure.color !== performingFigure.color && leftFigure.isEnPassantPossible && to.x === from.x - 1) ||
+      (rightFigure instanceof Pawn && rightFigure.color !== performingFigure.color && rightFigure.isEnPassantPossible && to.x === from.x + 1)
+    )
+  }
+  public promote(position: Position, promotionType: figureType.knight | figureType.queen | figureType.rook | figureType.bishop): boolean {
+    if (!position || !(position.figure instanceof Pawn)) return false
+    const pawn = position.figure as Pawn
+    const pawnColor = pawn.color
+
+    // Usuń pionka z odpowiedniej tablicy figur
+    if (pawnColor === color.White) {
+      this._whiteFigures = this._whiteFigures.filter((fig) => fig !== pawn)
+    } else {
+      this._blackFigures = this._blackFigures.filter((fig) => fig !== pawn)
+    }
+
+    // Utwórz nową figurę zgodnie z typem promocji
+    let promotedFigure: Figure
+    switch (promotionType) {
+      case figureType.knight:
+        promotedFigure = new Knight(pawnColor, position, this)
+        break
+      case figureType.queen:
+        promotedFigure = new Queen(pawnColor, position, this)
+        break
+      case figureType.rook:
+        promotedFigure = new Rook(pawnColor, position, this)
+        break
+      case figureType.bishop:
+        promotedFigure = new Bishop(pawnColor, position, this)
+        break
+      default:
+        return false
+    }
+
+    // Przypisz nowy unikalny identyfikator na podstawie długości _allFigures
+    promotedFigure.id = this._allFigures.length
+
+    // Ustaw nową figurę na danej pozycji
+    position.figure = promotedFigure
+
+    // Dodaj nową figurę do odpowiedniej tablicy
+    if (pawnColor === color.White) {
+      this._whiteFigures.push(promotedFigure)
+    } else {
+      this._blackFigures.push(promotedFigure)
+    }
+
+    // Zaktualizuj tablicę wszystkich figur
+    this.updateArray()
+
+    return true
+  }
+
+  public previewLastMove(): boolean {
+    if (this.previewIndex > 0) {
+      while (this.previewIndex !== 0) {
+        this.rewindMove()
+      }
+      return true
+    }
+    return false
+  }
+  get previewIndex(): number {
+    return this._previewIndex
+  }
+
+  set previewIndex(value: number) {
+    this._previewIndex = value
+  }
+
+  get previewMode(): boolean {
+    return this._previewMode
+  }
+
+  set previewMode(value: boolean) {
+    this._previewMode = value
   }
 }
 export default Board

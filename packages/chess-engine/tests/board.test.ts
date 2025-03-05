@@ -56,7 +56,7 @@ describe("Board", () => {
 
     const move: Move = {
       from: board.getPositionByNotation("e1")!,
-      to: board.getPositionByNotation("g1")!,
+      to: board.getPositionByNotation("h1")!,
     }
 
     expect(board.moveFigure(move)).toBe(true)
@@ -69,7 +69,7 @@ describe("Board", () => {
 
     const move: Move = {
       from: board.getPositionByNotation("e1")!,
-      to: board.getPositionByNotation("c1")!,
+      to: board.getPositionByNotation("a1")!,
     }
 
     expect(board.moveFigure(move)).toBe(true)

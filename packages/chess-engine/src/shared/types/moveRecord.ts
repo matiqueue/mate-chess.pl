@@ -6,12 +6,23 @@ class MoveRecord {
   private _figurePerforming: Figure
   private _figureCaptured: Figure | null
   private _wasFirstMove: boolean
+  private _castleMove: boolean
+  private _enPassant: boolean
 
-  constructor(move: Move, figurePerforming: Figure, figureCaptured: Figure | null, wasFirstMove: boolean) {
+  constructor(
+    move: Move,
+    figurePerforming: Figure,
+    figureCaptured: Figure | null,
+    wasFirstMove: boolean,
+    castleMove: boolean = false,
+    enPassant: boolean = false,
+  ) {
     this._move = move
     this._figurePerforming = figurePerforming
     this._figureCaptured = figureCaptured
     this._wasFirstMove = wasFirstMove
+    this._castleMove = castleMove
+    this._enPassant = enPassant
   }
 
   get move(): Move {
@@ -44,6 +55,14 @@ class MoveRecord {
 
   set figurePerforming(value: Figure) {
     this._figurePerforming = value
+  }
+
+  get castleMove(): boolean {
+    return this._castleMove
+  }
+
+  get enPassant(): boolean {
+    return this._enPassant
   }
 }
 
