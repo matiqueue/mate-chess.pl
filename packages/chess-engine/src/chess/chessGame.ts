@@ -114,8 +114,8 @@ class ChessGame {
     return this.board.previewLastMove()
   }
   public getMoveHistory(): any {
-    console.log(this._moveRecorder.generateMoveHistory(this._moves))
-    return this._moveRecorder.generateMoveHistory(this._moves)
+    console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
+    return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 
   public gameDraw() {
