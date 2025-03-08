@@ -75,7 +75,7 @@ class Board {
     } else if (figure.color === color.Black) {
       this._blackFigures.push(figure)
     }
-    this.updateArray()
+    this.updateAllFiguresArray()
     // console.log(`Figure of id ${figure.id}, type: ${figure.type} and color: ${figure.color} was added at position: ${existingPos.notation}`)
     return true
   }
@@ -152,7 +152,7 @@ class Board {
             } else {
               this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
             }
-            this.updateArray()
+            this.updateAllFiguresArray()
           }
           figure.position = toPos
           fromPos.figure = null
@@ -171,7 +171,7 @@ class Board {
             } else {
               this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
             }
-            this.updateArray()
+            this.updateAllFiguresArray()
           }
           figure.position = toPos
           fromPos.figure = null
@@ -231,7 +231,7 @@ class Board {
       } else {
         this._blackFigures = this._blackFigures.filter((fig) => fig !== capturedFigure)
       }
-      this.updateArray()
+      this.updateAllFiguresArray()
     }
 
     figure.position = toPos
@@ -400,7 +400,7 @@ class Board {
       if (capturedFigure.color === color.Black && !this._blackFigures.includes(capturedFigure)) {
         this._blackFigures.push(capturedFigure)
       }
-      this.updateArray()
+      this.updateAllFiguresArray()
     }
 
     // Jeśli ruch był roszadą (castleMove), trzeba też cofnąć wieżę –
@@ -457,7 +457,7 @@ class Board {
     // Roszada – jeśli moveRecord.castleMove, trzeba też przesunąć wieżę
     // analogicznie do moveFigure. Podgląd to odzwierciedli.
 
-    this.updateArray()
+    this.updateAllFiguresArray()
   }
 
   //===================================== AI GENERATED ENDS HERE =====================================
@@ -804,7 +804,7 @@ class Board {
     }
     return legalMoves
   }
-  private updateArray(): void {
+  private updateAllFiguresArray(): void {
     this._allFigures = this._whiteFigures.concat(this._blackFigures)
   }
 
@@ -920,7 +920,7 @@ class Board {
     }
 
     // Zaktualizuj tablicę wszystkich figur
-    this.updateArray()
+    this.updateAllFiguresArray()
 
     return true
   }
@@ -950,6 +950,7 @@ class Board {
     this._previewMode = value
   }
   get allFigures(): Figure[] {
+    this.updateAllFiguresArray()
     return this._allFigures
   }
 
