@@ -5,6 +5,13 @@ import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 import MoveRecord from "@shared/types/moveRecord"
 
+/**
+ * Class representing a chess board. <br>
+ * It manages most of the logic of the game such as figures movement, validating legal and illegal moves, keeping track of all moves made and keeping track of all the figures.<br>
+ * There isn't much player-related logic implemented here. Without ChessGame class wrapping around this class, there are a lot of cool and weird shenanigans possible - it allows for a lot of freedom when desiging a different gamemode.
+ *
+ * <br> this class has methods to setup figures on board, but those methods need to be called from higher layer - gamemode layer.
+ */
 class Board {
   private positions: Map<string, Position>
   private letters: string = "abcdefgh"
@@ -16,6 +23,7 @@ class Board {
   private _redoStack: MoveRecord[] = []
   private _previewIndex: number = 0
   private _previewMode: boolean = false
+
   constructor() {
     this.positions = new Map()
   }
