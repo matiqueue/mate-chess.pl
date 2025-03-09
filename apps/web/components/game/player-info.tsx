@@ -5,11 +5,12 @@ import { useTheme } from "next-themes"
 import { useGameContext } from "@/contexts/GameContext"
 import { useUser } from "@clerk/nextjs"
 import { useTranslation } from "react-i18next"
+import { gameStatusType } from "@shared/types/gameStatusType"
 
 export function PlayerInfo() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const { currentPlayer } = useGameContext()
+  const { currentPlayer, gameStatus } = useGameContext()
   const { user, isSignedIn } = useUser()
 
   const textColor = theme === "dark" ? "text-white" : "text-zinc-900"
@@ -27,9 +28,7 @@ export function PlayerInfo() {
   const secondUserName = t("playerInfo.guest")
 
   // Jeśli currentPlayer jest dostępny, wyświetlamy go, w przeciwnym razie "White"
-  const currentTurn = currentPlayer 
-  ? t(`playerInfo.${currentPlayer.toLowerCase()}`)
-  : t("playerInfo.white")
+  const currentTurn = currentPlayer ? t(`playerInfo.${currentPlayer.toLowerCase()}`) : t("playerInfo.white")
 
   return (
     <div className="w-full py-6 px-8 z-10">
@@ -60,7 +59,13 @@ export function PlayerInfo() {
         </div>
       </div>
       <div className={`text-center font-medium bg-background/30 py-2 mb-[1%] mt-[2%] rounded-lg max-w-xs mx-auto border`}>
-        {t("playerInfo.currentTurn")}: <span className="font-bold">{currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1).toLowerCase()}</span>
+        {gameStatus === "draw"
+          ? "Remis"
+          : gameStatus === gameStatusType.whiteWins
+            ? "Biały wygrał"
+            : gameStatus === gameStatusType.blackWins
+              ? "Czarny wygrał"
+              : `${t("playerInfo.currentTurn")}: ${currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1).toLowerCase()}`}
       </div>
     </div>
   )
