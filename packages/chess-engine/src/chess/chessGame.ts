@@ -5,6 +5,7 @@ import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
+import { gameStatusType } from "@shared/types/gameStatusType"
 
 type PromotionFigureType = figureType.knight | figureType.queen | figureType.rook | figureType.bishop
 
@@ -15,7 +16,7 @@ class ChessGame {
   private _isGameOn: boolean = false
   private _awaitingPromotion: boolean = false
   private _moveRecorder: MoveRecorder
-  private _gameStatus: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" = "stop"
+  private _gameStatus: gameStatusType = gameStatusType.paused
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
@@ -25,7 +26,7 @@ class ChessGame {
     this.promotionTo = this.promotionTo.bind(this)
   }
   start(): void {
-    this._gameStatus = "active"
+    this._gameStatus = gameStatusType.active
     this._isGameOn = true
     this.process()
   }
@@ -33,14 +34,14 @@ class ChessGame {
     if (this._board.isCheckmate() === this.currentPlayer) {
       console.error(`${this.currentPlayer} is checkmated!`)
       if (this.currentPlayer === color.Black) {
-        this._gameStatus = "white wins"
+        this._gameStatus = gameStatusType.whiteWins
       } else if (this.currentPlayer === color.White) {
-        this._gameStatus = "black wins"
+        this._gameStatus = gameStatusType.blackWins
       }
       this._isGameOn = false
     } else if (this._board.isStalemate()) {
       console.error(`Stalemate! The game is a draw.`)
-      this._gameStatus = "stalemate"
+      this._gameStatus = gameStatusType.stalemate
       this._isGameOn = false
     }
 
@@ -119,7 +120,7 @@ class ChessGame {
   }
 
   public gameDraw() {
-    this._gameStatus = "draw"
+    this._gameStatus = gameStatusType.draw
     this._isGameOn = false
   }
   private switchCurrentPlayer() {
@@ -145,11 +146,11 @@ class ChessGame {
     return this._isGameOn
   }
 
-  set gameStatus(value: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop") {
+  set gameStatus(value: gameStatusType) {
     this._gameStatus = value
   }
 
-  get gameStatus(): "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" {
+  get gameStatus(): gameStatusType {
     return this._gameStatus
   }
 

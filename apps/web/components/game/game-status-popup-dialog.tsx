@@ -11,6 +11,7 @@ import {
 import { Button } from "@workspace/ui/components/button"
 import { useTheme } from "next-themes"
 import { useGameContext } from "@/contexts/GameContext"
+import { gameStatusType } from "@shared/types/gameStatusType"
 
 export const GameStatusPopupDialog = () => {
   const { theme } = useTheme()
@@ -18,18 +19,18 @@ export const GameStatusPopupDialog = () => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (["black wins", "white wins", "stalemate"].includes(gameStatus)) {
+    if ([gameStatusType.blackWins, gameStatusType.whiteWins, gameStatusType.stalemate].includes(gameStatus)) {
       setOpen(true)
     }
   }, [gameStatus])
 
   const getDialogContent = () => {
     switch (gameStatus) {
-      case "black wins":
+      case gameStatusType.blackWins:
         return "Czarne wygrywają!"
-      case "white wins":
+      case gameStatusType.whiteWins:
         return "Białe wygrywają!"
-      case "stalemate":
+      case gameStatusType.stalemate:
         return "Pat! Remis."
       default:
         return ""

@@ -1,37 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
+  forwardMove,
+  getBoard,
+  getGameStatus,
+  getMoveHistory,
+  getPositionByCords,
+  getPositionById,
+  getPositionByNotation,
+  getValidMoves,
+  isAwaitingPromotion,
+  isCheckmate,
+  isMoveEnPassant,
+  isStalemate,
+  makeMove,
+  promote,
+  returnToCurrentState,
+  rewindMove,
   setupGame,
   startGame,
-  isCheckmate,
-  getBoard,
-  getValidMoves,
-  whosTurn,
-  makeMove,
   undoMove,
-  getMoveHistory,
-  isStalemate,
-  getGameStatus,
-  getPositionByCords,
-  getPositionByNotation,
-  getPositionById,
-  rewindMove,
-  forwardMove,
-  returnToCurrentState,
-  isMoveEnPassant,
-  promote,
-  isAwaitingPromotion,
+  whosTurn,
 } from "@modules/index"
 import { figureType } from "@chess-engine/types"
-import MoveRecordPublic from "@modules/chess/history/move"
 import MovePair from "@shared/types/movePair"
+import { gameStatusType } from "@shared/types/gameStatusType"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
-  const [gameStatus, setGameStatus] = useState<string>("stop")
+  const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
 
   useEffect(() => {
     const newGame = setupGame()
