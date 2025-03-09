@@ -32,7 +32,6 @@ class ChessGame {
   }
   protected async process() {
     if (this._board.isCheckmate() === this.currentPlayer) {
-      console.error(`${this.currentPlayer} is checkmated!`)
       if (this.currentPlayer === color.Black) {
         this._gameStatus = gameStatusType.whiteWins
       } else if (this.currentPlayer === color.White) {
@@ -40,7 +39,6 @@ class ChessGame {
       }
       this._isGameOn = false
     } else if (this._board.isStalemate()) {
-      console.error(`Stalemate! The game is a draw.`)
       this._gameStatus = gameStatusType.stalemate
       this._isGameOn = false
     }
