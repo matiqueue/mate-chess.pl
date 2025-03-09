@@ -1,6 +1,6 @@
-// apps/web/app/layout.tsx
 import { Providers } from "@/components/providers"
 import { ClerkProvider } from "@clerk/nextjs"
+
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
