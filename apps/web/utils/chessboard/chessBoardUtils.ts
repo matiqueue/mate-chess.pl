@@ -1,17 +1,6 @@
 import { useState } from "react"
 import { useGameContext } from "@/contexts/GameContext"
-
-interface Position {
-  notation: string
-  figure: { type: string; color: string } | null
-  rowIndex?: number
-  colIndex?: number
-}
-
-interface ArrowData {
-  start: Position
-  end: Position
-}
+import { Position, ArrowData } from "@/utils/chessboard/types"
 
 // Funkcja narzędziowa do generowania notacji szachowej
 export function getNotation(rowIndex: number, colIndex: number): string {
@@ -21,7 +10,6 @@ export function getNotation(rowIndex: number, colIndex: number): string {
   return file + rank
 }
 
-// Hook do obsługi interakcji z szachownicą (wybór pól, ruchy)
 export function useChessBoardInteractions() {
   const { board, movePiece, getValidMoves, currentPlayer } = useGameContext()
   const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
@@ -72,27 +60,52 @@ export function useChessArrows() {
   const { board } = useGameContext()
   const [arrowStart, setArrowStart] = useState<Position | null>(null)
   const [arrows, setArrows] = useState<ArrowData[]>([])
+  const [isDrawingArrow, setIsDrawingArrow] = useState<boolean>(false)
 
-  const handleSquareRightClick = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    e.preventDefault()
-    if (!board) return
+  const handleMouseDownSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
 
-    const notation = getNotation(rowIndex, colIndex)
-    const square = board.getPositionByNotation(notation)
-    if (!square) return
+      const notation = getNotation(rowIndex, colIndex)
+      const square = board.getPositionByNotation(notation)
+      if (!square) return
 
-    const extendedSquare: Position = { ...square, rowIndex, colIndex }
-
-    if (!arrowStart) {
+      const extendedSquare: Position = { ...square, rowIndex, colIndex }
       setArrowStart(extendedSquare)
-      return
+      setIsDrawingArrow(true)
     }
-
-    setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
-    setArrowStart(null)
   }
 
-  return { arrows, handleSquareRightClick }
+  const handleMouseUpSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    if (e.button === 2) {
+      e.preventDefault()
+      if (!board) return
+
+      if (isDrawingArrow && arrowStart) {
+        const notation = getNotation(rowIndex, colIndex)
+        if (arrowStart.rowIndex === rowIndex && arrowStart.colIndex === colIndex) {
+          // Ignoruj klik w to samo pole
+        } else if (arrowStart.notation !== notation) {
+          const square = board.getPositionByNotation(notation)
+          if (!square) return
+
+          const extendedSquare: Position = { ...square, rowIndex, colIndex }
+          setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
+        }
+      }
+
+      setArrowStart(null)
+      setIsDrawingArrow(false)
+    }
+  }
+
+  return {
+    arrows,
+    handleMouseDownSquare,
+    handleMouseUpSquare,
+    clearArrows: () => setArrows([]), // Dodatkowa funkcja do czyszczenia strzałek
+  }
 }
 
 // Funkcja określająca kolor pola na podstawie pozycji i trybu ciemnego
