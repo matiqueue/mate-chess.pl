@@ -11,9 +11,10 @@ export function getNotation(rowIndex: number, colIndex: number): string {
 }
 
 export function useChessBoardInteractions() {
-  const { board, movePiece, getValidMoves, currentPlayer } = useGameContext()
+  const { board, movePiece, getValidMoves, currentPlayer, isPreviewMode } = useGameContext()
   const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
+  const [showPreviewAlert, setShowPreviewAlert] = useState(false)
 
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
     if (!board) return
@@ -52,7 +53,7 @@ export function useChessBoardInteractions() {
     }
   }
 
-  return { selectedSquare, validMoves, handleSquareClick }
+  return { selectedSquare, validMoves, handleSquareClick, showPreviewAlert }
 }
 
 // Hook do obsługi strzałek na szachownicy
