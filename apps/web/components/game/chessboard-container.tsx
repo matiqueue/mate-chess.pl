@@ -9,6 +9,7 @@ import { LeftSidebar } from "./left-sidebar"
 import { PlayerInfo } from "./player-info"
 import { GameControls } from "./game-controls"
 import { RightPanel } from "./right-panel"
+import { GameStatusDialog } from "@/components/game/game-status-dialog"
 
 export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
@@ -32,6 +33,7 @@ export default function ChessBoardContainer() {
 
   return (
     <>
+      <GameStatusDialog />
       {viewMode === "2D" ? (
         <div className="relative flex w-full h-full">
           <SidebarProvider>
