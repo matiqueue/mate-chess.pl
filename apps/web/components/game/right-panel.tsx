@@ -89,6 +89,9 @@ export function RightPanel() {
     modeColor = "text-green-500"
   }
 
+  // Ustalamy, czy wyświetlać chat – nie pokazujemy go, gdy ścieżka to /play/local
+  const showChat = !pathname.startsWith("/play/local")
+
   const { open, setOpen } = useSidebar()
 
   const bottomButtonClass = isNarrow
@@ -333,33 +336,34 @@ export function RightPanel() {
             </div>
           </ScrollArea>
           <div className="mt-6 space-y-2">
-            {isChatOpen ? (
-              <div className="bg-secondary/50 rounded-lg p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className={`text-lg font-semibold ${textColor}`}>{t("rightPanel.chat")}</h3>
-                  <Button variant="ghost" size="sm" onClick={() => setIsChatOpen(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
+            {showChat &&
+              (isChatOpen ? (
+                <div className="bg-secondary/50 rounded-lg p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className={`text-lg font-semibold ${textColor}`}>{t("rightPanel.chat")}</h3>
+                    <Button variant="ghost" size="sm" onClick={() => setIsChatOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="h-40 overflow-y-auto mb-3">
+                    <p className={mutedTextColor}>{t("rightPanel.noMessagesYet")}</p>
+                  </div>
+                  <div className="flex">
+                    <Input type="text" placeholder={t("rightPanel.typeMessage")} className="flex-grow mr-2" />
+                    <Button variant="outline">{t("rightPanel.send")}</Button>
+                  </div>
                 </div>
-                <div className="h-40 overflow-y-auto mb-3">
-                  <p className={mutedTextColor}>{t("rightPanel.noMessagesYet")}</p>
-                </div>
-                <div className="flex">
-                  <Input type="text" placeholder={t("rightPanel.typeMessage")} className="flex-grow mr-2" />
-                  <Button variant="outline">{t("rightPanel.send")}</Button>
-                </div>
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "w-full p-2 flex items-center justify-center"}
-                onClick={() => setIsChatOpen(true)}
-              >
-                <MessageCircle className="h-4 w-4 flex-shrink-0" />
-                {!isNarrow && <span className="ml-2">{t("rightPanel.openChat")}</span>}
-              </Button>
-            )}
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "w-full p-2 flex items-center justify-center"}
+                  onClick={() => setIsChatOpen(true)}
+                >
+                  <MessageCircle className="h-4 w-4 flex-shrink-0" />
+                  {!isNarrow && <span className="ml-2">{t("rightPanel.openChat")}</span>}
+                </Button>
+              ))}
 
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setOpen(!open)}>

@@ -9,8 +9,8 @@ class ChessGameExtraLayer extends ChessGame {
     super.start()
   }
 
-  public override process() {
-    super.process()
+  public override async process() {
+    await super.process()
   }
 
   public override setupFigures() {

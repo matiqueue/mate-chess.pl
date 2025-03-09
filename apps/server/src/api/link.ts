@@ -4,9 +4,10 @@ import { lobbies, io } from "../index"
 import { Lobby, Player } from "../types"
 import chalk from "chalk"
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
 // Tworzenie lobby (Link)
+// @ts-ignore
 router.post("/create-link-lobby", (req, res) => {
   const code = Math.random().toString(36).substring(2, 8).toUpperCase()
   const lobbyId = uuidv4()
@@ -27,6 +28,7 @@ router.post("/create-link-lobby", (req, res) => {
 })
 
 // Dołączanie do lobby (Link)
+// @ts-ignore
 router.post("/join-link-lobby", (req, res) => {
   const { code, player } = req.body
   const lobby = Object.values(lobbies).find((l) => l.code === code && l.mode === "link")
@@ -53,6 +55,7 @@ router.post("/join-link-lobby", (req, res) => {
 })
 
 // Wyrzucanie gracza (Link)
+// @ts-ignore
 router.post("/kick-player", (req, res) => {
   const { lobbyId, playerId, creatorId } = req.body
   const lobby = lobbies[lobbyId]
@@ -64,12 +67,11 @@ router.post("/kick-player", (req, res) => {
 
   const playerIndex = lobby.players.findIndex((p) => p.id === playerId)
   if (playerIndex !== -1) {
-    const kickedPlayer = lobby.players[playerIndex]
-    lobby.players.splice(playerIndex, 1)
+    const [kickedPlayer] = lobby.players.splice(playerIndex, 1)
     lobby.banned.push(playerId)
     io.to(lobby.id).emit("playerKicked", playerId)
     io.to(lobby.id).emit("playerJoined", lobby.players)
-    console.log(chalk.bgMagenta.white.bold(" [KICK] ") + chalk.magenta(` Gracz ${kickedPlayer.name} (ID=${playerId}) wyrzucony z lobby: ID=${lobby.id} `))
+    console.log(chalk.bgMagenta.white.bold(" [KICK] ") + chalk.magenta(` Gracz ${kickedPlayer!.name} (ID=${playerId}) wyrzucony z lobby: ID=${lobby.id} `))
     res.json({ success: true })
   } else {
     console.log(chalk.bgYellow.black.bold(" [KICK] ") + chalk.yellow(` Gracz nie znaleziony: ID=${playerId}, Lobby=${lobbyId} `))
@@ -78,6 +80,7 @@ router.post("/kick-player", (req, res) => {
 })
 
 // Rozpoczęcie gry (Link)
+// @ts-ignore
 router.post("/start-game", (req, res) => {
   const { lobbyId, creatorId } = req.body
   const lobby = lobbies[lobbyId]

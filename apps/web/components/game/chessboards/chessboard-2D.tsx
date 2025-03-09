@@ -23,6 +23,8 @@ export function ChessBoard2D() {
   const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
   const { arrows, handleMouseDownSquare, handleMouseUpSquare, clearArrows } = useChessArrows()
 
+  const [isDrawingArrow, setIsDrawingArrow] = useState<boolean>(false)
+
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -128,6 +130,8 @@ export function ChessBoard2D() {
 
     return arrows.map((arrow, index) => {
       const { start, end } = arrow
+
+      // Każde pole = 12.5%, 6.25% to środek
       const startTop = (start.rowIndex ?? 0) * 12.5 + 6.25
       const startLeft = (start.colIndex ?? 0) * 12.5 + 6.25
       const endTop = (end.rowIndex ?? 0) * 12.5 + 6.25

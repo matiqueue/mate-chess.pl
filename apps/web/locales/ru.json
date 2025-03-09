@@ -192,11 +192,17 @@
   },
   "linkLobby": {
     "home": "Главная",
-    "user": "Пользователь",
+    "waitingForSecondPlayer": "Ожидание второго игрока",
+    "bothPlayersInLobby": "Оба игрока в лобби",
     "guest": "Гость",
     "waiting": "Ожидание...",
-    "waitingForSecondPlayer": "Ожидание второго игрока",
-    "acceptGame": "Принять игру"
+    "acceptGame": "Принять игру",
+    "kickPlayer": "Исключить игрока",
+    "countdown": "Начнется через {{count}}...",
+    "linkLabel": "Ссылка: {{code}}",
+    "copyTooltip": "Нажмите, чтобы скопировать код",
+    "kickedFromLobby": "Вас исключили из лобби",
+    "startingIn": "Начнется через: "
   },
   "notFound": {
     "pageNotFound": "Страница не найдена",
