@@ -12,7 +12,7 @@ import { Button } from "@workspace/ui/components/button"
 import { useTheme } from "next-themes"
 import { useGameContext } from "@/contexts/GameContext"
 
-export const GameStatusDialog = () => {
+export const GameStatusPopupDialog = () => {
   const { theme } = useTheme()
   const { gameStatus } = useGameContext()
   const [open, setOpen] = useState(false)
