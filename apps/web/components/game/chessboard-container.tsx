@@ -9,9 +9,13 @@ import { LeftSidebar } from "./left-sidebar"
 import { PlayerInfo } from "./player-info"
 import { GameControls } from "./game-controls"
 import { RightPanel } from "./right-panel"
+import { GameStatusPopupDialog } from "@/components/game/game-status-popup-dialog"
+import { PreviewModeAlertPopup } from "@/components/game/preview-mode-alert-popup"
+import { useChessBoardInteractions } from "@/utils/chessboard/chessBoardUtils"
 
 export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
+  const { showPreviewAlert } = useChessBoardInteractions()
 
   // Przy montowaniu odczytujemy zapisany tryb widoku z localStorage
   useEffect(() => {
@@ -32,6 +36,8 @@ export default function ChessBoardContainer() {
 
   return (
     <>
+      {/*<PreviewModeAlertPopup open={showPreviewAlert} />*/}
+      <GameStatusPopupDialog />
       {viewMode === "2D" ? (
         <div className="relative flex w-full h-full">
           <SidebarProvider>

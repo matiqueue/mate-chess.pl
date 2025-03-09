@@ -16,6 +16,8 @@ import { useGameView } from "@/contexts/GameViewContext"
 import { FaChessRook as ChessRook, FaChessKnight as ChessKnight, FaChessBishop as ChessBishop, FaChessQueen as ChessQueen } from "react-icons/fa"
 import { useTranslation } from "react-i18next"
 import { figureType } from "@modules/types"
+import MoveRecordPublic from "@modules/chess/history/move"
+import { color } from "@modules/types"
 
 export function RightPanel() {
   const { t } = useTranslation()
@@ -33,7 +35,7 @@ export function RightPanel() {
   })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory, promote, isAwaitingPromotion } = useGameContext()
+  const { moveHistory, promoteFigure, isAwaitingPromotion } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -56,18 +58,11 @@ export function RightPanel() {
     localStorage.setItem("panelWidth", newWidth.toString())
   }
 
-  const renderMove = (move: string) => {
-    let translatedMove = move
+  const renderMove = (moveRecord: MoveRecordPublic): string => {
+    const playerTranslated = moveRecord.playerColor === color.White ? t("playerInfo.white") : t("playerInfo.black")
 
-    // Najpierw zamieniamy "White:" na tłumaczenie, np. "Biały:"
-    if (move.includes("White:")) {
-      translatedMove = move.replace("White:", t("playerInfo.white") + ":")
-    }
-    if (move.includes("Black:")) {
-      translatedMove = move.replace("Black:", t("playerInfo.black") + ":")
-    }
+    let translatedMove = `${playerTranslated}: ${moveRecord.moveString}`
 
-    // Teraz (opcjonalnie) reszta logiki dla stylów notacji
     switch (notationStyle) {
       case "algebraic":
         return translatedMove
@@ -270,12 +265,29 @@ export function RightPanel() {
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.moveHistory")}</h2>
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
-                    moveHistory.map((moveStr, index) => (
-                      <div key={index} className="hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
-                        <span className={`w-6 ${mutedTextColor}`}>{index + 1}.</span>
-                        <span className={`w-full ${textColor}`}>{renderMove(moveStr)}</span>
-                      </div>
-                    ))
+                    moveHistory.map((movePair, index) => {
+                      // Numer ruchu dla białych = 2*index + 1
+                      // Numer ruchu dla czarnych = 2*index + 2
+                      const whiteMoveNumber = 2 * index + 1
+                      const blackMoveNumber = 2 * index + 2
+
+                      return (
+                        <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
+                          {/* Ruch białych */}
+                          <span>
+                            {whiteMoveNumber}. Biały: {movePair.white}
+                          </span>
+
+                          {/* Ruch czarnych */}
+                          {/* Jeżeli zdarzyłoby się, że czarny ruch jest pusty (np. nieparzysta liczba ruchów), można warunkowo wyświetlać */}
+                          {movePair.black && (
+                            <span className="ml-4">
+                              {blackMoveNumber}. Czarny: {movePair.black}
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })
                   ) : (
                     <p className={`${mutedTextColor} text-center`}>{t("rightPanel.noMovesYet")}</p>
                   )}
@@ -287,29 +299,37 @@ export function RightPanel() {
               <div className={isAwaitingPromotion() ? "block" : "hidden"}>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.rook)}
+                  >
                     <ChessRook className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.rook)}>
-                      {t("rightPanel.rook")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.rook")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.queen)}
+                  >
                     <ChessQueen className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.queen)}>
-                      {t("rightPanel.queen")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.queen")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.bishop)}
+                  >
                     <ChessBishop className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.bishop)}>
-                      {t("rightPanel.bishop")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.bishop")}</span>
                   </Button>
-                  <Button variant="outline" className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}>
+                  <Button
+                    variant="outline"
+                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
+                    onClick={() => promoteFigure(figureType.knight)}
+                  >
                     <ChessKnight className="h-6 w-6" />
-                    <span className="sr-only" onClick={() => promote(figureType.knight)}>
-                      {t("rightPanel.knight")}
-                    </span>
+                    <span className="sr-only">{t("rightPanel.knight")}</span>
                   </Button>
                 </div>
               </div>
