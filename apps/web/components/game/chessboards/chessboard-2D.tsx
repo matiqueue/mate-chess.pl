@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import {
   FaChessRook as ChessRook,
   FaChessKnight as ChessKnight,
@@ -13,7 +13,8 @@ import { SiChessdotcom as ChessPawn } from "react-icons/si"
 import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
-import { isMoveEnPassant } from "@chess-engine/functions"
+import { useChessBoardInteractions, useChessArrows, isBlackSquare } from "@/utils/chessboard/chessBoardUtils"
+import { getNotation } from "@/utils/chessboard/chessBoardUtils"
 
 interface Position {
   notation: string
@@ -30,13 +31,10 @@ interface ArrowData {
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
+  const { board, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
-  const { board, movePiece, getValidMoves, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
-
-  const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
-  const [validMoves, setValidMoves] = useState<Position[]>([])
-  const [arrowStart, setArrowStart] = useState<Position | null>(null)
-  const [arrows, setArrows] = useState<ArrowData[]>([])
+  const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
+  const { arrows, handleSquareRightClick } = useChessArrows()
 
   const initialBoard = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
@@ -52,104 +50,38 @@ export function ChessBoard2D() {
   const rawBoard = board ? board.getBoardArray() : initialBoard
   const boardRows = rawBoard.slice(rawBoard.length - 8)
 
-  const getNotation = (rowIndex: number, colIndex: number) => {
-    const letters = "abcdefgh"
-    const rank = 8 - rowIndex
-    const file = letters.charAt(colIndex)
-    return file + rank
-  }
-
-  const handleSquareRightClick = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    e.preventDefault()
-    if (!board) return
-
-    const notation = getNotation(rowIndex, colIndex)
-    const square = board.getPositionByNotation(notation)
-    if (!square) return
-
-    const extendedSquare: Position = { ...square, rowIndex, colIndex }
-
-    if (!arrowStart) {
-      setArrowStart(extendedSquare)
-      return
-    }
-
-    setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
-    setArrowStart(null)
-    setSelectedSquare(null)
-  }
-
-  const handleSquareClick = (rowIndex: number, colIndex: number) => {
-    if (!board) return
-
-    const notation = getNotation(rowIndex, colIndex)
-    const square = board.getPositionByNotation(notation)
-    if (!square) return
-
-    if (!selectedSquare) {
-      if (square.figure && square.figure.color === currentPlayer) {
-        setSelectedSquare(square)
-        setValidMoves(getValidMoves(square))
-      }
-      return
-    }
-
-    if (selectedSquare.notation === square.notation) {
-      setSelectedSquare(null)
-      setValidMoves([])
-      return
-    }
-
-    const isValid = validMoves.some((pos) => pos.notation === square.notation)
-    if (isValid) {
-      movePiece(selectedSquare, square)
-      setSelectedSquare(null)
-      setValidMoves([])
-    } else {
-      if (square.figure && square.figure.color === currentPlayer) {
-        setSelectedSquare(square)
-        setValidMoves(getValidMoves(square))
-      } else {
-        setSelectedSquare(null)
-        setValidMoves([])
-      }
-    }
-  }
-
   const renderPiece = (symbol: string, rowIndex: number, colIndex: number) => {
-    if (board) {
-      const notation = getNotation(rowIndex, colIndex)
-      const square = board.getPositionByNotation(notation)
-      if (square?.figure) {
-        const piece = square.figure
-        const isWhite = piece.color === "white"
-        const iconColor = isWhite ? "text-white" : "text-black"
-        let IconComponent
-        switch (piece.type) {
-          case "pawn":
-            IconComponent = ChessPawn
-            break
-          case "rook":
-            IconComponent = ChessRook
-            break
-          case "knight":
-            IconComponent = ChessKnight
-            break
-          case "bishop":
-            IconComponent = ChessBishop
-            break
-          case "queen":
-            IconComponent = ChessQueen
-            break
-          case "king":
-            IconComponent = ChessKing
-            break
-          default:
-            return null
-        }
-        const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
-        return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
+    const notation = getNotation(rowIndex, colIndex)
+    const square = board?.getPositionByNotation(notation)
+    if (square?.figure) {
+      const piece = square.figure
+      const isWhite = piece.color === "white"
+      const iconColor = isWhite ? "text-white" : "text-black"
+      let IconComponent
+      switch (piece.type) {
+        case "pawn":
+          IconComponent = ChessPawn
+          break
+        case "rook":
+          IconComponent = ChessRook
+          break
+        case "knight":
+          IconComponent = ChessKnight
+          break
+        case "bishop":
+          IconComponent = ChessBishop
+          break
+        case "queen":
+          IconComponent = ChessQueen
+          break
+        case "king":
+          IconComponent = ChessKing
+          break
+        default:
+          return null
       }
+      const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+      return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
     }
 
     if (!symbol) return null
@@ -182,18 +114,7 @@ export function ChessBoard2D() {
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
-  function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
-    const isBlack = (rowIndex + colIndex) % 2 === 0
-    return isBlack
-      ? darkMode
-        ? "bg-neutral-400 hover:bg-neutral-500"
-        : "bg-gray-400 hover:bg-neutral-500"
-      : darkMode
-        ? "bg-stone-700 hover:bg-neutral-500"
-        : "bg-zinc-200 hover:bg-neutral-500"
-  }
-
-  function renderArrows() {
+  const renderArrows = () => {
     return arrows.map((arrow, index) => {
       const { start, end } = arrow
       const startTop = (start.rowIndex ?? 0) * 12.5 + 6.25
@@ -267,7 +188,6 @@ export function ChessBoard2D() {
 
       <div className={clsx("relative z-10 w-full h-full rounded-xl p-4 shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
         {renderArrows()}
-
         <div className={clsx("grid grid-cols-8 grid-rows-8 h-full w-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           {boardRows.map((rowData: string[], rowIndex: number) =>
             rowData.map((symbol, colIndex) => {
@@ -275,8 +195,6 @@ export function ChessBoard2D() {
               const square = board?.getPositionByNotation(notation)
               const isSelected = selectedSquare && selectedSquare.notation === notation
               const isValidMove = validMoves.some((pos) => pos.notation === notation)
-
-              // Sprawdzamy, czy ruch na to pole to en passant
               const isEnPassantMove = selectedSquare && checkEnPassant({ from: selectedSquare, to: square })
 
               let isKingInCheck = false
@@ -309,7 +227,6 @@ export function ChessBoard2D() {
                     </>
                   )}
 
-                  {/* Specjalne podświetlenie dla en passant */}
                   {isEnPassantMove && (
                     <div
                       className={clsx("absolute inset-0 bg-yellow-500 opacity-50 pointer-events-none rounded-md", "border-2 border-dashed border-yellow-700")}
@@ -317,10 +234,7 @@ export function ChessBoard2D() {
                   )}
 
                   {isSelected && (
-                    <div
-                      className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500
-                 rounded-tl-md rounded-tr-sm rounded-bl-sm rounded-br-none pointer-events-none z-0"
-                    />
+                    <div className="absolute inset-0 border-t-[5px] border-l-[5px] border-blue-500 rounded-tl-md rounded-tr-sm rounded-bl-sm rounded-br-none pointer-events-none z-0" />
                   )}
 
                   {renderPiece(symbol, rowIndex, colIndex)}
