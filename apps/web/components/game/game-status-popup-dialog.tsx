@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react"
 import {
   AlertDialog,
@@ -12,11 +13,13 @@ import { Button } from "@workspace/ui/components/button"
 import { useTheme } from "next-themes"
 import { useGameContext } from "@/contexts/GameContext"
 import { gameStatusType } from "@shared/types/gameStatusType"
+import { useRouter } from "next/navigation"
 
 export const GameStatusPopupDialog = () => {
   const { theme } = useTheme()
   const { gameStatus } = useGameContext()
   const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     if ([gameStatusType.blackWins, gameStatusType.whiteWins, gameStatusType.stalemate].includes(gameStatus)) {
@@ -46,7 +49,14 @@ export const GameStatusPopupDialog = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Zamknij</AlertDialogCancel>
-          <Button variant="default">Nowa gra</Button>
+          <Button
+            variant="default"
+            onClick={() => {
+              router.push("/home")
+            }}
+          >
+            Powrót do lobby
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
