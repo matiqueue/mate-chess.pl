@@ -12,28 +12,16 @@ import { SiChessdotcom as ChessPawn } from "react-icons/si"
 import { useTheme } from "next-themes"
 import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
-interface Position {
-  notation: string
-  figure: { type: string; color: string } | null
-  rowIndex?: number
-  colIndex?: number
-}
-
-interface ArrowData {
-  start: Position
-  end: Position
-}
+import { Position, ArrowData } from "@/utils/chessboard/types"
+import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation } from "@/utils/chessboard/chessBoardUtils"
 
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
+  const { board, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
-  const { board, movePiece, getValidMoves, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
-
-  const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
-  const [validMoves, setValidMoves] = useState<Position[]>([])
-  const [arrowStart, setArrowStart] = useState<Position | null>(null)
-  const [arrows, setArrows] = useState<ArrowData[]>([])
+  const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
+  const { arrows, handleMouseDownSquare, handleMouseUpSquare, clearArrows } = useChessArrows()
 
   const [isDrawingArrow, setIsDrawingArrow] = useState<boolean>(false)
 
@@ -51,89 +39,14 @@ export function ChessBoard2D() {
   const rawBoard = board ? board.getBoardArray() : initialBoard
   const boardRows = rawBoard.slice(rawBoard.length - 8)
 
-  const getNotation = (rowIndex: number, colIndex: number) => {
-    const letters = "abcdefgh"
-    const rank = 8 - rowIndex
-    const file = letters.charAt(colIndex)
-    return file + rank
-  }
-
-  // Obsługa rysowania strzałki (prawy przycisk myszy)
-  const handleMouseDownSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    if (e.button === 2) {
-      e.preventDefault()
-      if (!board) return
-
-      const notation = getNotation(rowIndex, colIndex)
-      const square = board.getPositionByNotation(notation)
-      if (!square) return
-
-      const extendedSquare: Position = { ...square, rowIndex, colIndex }
-      setArrowStart(extendedSquare)
-      setIsDrawingArrow(true)
-    }
-  }
-
-  const handleMouseUpSquare = (e: React.MouseEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    if (e.button === 2) {
-      e.preventDefault()
-      if (!board) return
-
-      if (isDrawingArrow && arrowStart) {
-        const notation = getNotation(rowIndex, colIndex)
-        if (arrowStart.rowIndex === rowIndex && arrowStart.colIndex === colIndex) {
-          // Klik w to samo pole – ignorujemy
-        } else if (arrowStart.notation !== notation) {
-          const square = board.getPositionByNotation(notation)
-          if (!square) return
-
-          const extendedSquare: Position = { ...square, rowIndex, colIndex }
-          setArrows((prev) => [...prev, { start: arrowStart, end: extendedSquare }])
-        }
-      }
-
-      setArrowStart(null)
-      setIsDrawingArrow(false)
-      setSelectedSquare(null)
-    }
-  }
-
-  const handleSquareClick = (rowIndex: number, colIndex: number) => {
-    if (!board) return
-
+  // Nadpisz handleSquareClick, aby czyścić strzałki po ruchu
+  const handleSquareClickWithArrows = (rowIndex: number, colIndex: number) => {
     const notation = getNotation(rowIndex, colIndex)
-    const square = board.getPositionByNotation(notation)
-    if (!square) return
-
-    if (!selectedSquare) {
-      if (square.figure && square.figure.color === currentPlayer) {
-        setSelectedSquare(square)
-        setValidMoves(getValidMoves(square))
-      }
-      return
+    const square = board?.getPositionByNotation(notation)
+    if (selectedSquare && validMoves.some((pos) => pos.notation === square?.notation)) {
+      clearArrows()
     }
-
-    if (selectedSquare.notation === square.notation) {
-      setSelectedSquare(null)
-      setValidMoves([])
-      return
-    }
-
-    const isValid = validMoves.some((pos) => pos.notation === square.notation)
-    if (isValid) {
-      movePiece(selectedSquare, square)
-      setSelectedSquare(null)
-      setValidMoves([])
-      setArrows([])
-    } else {
-      if (square.figure && square.figure.color === currentPlayer) {
-        setSelectedSquare(square)
-        setValidMoves(getValidMoves(square))
-      } else {
-        setSelectedSquare(null)
-        setValidMoves([])
-      }
-    }
+    handleSquareClick(rowIndex, colIndex)
   }
 
   const renderPiece = (symbol: string, rowIndex: number, colIndex: number) => {
@@ -202,21 +115,8 @@ export function ChessBoard2D() {
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
-  function isBlackSquare(rowIndex: number, colIndex: number, darkMode: boolean) {
-    const isBlack = (rowIndex + colIndex) % 2 === 0
-    return isBlack
-      ? darkMode
-        ? "bg-neutral-400 hover:bg-neutral-500"
-        : "bg-gray-400 hover:bg-neutral-500"
-      : darkMode
-        ? "bg-stone-700 hover:bg-neutral-500"
-        : "bg-zinc-200 hover:bg-neutral-500"
-  }
-
   function renderArrows() {
-    // Pełny kolor bez alpha
     const arrowColorSolid = "#ffa500"
-    // Kontener dla całej strzałki – z opacity, by nie nakładały się alfa
     const arrowContainerBase: React.CSSProperties = {
       position: "absolute",
       top: 0,
@@ -224,7 +124,7 @@ export function ChessBoard2D() {
       width: "100%",
       height: "100%",
       pointerEvents: "none",
-      opacity: 0.6, // Tutaj kontrolujesz przezroczystość całości
+      opacity: 0.6,
       zIndex: 50,
     }
 
@@ -240,12 +140,10 @@ export function ChessBoard2D() {
       const rowDiff = Math.abs((start.rowIndex ?? 0) - (end.rowIndex ?? 0))
       const colDiff = Math.abs((start.colIndex ?? 0) - (end.colIndex ?? 0))
 
-      // Style wspólne
       const lineThickness = 18
       const arrowHeadSize = 40
 
       if (rowDiff === colDiff) {
-        // === RUCH UKOŚNY (diagonal) ===
         const deltaX = endLeft - startLeft
         const deltaY = endTop - startTop
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
@@ -286,7 +184,6 @@ export function ChessBoard2D() {
           </div>
         )
       } else {
-        // === RUCH L-KSZTAŁTNY ===
         const verticalTop = Math.min(startTop, endTop)
         const verticalHeight = Math.abs(endTop - startTop)
         const horizontalLeft = Math.min(startLeft, endLeft)
@@ -367,16 +264,10 @@ export function ChessBoard2D() {
 
   return (
     <div className="relative w-full max-w-[68vh] aspect-square">
-      {/* Zewnętrzny kontener jako obramówka */}
       <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")}>
-        {/* Kontener główny szachownicy z aspect-square */}
         <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
-          {/* Bez paddingu, by strzałki miały pełną przestrzeń */}
           <div className="relative w-full h-full box-border">
-            {/* Kontener na strzałki – pełna przestrzeń bez ograniczeń */}
             <div className="absolute inset-0 pointer-events-none">{renderArrows()}</div>
-
-            {/* Szachownica */}
             <div className={clsx("grid grid-cols-8 grid-rows-8 w-full h-full rounded-xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
               {boardRows.map((rowData: string[], rowIndex: number) =>
                 rowData.map((symbol, colIndex) => {
@@ -397,7 +288,7 @@ export function ChessBoard2D() {
                   return (
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      onClick={() => handleSquareClick(rowIndex, colIndex)}
+                      onClick={() => handleSquareClickWithArrows(rowIndex, colIndex)}
                       onContextMenu={(e) => e.preventDefault()}
                       onMouseDown={(e) => handleMouseDownSquare(e, rowIndex, colIndex)}
                       onMouseUp={(e) => handleMouseUpSquare(e, rowIndex, colIndex)}

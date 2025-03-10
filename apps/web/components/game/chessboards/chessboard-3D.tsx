@@ -21,7 +21,7 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-export function ChessBoard3D(): JSX.Element {
+export function ChessBoard3D() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
   const boardRef = useRef(board)

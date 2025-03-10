@@ -4,40 +4,42 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
+import MoveRecorder from "@modules/chess/history/moveRecorder"
+import { gameStatusType } from "@shared/types/gameStatusType"
+
 type PromotionFigureType = figureType.knight | figureType.queen | figureType.rook | figureType.bishop
 
 class ChessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
-  // private _moveRecorder: MoveRecorder
   private _moves: MoveRecord[] = []
   private _isGameOn: boolean = false
   private _awaitingPromotion: boolean = false
-  private _gameStatus: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" = "stop"
+  private _moveRecorder: MoveRecorder
+  private _gameStatus: gameStatusType = gameStatusType.paused
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
     this.setupFigures()
     this._currentPlayer = color.White
-    // this._moveRecorder = new MoveRecorder(this._board, this)
+    this._moveRecorder = new MoveRecorder(this)
+    this.promotionTo = this.promotionTo.bind(this)
   }
   start(): void {
-    this._gameStatus = "active"
+    this._gameStatus = gameStatusType.active
     this._isGameOn = true
     this.process()
   }
   protected async process() {
     if (this._board.isCheckmate() === this.currentPlayer) {
-      console.error(`${this.currentPlayer} is checkmated!`)
       if (this.currentPlayer === color.Black) {
-        this._gameStatus = "white wins"
+        this._gameStatus = gameStatusType.whiteWins
       } else if (this.currentPlayer === color.White) {
-        this._gameStatus = "black wins"
+        this._gameStatus = gameStatusType.blackWins
       }
       this._isGameOn = false
     } else if (this._board.isStalemate()) {
-      console.error(`Stalemate! The game is a draw.`)
-      this._gameStatus = "stalemate"
+      this._gameStatus = gameStatusType.stalemate
       this._isGameOn = false
     }
 
@@ -58,17 +60,21 @@ class ChessGame {
   private promotionPromiseResolver: ((figure: PromotionFigureType) => void) | null = null
 
   private promotionFigure(): Promise<PromotionFigureType> {
+    console.log("Tworzę nowy Promise do promocji")
     if (!this.promotionPromise) {
       this.promotionPromise = new Promise((resolve) => {
-        this.promotionPromiseResolver = resolve
+        this.promotionPromiseResolver = (figure) => {
+          console.log("Rozwiązuję promisa z figurą:", figure)
+          resolve(figure)
+        }
       })
     }
-    console.log("promotionPromise", this.promotionPromise)
-    console.log("awaitingPromotion", this._awaitingPromotion)
     return this.promotionPromise
   }
   // Metoda wywoływana przez front-end, np. poprzez API
-  public promotionTo(selectedFigure: PromotionFigureType): boolean {
+  public promotionTo = (selectedFigure: PromotionFigureType): boolean => {
+    console.log("promotionTo wywołane. this:", this)
+    console.log("this.promotionPromiseResolver:", this.promotionPromiseResolver)
     if (this.promotionPromiseResolver) {
       this.promotionPromiseResolver(selectedFigure)
       // Resetujemy promise oraz flagę oczekiwania, aby możliwe było kolejne promowanie
@@ -77,7 +83,8 @@ class ChessGame {
       this._awaitingPromotion = false
       return true
     }
-    return false
+    console.error("Brak resolvera dla promocji")
+    throw new Error("No promotion resolver")
   }
 
   public makeMove(move: Move): boolean {
@@ -105,77 +112,13 @@ class ChessGame {
   public undoMove(): boolean {
     return this.board.previewLastMove()
   }
-  public getMoveHistory(): string[] {
-    const result: string[] = []
-    for (let i = 0; i < this._moves.length; i += 2) {
-      // Biały ruch
-      const whiteRecord = this._moves[i]!
-      const whiteFigure = whiteRecord!.figurePerforming
-      const whiteCaptured = whiteRecord!.figureCaptured
-      let whiteNotation = ""
-      switch (whiteFigure.type) {
-        case figureType.queen:
-          whiteNotation = "Q"
-          break
-        case figureType.rook:
-          whiteNotation = "R"
-          break
-        case figureType.knight:
-          whiteNotation = "N"
-          break
-        case figureType.king:
-          whiteNotation = "K"
-          break
-        case figureType.bishop:
-          whiteNotation = "B"
-          break
-        default:
-          whiteNotation = ""
-      }
-      const whiteCapture = whiteCaptured ? "x" : ""
-      const whitePos = this.board.getPosition(whiteRecord!.move.to)?.notation ?? ""
-      const whiteMove = `${whiteNotation}${whiteCapture}${whitePos}${this._board.isCheckmate() === color.Black ? "#" : ""}`
-
-      let line = `${i / 2 + 1}. White: ${whiteMove}`
-
-      // Czarny ruch, jeśli istnieje
-      if (i + 1 < this._moves.length) {
-        const blackRecord = this._moves[i + 1]!
-        const blackFigure = blackRecord!.figurePerforming
-        const blackCaptured = blackRecord!.figureCaptured
-        let blackNotation = ""
-        switch (blackFigure.type) {
-          case figureType.queen:
-            blackNotation = "Q"
-            break
-          case figureType.rook:
-            blackNotation = "R"
-            break
-          case figureType.knight:
-            blackNotation = "N"
-            break
-          case figureType.king:
-            blackNotation = "K"
-            break
-          case figureType.bishop:
-            blackNotation = "B"
-            break
-          default:
-            blackNotation = ""
-        }
-        const blackCapture = blackCaptured ? "x" : ""
-        const blackPos = this.board.getPosition(blackRecord!.move.to)?.notation ?? ""
-        const blackMove = `${blackNotation}${blackCapture}${blackPos}${this._board.isCheckmate() === color.White ? "#" : ""}`
-
-        line += ` Black: ${blackMove}`
-      }
-
-      result.push(line)
-    }
-    return result
+  public getMoveHistory(): any {
+    console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
+    return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
+
   public gameDraw() {
-    this._gameStatus = "draw"
+    this._gameStatus = gameStatusType.draw
     this._isGameOn = false
   }
   private switchCurrentPlayer() {
@@ -201,11 +144,11 @@ class ChessGame {
     return this._isGameOn
   }
 
-  set gameStatus(value: "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop") {
+  set gameStatus(value: gameStatusType) {
     this._gameStatus = value
   }
 
-  get gameStatus(): "active" | "draw" | "black wins" | "white wins" | "stalemate" | "stop" {
+  get gameStatus(): gameStatusType {
     return this._gameStatus
   }
 

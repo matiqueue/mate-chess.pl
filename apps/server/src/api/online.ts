@@ -29,16 +29,15 @@ router.post("/join-online-lobby", (req, res) => {
     console.log(chalk.bgCyan.black.bold(" [ONLINE] ") + chalk.cyan(` Gracz ${player.name} (ID=${player.id}) dołączył do lobby: ID=${lobby.id} `))
 
     let countdown = 5
-    const currentLobby = lobby
-    console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Rozpoczęto odliczanie dla lobby: ID=${currentLobby.id} `))
+    console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Rozpoczęto odliczanie dla lobby: ID=${lobby.id} `))
     const interval = setInterval(() => {
-      io.to(currentLobby.id).emit("countdown", countdown)
-      console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Odliczanie: ${countdown} dla lobby: ID=${currentLobby.id} `))
+      io.to(lobby.id).emit("countdown", countdown)
+      console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Odliczanie: ${countdown} dla lobby: ID=${lobby.id} `))
       countdown--
       if (countdown < 0) {
         clearInterval(interval)
-        io.to(currentLobby.id).emit("gameStarted", `/play/online/${currentLobby.id}`)
-        console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Gra rozpoczęta dla lobby: ID=${currentLobby.id} `))
+        io.to(lobby.id).emit("gameStarted", `/play/online/${lobby.id}`)
+        console.log(chalk.bgGreen.black.bold(" [ONLINE] ") + chalk.green(` Gra rozpoczęta dla lobby: ID=${lobby.id} `))
       }
     }, 1000)
   }

@@ -1,35 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
+  forwardMove,
+  getBoard,
+  getGameStatus,
+  getMoveHistory,
+  getPositionByCords,
+  getPositionById,
+  getPositionByNotation,
+  getValidMoves,
+  isAwaitingPromotion,
+  isCheckmate,
+  isMoveEnPassant,
+  isStalemate,
+  isPreviewModeOn,
+  makeMove,
+  promote,
+  returnToCurrentState,
+  rewindMove,
   setupGame,
   startGame,
-  isCheckmate,
-  getBoard,
-  getValidMoves,
-  whosTurn,
-  makeMove,
   undoMove,
-  getMoveHistory,
-  isStalemate,
-  getGameStatus,
-  getPositionByCords,
-  getPositionByNotation,
-  getPositionById,
-  rewindMove,
-  forwardMove,
-  returnToCurrentState,
-  isMoveEnPassant,
-  promote,
-  isAwaitingPromotion,
+  whosTurn,
 } from "@modules/index"
 import { figureType } from "@chess-engine/types"
+import MovePair from "@shared/types/movePair"
+import { gameStatusType } from "@shared/types/gameStatusType"
 
 const useGame = () => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
-  const [moveHistory, setMoveHistory] = useState<string[]>([])
+  const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
-  const [gameStatus, setGameStatus] = useState<string>("stop")
+  const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
 
   useEffect(() => {
     const newGame = setupGame()
@@ -44,10 +47,7 @@ const useGame = () => {
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
     if (makeMove(game, move)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
@@ -55,41 +55,40 @@ const useGame = () => {
 
   const undoLastMove = (): boolean => {
     if (undoMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const reviewLastMove = (): boolean => {
     if (rewindMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const forwardLastMove = (): boolean => {
     if (forwardMove(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
       return true
     }
     return false
   }
   const returnToCurrentGameState = () => {
     if (returnToCurrentState(game)) {
-      setBoard(getBoard(game))
-      setMoveHistory(getMoveHistory(game))
-      setCurrentPlayer(whosTurn(game))
-      setGameStatus(getGameStatus(game))
+      updateBoard()
     }
+  }
+  const updateBoard = () => {
+    setBoard(getBoard(game))
+    setMoveHistory(getMoveHistory(game))
+    setCurrentPlayer(whosTurn(game))
+    setGameStatus(getGameStatus(game))
+  }
+
+  const promoteFigure = (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => {
+    promote(game, figure)
+    updateBoard()
   }
   return {
     game,
@@ -102,9 +101,10 @@ const useGame = () => {
     forwardLastMove,
     reviewLastMove,
     returnToCurrentGameState,
+    promoteFigure,
     isAwaitingPromotion: () => isAwaitingPromotion(game),
-    promote: (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => promote(game, figure),
     isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
+    isPreviewMode: () => isPreviewModeOn(game),
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),

@@ -1,20 +1,20 @@
-import ChessGame from "@modules/chess/chessGame"
+import ChessGame from "@modules/chess/chessGame";
 
 class ChessGameExtraLayer extends ChessGame {
   constructor() {
-    super()
+    super();
   }
 
   public override start() {
-    super.start()
+    super.start();
   }
 
   public override async process() {
-    await super.process()
+    await super.process();
   }
 
   public override setupFigures() {
-    super.setupFigures()
+    super.setupFigures();
   }
 }
-export default ChessGameExtraLayer
+export default ChessGameExtraLayer;

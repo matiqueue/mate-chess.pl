@@ -1,4 +1,4 @@
-import { isCheckmate, isStalemate, getGameStatus } from "@modules/shared/destruct/gameStateFunctions/gameStateFunctions"
+import { isCheckmate, isStalemate, getGameStatus, isPreviewModeOn } from "@modules/shared/destruct/gameStateFunctions/gameStateFunctions"
 import { getBoard, getPositionByCords, getPositionByNotation, getPositionById } from "@modules/shared/destruct/mallocFunctions/positonMapping"
 import { isMoveValid, getValidMoves, whosTurn } from "@modules/shared/destruct/movementFunctions/getValidMoves"
 import { makeMove } from "@modules/shared/destruct/movementFunctions/makeMove"
@@ -37,4 +37,5 @@ export {
   returnToCurrentState,
   isMoveEnPassant,
   isAwaitingPromotion,
+  isPreviewModeOn,
 }
