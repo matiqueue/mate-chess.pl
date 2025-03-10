@@ -1,9 +1,11 @@
+"use client"
+
+import { SidebarProvider } from "@workspace/ui/components/sidebar"
 import { MobileHeader } from "@/components/home/mobile-header"
 import { Navbar } from "@/components/home/navbar"
 import { Sidebar } from "@/components/home/sidebar"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+export function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">
