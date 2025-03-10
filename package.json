@@ -6,7 +6,9 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "env:win": "cd apps/web & (echo NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Y2FsbS1hYXJkdmFyay02Mi5jbGVyay5hY2NvdW50cy5kZXYk> .env & echo CLERK_SECRET_KEY=sk_test_BZaQ5KjxYmeiMJeOJWV9LR0NNmnoJi1tQh695TlkBe>> .env & echo NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in>> .env & echo NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up>> .env & echo NEXT_PUBLIC_SERVER_URL=http://localhost:4000>> .env & echo DATABASE_URL=\"mongodb+srv://root:jxakZLUJYP3EpBPd@matechess.owvit.mongodb.net/?retryWrites=true&w=majority&appName=matechess\">> .env) & cd ../errors & (echo GROQ_API_KEY=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> .env)",
+    "env:mac": "cd apps/web && echo \"NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Y2FsbS1hYXJkdmFyay02Mi5jbGVyay5hY2NvdW50cy5kZXYk\" > .env && echo \"CLERK_SECRET_KEY=sk_test_BZaQ5KjxYmeiMJeOJWV9LR0NNmnoJi1tQh695TlkBe\" >> .env && echo \"NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in\" >> .env && echo \"NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up\" >> .env && echo \"NEXT_PUBLIC_SERVER_URL=http://localhost:4000\" >> .env && echo \"DATABASE_URL=mongodb+srv://root:jxakZLUJYP3EpBPd@matechess.owvit.mongodb.net/?retryWrites=true&w=majority&appName=matechess\" >> .env && cd ../errors && echo \"GROQ_API_KEY=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\" > .env"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
