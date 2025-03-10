@@ -26,18 +26,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: setup node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      - name: install Rust stable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 # Opcjonalnie: określ wersję pnpm
+
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           # Te targety są używane tylko na runnerach macOS, więc są w 'if', aby nieco przyspieszyć budowanie na Windows i Linux.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install dependencies (ubuntu only)
+      - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04' # Musi odpowiadać wartości platformy zdefiniowanej powyżej.
         run: |
           sudo apt-get update
@@ -45,7 +50,7 @@ jobs:
         # webkitgtk 4.0 jest dla Tauri v1 - webkitgtk 4.1 jest dla Tauri v2.
         # Możesz usunąć tę, która nie dotyczy Twojej aplikacji, aby nieco przyspieszyć workflow.
 
-      - name: install frontend dependencies
+      - name: Install frontend dependencies
         working-directory: apps/web
         run: pnpm install # zmień to na npm, pnpm lub bun w zależności od tego, którego używasz.
 
