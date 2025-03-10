@@ -77,7 +77,6 @@
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -137,6 +136,39 @@
   }
 }
 
+@media (prefers-color-scheme: light) {
+  :root {
+    --foreground: 240 10% 10%;
+    --muted-foreground: 240 3.8% 36.1%;
+    --secondary-foreground: 240 5.9% 15%;
+    --accent-foreground: 240 5.9% 15%;
+  }
+  .dark {
+    --foreground: 0 0% 98%;
+    --muted-foreground: 240 5% 64.9%;
+    --secondary-foreground: 0 0% 98%;
+    --accent-foreground: 0 0% 98%;
+  }
+}
+
+body {
+  @apply antialiased;
+}
+
+/* Improved text contrast for specific elements if needed */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-semibold;
+}
+
+a {
+  @apply font-medium;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -144,4 +176,14 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* styles/globals.css */
+html,
+body,
+* {
+  -webkit-user-select: none; /* dla Safari */
+  -moz-user-select: none; /* dla Firefox */
+  -ms-user-select: none; /* dla Internet Explorer/Edge */
+  user-select: none; /* standard */
 }
