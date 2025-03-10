@@ -116,7 +116,7 @@ export default function HomePage() {
             <motion.div key={idx} variants={fadeInUp} whileHover={{ scale: 1.05 }} className="w-full">
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 h-6">
                     <div className={`h-12 w-12 rounded-lg ${item.bg} flex items-center justify-center`}>
                       <Icon className="h-6 w-6 text-primary" />
                     </div>

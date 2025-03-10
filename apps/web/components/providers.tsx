@@ -22,7 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   // Jeśli ścieżka to "/home" lub "/play", renderujemy drzewo od ClerkProvider do ErrorContextProvider (bez sidebara)
-  if (pathname === "/home" || pathname === "/play") {
+  if (pathname.startsWith("/home") || pathname.startsWith("/play") || pathname.startsWith("/bot")) {
     return (
       <ClerkProvider>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} enableColorScheme disableTransitionOnChange>
