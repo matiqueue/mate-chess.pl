@@ -265,7 +265,7 @@ export function RightPanel() {
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.moveHistory")}</h2>
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
-                    moveHistory.map((movePair, index) => {
+                    moveHistory.map((movePair: any, index: any) => {
                       // Numer ruchu dla białych = 2*index + 1
                       // Numer ruchu dla czarnych = 2*index + 2
                       const whiteMoveNumber = 2 * index + 1

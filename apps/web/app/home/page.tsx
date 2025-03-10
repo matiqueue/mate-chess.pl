@@ -46,12 +46,7 @@ export default function HomePage() {
         transition={{ duration: 0.6 }}
       >
         <div className={`absolute inset-0 ${theme === "dark" ? "" : "mix-blend-screen"}`}>
-          <Image
-            src="/backgrounds/homeBgImage.png"
-            alt={t("chessBoard")}
-            fill
-            className={`object-cover ${theme === "dark" ? "opacity-30" : "opacity-10"}`}
-          />
+          <Image src="/backgrounds/homeBgImage.png" alt={t("chessBoard")} fill className={`object-cover ${theme === "dark" ? "opacity-30" : "opacity-10"}`} />
         </div>
         <div className="relative p-8 md:p-12 lg:p-16">
           <motion.h1
