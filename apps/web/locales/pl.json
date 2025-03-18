@@ -250,5 +250,48 @@
         "description": "Naucz się efektywnie wykorzystywać piony w grze."
       }
     }
+  },
+  "openingsPage": {
+    "loading": "Wczytywanie otwarć...",
+    "startLearing": "Zacznij uczyć sie otwarć!",
+    "learnOpening": "Ucz się otwarcia",
+    "popularOpenings": "Popularne otwarcia",
+    "banner": {
+      "title": "Mistrzowskie Otwarcia Szachowe",
+      "description": "Otwarcia w szachach są kluczowe, ponieważ nadają ton całej partii. Silne otwarcie zapewnia lepszy rozwój figur, kontrolę nad centrum i bezpieczeństwo króla. Nauka kluczowych otwarć znacznie poprawi twoją strategię szachową i pomoże ci zdobyć przewagę od pierwszych ruchów."
+    },
+    "openings": {
+      "opening1": {
+        "title": "Gra Włoska",
+        "description": "Klasyczne otwarcie, które rozwija figury naturalnie i walczy o centrum.",
+        "difficulty": "Początkujący"
+      },
+      "opening2": {
+        "title": "Obrona Sycylijska",
+        "description": "Atrakcyjna opcja kontrataku przeciwko 1.e4, która tworzy nierównowagę pozycji.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening3": {
+        "title": "Gambit Hetmański",
+        "description": "Solidne otwarcie, gdzie Biały oferuje piona, aby zdobyć kontrolę nad centrum.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening4": {
+        "title": "Ruy Lopez",
+        "description": "Jedno z najstarszych i najbardziej badanych otwarć, które wywiera presję na piona e5 Czarnego.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening5": {
+        "title": "Obrona Indyjska Króla",
+        "description": "Hiper-nowoczesne otwarcie, w którym Czarny pozwala Białemu zbudować centrum, tylko po to, by później je zaatakować.",
+        "difficulty": "Zaawansowany"
+      },
+      "opening6": {
+        "title": "Obrona Francuska",
+        "description": "Solidne otwarcie dla Czarnego, prowadzące do zamkniętych pozycji z strategiczną grą.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "time": "min"
+    }
   }
 }

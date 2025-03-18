@@ -253,5 +253,48 @@
         "description": "Learn how to effectively use pawns in the game."
       }
     }
+  },
+  "openingsPage": {
+    "loading": "Loading Openings...",
+    "startLearing": "Start learning openings!",
+    "learnOpening": "Learn openings",
+    "popularOpenings": "Popular Chess Openings",
+    "banner": {
+      "title": "Master Chess Openings",
+      "description": "Chess openings are crucial because they set the tone for the entire game. A strong opening gives you better piece development, control of the center, and king safety. Learning key openings will dramatically improve your chess strategy and help you gain an advantage from the very first moves."
+    },
+    "openings": {
+      "opening1": {
+        "title": "Italian Game",
+        "description": "A classic opening that develops pieces naturally and fights for the center.",
+        "difficulty": "Beginner"
+      },
+      "opening2": {
+        "title": "Sicilian Defense",
+        "description": "An aggressive counter-attacking option against 1.e4 that creates imbalanced positions.",
+        "difficulty": "Intermediate"
+      },
+      "opening3": {
+        "title": "Queen's Gambit",
+        "description": "A solid opening where White offers a pawn to gain control of the center.",
+        "difficulty": "Intermediate"
+      },
+      "opening4": {
+        "title": "Ruy Lopez",
+        "description": "One of the oldest and most studied openings that puts pressure on Black's e5 pawn.",
+        "difficulty": "Intermediate"
+      },
+      "opening5": {
+        "title": "King's Indian Defense",
+        "description": "A hypermodern opening where Black allows White to build a center only to attack it later.",
+        "difficulty": "Advanced"
+      },
+      "opening6": {
+        "title": "French Defense",
+        "description": "A solid opening for Black that leads to closed positions with strategic play.",
+        "difficulty": "Intermediate"
+      },
+      "time": "min"
+    }
   }
 }
