@@ -40,6 +40,25 @@ export default function ChessOpenings() {
   const [isLoading, setIsLoading] = useState(true)
   const { theme } = useTheme()
 
+  const getDifficultyColor = (difficulty: string)=> {
+    switch (difficulty.toLowerCase()) {
+      case 'beginner':
+      case 'начальный':
+      case 'początkujący':
+        return 'bg-green-500 opacity-70'; // Kolor dla Beginner
+      case 'intermediate':
+      case 'средний':
+      case 'średniozaawansowany':
+        return 'bg-yellow-500 opacity-70'; // Kolor dla Intermediate
+      case 'advanced':
+      case 'zaawansowany':
+      case 'продвинутый':
+        return 'bg-red-500 opacity-70'; // Kolor dla Advanced
+      default:
+        return 'bg-gray-400'; // Domyślny kolor
+    }
+  }
+
   const chessOpenings: ChessOpening[] = [
     {
       id: 1,
@@ -195,7 +214,7 @@ export default function ChessOpenings() {
                   <div className="flex flex-col flex-grow mt-14 pl-1">
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-bold text-xl">{opening.title}</h3>
-                      <Badge className="bg-gray-400">{opening.difficulty}</Badge>
+                      <Badge className={getDifficultyColor(opening.difficulty)}>{opening.difficulty}</Badge>
                     </div>
                     <p className="text-muted-foreground mb-6 flex-grow">{opening.description}</p>
 
