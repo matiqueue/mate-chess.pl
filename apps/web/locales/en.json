@@ -60,6 +60,7 @@
   "playMusic": "Play Music",
   "audioPlaybackError": "Error playing music:",
   "btnPlayMateChess": "Play MATE-CHESS",
+
   "textTab": {
     "mateChess": {
       "title": "Mate-Chess",
@@ -103,15 +104,19 @@
     "chessMasterHeading": "Chess Master",
     "beginnerBot": {
       "title": "Beginner Bot",
-      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy."
+      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy.",
+      "buttonText": "Beginner!"
     },
     "advancedBot": {
       "title": "Advanced Bot",
-      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics."
+      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
+      "buttonText": "Advanced!"
+      
     },
     "chessGrandmaster": {
       "title": "Chess Grandmaster",
-      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play."
+      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play.",
+      "buttonText": "Grandmaster!"
     },
     "playButton": "Play {{botName}}",
     "challengeGrandmaster": "Challenge the Grandmaster"

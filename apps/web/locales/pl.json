@@ -102,16 +102,19 @@
     "aiBotsHeading": "Boty AI",
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
-      "title": "Bot Początkujący",
-      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej."
+      "title": "Początkujący Bot",
+      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej.",
+      "buttonText": "Początkujący!"
     },
     "advancedBot": {
-      "title": "Bot Zaawansowany",
-      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk."
+      "title": "Zaawansowany Bot",
+      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk.",
+      "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
       "title": "Arcymistrz Szachowy",
-      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną."
+      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną.",
+      "buttonText": "Arcymistrz!"
     },
     "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"
   },
