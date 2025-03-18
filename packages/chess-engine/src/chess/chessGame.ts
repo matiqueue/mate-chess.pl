@@ -6,8 +6,7 @@ import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
 import { gameStatusType } from "@shared/types/gameStatusType"
-
-type PromotionFigureType = figureType.knight | figureType.queen | figureType.rook | figureType.bishop
+import { PromotionFigureType } from "@shared/types/promotionType.js"
 
 class ChessGame {
   private _board: Board
