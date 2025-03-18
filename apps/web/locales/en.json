@@ -213,5 +213,45 @@
     "pageNotFound": "Page Not Found",
     "description": "Oops! The page you're looking for doesn't exist.",
     "returnToHome": "Return to Home"
+  },
+  "lessonPage": {
+    "loading": "Loading Lessons...",
+    "titles": {
+      "recomendedLesson": "Recommended Lesson",
+      "popularLessons": "Popular Lessons"
+    },
+    "recomendedLesson": {
+      "title": "Masterful Chess Strategies",
+      "description": "Learn advanced techniques and strategies used by grandmasters. This comprehensive lesson will help you understand deep positional and tactical concepts that will take your game to the next level.",
+      "buttonJoin": "Join Now!",
+      "buttonRead": "Read More!"
+    },
+    "popularLessons": {
+      "time": "min",
+      "lesson2": {
+        "title": "Knight Tactics",
+        "description": "Master knight moves and special maneuvers."
+      },
+      "lesson3": {
+        "title": "The Power of Rooks",
+        "description": "Unlock the full potential of rooks in your game."
+      },
+      "lesson4": {
+        "title": "Bishop Strategies",
+        "description": "Learn advanced techniques for playing with bishops."
+      },
+      "lesson5": {
+        "title": "Queen's Power",
+        "description": "Maximize the strength of the most powerful piece on the board."
+      },
+      "lesson6": {
+        "title": "King's Defense",
+        "description": "Defense techniques and how to use the king in various stages of the game."
+      },
+      "lesson1": {
+        "title": "Pawn Game Basics",
+        "description": "Learn how to effectively use pawns in the game."
+      }
+    }
   }
 }

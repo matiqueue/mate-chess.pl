@@ -210,5 +210,45 @@
     "pageNotFound": "Strona nie znaleziona",
     "description": "Ups! Strona, której szukasz, nie istnieje.",
     "returnToHome": "Powrót do strony głównej"
+  },
+  "lessonPage": {
+    "loading": "Wczytywanie lekcji...",
+    "titles": {
+      "recomendedLesson": "Polecana Lekcja",
+      "popularLessons": "Popularne Lekcje"
+    },
+    "recomendedLesson": {
+      "title": "Mistrzowskie strategie szachowe",
+      "description": "Poznaj zaawansowane techniki i strategie stosowane przez arcymistrzów. Ta kompleksowa lekcja pomoże Ci zrozumieć głębokie koncepcje pozycyjne i taktyczne, które wyniosą Twoją grę na wyższy poziom.",
+      "buttonJoin": "Zapisz sie!",
+      "buttonRead": "Czytaj więcej!"
+    },
+    "popularLessons": {
+      "time": "min",
+      "lesson2": {
+        "title": "Taktyka skoczka",
+        "description": "Opanuj ruchy skoczkiem i specjalne manewry."
+      },
+      "lesson3": {
+        "title": "Siła wież",
+        "description": "Wykorzystaj pełny potencjał wież w swojej grze."
+      },
+      "lesson4": {
+        "title": "Strategie gońca",
+        "description": "Poznaj zaawansowane techniki gry gońcami."
+      },
+      "lesson5": {
+        "title": "Potęga hetmana",
+        "description": "Maksymalizuj siłę najsilnijeszej figury na szachownicy."
+      },
+      "lesson6": {
+        "title": "Ochrona króla",
+        "description": "Techniki obrony i wykorzystania króla w różnych fazach gry."
+      },
+      "lesson1": {
+        "title": "Podstawy gry pionami",
+        "description": "Naucz się efektywnie wykorzystywać piony w grze."
+      }
+    }
   }
 }
