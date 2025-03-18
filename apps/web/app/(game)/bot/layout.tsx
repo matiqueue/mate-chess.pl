@@ -1,6 +1,4 @@
 "use client"
-
-import { usePathname } from "next/navigation"
 import { MobileHeader } from "@/components/home/mobile-header"
 import { Navbar } from "@/components/home/navbar"
 import { Sidebar } from "@/components/home/sidebar"

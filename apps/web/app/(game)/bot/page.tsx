@@ -9,7 +9,6 @@ import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
-import { v4 as uuidv4 } from "uuid"
 
 const container = {
   hidden: { opacity: 0 },
