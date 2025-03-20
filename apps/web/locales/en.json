@@ -324,5 +324,10 @@
     "profileError": "We didn't find any your game.",
     "playNow": "Play now!",
     "loading": "Loading Statistics"
+  },
+  "main-footer": {
+    "play": "Play",
+    "learn": "Learn",
+    "community": "Community"
   }
 }

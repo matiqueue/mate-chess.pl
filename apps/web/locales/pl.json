@@ -321,5 +321,10 @@
     "profileError": "Nie znaleźliśmy żadnych twoich gier.",
     "playNow": "Zagraj już teraz!",
     "loading": "Wczytywanie statystyk"
+  },
+  "main-footer": {
+    "play": "Graj",
+    "learn": "Ucz się",
+    "community": "Społeczność"
   }
 }
