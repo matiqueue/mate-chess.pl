@@ -12,6 +12,7 @@ import {
   UserPlus,
   Clock,
   ArrowRight,
+  GraduationCap,
   CastleIcon as ChessKnight,
   PianoIcon as ChessPawn,
   RocketIcon as ChessRook,
@@ -120,7 +121,7 @@ const smallLessons: SmallLesson[] = [
             }}
             className="mx-auto mb-4"
           >
-            <Chess size={48} className="text-primary" />
+            <GraduationCap size={48} className="text-primary" />
           </motion.div>
           <h2 className="text-2xl font-bold">{t("lessonPage.loading")}</h2>
         </motion.div>
