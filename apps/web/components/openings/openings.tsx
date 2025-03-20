@@ -35,7 +35,6 @@ interface ChessOpening {
 }
 
 export default function ChessOpenings() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(true)
   const { theme } = useTheme()
@@ -140,7 +139,7 @@ export default function ChessOpenings() {
             }}
             className="mx-auto mb-4"
           >
-            <Chess size={48} className="text-primary" />
+            <BookOpen size={48} className="text-primary" />
           </motion.div>
           <h2 className="text-2xl font-bold">{t("openingsPage.loading", "Loading chess openings...")}</h2>
         </motion.div>
@@ -201,8 +200,6 @@ export default function ChessOpenings() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.03 }}
-              onHoverStart={() => setHoveredId(opening.id)}
-              onHoverEnd={() => setHoveredId(null)}
               onClick={() =>
                 (window.location.href =
                   "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")
