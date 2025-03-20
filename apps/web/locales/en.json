@@ -296,5 +296,33 @@
       },
       "time": "min"
     }
+  },
+  "userProfile": {
+    "memberSince": "Member since",
+    "totalGames": "Total Games",
+    "winPercentage": "Win Percentage",
+    "eloPoints": "ELO Points",
+    "rank": "Rank",
+    "last5Games": "Last 5 Games",
+    "result": "Result",
+    "opponent": "Opponent",
+    "eloChange": "ELO Change",
+    "timePlayed": "Time Played",
+    "masterAndBeyond": "Master & Beyond",
+    "candidateMaster": "Candidate Master",
+    "expert": "Expert",
+    "strongTournamentPlayer": "Strong Tournament Player",
+    "advancedClubPlayer": "Advanced Club Player",
+    "clubPlayer": "Club Player",
+    "intermediate": "Intermediate",
+    "casualPlayer": "Casual Player",
+    "novice": "Novice",
+    "beginner": "Beginner",
+    "unknownUser": "Unknown User",
+    "gamesPlayed": "Games Played",
+    "winPercentageLabel": "Win Percentage",
+    "profileError": "We didn't find any your game.",
+    "playNow": "Play now!",
+    "loading": "Loading Statistics"
   }
 }

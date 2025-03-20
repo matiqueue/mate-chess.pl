@@ -294,5 +294,33 @@
       },
       "time": "мин"
     }
+  },
+  "userProfile": {
+    "memberSince": "Участник с",
+    "totalGames": "Всего игр",
+    "winPercentage": "Процент побед",
+    "eloPoints": "Очки ELO",
+    "rank": "Ранг",
+    "last5Games": "Последние 5 игр",
+    "result": "Результат",
+    "opponent": "Противник",
+    "eloChange": "Изменение ELO",
+    "timePlayed": "Время игры",
+    "masterAndBeyond": "Мастер и выше",
+    "candidateMaster": "Кандидат в мастера",
+    "expert": "Эксперт",
+    "strongTournamentPlayer": "Сильный турнирный игрок",
+    "advancedClubPlayer": "Продвинутый клубный игрок",
+    "clubPlayer": "Клубный игрок",
+    "intermediate": "Средний уровень",
+    "casualPlayer": "Любитель",
+    "novice": "Новичок",
+    "beginner": "Начинающий",
+    "unknownUser": "Неизвестный пользователь",
+    "gamesPlayed": "Сыграно игр",
+    "winPercentageLabel": "Процент побед",
+    "profileError": "Мы не нашли ни одной вашей игры.",
+    "playNow": "Играть сейчас!",
+    "loading": "Загрузка статистики"
   }
 }

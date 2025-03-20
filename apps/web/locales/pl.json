@@ -293,5 +293,33 @@
       },
       "time": "min"
     }
+  },
+  "userProfile": {
+    "memberSince": "Członek od",
+    "totalGames": "Łączna liczba gier",
+    "winPercentage": "Procent wygranych",
+    "eloPoints": "Punkty ELO",
+    "rank": "Ranga",
+    "last5Games": "Ostatnie 5 gier",
+    "result": "Wynik",
+    "opponent": "Przeciwnik",
+    "eloChange": "Zmiana ELO",
+    "timePlayed": "Czas gry",
+    "masterAndBeyond": "Mistrz i wyżej",
+    "candidateMaster": "Kandydat na mistrza",
+    "expert": "Ekspert",
+    "strongTournamentPlayer": "Silny gracz turniejowy",
+    "advancedClubPlayer": "Zaawansowany gracz klubowy",
+    "clubPlayer": "Gracz klubowy",
+    "intermediate": "Średniozaawansowany",
+    "casualPlayer": "Gracz rekreacyjny",
+    "novice": "Nowicjusz",
+    "beginner": "Początkujący",
+    "unknownUser": "Nieznany użytkownik",
+    "gamesPlayed": "Gry rozegrane",
+    "winPercentageLabel": "Procent wygranych",
+    "profileError": "Nie znaleźliśmy żadnych twoich gier.",
+    "playNow": "Zagraj już teraz!",
+    "loading": "Wczytywanie statystyk"
   }
 }
