@@ -218,10 +218,30 @@
       "popularLessons": "Popularne Lekcje"
     },
     "recomendedLesson": {
+      "progress": "Twój postęp",
+      "students": "uczniów",
+      "learn": "Czego się nauczysz",
       "title": "Mistrzowskie strategie szachowe",
       "description": "Poznaj zaawansowane techniki i strategie stosowane przez arcymistrzów. Ta kompleksowa lekcja pomoże Ci zrozumieć głębokie koncepcje pozycyjne i taktyczne, które wyniosą Twoją grę na wyższy poziom.",
-      "buttonJoin": "Zapisz sie!",
-      "buttonRead": "Czytaj więcej!"
+      "buttonJoin": "Zapisz się!",
+      "buttonRead": "Czytaj więcej!",
+      "instructor": {
+        "name": "Arcymistrz Jan Kowalski",
+        "title": "Międzynarodowy Arcymistrz"
+      },
+      "duration": "2 godz. 30 min",
+      "learningPoints": {
+        "0": "Zaawansowane strategie pozycyjne",
+        "1": "Taktyki stosowane przez arcymistrzów",
+        "2": "Analiza partii mistrzowskich",
+        "3": "Planowanie długoterminowe"
+      },
+      "topics": {
+        "0": "Strategia",
+        "1": "Taktyka",
+        "2": "Końcówki",
+        "3": "Analiza"
+      }
     },
     "popularLessons": {
       "time": "min",

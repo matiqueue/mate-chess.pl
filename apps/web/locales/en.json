@@ -221,10 +221,30 @@
       "popularLessons": "Popular Lessons"
     },
     "recomendedLesson": {
-      "title": "Masterful Chess Strategies",
-      "description": "Learn advanced techniques and strategies used by grandmasters. This comprehensive lesson will help you understand deep positional and tactical concepts that will take your game to the next level.",
-      "buttonJoin": "Join Now!",
-      "buttonRead": "Read More!"
+      "progress": "Your progress",
+      "students": "students",
+      "learn": "What you will learn",
+      "title": "Master Chess Strategies",
+      "description": "Learn advanced techniques and strategies used by grandmasters. This comprehensive lesson will help you understand deep positional and tactical concepts to elevate your game to the next level.",
+      "buttonJoin": "Join now!",
+      "buttonRead": "Read more!",
+      "instructor": {
+        "name": "Grandmaster Jan Kowalski",
+        "title": "International Grandmaster"
+      },
+      "duration": "2 hours 30 minutes",
+      "learningPoints": {
+        "0": "Advanced positional strategies",
+        "1": "Tactics used by grandmasters",
+        "2": "Analysis of master games",
+        "3": "Long-term planning"
+      },
+      "topics": {
+        "0": "Strategy",
+        "1": "Tactics",
+        "2": "Endgames",
+        "3": "Analysis"
+      }
     },
     "popularLessons": {
       "time": "min",
