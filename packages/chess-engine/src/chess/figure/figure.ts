@@ -38,6 +38,9 @@ abstract class Figure {
     this._type = type
     this._color = color
     this._position = position
+    if (!this._position) {
+      throw new Error(`${color} ${type} at: ${position.notation} cant find given position`)
+    }
     this._board = board
     this._materialValue = materialValue
     this.pcsqt = pcsqt
@@ -107,15 +110,29 @@ abstract class Figure {
   get materialValue(): number {
     const x = this.position.x
     const y = this.position.y
-    if (!x || !y) {
-      console.error("Critical Error: position does not exist")
+    if (!this.position) throw new RangeError("position cannot be null")
+    if (x === undefined || y === undefined || x === null || y === null) {
+      console.error(`Critical Error: position x: ${x} y: ${y} does not exist for figure: ${this._color} ${this._type} at: ${this.position.notation}`)
+      console.log(x)
+      console.log(y)
       return this._materialValue
     }
 
     let bonus = 0
-    if (this.pcsqt[y] && this.pcsqt[y][x]) {
-      bonus = this.pcsqt[y][x]
+    switch (this._color) {
+      case color.Black:
+        const yn = 7 - this.position.y
+        if (this.pcsqt[yn] && this.pcsqt[yn][x]) {
+          bonus = this.pcsqt[yn][x]
+        }
+        break
+      case color.White:
+        if (this.pcsqt[y] && this.pcsqt[y][x]) {
+          bonus = this.pcsqt[y][x]
+        }
+        break
     }
+
     return this._materialValue + bonus
   }
 }
