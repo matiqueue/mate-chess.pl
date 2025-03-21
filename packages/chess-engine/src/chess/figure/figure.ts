@@ -10,7 +10,7 @@ import { Position, Board } from "@utils/boardUtils"
 abstract class Figure {
   private _type: figureType
   private _color: color
-  protected _materialValue: number
+  private _materialValue: number
 
   private _position: Position
   private _id: number = 0
@@ -89,6 +89,11 @@ abstract class Figure {
    * @returns The unique identifier of the figure. */
   get id(): number {
     return this._id
+  }
+  /** Material value of given piece
+   * @returns standard piece value multiplied by 100*/
+  get materialValue(): number {
+    return this._materialValue
   }
 }
 export default Figure
