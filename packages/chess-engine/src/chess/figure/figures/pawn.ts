@@ -2,7 +2,7 @@ import { Figure } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
-import { pawnMaterialTable } from "@shared/types/material.js"
+import { pawnMaterialTable } from "@shared/types/material"
 
 class Pawn extends Figure {
   private _isFirstMove: boolean

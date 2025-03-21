@@ -2,7 +2,7 @@ import { Figure } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
-import { bishopMaterialTable } from "@shared/types/material.js"
+import { bishopMaterialTable } from "@shared/types/material"
 
 class Bishop extends Figure {
   constructor(color: color, position: Position, board: Board) {

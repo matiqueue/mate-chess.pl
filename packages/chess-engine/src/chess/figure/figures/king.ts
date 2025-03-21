@@ -2,7 +2,7 @@ import { Figure, Pawn, Rook } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
-import { kingMaterialTable } from "@shared/types/material.js"
+import { kingMaterialTable } from "@shared/types/material"
 
 class King extends Figure {
   private _isCheck: boolean = false
