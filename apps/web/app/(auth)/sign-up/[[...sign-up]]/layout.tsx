@@ -1,4 +1,10 @@
 import Image from "next/image"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Sign Up | Mate-Chess",
+  description: "Create your first account!",
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
