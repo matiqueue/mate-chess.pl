@@ -60,6 +60,7 @@
   "playMusic": "Play Music",
   "audioPlaybackError": "Error playing music:",
   "btnPlayMateChess": "Play MATE-CHESS",
+
   "textTab": {
     "mateChess": {
       "title": "Mate-Chess",
@@ -103,15 +104,19 @@
     "chessMasterHeading": "Chess Master",
     "beginnerBot": {
       "title": "Beginner Bot",
-      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy."
+      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy.",
+      "buttonText": "Beginner!"
     },
     "advancedBot": {
       "title": "Advanced Bot",
-      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics."
+      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
+      "buttonText": "Advanced!"
+      
     },
     "chessGrandmaster": {
       "title": "Chess Grandmaster",
-      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play."
+      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play.",
+      "buttonText": "Grandmaster!"
     },
     "playButton": "Play {{botName}}",
     "challengeGrandmaster": "Challenge the Grandmaster"
@@ -208,5 +213,141 @@
     "pageNotFound": "Page Not Found",
     "description": "Oops! The page you're looking for doesn't exist.",
     "returnToHome": "Return to Home"
+  },
+  "lessonPage": {
+    "loading": "Loading Lessons...",
+    "titles": {
+      "recomendedLesson": "Recommended Lesson",
+      "popularLessons": "Popular Lessons"
+    },
+    "recomendedLesson": {
+      "progress": "Your progress",
+      "students": "students",
+      "learn": "What you will learn",
+      "title": "Master Chess Strategies",
+      "description": "Learn advanced techniques and strategies used by grandmasters. This comprehensive lesson will help you understand deep positional and tactical concepts to elevate your game to the next level.",
+      "buttonJoin": "Join now!",
+      "buttonRead": "Read more!",
+      "instructor": {
+        "name": "Grandmaster Jan Kowalski",
+        "title": "International Grandmaster"
+      },
+      "duration": "2 hours 30 minutes",
+      "learningPoints": {
+        "0": "Advanced positional strategies",
+        "1": "Tactics used by grandmasters",
+        "2": "Analysis of master games",
+        "3": "Long-term planning"
+      },
+      "topics": {
+        "0": "Strategy",
+        "1": "Tactics",
+        "2": "Endgames",
+        "3": "Analysis"
+      }
+    },
+    "popularLessons": {
+      "time": "min",
+      "lesson2": {
+        "title": "Knight Tactics",
+        "description": "Master knight moves and special maneuvers."
+      },
+      "lesson3": {
+        "title": "The Power of Rooks",
+        "description": "Unlock the full potential of rooks in your game."
+      },
+      "lesson4": {
+        "title": "Bishop Strategies",
+        "description": "Learn advanced techniques for playing with bishops."
+      },
+      "lesson5": {
+        "title": "Queen's Power",
+        "description": "Maximize the strength of the most powerful piece on the board."
+      },
+      "lesson6": {
+        "title": "King's Defense",
+        "description": "Defense techniques and how to use the king in various stages of the game."
+      },
+      "lesson1": {
+        "title": "Pawn Game Basics",
+        "description": "Learn how to effectively use pawns in the game."
+      }
+    }
+  },
+  "openingsPage": {
+    "loading": "Loading Openings...",
+    "startLearing": "Start learning openings!",
+    "learnOpening": "Learn openings",
+    "popularOpenings": "Popular Chess Openings",
+    "banner": {
+      "title": "Master Chess Openings",
+      "description": "Chess openings are crucial because they set the tone for the entire game. A strong opening gives you better piece development, control of the center, and king safety. Learning key openings will dramatically improve your chess strategy and help you gain an advantage from the very first moves."
+    },
+    "openings": {
+      "opening1": {
+        "title": "Italian Game",
+        "description": "A classic opening that develops pieces naturally and fights for the center.",
+        "difficulty": "Beginner"
+      },
+      "opening2": {
+        "title": "Sicilian Defense",
+        "description": "An aggressive counter-attacking option against 1.e4 that creates imbalanced positions.",
+        "difficulty": "Intermediate"
+      },
+      "opening3": {
+        "title": "Queen's Gambit",
+        "description": "A solid opening where White offers a pawn to gain control of the center.",
+        "difficulty": "Intermediate"
+      },
+      "opening4": {
+        "title": "Ruy Lopez",
+        "description": "One of the oldest and most studied openings that puts pressure on Black's e5 pawn.",
+        "difficulty": "Intermediate"
+      },
+      "opening5": {
+        "title": "King's Indian Defense",
+        "description": "A hypermodern opening where Black allows White to build a center only to attack it later.",
+        "difficulty": "Advanced"
+      },
+      "opening6": {
+        "title": "French Defense",
+        "description": "A solid opening for Black that leads to closed positions with strategic play.",
+        "difficulty": "Intermediate"
+      },
+      "time": "min"
+    }
+  },
+  "userProfile": {
+    "memberSince": "Member since",
+    "totalGames": "Total Games",
+    "winPercentage": "Win Percentage",
+    "eloPoints": "ELO Points",
+    "rank": "Rank",
+    "last5Games": "Last 5 Games",
+    "result": "Result",
+    "opponent": "Opponent",
+    "eloChange": "ELO Change",
+    "timePlayed": "Time Played",
+    "masterAndBeyond": "Master & Beyond",
+    "candidateMaster": "Candidate Master",
+    "expert": "Expert",
+    "strongTournamentPlayer": "Strong Tournament Player",
+    "advancedClubPlayer": "Advanced Club Player",
+    "clubPlayer": "Club Player",
+    "intermediate": "Intermediate",
+    "casualPlayer": "Casual Player",
+    "novice": "Novice",
+    "beginner": "Beginner",
+    "unknownUser": "Unknown User",
+    "gamesPlayed": "Games Played",
+    "winPercentageLabel": "Win Percentage",
+    "profileError": "We didn't find any your game.",
+    "playNow": "Play now!",
+    "loading": "Loading Statistics"
+  },
+  "main-footer": {
+    "play": "Play",
+    "learn": "Learn",
+    "community": "Community"
   }
 }

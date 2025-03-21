@@ -1,7 +1,11 @@
+"use client"
+
 import Link from "next/link"
 import { PuzzleIcon as Chess } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export function Footer() {
+  const { t } = useTranslation()
   return (
     <footer className="w-full border-t bg-background">
       <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8">
@@ -15,19 +19,19 @@ export function Footer() {
               href="/play"
               className="transition-colors hover:text-foreground/80"
             >
-              Play
+              {t("main-footer.play")}
             </Link>
             <Link
               href="/learn"
               className="transition-colors hover:text-foreground/80"
             >
-              Learn
+              {t("main-footer.learn")}
             </Link>
             <Link
               href="/community"
               className="transition-colors hover:text-foreground/80"
             >
-              Community
+              {t("main-footer.community")}
             </Link>
             <a
               href="https://github.com/matiqueue/mate-chess.pl"
