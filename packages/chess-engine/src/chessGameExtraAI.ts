@@ -1,8 +1,9 @@
-import ChessGame from "@modules/chess/chessGame"
+import ChessAi from "@modules/ai/engine"
+import { color } from "@shared/types/colorType.js"
 
-class ChessGameExtraAI extends ChessGame {
-  constructor() {
-    super()
+class ChessGameExtraAI extends ChessAi {
+  constructor(aiColor: color) {
+    super(aiColor)
   }
 
   public override start() {

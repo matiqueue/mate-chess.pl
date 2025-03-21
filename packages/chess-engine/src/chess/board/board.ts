@@ -309,7 +309,7 @@ class Board {
    * @returns {boolean} True if the move was undone, false if move history is empty.
    * @throws {Error} Throws error if critical positions or figures are missing.
    */
-  private undoLastMove(): boolean {
+  undoLastMove(): boolean {
     if (this._moveHistory.length === 0) return false
 
     const lastMove = this._moveHistory[this._moveHistory.length - 1]
@@ -1075,7 +1075,9 @@ class Board {
     let figureArray = teamColor === color.White ? this._whiteFigures : this._blackFigures
     let total = 0
     for (const piece of figureArray) {
-      total += piece.materialValue
+      if (piece) {
+        total += piece.materialValue
+      }
     }
     return total
   }
