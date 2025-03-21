@@ -10,6 +10,7 @@ import { Position, Board } from "@utils/boardUtils"
 abstract class Figure {
   private _type: figureType
   private _color: color
+  protected _materialValue: number
 
   private _position: Position
   private _id: number = 0
@@ -20,12 +21,14 @@ abstract class Figure {
    * @param color - Enum color
    * @param position - Position instance. Position of the figure
    * @param board - The chessboard reference.
+   * @param materialValue - value of particular piece on the chessboard
    */
-  constructor(type: figureType, color: color, position: Position, board: Board) {
+  constructor(type: figureType, color: color, position: Position, board: Board, materialValue: number) {
     this._type = type
     this._color = color
     this._position = position
     this._board = board
+    this._materialValue = materialValue
   }
 
   /**

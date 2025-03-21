@@ -7,7 +7,7 @@ class King extends Figure {
   private _isCheck: boolean = false
   private _hasMoved: boolean
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
-    super(figureType.king, color, position, board)
+    super(figureType.king, color, position, board, 999999)
     this._hasMoved = hasMoved
   }
 

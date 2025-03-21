@@ -7,7 +7,7 @@ class Rook extends Figure {
   private _hasMoved: boolean
 
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
-    super(figureType.rook, color, position, board)
+    super(figureType.rook, color, position, board, 500)
     this._hasMoved = hasMoved
   }
 

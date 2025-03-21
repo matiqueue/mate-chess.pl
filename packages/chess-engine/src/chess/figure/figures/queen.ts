@@ -5,7 +5,7 @@ import { Board, Position } from "@utils/boardUtils"
 
 class Queen extends Figure {
   constructor(color: color, position: Position, board: Board) {
-    super(figureType.queen, color, position, board)
+    super(figureType.queen, color, position, board, 900)
   }
 
   override isPositionValid(target: Position): boolean {
