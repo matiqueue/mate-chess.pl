@@ -18,7 +18,7 @@ export default function SignUpPage() {
   const afterSSO = searchParams.get("after_sso") === "true"
 
   return (
-    <div className="grid w-full grow items-center px-4 sm:justify-center">
+    <div className="z-10 grid w-full grow items-center px-4 sm:justify-center">
       <SignUp.Root>
         <Clerk.Loading>
           {(isGlobalLoading) => (
@@ -27,14 +27,14 @@ export default function SignUpPage() {
               <SignUp.Step name="start">
                 <Card className="w-full sm:w-96">
                   <CardHeader>
-                    <CardTitle>Stwórz swoje konto</CardTitle>
-                    <CardDescription>Wypełnij dane, aby rozpocząć.</CardDescription>
+                    <CardTitle className="text-lg">Stwórz swoje konto</CardTitle>
+                    <CardDescription className="text-md">Wypełnij dane, aby rozpocząć.</CardDescription>
                   </CardHeader>
                   <CardContent className="grid gap-y-4">
                     {/* Logowanie społecznościowe */}
                     <div className="grid grid-cols-2 gap-x-4">
                       <Clerk.Connection name="apple" asChild>
-                        <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
+                        <Button className="p-5" size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
                           <Clerk.Loading scope="provider:apple">
                             {(isLoading) =>
                               isLoading ? (
@@ -50,7 +50,7 @@ export default function SignUpPage() {
                         </Button>
                       </Clerk.Connection>
                       <Clerk.Connection name="google" asChild>
-                        <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
+                        <Button className="p-5" size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
                           <Clerk.Loading scope="provider:google">
                             {(isLoading) =>
                               isLoading ? (
