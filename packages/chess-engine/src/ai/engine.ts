@@ -38,10 +38,14 @@ class ChessAI extends ChessGame {
     if (!from || !to) {
       throw new Error("Position does not exist")
     }
-    const move = {
-      from: from,
-      to: to,
+    let move = this.board.getLegalMoves(this.aiColour)[Math.random()]
+    if (!move) {
+      move = this.determineBestMove()
     }
+    // const move = {
+    //   from: from,
+    //   to: to,
+    // }
     return move
   }
 }

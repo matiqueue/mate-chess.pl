@@ -1,6 +1,6 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
+import ChessGame from "@modules/chess/chessGame.js"
 
-export function startGame(game: ChessGameExtraLayer) {
+export function startGame(game: ChessGame) {
   game.start()
   console.log("Starting Game...")
 }
