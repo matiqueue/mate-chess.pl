@@ -4,7 +4,6 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 import MoveRecord from "@shared/types/moveRecord"
-import figure from "@modules/chess/figure/figure.js"
 
 /**
  * Class representing a chess board. <br>
@@ -1072,11 +1071,10 @@ class Board {
     }
     return false
   }
-  public getMaterialValue(teamColor: color) {
+  public getAllMaterialValue(teamColor: color) {
     let figureArray = teamColor === color.White ? this._whiteFigures : this._blackFigures
     let total = 0
     for (const piece of figureArray) {
-      if (piece instanceof King) continue
       total += piece.materialValue
     }
     return total

@@ -2,10 +2,11 @@ import { Figure } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
+import { bishopMaterialTable } from "@shared/types/material.js"
 
 class Bishop extends Figure {
   constructor(color: color, position: Position, board: Board) {
-    super(figureType.bishop, color, position, board, 3)
+    super(figureType.bishop, color, position, board, 3, bishopMaterialTable)
   }
 
   override isPositionValid(target: Position): boolean {

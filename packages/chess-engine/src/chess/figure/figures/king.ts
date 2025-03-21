@@ -2,12 +2,13 @@ import { Figure, Pawn, Rook } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
+import { kingMaterialTable } from "@shared/types/material.js"
 
 class King extends Figure {
   private _isCheck: boolean = false
   private _hasMoved: boolean
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
-    super(figureType.king, color, position, board, 999999)
+    super(figureType.king, color, position, board, 3000, kingMaterialTable)
     this._hasMoved = hasMoved
   }
 

@@ -15,6 +15,16 @@ abstract class Figure {
   private _position: Position
   private _id: number = 0
   protected _board: Board
+  protected pcsqt: number[][] = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]
 
   /**
    * @param type - Enum FigureType
@@ -22,13 +32,15 @@ abstract class Figure {
    * @param position - Position instance. Position of the figure
    * @param board - The chessboard reference.
    * @param materialValue - value of particular piece on the chessboard
+   * @param pcsqt - table of bonuses for each of the posistions for the given piece
    */
-  constructor(type: figureType, color: color, position: Position, board: Board, materialValue: number) {
+  constructor(type: figureType, color: color, position: Position, board: Board, materialValue: number, pcsqt: number[][]) {
     this._type = type
     this._color = color
     this._position = position
     this._board = board
     this._materialValue = materialValue
+    this.pcsqt = pcsqt
   }
 
   /**
@@ -93,7 +105,18 @@ abstract class Figure {
   /** Material value of given piece
    * @returns standard piece value multiplied by 100*/
   get materialValue(): number {
-    return this._materialValue
+    const x = this.position.x
+    const y = this.position.y
+    if (!x || !y) {
+      console.error("Critical Error: position does not exist")
+      return this._materialValue
+    }
+
+    let bonus = 0
+    if (this.pcsqt[y] && this.pcsqt[y][x]) {
+      bonus = this.pcsqt[y][x]
+    }
+    return this._materialValue + bonus
   }
 }
 export default Figure

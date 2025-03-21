@@ -2,10 +2,11 @@ import { Figure } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
+import { queenMaterialTable } from "@shared/types/material.js"
 
 class Queen extends Figure {
   constructor(color: color, position: Position, board: Board) {
-    super(figureType.queen, color, position, board, 900)
+    super(figureType.queen, color, position, board, 900, queenMaterialTable)
   }
 
   override isPositionValid(target: Position): boolean {
