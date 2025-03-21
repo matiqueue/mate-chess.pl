@@ -22,12 +22,13 @@ import {
   startGame,
   undoMove,
   whosTurn,
+  setupAIGame,
 } from "@modules/index"
 import { figureType } from "@chess-engine/types"
 import MovePair from "@shared/types/movePair"
 import { gameStatusType } from "@shared/types/gameStatusType"
 
-const useGame = () => {
+const useGame = (ai: boolean = false) => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
@@ -35,7 +36,7 @@ const useGame = () => {
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
 
   useEffect(() => {
-    const newGame = setupGame()
+    const newGame = ai ? setupAIGame() : setupGame()
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
