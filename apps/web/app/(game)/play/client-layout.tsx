@@ -1,18 +1,20 @@
+"use client"
 
+import { usePathname } from "next/navigation"
 import { MobileHeader } from "@/components/home/mobile-header"
 import { Navbar } from "@/components/home/navbar"
 import { Sidebar } from "@/components/home/sidebar"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Play Vs AI | Mate-Chess",
-  description: "Practise with various AI!",
-}
-
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
 
+  // Jeśli ścieżka zaczyna się od bazowych i ma dodatkowy segment (np. "/play/link/costma")
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
+    return <>{children}</>
+  }
+
+  
   // W przypadku, gdy URL jest dokładnie "/play/online", "/play/link" lub "/play/local",
   // lub zupełnie inny – wyświetlamy pełny layout (sidebar, nagłówki, navbar, itd.)
   return (
