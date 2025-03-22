@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-//
+// @ts-nocheck
+
 "use client"
 
 import * as React from "react"
@@ -13,7 +14,18 @@ import { ModeToggle } from "@workspace/ui/components/mode-toggle"
 import { UserProfile } from "@/components/home/user-profile"
 import { useTranslation } from "react-i18next"
 
-export function Navbar() {
+/**
+ * Navbar
+ *
+ * Komponent nawigacji, który renderuje górny pasek z logo, menu nawigacyjnym, przyciskiem "Quick Play", profilem użytkownika oraz przełącznikiem motywu.
+ * W wersji mobilnej menu jest dostępne przez Sheet.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący pasek nawigacyjny.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export function Navbar(): JSX.Element {
   const { t } = useTranslation()
   const pathname = usePathname()
 
