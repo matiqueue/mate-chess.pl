@@ -1,19 +1,46 @@
-// apps/admin/context/ErrorContextProvider.tsx
 "use client"
 
 import { createContext, useContext, useEffect, useRef } from "react"
 
+/**
+ * Kontekst przechowujący funkcję raportowania błędów.
+ */
 const ErrorContext = createContext<(data: any) => void>(() => {})
 
-export function useErrorReporter() {
+/**
+ * Hook do pobierania funkcji raportowania błędów.
+ *
+ * @returns {(data: any) => void} Funkcja raportująca błędy.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export function useErrorReporter(): (data: any) => void {
   return useContext(ErrorContext)
 }
 
-export function ErrorContextProvider({ children }: { children: React.ReactNode }) {
+/**
+ * ErrorContextProvider
+ *
+ * Opakowuje dzieci, dostarczając im możliwość raportowania błędów globalnie za pomocą WebSocket.
+ * Przechwytuje błędy z konsoli oraz zdarzenia globalne i wysyła je do serwera.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne, które mają dostęp do kontekstu błędów.
+ * @returns {JSX.Element} Element JSX opakowujący dzieci w ErrorContext.Provider.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export function ErrorContextProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const wsRef = useRef<WebSocket | null>(null)
 
-  // Definicja sendToErrors przed użyciem
-  const sendToErrors = (data: any) => {
+  /**
+   * Wysyła dane błędu do serwera, jeśli połączenie WebSocket jest otwarte.
+   *
+   * @param {any} data - Dane błędu do wysłania.
+   */
+  const sendToErrors = (data: any): void => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(data))
     }
@@ -84,7 +111,12 @@ export function ErrorContextProvider({ children }: { children: React.ReactNode }
     }
   }, [])
 
-  const reportError = (data: any) => {
+  /**
+   * Raportuje błąd poprzez wywołanie wewnętrznej funkcji sendToErrors.
+   *
+   * @param {any} data - Dane błędu do raportowania.
+   */
+  const reportError = (data: any): void => {
     sendToErrors(data)
   }
 
