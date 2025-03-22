@@ -376,19 +376,11 @@ class Board {
    * @returns {boolean} True if the preview move was rewound, false otherwise.
    */
   public rewindMove(): boolean {
-    // Jeśli jesteśmy na początku partii, nie da się cofnąć dalej
     if (this._previewIndex === 0) return false
     else this.previewMode = true
-    // Bierzemy ruch, który chcemy cofnąć
     const moveRecord = this._moveHistory[this._previewIndex - 1]
     if (!moveRecord) return false
-
-    // Wykonujemy cofnięcie podobne do undoLastMove, ALE:
-    //  - Nie usuwamy nic z _moveHistory
-    //  - Po prostu cofamy fizycznie ruch na planszy
-    this._unapplyMoveRecord(moveRecord)
-
-    // Zmniejszamy _previewIndex, bo jesteśmy teraz „o ruch wstecz”
+    this.unapplyMoveRecord(moveRecord)
     this._previewIndex -= 1
 
     return true
@@ -412,7 +404,7 @@ class Board {
     if (!moveRecord) return false
 
     // Fizycznie aplikujemy ruch na planszy, ale nie zmieniamy _moveHistory
-    this._applyMoveRecord(moveRecord)
+    this.applyMoveRecord(moveRecord)
 
     // Zwiększamy _previewIndex, bo jesteśmy „o ruch do przodu”
     this._previewIndex += 1
@@ -428,7 +420,7 @@ class Board {
    * @param {MoveRecord} moveRecord - The move record to unapply.
    * @throws {Error} Throws error if critical positions or figures are missing.
    */
-  private _unapplyMoveRecord(moveRecord: MoveRecord): void {
+  private unapplyMoveRecord(moveRecord: MoveRecord): void {
     const beforePosition = this.getPosition(moveRecord.move.from)
     const afterPosition = this.getPosition(moveRecord.move.to)
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
@@ -436,32 +428,27 @@ class Board {
     const figurePerforming = moveRecord.figurePerforming
     if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    // Cofamy figurę na pole startowe
     beforePosition.figure = figurePerforming
     figurePerforming.position = beforePosition
     afterPosition.figure = null
 
-    // Przywróć status isFirstMove/hasMoved
     if (figurePerforming instanceof Pawn) {
       figurePerforming.isFirstMove = moveRecord.wasFirstMove
     } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
       figurePerforming.hasMoved = !moveRecord.wasFirstMove
     }
 
-    // Jeżeli była bita figura – przywróć ją
     const capturedFigure = moveRecord.figureCaptured
     if (capturedFigure) {
       let capPos: Position | null
       if (moveRecord.enPassant && capturedFigure instanceof Pawn) {
         capturedFigure.isEnPassantPossible = true
-        // Ustal właściwą pozycję pionka (poniżej/powyżej) analogicznie do undoLastMove
         if (figurePerforming.color === color.White) {
           capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y + 1)
         } else {
           capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y - 1)
         }
       } else {
-        // Normalne bicie – przywróć figurę na jej (poprzednią) pozycję
         capPos = this.getPosition(capturedFigure.position)
       }
       if (!capPos) throw new Error("Critical error: no position for captured figure")
@@ -469,6 +456,7 @@ class Board {
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
 
+      //might be unneccesary
       // (Opcjonalnie) jeżeli w normalnym ruchu usuwałeś figurę z tablicy,
       // tu należałoby dodać ją ponownie do _whiteFigures / _blackFigures, jeśli
       // chcesz, by stan tablic też odzwierciedlał podgląd.
@@ -481,8 +469,6 @@ class Board {
       this.updateAllFiguresArray()
     }
 
-    // Jeśli ruch był roszadą (castleMove), trzeba też cofnąć wieżę –
-    // analogicznie jak w undoLastMove, ale bez manipulacji w _moveHistory.
     if (moveRecord.castleMove) {
       // UWAGA: w Twoim kodzie roszada bywa zapisywana w 2 MoveRecordach (król i wieża)
       // Tutaj musisz sam zadecydować, jak to odwzorować w podglądzie
@@ -499,7 +485,7 @@ class Board {
    * @param {MoveRecord} moveRecord - The move record to apply.
    * @throws {Error} Throws error if critical positions or figures are missing.
    */
-  private _applyMoveRecord(moveRecord: MoveRecord): void {
+  private applyMoveRecord(moveRecord: MoveRecord): void {
     const beforePosition = this.getPosition(moveRecord.move.from)
     const afterPosition = this.getPosition(moveRecord.move.to)
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
