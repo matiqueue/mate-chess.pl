@@ -12,8 +12,7 @@ class ChessAi extends ChessGame {
   private _aiColour: color
   private _opponentColour: color
 
-  // Im większy _searchDepth, tym dokładniejszy, ale wolniejszy algorytm
-  private _searchDepth: number = 1
+  private _searchDepth: number = 2
 
   // Można np. różnicować heurystykę zależnie od poziomu
   private _aiLevel: 1 | 2 | 3 | 4
