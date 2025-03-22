@@ -6,17 +6,29 @@ import { Navbar } from "@/components/home/navbar"
 import { Sidebar } from "@/components/home/sidebar"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+/**
+ * Layout
+ *
+ * Komponent layoutu, który warunkowo renderuje pełny układ strony zawierający Sidebar, MobileHeader, Navbar oraz główną zawartość.
+ * Jeśli ścieżka URL zaczyna się od "/play/online" lub "/play/link", albo jest dokładnie "/play/local",
+ * zwracana jest jedynie zawartość, bez dodatkowego layoutu.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne renderowane w ramach layoutu.
+ * @returns {JSX.Element} Element JSX reprezentujący układ strony.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
   const pathname = usePathname()
 
-  // Jeśli ścieżka zaczyna się od bazowych i ma dodatkowy segment (np. "/play/link/costma")
+  // Jeśli ścieżka URL dotyczy trybów gry, zwracamy tylko zawartość.
   if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
     return <>{children}</>
   }
 
-  
-  // W przypadku, gdy URL jest dokładnie "/play/online", "/play/link" lub "/play/local",
-  // lub zupełnie inny – wyświetlamy pełny layout (sidebar, nagłówki, navbar, itd.)
+  // Dla pozostałych ścieżek renderujemy pełny layout.
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">
