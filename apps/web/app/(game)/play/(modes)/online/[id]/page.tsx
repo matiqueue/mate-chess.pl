@@ -4,20 +4,47 @@ import { useEffect, useState } from "react"
 import { use } from "react"
 import io from "socket.io-client"
 
+// Inicjalizacja połączenia WebSocket z serwerem
 const socket = io("http://localhost:4000")
 
-export default function Game({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params) // Poprawione dla Next.js 15
+/**
+ * Game
+ *
+ * Komponent renderujący interfejs gry, który umożliwia dołączenie do pokoju (lobby)
+ * oraz komunikację w czasie rzeczywistym za pomocą WebSocket. Użytkownik może wysyłać
+ * i odbierać wiadomości.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {Promise<{ id: string }>} props.params - Obiekt parametrów zawierający identyfikator pokoju.
+ * @returns {JSX.Element} Element JSX reprezentujący interfejs gry.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+export default function Game({ params }: { params: Promise<{ id: string }> }): JSX.Element {
+  // Pobranie parametrów (Next.js 15)
+  const { id } = use(params)
+
+  // Stan przechowujący listę odebranych wiadomości
   const [messages, setMessages] = useState<string[]>([])
+  // Stan przechowujący bieżącą wiadomość wpisywaną przez użytkownika
   const [message, setMessage] = useState("")
 
   useEffect(() => {
+    // Dołączenie do pokoju o danym identyfikatorze
     socket.emit("joinLobby", id)
-    socket.on("newMessage", (msg) => setMessages((prev) => [...prev, msg]))
+    // Nasłuchiwanie na nowe wiadomości
+    socket.on("newMessage", (msg: string) => setMessages((prev) => [...prev, msg]))
+    // Czyszczenie nasłuchiwania przy odmontowaniu komponentu
     return () => socket.off("newMessage")
   }, [id])
 
-  const handleSendMessage = () => {
+  /**
+   * handleSendMessage
+   *
+   * Wysyła aktualnie wpisaną wiadomość do pokoju i czyści pole tekstowe.
+   */
+  const handleSendMessage = (): void => {
     socket.emit("sendMessage", id, message)
     setMessage("")
   }
