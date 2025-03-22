@@ -153,7 +153,9 @@ class Board {
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      throw new Error("No figure performing the move")
+      throw new Error(
+        `No figure performing the move. \nSimulate: ${simulate}\nFrom: ${fromPos.notation}, X: ${fromPos.x} Y: ${fromPos.y}\nTo: ${toPos.notation}, X: ${toPos.x} Y: ${toPos.y}`,
+      )
     }
 
     if (!simulate) {
@@ -303,7 +305,7 @@ class Board {
 
   /**
    * Undoes the last move executed on the board. <br>
-   * Used internally for simulating moves<br>
+   * Used mostly internally for simulating moves<br>
    * PLEASE be very mindful, careful and cautious when tinkering with this method, as it may cause a brutal memory leak when mishandled, especially in loops.
    * @private
    * @returns {boolean} True if the move was undone, false if move history is empty.
@@ -335,23 +337,28 @@ class Board {
     const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
       let capPos: Position | null
+      //en passant
       if (lastMove.enPassant && capturedFigure instanceof Pawn) {
         capturedFigure.isEnPassantPossible = true
-        // Dla en passant wyliczamy oryginalną pozycję zbitego pionka
         if (figurePerforming.color === color.White) {
-          // Dla białego pionka – captured była poniżej pola docelowego
           capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y + 1)
         } else {
-          // Dla czarnego pionka – captured była powyżej pola docelowego
           capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y - 1)
         }
       } else {
-        // Standardowe zbicie – używamy pozycji zapisanej w obiekcie zbitej figury
+        // Standard
         capPos = this.getPosition(capturedFigure.position)
       }
       if (!capPos) throw new Error("Critical error: no position for captured figure")
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
+
+      if (capturedFigure.color === color.White && !this._whiteFigures.includes(capturedFigure)) {
+        this._whiteFigures.push(capturedFigure)
+      }
+      if (capturedFigure.color === color.Black && !this._blackFigures.includes(capturedFigure)) {
+        this._blackFigures.push(capturedFigure)
+      }
     }
     this._moveHistory.pop()
     if (lastMove.castleMove) {
@@ -456,10 +463,11 @@ class Board {
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
 
-      //might be unneccesary
       // (Opcjonalnie) jeżeli w normalnym ruchu usuwałeś figurę z tablicy,
       // tu należałoby dodać ją ponownie do _whiteFigures / _blackFigures, jeśli
       // chcesz, by stan tablic też odzwierciedlał podgląd.
+
+      // zostawie ten powyższy komentarz bo mi nieźle dupe uratował jak mi referencje zaczęły znikać. Szok że dopiero po miesiącu zobaczyłem że mi one znikają XD
       if (capturedFigure.color === color.White && !this._whiteFigures.includes(capturedFigure)) {
         this._whiteFigures.push(capturedFigure)
       }
@@ -470,6 +478,7 @@ class Board {
     }
 
     if (moveRecord.castleMove) {
+      //TODO
       // UWAGA: w Twoim kodzie roszada bywa zapisywana w 2 MoveRecordach (król i wieża)
       // Tutaj musisz sam zadecydować, jak to odwzorować w podglądzie
       // (np. wyszukać poprzedni MoveRecord i cofnąć wieżę).

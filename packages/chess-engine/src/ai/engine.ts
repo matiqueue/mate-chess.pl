@@ -12,15 +12,9 @@ class ChessAi extends ChessGame {
   private _aiColour: color
   private _opponentColour: color
 
-  private _searchDepth: number = 2
-
-  // Można np. różnicować heurystykę zależnie od poziomu
+  private _searchDepth: number = 4
   private _aiLevel: 1 | 2 | 3 | 4
 
-  /**
-   * Mnożnik bonusu/kary za korzystną/niekorzystną wymianę.
-   * (np. 0.2 – aby nie przyćmić zbytnio zwykłej wartości materiału)
-   */
   private static readonly EXCHANGE_MULTIPLIER = 0.2
 
   constructor(aiColour: color, aiLevel: 1 | 2 | 3 | 4) {
