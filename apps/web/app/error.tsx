@@ -1,10 +1,22 @@
-// apps/web/app/error.tsx
 "use client"
 
 import { useEffect } from "react"
 import { useErrorReporter } from "@/contexts/ErrorContextProvider" // Poprawna ścieżka dla web
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+/**
+ * Komponent Error
+ *
+ * Renderuje widok błędu dla aplikacji web i raportuje go przy użyciu kontekstu błędów.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {Error & { digest?: string }} props.error - Obiekt błędu z opcjonalnym polem digest.
+ * @param {() => void} props.reset - Funkcja resetująca, wywoływana przy próbie ponownego renderowania błędu.
+ * @returns {JSX.Element} Element JSX wyświetlający komunikat błędu oraz przycisk reset.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }): JSX.Element {
   const reportError = useErrorReporter()
 
   useEffect(() => {
