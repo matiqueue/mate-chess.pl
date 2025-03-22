@@ -8,6 +8,22 @@ import MoveRecorder from "@modules/chess/history/moveRecorder"
 import { gameStatusType } from "@shared/types/gameStatusType"
 import { PromotionFigureType } from "@shared/types/promotionType.js"
 
+/**
+ * Represents a basic chess game logic.
+ * <p>
+ * This class combines {@link Board} and {@link MoveRecorder} to manage the game flow,
+ * track player turns, handle move history, detect game status (checkmate, stalemate, draw),
+ * and process pawn promotions.
+ * </p>
+ * <p>
+ * <strong>Note:</strong> This is a base game instance and should only contain core functionality
+ * that is shared across all game modes. To implement different game modes (e.g., versus bot, multiplayer),
+ * extend this class.
+ * </p>
+ * <p>
+ * For chess engine logic (e.g., move validation, bot logic), refer to <code>engine.ts</code>.
+ * </p>
+ */
 class ChessGame {
   private _board: Board
   private _currentPlayer: color.White | color.Black
@@ -24,11 +40,16 @@ class ChessGame {
     this._moveRecorder = new MoveRecorder(this)
     this.promotionTo = this.promotionTo.bind(this)
   }
+  /**
+   * Starts the game by activating it and triggering the game processing loop.
+   */
   start(): void {
     this._gameStatus = gameStatusType.active
     this._isGameOn = true
     this.process()
   }
+  /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
+   * */
   protected async process() {
     if (this._board.isCheckmate() === this.currentPlayer) {
       if (this.currentPlayer === color.Black) {
@@ -58,6 +79,18 @@ class ChessGame {
   private promotionPromise: Promise<PromotionFigureType> | null = null
   private promotionPromiseResolver: ((figure: PromotionFigureType) => void) | null = null
 
+  /**
+   * Waits for a promotion input from the player.
+   * <p>
+   * This method returns a Promise that resolves when the user selects a figure type
+   * via the {@link promotionTo} method. It is used to pause the game logic until
+   * the promotion is resolved.
+   * </p>
+   * <p>
+   * Should only be called when a pawn reaches the promotion rank and no promotion is currently being processed.
+   * </p>
+   * @returns a Promise that resolves to the selected {@link PromotionFigureType}
+   */
   private promotionFigure(): Promise<PromotionFigureType> {
     console.log("Tworzę nowy Promise do promocji")
     if (!this.promotionPromise) {
@@ -70,7 +103,14 @@ class ChessGame {
     }
     return this.promotionPromise
   }
-  // Metoda wywoływana przez front-end, np. poprzez API
+  /**
+   * Allows the frontend or external handler to complete a promotion
+   * by selecting the figure type to promote to.
+   *
+   * @param selectedFigure the figure to promote the pawn to (Queen, Rook, Knight, or Bishop)
+   * @returns true if promotion was successfully processed, otherwise throws an error
+   * @throws Error if no promotion is currently awaited
+   */
   public promotionTo = (selectedFigure: PromotionFigureType): boolean => {
     console.log("promotionTo wywołane. this:", this)
     console.log("this.promotionPromiseResolver:", this.promotionPromiseResolver)
@@ -86,6 +126,14 @@ class ChessGame {
     throw new Error("No promotion resolver")
   }
 
+  /**
+   * Attempts to make a move on the board.
+   * If the move is valid and it's the player's turn, it performs the move,
+   * resets en passant flags, switches turns, and triggers move preview setup.
+   *
+   * @param move the move to be made
+   * @returns true if move was successfully made, false otherwise
+   */
   public makeMove(move: Move): boolean {
     if (this.board.previewIndex > 0) {
       while (this.board.previewMode) {
@@ -108,9 +156,19 @@ class ChessGame {
     }
     return false
   }
+  /**
+   * Undoes the last move made by the player using preview mode logic.
+   *
+   * @returns true if move was undone, false if undo is not available
+   */
   public undoMove(): boolean {
     return this.board.previewLastMove()
   }
+  /**
+   * Regenerates and returns the move history using {@link MoveRecorder}.
+   *
+   * @returns formatted move history
+   */
   public getMoveHistory(): any {
     console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
     return this._moveRecorder.regenerateMoveHistory(this._moves)
