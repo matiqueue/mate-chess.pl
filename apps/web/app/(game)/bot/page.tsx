@@ -67,7 +67,6 @@ export default function GameModeSelector() {
     },
   ]
 
-
   return (
     <ScrollArea>
       <div className="relative w-full" style={{ height: "calc(100vh - 64px)" }}>
@@ -88,7 +87,7 @@ export default function GameModeSelector() {
           initial={{ y: 30 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[15vh] overflow-hidden flex-grow"
+          className="absolute z-10 text-foreground flex flex-col items-center justify-start pt-[8vh] overflow-hidden flex-grow mx-20"
         >
           <motion.h1
             initial={{ opacity: 0, y: -50 }}
