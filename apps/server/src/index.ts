@@ -1,3 +1,9 @@
+/**
+ * Plik: server.ts
+ * Autor: matiqueue (Szymon Góral)
+ * Opis: Konfiguracja serwera Express i Socket.IO, zarządzanie lobby oraz logowaniem zdarzeń serwera.
+ */
+
 import express from "express"
 import http from "http"
 import { Server } from "socket.io"
@@ -28,12 +34,24 @@ const MAX_LOGS = 200
 // Namespace dla logów admina
 const adminLogsNamespace = io.of("/admin-logs")
 
-// Funkcja usuwająca kody ANSI
+/**
+ * Usuwa kody ANSI z podanego ciągu znaków.
+ *
+ * @param {string} str - Ciąg znaków zawierający kody ANSI.
+ * @returns {string} Ciąg znaków bez kodów ANSI.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @note ta funkcja jest zrobiona z AI
+ */
 const stripAnsi = (str: string): string => {
   return str.replace(/\x1B\[[0-9;]*[mK]/g, "")
 }
 
-// Nadpisz console.log
+/**
+ * Nadpisanie funkcji console.log w celu przechwytywania logów serwera.
+ * Przechwycone logi są czyszczone z kodów ANSI, zapisywane w tablicy oraz emitowane do namespace "/admin-logs".
+ */
 const originalConsoleLog = console.log
 console.log = function (...args: any[]) {
   const message = args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ")
@@ -46,7 +64,10 @@ console.log = function (...args: any[]) {
   adminLogsNamespace.emit("log", cleanMessage)
 }
 
-// Połączenie admina - wyślij wszystkie dotychczasowe logi
+/**
+ * Obsługa połączeń admina do namespace "/admin-logs".
+ * Przy połączeniu wysyłane są wszystkie dotychczasowe logi, a przy rozłączeniu logowany jest komunikat.
+ */
 adminLogsNamespace.on("connection", (socket) => {
   originalConsoleLog(chalk.bgYellow.black.bold(" [ADMIN] ") + chalk.yellow(" Admin podłączony do logów "))
   socket.emit("initial_logs", serverLogs)
@@ -63,6 +84,10 @@ app.use("/api", onlineRouter)
 
 setupSockets(io)
 
+/**
+ * Inicjalizacja serwera HTTP na porcie 4000.
+ * Po uruchomieniu logowany jest komunikat o starcie serwera.
+ */
 server.listen(4000, () => {
   console.log(chalk.bgGreen.black.bold(" [SERVER] ") + chalk.green(" Serwer uruchomiony na porcie 4000 "))
 })
