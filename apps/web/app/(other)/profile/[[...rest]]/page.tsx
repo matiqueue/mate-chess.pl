@@ -9,7 +9,7 @@ export default function Page() {
         <Navbar />
       </div>
 
-      <div className="flex-grow flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center space-x-4">
         <UserProfile routing="path" path="/profile" />
       </div>
 
