@@ -39,7 +39,7 @@ export function Providers({ children }: { children: React.ReactNode }): JSX.Elem
   if (
     pathname.startsWith("/home") ||
     pathname.startsWith("/play") ||
-    pathname.startsWith("/bot") ||
+    pathname.startsWith("/bot/") ||
     pathname.startsWith("/activity") ||
     pathname.startsWith("/settings") ||
     pathname.startsWith("/profile") ||
