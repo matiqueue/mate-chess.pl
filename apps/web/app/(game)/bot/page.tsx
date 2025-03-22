@@ -1,4 +1,5 @@
 "use client"
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Star, Crown, ArrowRight, User } from "lucide-react"
@@ -10,6 +11,12 @@ import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 
+/**
+ * Obiekt animacji kontenera.
+ *
+ * @remarks
+ * Autor: nasakrator i matiqueue
+ */
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -18,18 +25,42 @@ const container = {
   },
 }
 
+/**
+ * Obiekt animacji pojedynczego elementu.
+ *
+ * @remarks
+ * Autor: nasakrator i matiqueue
+ */
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 }
 
+/**
+ * Animacja unoszenia elementu.
+ *
+ * @remarks
+ * Autor: nasakrator i matiqueue
+ */
 const floatingAnimation = {
   y: [0, 5, 0],
   transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse" as const, ease: "easeInOut" },
 }
+
 const MotionButton = motion.create(Button)
 const MotionCard = motion.create(Card)
 
+/**
+ * GameModeSelector
+ *
+ * Komponent umożliwiający wybór trybu gry (dla gry z botem) z animacjami przy użyciu framer-motion.
+ * Każdy tryb zawiera tytuł, opis, przycisk oraz ikonę reprezentującą dany tryb.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący selektor trybu gry.
+ *
+ * @remarks
+ * Autor: nasakrator i matiqueue
+ */
 export default function GameModeSelector() {
   const router = useRouter()
   const { theme } = useTheme()
@@ -43,6 +74,7 @@ export default function GameModeSelector() {
 
   if (!mounted) return null
 
+  // Definicja trybów gry
   const gameModes = [
     {
       key: "beginner",
@@ -100,7 +132,7 @@ export default function GameModeSelector() {
 
           <motion.div variants={container} initial="hidden" animate="show" className="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
             {gameModes.map((mode) => {
-              const isOnline = mode.key === "online"
+              const isOnline = mode.key === "online" // (Nie jest używane, ale pozostawione dla spójności)
               return (
                 <MotionCard
                   key={mode.key}
