@@ -14,23 +14,23 @@ import { cn } from "@workspace/ui/lib/utils"
 
 export default function SignInPage() {
   return (
-    <div className="grid w-full grow items-center px-4 sm:justify-center">
+    <div className="z-10 grid w-full grow items-center px-4 sm:justify-center">
       <SignIn.Root>
         <Clerk.Loading>
           {(isGlobalLoading) => (
             <>
               {/* Krok 1: Start - identyfikator (email lub username) */}
               <SignIn.Step name="start">
-                <Card className="w-full sm:w-96">
+                <Card className="w-full sm:w-96 h-full">
                   <CardHeader>
-                    <CardTitle>Zaloguj się</CardTitle>
-                    <CardDescription>Witaj ponownie! Zaloguj się, aby kontynuować.</CardDescription>
+                    <CardTitle className="text-xl">Zaloguj się</CardTitle>
+                    <CardDescription className="text-md">Witaj ponownie! Zaloguj się, aby kontynuować.</CardDescription>
                   </CardHeader>
-                  <CardContent className="grid gap-y-4">
+                  <CardContent className="grid gap-y-6">
                     {/* Logowanie społecznościowe */}
                     <div className="grid grid-cols-2 gap-x-4">
                       <Clerk.Connection name="google" asChild>
-                        <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
+                        <Button className="p-5" size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
                           <Clerk.Loading scope="provider:google">
                             {(isLoading) =>
                               isLoading ? (
@@ -47,7 +47,7 @@ export default function SignInPage() {
                       </Clerk.Connection>
 
                       <Clerk.Connection name="apple" asChild>
-                        <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
+                        <Button className="p-5" size="sm" variant="outline" type="button" disabled={isGlobalLoading}>
                           <Clerk.Loading scope="provider:apple">
                             {(isLoading) =>
                               isLoading ? (
@@ -70,7 +70,7 @@ export default function SignInPage() {
                     {/* Pole identyfikator (email lub username) */}
                     <Clerk.Field name="identifier" className="space-y-2">
                       <Clerk.Label asChild>
-                        <Label>Email lub nazwa użytkownika</Label>
+                        <Label className="text-md">Email lub nazwa użytkownika</Label>
                       </Clerk.Label>
                       <Clerk.Input type="text" required asChild>
                         <Input />

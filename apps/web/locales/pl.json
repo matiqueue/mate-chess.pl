@@ -102,16 +102,19 @@
     "aiBotsHeading": "Boty AI",
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
-      "title": "Bot Początkujący",
-      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej."
+      "title": "Początkujący Bot",
+      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej.",
+      "buttonText": "Początkujący!"
     },
     "advancedBot": {
-      "title": "Bot Zaawansowany",
-      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk."
+      "title": "Zaawansowany Bot",
+      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk.",
+      "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
       "title": "Arcymistrz Szachowy",
-      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną."
+      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną.",
+      "buttonText": "Arcymistrz!"
     },
     "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"
   },
@@ -207,5 +210,141 @@
     "pageNotFound": "Strona nie znaleziona",
     "description": "Ups! Strona, której szukasz, nie istnieje.",
     "returnToHome": "Powrót do strony głównej"
+  },
+  "lessonPage": {
+    "loading": "Wczytywanie lekcji...",
+    "titles": {
+      "recomendedLesson": "Polecana Lekcja",
+      "popularLessons": "Popularne Lekcje"
+    },
+    "recomendedLesson": {
+      "progress": "Twój postęp",
+      "students": "uczniów",
+      "learn": "Czego się nauczysz",
+      "title": "Mistrzowskie strategie szachowe",
+      "description": "Poznaj zaawansowane techniki i strategie stosowane przez arcymistrzów. Ta kompleksowa lekcja pomoże Ci zrozumieć głębokie koncepcje pozycyjne i taktyczne, które wyniosą Twoją grę na wyższy poziom.",
+      "buttonJoin": "Zapisz się!",
+      "buttonRead": "Czytaj więcej!",
+      "instructor": {
+        "name": "Arcymistrz Jan Kowalski",
+        "title": "Międzynarodowy Arcymistrz"
+      },
+      "duration": "2 godz. 30 min",
+      "learningPoints": {
+        "0": "Zaawansowane strategie pozycyjne",
+        "1": "Taktyki stosowane przez arcymistrzów",
+        "2": "Analiza partii mistrzowskich",
+        "3": "Planowanie długoterminowe"
+      },
+      "topics": {
+        "0": "Strategia",
+        "1": "Taktyka",
+        "2": "Końcówki",
+        "3": "Analiza"
+      }
+    },
+    "popularLessons": {
+      "time": "min",
+      "lesson2": {
+        "title": "Taktyka skoczka",
+        "description": "Opanuj ruchy skoczkiem i specjalne manewry."
+      },
+      "lesson3": {
+        "title": "Siła wież",
+        "description": "Wykorzystaj pełny potencjał wież w swojej grze."
+      },
+      "lesson4": {
+        "title": "Strategie gońca",
+        "description": "Poznaj zaawansowane techniki gry gońcami."
+      },
+      "lesson5": {
+        "title": "Potęga hetmana",
+        "description": "Maksymalizuj siłę najsilnijeszej figury na szachownicy."
+      },
+      "lesson6": {
+        "title": "Ochrona króla",
+        "description": "Techniki obrony i wykorzystania króla w różnych fazach gry."
+      },
+      "lesson1": {
+        "title": "Podstawy gry pionami",
+        "description": "Naucz się efektywnie wykorzystywać piony w grze."
+      }
+    }
+  },
+  "openingsPage": {
+    "loading": "Wczytywanie otwarć...",
+    "startLearing": "Zacznij uczyć sie otwarć!",
+    "learnOpening": "Ucz się otwarcia",
+    "popularOpenings": "Popularne otwarcia",
+    "banner": {
+      "title": "Mistrzowskie Otwarcia Szachowe",
+      "description": "Otwarcia w szachach są kluczowe, ponieważ nadają ton całej partii. Silne otwarcie zapewnia lepszy rozwój figur, kontrolę nad centrum i bezpieczeństwo króla. Nauka kluczowych otwarć znacznie poprawi twoją strategię szachową i pomoże ci zdobyć przewagę od pierwszych ruchów."
+    },
+    "openings": {
+      "opening1": {
+        "title": "Gra Włoska",
+        "description": "Klasyczne otwarcie, które rozwija figury naturalnie i walczy o centrum.",
+        "difficulty": "Początkujący"
+      },
+      "opening2": {
+        "title": "Obrona Sycylijska",
+        "description": "Atrakcyjna opcja kontrataku przeciwko 1.e4, która tworzy nierównowagę pozycji.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening3": {
+        "title": "Gambit Hetmański",
+        "description": "Solidne otwarcie, gdzie Biały oferuje piona, aby zdobyć kontrolę nad centrum.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening4": {
+        "title": "Ruy Lopez",
+        "description": "Jedno z najstarszych i najbardziej badanych otwarć, które wywiera presję na piona e5 Czarnego.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "opening5": {
+        "title": "Obrona Indyjska Króla",
+        "description": "Hiper-nowoczesne otwarcie, w którym Czarny pozwala Białemu zbudować centrum, tylko po to, by później je zaatakować.",
+        "difficulty": "Zaawansowany"
+      },
+      "opening6": {
+        "title": "Obrona Francuska",
+        "description": "Solidne otwarcie dla Czarnego, prowadzące do zamkniętych pozycji z strategiczną grą.",
+        "difficulty": "Średniozaawansowany"
+      },
+      "time": "min"
+    }
+  },
+  "userProfile": {
+    "memberSince": "Członek od",
+    "totalGames": "Łączna liczba gier",
+    "winPercentage": "Procent wygranych",
+    "eloPoints": "Punkty ELO",
+    "rank": "Ranga",
+    "last5Games": "Ostatnie 5 gier",
+    "result": "Wynik",
+    "opponent": "Przeciwnik",
+    "eloChange": "Zmiana ELO",
+    "timePlayed": "Czas gry",
+    "masterAndBeyond": "Mistrz i wyżej",
+    "candidateMaster": "Kandydat na mistrza",
+    "expert": "Ekspert",
+    "strongTournamentPlayer": "Silny gracz turniejowy",
+    "advancedClubPlayer": "Zaawansowany gracz klubowy",
+    "clubPlayer": "Gracz klubowy",
+    "intermediate": "Średniozaawansowany",
+    "casualPlayer": "Gracz rekreacyjny",
+    "novice": "Nowicjusz",
+    "beginner": "Początkujący",
+    "unknownUser": "Nieznany użytkownik",
+    "gamesPlayed": "Gry rozegrane",
+    "winPercentageLabel": "Procent wygranych",
+    "profileError": "Nie znaleźliśmy żadnych twoich gier.",
+    "playNow": "Zagraj już teraz!",
+    "loading": "Wczytywanie statystyk"
+  },
+  "main-footer": {
+    "play": "Graj",
+    "learn": "Ucz się",
+    "community": "Społeczność"
   }
 }

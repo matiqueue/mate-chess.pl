@@ -2,7 +2,19 @@
 
 import { ClerkProvider, useUser } from "@clerk/nextjs"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+/**
+ * Layout
+ *
+ * Opakowuje aplikację w ClerkProvider i ustawia tytuł strony na podstawie danych użytkownika.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne renderowane wewnątrz Layout.
+ * @returns {JSX.Element} Element JSX reprezentujący Layout.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
   const { user } = useUser()
 
   if (user) {

@@ -1,7 +1,17 @@
-import Link from "next/link"
-import { Button } from "@workspace/ui/components/button"
+import Link from "next/link" // Import komponentu Link
+import { Button } from "@workspace/ui/components/button" // Import komponentu Button
 
-export default function Home() {
+/**
+ * Komponent Home
+ *
+ * Renderuje stronę główną panelu administracyjnego z informacją o konieczności logowania.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę główną.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function Home(): JSX.Element {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-card p-12 shadow-xl">

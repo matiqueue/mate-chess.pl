@@ -1,31 +1,29 @@
-"use client"
+import { Metadata } from "next"
+import ClientLayout from "./client-layout"
 
-import { usePathname } from "next/navigation"
-import { MobileHeader } from "@/components/home/mobile-header"
-import { Navbar } from "@/components/home/navbar"
-import { Sidebar } from "@/components/home/sidebar"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
+/**
+ * Metadane strony.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export const metadata: Metadata = {
+  title: "Play Chess Online | Mate-Chess",
+  description: "Play chess in various modes: online, local, or via link!",
+}
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-
-  // Jeśli ścieżka zaczyna się od bazowych i ma dodatkowy segment (np. "/play/link/costma")
-  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
-    return <>{children}</>
-  }
-
-  // W przypadku, gdy URL jest dokładnie "/play/online", "/play/link" lub "/play/local",
-  // lub zupełnie inny – wyświetlamy pełny layout (sidebar, nagłówki, navbar, itd.)
-  return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-sidebar">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <MobileHeader className="md:hidden" />
-          <Navbar className="hidden md:flex" />
-          <main className="flex flex-col flex-grow justify-center">{children}</main>
-        </div>
-      </div>
-    </SidebarProvider>
-  )
+/**
+ * Layout
+ *
+ * Opakowuje zawartość aplikacji w ClientLayout, który stanowi główny layout strony.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne renderowane wewnątrz layoutu.
+ * @returns {JSX.Element} Element JSX reprezentujący layout aplikacji.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+  return <ClientLayout>{children}</ClientLayout>
 }

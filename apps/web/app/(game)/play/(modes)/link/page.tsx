@@ -15,9 +15,23 @@ import { useSearchParams, useRouter } from "next/navigation"
 import io from "socket.io-client"
 import { useTranslation } from "react-i18next"
 
+// Inicjalizacja połączenia WebSocket z serwerem
 const socket = io("http://localhost:4000")
 
-function Navbar({ code }: { code: string }) {
+/**
+ * Navbar
+ *
+ * Komponent nawigacji wyświetlany w lobby. Umożliwia kopiowanie kodu lobby,
+ * przełączanie widoczności sidebaru oraz zmianę motywu.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {string} props.code - Kod lobby, który ma być wyświetlony i kopiowany.
+ * @returns {JSX.Element} Element JSX reprezentujący nawigację.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+function Navbar({ code }: { code: string }): JSX.Element {
   const { open, setOpen } = useSidebar()
   const { t } = useTranslation()
   const sidebarOffset = 128
@@ -67,7 +81,19 @@ function Navbar({ code }: { code: string }) {
   )
 }
 
-function FloatingPaths({ position }: { position: number }) {
+/**
+ * FloatingPaths
+ *
+ * Komponent renderujący animowane ścieżki SVG w tle, tworzący dynamiczny efekt graficzny.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {number} props.position - Pozycja, wpływająca na krzywiznę ścieżek.
+ * @returns {JSX.Element} Element JSX zawierający animowane ścieżki SVG.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+function FloatingPaths({ position }: { position: number }): JSX.Element {
   const paths = Array.from({ length: 36 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 5 * position}`,
@@ -104,7 +130,19 @@ function FloatingPaths({ position }: { position: number }) {
   )
 }
 
-export default function LinkLobby() {
+/**
+ * LinkLobby
+ *
+ * Główny komponent strony lobby dla gry poprzez link.
+ * Umożliwia dołączanie do lobby, wyświetla listę graczy, animacje odliczania,
+ * obsługuje akcje takie jak start gry czy wyrzucenie gracza.
+ *
+ * @returns {JSX.Element | null} Element JSX reprezentujący stronę lobby lub null, gdy wymagane dane nie są dostępne.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
+export default function LinkLobby(): JSX.Element | null {
   const { isSignedIn, user } = useUser()
   const { theme } = useTheme()
   const { t } = useTranslation()
@@ -130,22 +168,22 @@ export default function LinkLobby() {
     if (!lobbyId) return
 
     socket.emit("joinLobby", lobbyId)
-    socket.on("playerJoined", (players) => {
+    socket.on("playerJoined", (players: Player[]) => {
       console.log("[FRONT] Zaktualizowano listę graczy:", players)
       setLobby(players)
     })
-    socket.on("playerKicked", (playerId) => {
+    socket.on("playerKicked", (playerId: string) => {
       const myId = user?.id || localStorage.getItem("guestId")
       if (playerId === myId) {
         alert(t("linkLobby.kickedFromLobby"))
         router.push("/play")
       }
     })
-    socket.on("countdown", (count) => {
+    socket.on("countdown", (count: number) => {
       console.log("[FRONT] Odliczanie:", count)
       setCountdown(count)
     })
-    socket.on("gameStarted", (gameUrl) => {
+    socket.on("gameStarted", (gameUrl: string) => {
       console.log("[FRONT] Gra rozpoczęta, przekierowanie do:", gameUrl)
       router.push(gameUrl)
     })
@@ -304,6 +342,19 @@ export default function LinkLobby() {
   )
 }
 
+/**
+ * Interfejs Player
+ *
+ * Definiuje strukturę obiektu reprezentującego gracza.
+ *
+ * @property {string} id - Unikalny identyfikator gracza.
+ * @property {string} name - Nazwa gracza.
+ * @property {string} avatar - URL awatara gracza.
+ * @property {boolean} isGuest - Określa, czy gracz jest gościem.
+ *
+ * @remarks
+ * Autor: nasakrator
+ */
 interface Player {
   id: string
   name: string

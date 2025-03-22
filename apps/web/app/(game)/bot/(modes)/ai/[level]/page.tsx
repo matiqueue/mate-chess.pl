@@ -3,11 +3,22 @@
 import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
-
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
-function ChessPageContent() {
+/**
+ * ChessPageContent
+ *
+ * Renderuje zawartość strony szachowej. Ustawia tło w zależności od aktualnego motywu (ciemny/jasny)
+ * oraz renderuje komponent ChessBoardContainer.
+ * Komponent oczekuje na zamontowanie, aby zapobiec problemom z hydracją.
+ *
+ * @returns {JSX.Element | null} Element JSX reprezentujący zawartość strony lub null, jeśli komponent nie został jeszcze zamontowany.
+ *
+ * @remarks
+ * Autorzy: maxicom0000 i matiqueue
+ */
+function ChessPageContent(): JSX.Element | null {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
 
@@ -32,7 +43,18 @@ function ChessPageContent() {
   )
 }
 
-export default function ChessPage() {
+/**
+ * ChessPage
+ *
+ * Główny komponent strony szachowej. Opakowuje zawartość w konteksty GameProvider oraz GameViewProvider,
+ * które dostarczają globalne dane i widoki gry.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę szachową.
+ *
+ * @remarks
+ * Autorzy: maxicom0000 i matiqueue
+ */
+export default function ChessPage(): JSX.Element {
   return (
     <GameProvider>
       <GameViewProvider>

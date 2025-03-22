@@ -3,16 +3,27 @@ import chalk from "chalk"
 import dotenv from "dotenv"
 import Groq from "groq-sdk"
 
-// Wczytaj zmienne środowiskowe z .env
+// Wczytanie zmiennych środowiskowych z pliku .env
 dotenv.config()
 
-// Utwórz instancję klienta Groq
+/**
+ * Instancja klienta Groq do generowania odpowiedzi AI.
+ */
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
-// Utwórz serwer WebSocket przed redefinicją console.log
+/**
+ * Utworzenie serwera WebSocket działającego na porcie 3005.
+ */
 const wss = new WebSocketServer({ port: 3005 })
 
+/**
+ * Zachowuje oryginalną funkcję console.log.
+ */
 const originalConsoleLog = console.log
+
+/**
+ * Nadpisanie console.log, aby wysyłać logi do wszystkich połączonych klientów WebSocket.
+ */
 console.log = (...args: any[]) => {
   originalConsoleLog(...args)
   if (wss.clients.size > 0) {
@@ -30,6 +41,19 @@ console.log = (...args: any[]) => {
   }
 }
 
+/**
+ * Asynchronicznie pobiera krótki opis błędu lub ostrzeżenia wygenerowany przez model AI.
+ *
+ * @param {string} message - Komunikat błędu lub ostrzeżenia.
+ * @returns {Promise<string>} Opis wygenerowany przez AI lub komunikat o niepowodzeniu.
+ *
+ * @example
+ * // Input: "Nie znaleziono pliku config.json"
+ * // Output: "Błąd: Plik config.json nie został znaleziony. Upewnij się, że plik istnieje i ścieżka jest poprawna."
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 async function getAIDescription(message: string): Promise<string> {
   try {
     const response = await groq.chat.completions.create({
@@ -48,6 +72,20 @@ async function getAIDescription(message: string): Promise<string> {
   }
 }
 
+/**
+ * Asynchronicznie pobiera propozycję rozwiązania dla błędu lub ostrzeżenia wygenerowaną przez model AI.
+ *
+ * @param {string} message - Komunikat błędu lub ostrzeżenia.
+ * @returns {Promise<string>} Propozycja rozwiązania wygenerowana przez AI lub komunikat o niepowodzeniu.
+ *
+ * @example
+ * // Input: "Nie znaleziono pliku config.json"
+ * // Output: "Sprawdź, czy plik config.json znajduje się w odpowiedniej lokalizacji oraz czy ścieżka jest poprawna."
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @note ta funkcja jest zrobiona z AI
+ */
 async function getAISolution(message: string): Promise<string> {
   try {
     const response = await groq.chat.completions.create({
@@ -66,6 +104,9 @@ async function getAISolution(message: string): Promise<string> {
   }
 }
 
+/**
+ * Obsługuje połączenia WebSocket oraz odbiór wiadomości od klientów.
+ */
 wss.on("connection", (ws) => {
   console.log(chalk.green("Klient połączony z aplikacją errors"))
 

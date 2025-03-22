@@ -2,12 +2,13 @@ import { Figure } from "@utils/figureUtils"
 import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
+import { rookMaterialTable } from "@shared/types/material"
 
 class Rook extends Figure {
   private _hasMoved: boolean
 
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
-    super(figureType.rook, color, position, board)
+    super(figureType.rook, color, position, board, 500, rookMaterialTable)
     this._hasMoved = hasMoved
   }
 

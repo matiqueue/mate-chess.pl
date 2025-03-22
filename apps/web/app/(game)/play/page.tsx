@@ -1,4 +1,5 @@
 "use client"
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Link2, Server, ArrowRight, Users } from "lucide-react"
@@ -11,6 +12,12 @@ import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from "uuid"
 
+/**
+ * Obiekt animacji kontenera.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -19,34 +26,78 @@ const container = {
   },
 }
 
+/**
+ * Obiekt animacji elementu.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 }
 
+/**
+ * Animacja unoszenia elementu.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 const floatingAnimation = {
   y: [0, 5, 0],
   transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse" as const, ease: "easeInOut" },
 }
+
+/**
+ * Motion-enabled Button.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 const MotionButton = motion.create(Button)
+
+/**
+ * Motion-enabled Card.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 const MotionCard = motion.create(Card)
 
+/**
+ * GameModeSelector
+ *
+ * Komponent pozwalający wybrać tryb gry, umożliwiający:
+ * - stworzenie lobby za pomocą linku,
+ * - dołączenie do lobby za pomocą podanego kodu,
+ * - dołączenie do lobby online (tylko dla zalogowanych użytkowników).
+ *
+ * Obsługuje animacje przy użyciu framer-motion oraz tłumaczenia dzięki react-i18next.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący selektor trybu gry.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
 export default function GameModeSelector() {
   const router = useRouter()
   const { theme } = useTheme()
   const { user } = useUser()
   const { t } = useTranslation()
+
   const [mounted, setMounted] = useState(false)
   const [showJoinInput, setShowJoinInput] = useState(false)
   const [joinCode, setJoinCode] = useState("")
   const [showOnlineTooltip, setShowOnlineTooltip] = useState(false)
 
+  // Ustawienie flagi mounted po zamontowaniu komponentu
   useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) return null
 
+  // Definicja dostępnych trybów gry
   const gameModes = [
     {
       key: "local",
@@ -68,6 +119,12 @@ export default function GameModeSelector() {
     },
   ]
 
+  /**
+   * handleCreateLinkLobby
+   *
+   * Tworzy nowe lobby typu "link". Pobiera dane gracza z konta użytkownika lub generuje dane gościa,
+   * wysyła żądanie POST do API oraz przekierowuje użytkownika do nowo utworzonego lobby.
+   */
   const handleCreateLinkLobby = async () => {
     const player = user
       ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
@@ -86,6 +143,12 @@ export default function GameModeSelector() {
     router.push(`/play/link?code=${data.code}&lobbyId=${data.lobbyId}`)
   }
 
+  /**
+   * handleJoinLinkLobby
+   *
+   * Dołącza użytkownika do istniejącego lobby za pomocą kodu.
+   * Wysyła żądanie POST do API i przekierowuje do lobby, jeśli operacja się powiedzie.
+   */
   const handleJoinLinkLobby = async () => {
     const player = user
       ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
@@ -108,6 +171,12 @@ export default function GameModeSelector() {
     }
   }
 
+  /**
+   * handleJoinOnlineLobby
+   *
+   * Dołącza użytkownika do lobby online.
+   * Jeśli użytkownik nie jest zalogowany, wyświetla tooltip informujący o konieczności logowania.
+   */
   const handleJoinOnlineLobby = async () => {
     if (!user) {
       setShowOnlineTooltip(true)
@@ -154,7 +223,7 @@ export default function GameModeSelector() {
           <motion.h1
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
           >
             {t("selectGameMode")}

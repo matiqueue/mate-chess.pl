@@ -1,5 +1,4 @@
-//
-//
+// @ts-nocheck
 
 "use client"
 
@@ -84,7 +83,7 @@ const floatingAnimation = {
 export default function ChessTournaments() {
   const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(1)
-  const [setIsDragging] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const dragStartX = useRef(0)
   const { theme } = useTheme()
 
@@ -162,7 +161,7 @@ export default function ChessTournaments() {
 
   return (
     <ScrollArea className="w-full">
-      <div className="relative w-full min-h-screen p-10">
+      <div className="relative w-full">
         {theme === "dark" && (
           <motion.div
             className="absolute inset-0 sm:m-[5%] rounded-[70%_20%_90%_15%_/15%_60%_25%_40%]"
@@ -180,13 +179,13 @@ export default function ChessTournaments() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="z-10 text-foreground flex flex-col items-center justify-center h-screen w-full"
+          className=" text-foreground flex flex-col items-center h-screen w-full py-10"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
 
           <div className="relative w-full md:w-[70vw] mb-4">
             <div
-              className="flex justify-center items-center overflow-hidden h-[500px]"
+              className="flex justify-center items-center overflow-hidden h-[450px]"
               onMouseDown={handleDragStart}
               onMouseUp={handleDragEnd}
               onMouseLeave={() => setIsDragging(false)}
@@ -247,7 +246,7 @@ export default function ChessTournaments() {
               </AnimatePresence>
             </div>
 
-            <div className="flex justify-center items-center space-x-4 mt-4">
+            <div className="flex justify-center items-center space-x-4 mt-4 pt-5">
               <Button onClick={handlePrev} disabled={currentIndex === 0} className="z-20 rounded-full p-2" variant="outline">
                 <ChevronLeft className="h-6 w-6" />
               </Button>

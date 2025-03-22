@@ -12,22 +12,25 @@ import {
   isAwaitingPromotion,
   isCheckmate,
   isMoveEnPassant,
-  isStalemate,
   isPreviewModeOn,
+  isStalemate,
   makeMove,
   promote,
   returnToCurrentState,
   rewindMove,
+  setupAIGame,
   setupGame,
   startGame,
   undoMove,
   whosTurn,
 } from "@modules/index"
-import { figureType } from "@chess-engine/types"
+import { color, figureType } from "@chess-engine/types"
 import MovePair from "@shared/types/movePair"
 import { gameStatusType } from "@shared/types/gameStatusType"
+import ChessGameExtraAI from "@modules/chessGameExtraAI"
+import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-const useGame = () => {
+const useGame = (ai: boolean = false) => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
@@ -35,7 +38,8 @@ const useGame = () => {
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
 
   useEffect(() => {
-    const newGame = setupGame()
+    //tu trzeba wrzucić wyświetlenie popupu z pytaniem kim gra ai
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame()
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))

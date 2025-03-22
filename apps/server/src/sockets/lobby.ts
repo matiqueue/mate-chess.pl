@@ -1,8 +1,25 @@
-import { Server } from "socket.io"
-import { lobbies } from "../index"
-import chalk from "chalk"
+import { Server } from "socket.io" // Import serwera Socket.IO
+import { lobbies } from "../index" // Import globalnego obiektu lobby
+import chalk from "chalk" // Import biblioteki chalk do kolorowania logów
 
-export function setupSockets(io: Server) {
+/**
+ * setupSockets
+ *
+ * Inicjalizuje eventy Socket.IO dla połączeń z klientami.
+ * Ustawia następujące eventy:
+ * - "connection": loguje nowe połączenie i ustawia eventy dla danego socket:
+ *   - "joinLobby": dodaje klienta do pokoju lobby i emituje event "playerJoined" z listą graczy.
+ *   - "sendMessage": wysyła wiadomość do wszystkich klientów w danym lobby.
+ *   - "disconnect": loguje rozłączenie klienta.
+ *
+ * @param {Server} io - Instancja serwera Socket.IO.
+ *
+ * @returns {void}
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export function setupSockets(io: Server): void {
   io.on("connection", (socket) => {
     console.log(chalk.bgMagenta.white.bold(" [SOCKET] ") + chalk.magenta(` Klient połączony: ID=${socket.id} `))
 

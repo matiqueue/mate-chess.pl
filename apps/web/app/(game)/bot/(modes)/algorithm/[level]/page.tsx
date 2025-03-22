@@ -34,7 +34,7 @@ function ChessPageContent() {
 
 export default function ChessPage() {
   return (
-    <GameProvider>
+    <GameProvider ai={true}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>

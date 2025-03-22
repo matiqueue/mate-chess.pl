@@ -7,11 +7,15 @@
 import { createContext, useContext } from "react"
 import useGame from "@/hooks/useGame"
 
-// Tworzymy kontekst, którego typ będzie oparty o wynik hooka useGame
+interface GameProviderProps {
+  children: React.ReactNode
+  ai: boolean
+}
+
 const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
 
-export const GameProvider = ({ children }: { children: React.ReactNode }) => {
-  const game = useGame()
+export const GameProvider = ({ children, ai }: GameProviderProps) => {
+  const game = useGame(ai)
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>
 }
 
