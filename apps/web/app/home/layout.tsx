@@ -3,7 +3,20 @@ import { Navbar } from "@/components/home/navbar"
 import { Sidebar } from "@/components/home/sidebar"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+/**
+ * HomeLayout
+ *
+ * Komponent layoutu strony głównej, który opakowuje zawartość aplikacji w kontekst SidebarProvider.
+ * Wyświetla pasek boczny, nagłówek mobilny oraz navbar dla desktopu, a także renderuje główną zawartość strony.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne, które zostaną wyrenderowane w głównej części layoutu.
+ * @returns {JSX.Element} Element JSX reprezentujący layout strony głównej.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function HomeLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">
