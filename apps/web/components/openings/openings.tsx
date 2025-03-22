@@ -39,22 +39,22 @@ export default function ChessOpenings() {
   const [isLoading, setIsLoading] = useState(true)
   const { theme } = useTheme()
 
-  const getDifficultyColor = (difficulty: string)=> {
+  const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
-      case 'beginner':
-      case 'начальный':
-      case 'początkujący':
-        return 'bg-green-500 opacity-70'; // Kolor dla Beginner
-      case 'intermediate':
-      case 'средний':
-      case 'średniozaawansowany':
-        return 'bg-yellow-500 opacity-70'; // Kolor dla Intermediate
-      case 'advanced':
-      case 'zaawansowany':
-      case 'продвинутый':
-        return 'bg-red-500 opacity-70'; // Kolor dla Advanced
+      case "beginner":
+      case "начальный":
+      case "początkujący":
+        return "bg-green-500 opacity-70" // Kolor dla Beginner
+      case "intermediate":
+      case "средний":
+      case "średniozaawansowany":
+        return "bg-yellow-500 opacity-70" // Kolor dla Intermediate
+      case "advanced":
+      case "zaawansowany":
+      case "продвинутый":
+        return "bg-red-500 opacity-70" // Kolor dla Advanced
       default:
-        return 'bg-gray-400'; // Domyślny kolor
+        return "bg-gray-400" // Domyślny kolor
     }
   }
 
@@ -114,24 +114,16 @@ export default function ChessOpenings() {
       author: "Viswanathan Anand",
     },
   ]
-  
-  
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000)
     return () => clearTimeout(timer)
   }, [])
 
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="text-center">
           <motion.div
             animate={{
               rotate: 360,
@@ -149,42 +141,38 @@ export default function ChessOpenings() {
     return (
       <div className="container mx-auto py-8 px-4">
         {/* Banner explaining why openings are important */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-          className="mb-12"
-        >
-        <Card className="overflow-hidden relative">
-        {/* Background image with transparent gradient */}
-        <div
-            className="absolute inset-0 bg-cover bg-center rounded-lg m-5"
-            style={{
-            backgroundImage: "url('logo/openingsLogo.webp')", // Zmień na ścieżkę do swojego zdjęcia
-            }}
-        >
-            {/* Transparent gradient */}
-            <div className={theme === "dark"? "bg-gradient-to-r from-black to-black/50 rounded-lg absolute inset-0" : "bg-gradient-to-r from-white to-white/50 rounded-lg absolute inset-0"} ></div>
-        </div>
-
-        <div className="relative p-8 z-10">
-            <h2 className="text-3xl font-bold mb-4">{t("openingsPage.banner.title")}</h2>
-            <p className="text-lg mb-6">
-            {t("openingsPage.banner.description")}
-            </p>
-            <Button
-            size="lg"
-            className="flex items-center gap-2"
-            onClick={() =>
-                (window.location.href =
-                "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")
-            }
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="mb-12">
+          <Card className="overflow-hidden relative">
+            {/* Background image with transparent gradient */}
+            <div
+              className="absolute inset-0 bg-cover bg-center rounded-lg m-5"
+              style={{
+                backgroundImage: "url('logo/openingsLogo.webp')", // Zmień na ścieżkę do swojego zdjęcia
+              }}
             >
-            <BookOpen className="h-5 w-5" />
-            <span>{t("openingsPage.startLearing")}</span>
-            </Button>
-        </div>
-        </Card>
+              {/* Transparent gradient */}
+              <div
+                className={
+                  theme === "dark"
+                    ? "bg-gradient-to-r from-black to-black/50 rounded-lg absolute inset-0"
+                    : "bg-gradient-to-r from-white to-white/50 rounded-lg absolute inset-0"
+                }
+              ></div>
+            </div>
+
+            <div className="relative p-8 z-10">
+              <h2 className="text-3xl font-bold mb-4">{t("openingsPage.banner.title")}</h2>
+              <p className="text-lg mb-6">{t("openingsPage.banner.description")}</p>
+              <Button
+                size="lg"
+                className="flex items-center gap-2"
+                onClick={() => (window.location.href = "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")}
+              >
+                <BookOpen className="h-5 w-5" />
+                <span>{t("openingsPage.startLearing")}</span>
+              </Button>
+            </div>
+          </Card>
         </motion.div>
 
         {/* Chess openings */}
@@ -200,10 +188,7 @@ export default function ChessOpenings() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.03 }}
-              onClick={() =>
-                (window.location.href =
-                  "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")
-              }
+              onClick={() => (window.location.href = "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")}
             >
               <Card className="overflow-hidden h-full flex flex-col">
                 <div className="p-6 h-full flex flex-col relative">
@@ -241,4 +226,3 @@ export default function ChessOpenings() {
     )
   }
 }
-
