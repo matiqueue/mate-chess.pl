@@ -537,7 +537,7 @@ class Board {
    * @returns {Position[]} Array of positions to which a move is possible.
    */
   // //to co jest zakomentowane w tej metodzie to są rzeczy do testowania w konsoli
-  public getValidMovesForPositionDeprecated(position: Position): Position[] {
+  public getValidMovesForPosition2(position: Position): Position[] {
     const validMoves: Position[] = []
     // console.debug("\nValidating moves for position: ", position.notation)
     // console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
@@ -581,277 +581,58 @@ class Board {
   }
 
   public getValidMovesForPosition(position: Position): Position[] {
-    let validMoves: Position[] = []
+    const validMoves: Position[] = []
     const figure = position.figure
     if (!figure) return validMoves
-
-    console.debug("\nValidating moves for position:", position.notation)
-    console.debug(`\nFigure: ${figure.type} \nof color: ${figure.color} \nat ${position.notation} \nnoted as [o]`)
 
     const x = position.x
     const y = position.y
 
-    // Pomocnicza funkcja sprawdzająca, czy współrzędne mieszczą się w zakresie 0-7
+    // Quick helper for board limits
     const isWithinBounds = (nx: number, ny: number) => nx >= 0 && nx < 8 && ny >= 0 && ny < 8
 
     switch (figure.type) {
       case figureType.pawn: {
+        // We try the typical “one step,” “two step,” “diagonal” squares
+        // then confirm each with isMoveValid(...)
         const direction = figure.color === color.White ? -1 : 1
 
-        // Normal move forward
-        if (isWithinBounds(x, y + direction)) {
-          const oneStep = this.getPositionByCords(x, y + direction)
-          if (oneStep && !oneStep.figure) {
+        // One step forward
+        const oneY = y + direction
+        if (isWithinBounds(x, oneY)) {
+          const oneStep = this.getPositionByCords(x, oneY)
+          if (oneStep && figure.isMoveValid(oneStep)) {
             validMoves.push(oneStep)
           }
         }
 
-        // Two steps forward if first move
-        if ((figure as Pawn).isFirstMove && isWithinBounds(x, y + 2 * direction)) {
-          const twoSteps = this.getPositionByCords(x, y + 2 * direction)
-          if (twoSteps && !twoSteps.figure) {
-            validMoves.push(twoSteps)
-          }
-        }
-
-        // Diagonal capture
-        ;[-1, 1].forEach((side) => {
-          if (isWithinBounds(x + side, y + direction)) {
-            const diag = this.getPositionByCords(x + side, y + direction)
-            if (diag && diag.figure && diag.figure.color !== figure.color) {
-              validMoves.push(diag)
+        // Two steps forward if it's the pawn’s first move
+        if ((figure as Pawn).isFirstMove) {
+          const twoY = y + 2 * direction
+          if (isWithinBounds(x, twoY)) {
+            const twoSteps = this.getPositionByCords(x, twoY)
+            if (twoSteps && figure.isMoveValid(twoSteps)) {
+              validMoves.push(twoSteps)
             }
           }
-        })
-        break
-      }
+        }
 
-      case figureType.rook: {
-        // Rook moves: poziomo i pionowo
-        // Poziomo w prawo
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
+        // Diagonals (captures and possibly en passant)
+        for (const side of [-1, 1]) {
+          const diagX = x + side
+          const diagY = y + direction
+          if (isWithinBounds(diagX, diagY)) {
+            const diagPos = this.getPositionByCords(diagX, diagY)
+            if (diagPos && figure.isMoveValid(diagPos)) {
+              validMoves.push(diagPos)
+            }
           }
-          validMoves.push(pos)
-        }
-        // Poziomo w lewo
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Pionowo w górę
-        for (let i = 1; i < 8; i++) {
-          const nx = x,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Pionowo w dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        break
-      }
-
-      case figureType.bishop: {
-        // Bishop moves: diagonalnie we wszystkie cztery strony
-        // Prawo-dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Lewo-góra
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Prawo-góra
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Lewo-dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        break
-      }
-
-      case figureType.queen: {
-        // Queen = Rook + Bishop, więc łączymy osobne pętle
-        // Rook-like moves:
-        // Poziomo w prawo
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Poziomo w lewo
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Pionowo w górę
-        for (let i = 1; i < 8; i++) {
-          const nx = x,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Pionowo w dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Bishop-like moves:
-        // Prawo-dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Lewo-góra
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Prawo-góra
-        for (let i = 1; i < 8; i++) {
-          const nx = x + i,
-            ny = y - i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
-        }
-        // Lewo-dół
-        for (let i = 1; i < 8; i++) {
-          const nx = x - i,
-            ny = y + i
-          if (!isWithinBounds(nx, ny)) break
-          const pos = this.getPositionByCords(nx, ny)
-          if (!pos) break
-          if (pos.figure) {
-            if (pos.figure.color !== figure.color) validMoves.push(pos)
-            break
-          }
-          validMoves.push(pos)
         }
         break
       }
 
       case figureType.knight: {
+        // The 8 possible “L” moves, then check isMoveValid(...)
         const knightMoves = [
           [2, 1],
           [2, -1],
@@ -862,18 +643,110 @@ class Board {
           [-1, 2],
           [-1, -2],
         ]
-        knightMoves.forEach(([dx, dy]) => {
+        for (const [dx, dy] of knightMoves) {
           if (!dx || !dy) {
-            return
+            break
           }
-          const nx = x + dx,
-            ny = y + dy
-          if (!isWithinBounds(nx, ny)) return
-          const newPos = this.getPositionByCords(nx, ny)
-          if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
-            validMoves.push(newPos)
+          const nx = x + dx
+          const ny = y + dy
+          if (!isWithinBounds(nx, ny)) continue
+
+          const pos = this.getPositionByCords(nx, ny)
+          if (pos && figure.isMoveValid(pos)) {
+            validMoves.push(pos)
           }
-        })
+        }
+        break
+      }
+
+      case figureType.rook: {
+        // Move horizontally or vertically until blocked or invalid
+        const directions = [
+          { dx: 1, dy: 0 }, // right
+          { dx: -1, dy: 0 }, // left
+          { dx: 0, dy: 1 }, // down
+          { dx: 0, dy: -1 }, // up
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              // If there's a piece on pos, we can't move beyond it
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.bishop: {
+        // Move diagonally until blocked or invalid
+        const directions = [
+          { dx: 1, dy: 1 }, // down-right
+          { dx: -1, dy: -1 }, // up-left
+          { dx: 1, dy: -1 }, // up-right
+          { dx: -1, dy: 1 }, // down-left
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.queen: {
+        // Combination of Rook & Bishop directions
+        const directions = [
+          // Rook-like
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 0, dy: -1 },
+          // Bishop-like
+          { dx: 1, dy: 1 },
+          { dx: -1, dy: -1 },
+          { dx: 1, dy: -1 },
+          { dx: -1, dy: 1 },
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
         break
       }
 
