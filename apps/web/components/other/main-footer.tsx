@@ -4,7 +4,17 @@ import Link from "next/link"
 import { PuzzleIcon as Chess } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-export function Footer() {
+/**
+ * Footer
+ *
+ * Komponent renderujący stopkę strony, zawierającą logo, nazwę aplikacji oraz nawigację.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stopkę strony.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export function Footer(): JSX.Element {
   const { t } = useTranslation()
   return (
     <footer className="w-full border-t bg-background">
@@ -15,22 +25,13 @@ export function Footer() {
             <span className="text-sm font-medium">Mate Chess</span>
           </div>
           <nav className="flex items-center space-x-4 text-sm">
-            <Link
-              href="/play"
-              className="transition-colors hover:text-foreground/80"
-            >
+            <Link href="/play" className="transition-colors hover:text-foreground/80">
               {t("main-footer.play")}
             </Link>
-            <Link
-              href="/learn"
-              className="transition-colors hover:text-foreground/80"
-            >
+            <Link href="/learn" className="transition-colors hover:text-foreground/80">
               {t("main-footer.learn")}
             </Link>
-            <Link
-              href="/community"
-              className="transition-colors hover:text-foreground/80"
-            >
+            <Link href="/community" className="transition-colors hover:text-foreground/80">
               {t("main-footer.community")}
             </Link>
             <a
