@@ -107,8 +107,6 @@ export default function GameModeSelector() {
                   variants={item}
                   whileHover={{ scale: 1.05 }}
                   className="bg-card/50 border border-border transition-transform duration-300"
-                  onMouseEnter={isOnline && !user ? () => setShowOnlineTooltip(true) : undefined}
-                  onMouseLeave={isOnline && !user ? () => setShowOnlineTooltip(false) : undefined}
                 >
                   <CardContent className="p-6 md:p-8 flex flex-col items-center justify-center gap-4 h-full relative">
                     <motion.div animate={floatingAnimation} className="p-3 rounded-full bg-background mb-2">
