@@ -1,5 +1,5 @@
 import ChessAi from "@modules/ai/engine"
-import { color } from "@shared/types/colorType.js"
+import { color } from "@shared/types/colorType"
 
 class ChessGameExtraAI extends ChessAi {
   constructor(aiColor: color) {
