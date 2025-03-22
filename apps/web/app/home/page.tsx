@@ -10,11 +10,21 @@ import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+/**
+ * Obiekt animacji fadeInUp.
+ *
+ * @remarks Autor: matiqueue (Szymon Góral)
+ */
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 }
 
+/**
+ * Obiekt animacji staggerContainer.
+ *
+ * @remarks Autor: matiqueue (Szymon Góral)
+ */
 const staggerContainer = {
   hidden: {},
   visible: {
@@ -24,6 +34,16 @@ const staggerContainer = {
   },
 }
 
+/**
+ * HomePage
+ *
+ * Komponent strony głównej, który renderuje sekcję hero z tłem i animowanym tytułem,
+ * grid trybów gry, dodatkowe funkcje oraz animowany element (latający Bot).
+ *
+ * @returns {JSX.Element} Strona główna aplikacji.
+ *
+ * @remarks Autor: matiqueue (Szymon Góral)
+ */
 export default function HomePage() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
