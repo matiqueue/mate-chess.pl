@@ -2,7 +2,17 @@ import { Navbar } from "@/components/other/main-navbar"
 import { UserProfile } from "@clerk/nextjs"
 import { Footer } from "@/components/other/main-footer"
 
-export default function Page() {
+/**
+ * Page
+ *
+ * Renderuje stronę profilu użytkownika z wykorzystaniem komponentów Navbar, UserProfile oraz Footer.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę profilu.
+ *
+ * @remarks
+ * Autor: nasakrator i matiqueue
+ */
+export default function Page(): JSX.Element {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-shrink-0">
