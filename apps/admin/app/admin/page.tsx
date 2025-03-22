@@ -1,21 +1,45 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import io, { Socket } from "socket.io-client"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { useState, useEffect } from "react" // Import hooków useState i useEffect
+import { useRouter } from "next/navigation" // Import hooka useRouter
+import io, { Socket } from "socket.io-client" // Import biblioteki socket.io-client
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs" // Import komponentów zakładek
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table" // Import komponentów tabeli
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card" // Import komponentów karty
+import { Badge } from "@workspace/ui/components/badge" // Import komponentu Badge
+import { Button } from "@workspace/ui/components/button" // Import komponentu Button
 
-export default function AdminPage() {
+/**
+ * Komponent AdminPage
+ *
+ * Renderuje panel administracyjny z zakładkami "Użytkownicy" oraz "Logi".
+ * W zależności od wybranej zakładki wyświetla odpowiednio listę użytkowników lub logi systemowe.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę administracyjną.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function AdminPage(): JSX.Element {
+  // Stan aktywnej zakładki: "users" lub "logs".
   const [activeTab, setActiveTab] = useState<"users" | "logs">("users")
+
+  // Stan logów systemowych jako tablica stringów.
   const [logs, setLogs] = useState<string[]>([])
+
+  // Stan obiektu Socket dla komunikacji WebSocket.
   const [socket, setSocket] = useState<Socket | null>(null)
+
+  // Hook do nawigacji pomiędzy stronami.
   const router = useRouter()
+
+  // Maksymalna liczba logów do przechowywania.
   const MAX_LOGS = 200
 
+  /**
+   * Lista użytkowników systemu.
+   * Każdy użytkownik posiada: id, name, email, role oraz status.
+   */
   const users = [
     { id: 1, name: "Jan Kowalski", email: "jan@example.com", role: "Admin", status: "Aktywny" },
     { id: 2, name: "Anna Nowak", email: "anna@example.com", role: "Edytor", status: "Aktywny" },
@@ -25,20 +49,25 @@ export default function AdminPage() {
   ]
 
   useEffect(() => {
+    // Jeśli wybrana zakładka to "logs", ustanawiamy połączenie WebSocket z serwerem logów.
     if (activeTab === "logs") {
+      // Inicjalizacja nowego połączenia socket.io z serwerem logów.
       const newSocket = io("http://localhost:4000/admin-logs", {
         reconnection: true,
         transports: ["websocket"],
       })
 
+      // Po udanym połączeniu, wypisuje komunikat do konsoli.
       newSocket.on("connect", () => {
         console.log("Połączono z serwerem logów przez WebSocket")
       })
 
+      // Ustawia początkową listę logów, ograniczając ich liczbę do MAX_LOGS.
       newSocket.on("initial_logs", (initialLogs: string[]) => {
         setLogs(initialLogs.slice(-MAX_LOGS))
       })
 
+      // Dodaje nowe logi do stanu; jeśli przekroczona liczba MAX_LOGS, zachowuje tylko najnowsze.
       newSocket.on("log", (message: string) => {
         setLogs((prevLogs) => {
           const updatedLogs = [...prevLogs, message]
@@ -46,27 +75,39 @@ export default function AdminPage() {
         })
       })
 
+      // Loguje błędy połączenia.
       newSocket.on("connect_error", (error) => {
         console.error("Błąd połączenia Socket.IO:", error.message)
       })
 
       setSocket(newSocket)
 
+      // Przy czyszczeniu efektu rozłączamy socket.
       return () => {
         newSocket.disconnect()
         setSocket(null)
       }
     }
-  }, [activeTab])
+  }, [activeTab]) // Efekt uruchamia się przy zmianie aktywnej zakładki.
 
+  /**
+   * handleLogout
+   *
+   * Usuwa informację o zalogowaniu z localStorage i przekierowuje użytkownika na stronę logowania.
+   *
+   * @remarks
+   * Autor: matiqueue (Szymon Góral)
+   * @note ta funkcja jest zrobiona z AI
+   */
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn")
-    router.push("/login")
+    localStorage.removeItem("isLoggedIn") // Usuwa flagę zalogowania.
+    router.push("/login") // Przekierowuje do strony logowania.
   }
 
   return (
     <div className="min-h-screen text-foreground">
       <div className="container mx-auto p-8">
+        {/* Panel nagłówka z tytułem oraz przyciskiem wylogowania */}
         <Card className="mb-8 border-border bg-card shadow-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="text-center flex-1">
@@ -79,6 +120,7 @@ export default function AdminPage() {
           </CardHeader>
         </Card>
 
+        {/* Zakładki: Użytkownicy i Logi */}
         <Tabs defaultValue="users" value={activeTab} onValueChange={(value) => setActiveTab(value as "users" | "logs")} className="space-y-6">
           <div className="flex justify-center">
             <TabsList className="grid w-[350px] grid-cols-2 gap-1 rounded-xl">
@@ -91,6 +133,7 @@ export default function AdminPage() {
             </TabsList>
           </div>
 
+          {/* Zawartość zakładki Użytkownicy */}
           <TabsContent value="users" className="space-y-4">
             <Card className="border-border bg-card shadow-2xl">
               <CardHeader className="text-center">
@@ -127,6 +170,7 @@ export default function AdminPage() {
             </Card>
           </TabsContent>
 
+          {/* Zawartość zakładki Logi */}
           <TabsContent value="logs" className="space-y-4">
             <Card>
               <CardHeader className="text-center">
