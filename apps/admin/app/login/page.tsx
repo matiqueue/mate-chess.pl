@@ -1,18 +1,49 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card"
+import { useState } from "react" // Import hooka useState
+import { useRouter } from "next/navigation" // Import hooka useRouter
+import { Button } from "@workspace/ui/components/button" // Import komponentu Button
+import { Input } from "@workspace/ui/components/input" // Import komponentu Input
+import { Label } from "@workspace/ui/components/label" // Import komponentu Label
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card" // Import komponentów Card
 
-export default function LoginPage() {
+/**
+ * Komponent LoginPage
+ *
+ * Renderuje stronę logowania panelu administracyjnego.
+ * Umożliwia wprowadzenie nazwy użytkownika oraz hasła, a w przypadku poprawnych danych zapisuje flagę logowania
+ * i przekierowuje użytkownika do panelu admina.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę logowania.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function LoginPage(): JSX.Element {
+  // Stan przechowujący wprowadzoną nazwę użytkownika.
   const [username, setUsername] = useState("")
+  // Stan przechowujący wprowadzone hasło.
   const [password, setPassword] = useState("")
+  // Stan przechowujący komunikat błędu.
   const [error, setError] = useState("")
+
+  // Hook do nawigacji.
   const router = useRouter()
 
+  /**
+   * handleSubmit
+   *
+   * Obsługuje zdarzenie wysłania formularza logowania.
+   * Porównuje dane wejściowe z wartościami przechowywanymi w zmiennych środowiskowych
+   * NEXT_PUBLIC_ADMIN_USERNAME oraz NEXT_PUBLIC_ADMIN_PASSWORD.
+   * W przypadku zgodności zapisuje flagę logowania w localStorage i przekierowuje do panelu admina,
+   * a w przeciwnym razie ustawia komunikat błędu.
+   *
+   * @param {React.FormEvent} e - Zdarzenie formularza.
+   *
+   * @remarks
+   * Autor: matiqueue (Szymon Góral)
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME
