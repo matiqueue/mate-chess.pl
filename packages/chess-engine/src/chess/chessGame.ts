@@ -51,17 +51,7 @@ class ChessGame {
   /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
    * */
   protected async process() {
-    if (this._board.isCheckmate() === this.currentPlayer) {
-      if (this.currentPlayer === color.Black) {
-        this._gameStatus = gameStatusType.whiteWins
-      } else if (this.currentPlayer === color.White) {
-        this._gameStatus = gameStatusType.blackWins
-      }
-      this._isGameOn = false
-    } else if (this._board.isStalemate()) {
-      this._gameStatus = gameStatusType.stalemate
-      this._isGameOn = false
-    }
+    this.stateProcessor()
 
     for (const figure of this._board.allFigures) {
       if (figure instanceof Pawn && !this._awaitingPromotion) {
@@ -75,6 +65,21 @@ class ChessGame {
     }
 
     this._moves = this._board.moveHistory
+  }
+  /**
+   * I had to add this method because otherwise the AI would crash when its checkmated or there is stalemate*/
+  protected stateProcessor() {
+    if (this._board.isCheckmate() === this.currentPlayer) {
+      if (this.currentPlayer === color.Black) {
+        this._gameStatus = gameStatusType.whiteWins
+      } else if (this.currentPlayer === color.White) {
+        this._gameStatus = gameStatusType.blackWins
+      }
+      this._isGameOn = false
+    } else if (this._board.isStalemate()) {
+      this._gameStatus = gameStatusType.stalemate
+      this._isGameOn = false
+    }
   }
   private promotionPromise: Promise<PromotionFigureType> | null = null
   private promotionPromiseResolver: ((figure: PromotionFigureType) => void) | null = null

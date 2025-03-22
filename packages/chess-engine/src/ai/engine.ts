@@ -39,7 +39,9 @@ class ChessAi extends ChessGame {
    * Główna pętla procesu – gdy przychodzi kolej AI,
    * wyliczamy ruch i go wykonujemy.
    */
-  protected override async process(): Promise<void> {
+  protected override async process() {
+    super.stateProcessor()
+
     if (this.currentPlayer === this._aiColour) {
       if (this.awaitingPromotion) {
         // W prostym wydaniu promujemy do hetmana
