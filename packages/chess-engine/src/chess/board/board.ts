@@ -537,7 +537,7 @@ class Board {
    * @returns {Position[]} Array of positions to which a move is possible.
    */
   // //to co jest zakomentowane w tej metodzie to są rzeczy do testowania w konsoli
-  public getValidMovesForPosition2(position: Position): Position[] {
+  public getValidMovesForPositionDeprecated(position: Position): Position[] {
     const validMoves: Position[] = []
     // console.debug("\nValidating moves for position: ", position.notation)
     // console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
