@@ -11,7 +11,21 @@ export const metadata: Metadata = {
   description: "Panel administracyjny z logowaniem",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/**
+ * RootLayout
+ *
+ * Główny komponent layoutu aplikacji.
+ * Ustawia język oraz motyw strony, a także opakowuje aplikację w ErrorContextProvider,
+ * aby umożliwić globalne raportowanie błędów.
+ *
+ * @param {object} props - Właściwości komponentu.
+ * @param {React.ReactNode} props.children - Elementy potomne renderowane w ramach layoutu.
+ * @returns {JSX.Element} Element JSX reprezentujący główny layout aplikacji.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ */
+export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="pl" className="dark">
       <body className={inter.className}>
