@@ -27,8 +27,8 @@ abstract class Figure {
   ]
 
   /**
-   * @param type - Enum FigureType
-   * @param color - Enum color
+   * @param type - figure type. Use figureType enum
+   * @param color - figure color. Use enum color
    * @param position - Position instance. Position of the figure
    * @param board - The chessboard reference.
    * @param materialValue - value of particular piece on the chessboard

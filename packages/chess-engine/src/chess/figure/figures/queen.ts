@@ -3,7 +3,8 @@ import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 import { queenMaterialTable } from "@shared/types/material"
-
+/**Chess class for queen figure.
+ * */
 class Queen extends Figure {
   constructor(color: color, position: Position, board: Board) {
     super(figureType.queen, color, position, board, 900, queenMaterialTable)

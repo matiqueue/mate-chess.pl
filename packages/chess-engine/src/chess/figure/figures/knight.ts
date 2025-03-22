@@ -4,6 +4,8 @@ import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 import { knightMaterialTable } from "@shared/types/material"
 
+/**Chess class for Knight figure.
+ * */
 class Knight extends Figure {
   constructor(color: color.White | color.Black, position: Position, board: Board) {
     super(figureType.knight, color, position, board, 3, knightMaterialTable)
