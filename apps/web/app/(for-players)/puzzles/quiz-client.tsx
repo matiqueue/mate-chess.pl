@@ -25,7 +25,7 @@ export function QuizClient({ quizzes }: { quizzes: Quiz[] }) {
   const [score, setScore] = useState(0)
   const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([])
 
-  const currentQuiz = quizzes[currentQuizIndex]
+  const currentQuiz: any = quizzes[currentQuizIndex]
   const isAnswered = answeredQuestions.includes(currentQuiz.id)
   const isCorrect = selectedAnswer === currentQuiz.correctAnswer
 
