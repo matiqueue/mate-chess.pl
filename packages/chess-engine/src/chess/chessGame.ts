@@ -183,7 +183,7 @@ class ChessGame {
     this._gameStatus = gameStatusType.draw
     this._isGameOn = false
   }
-  private switchCurrentPlayer() {
+  protected switchCurrentPlayer() {
     if (this.currentPlayer === color.White) {
       this.currentPlayer = color.Black
     } else if (this.currentPlayer === color.Black) {

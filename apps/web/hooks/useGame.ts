@@ -84,6 +84,7 @@ const useGame = (ai: boolean = false) => {
     }
   }
   const updateBoard = () => {
+    console.log("update board called")
     setBoard(getBoard(game))
     setMoveHistory(getMoveHistory(game))
     setCurrentPlayer(whosTurn(game))

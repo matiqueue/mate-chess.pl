@@ -34,7 +34,10 @@ class ChessAi extends ChessGame {
    */
   protected override async process() {
     super.stateProcessor()
-
+    this.moveProcessor()
+    super.process()
+  }
+  private async moveProcessor(): void {
     if (this.currentPlayer === this._aiColour) {
       if (this.awaitingPromotion) {
         // W prostym wydaniu promujemy do hetmana
@@ -52,9 +55,7 @@ class ChessAi extends ChessGame {
         this.makeMove(aiMove)
       }
     }
-    await super.process()
   }
-
   override makeMove(move: Move): boolean {
     return super.makeMove(move)
   }
@@ -81,25 +82,14 @@ class ChessAi extends ChessGame {
    */
   private evaluateExchanges(): number {
     let exchangeScore = 0
-
-    // 1) Sprawdzamy wszystkie ruchy AI, które biją
-    const aiCaptures = this.getCapturingMoves(this._aiColour)
-    for (const { capturingValue, capturedValue } of aiCaptures) {
-      const diff = capturedValue - capturingValue
-      if (diff > 0) {
-        exchangeScore += diff * ChessAi.EXCHANGE_MULTIPLIER
+    const processCaptures = (captures: { capturingValue: number; capturedValue: number }[], factor: number) => {
+      for (const { capturingValue, capturedValue } of captures) {
+        const diff = capturedValue - capturingValue
+        if (diff > 0) exchangeScore += diff * factor
       }
     }
-
-    // 2) Sprawdzamy wszystkie ruchy przeciwnika, które biją
-    const oppCaptures = this.getCapturingMoves(this._opponentColour)
-    for (const { capturingValue, capturedValue } of oppCaptures) {
-      const diff = capturedValue - capturingValue
-      if (diff > 0) {
-        exchangeScore -= diff * ChessAi.EXCHANGE_MULTIPLIER
-      }
-    }
-
+    processCaptures(this.getCapturingMoves(this._aiColour), ChessAi.EXCHANGE_MULTIPLIER)
+    processCaptures(this.getCapturingMoves(this._opponentColour), -ChessAi.EXCHANGE_MULTIPLIER)
     return exchangeScore
   }
 
@@ -177,53 +167,32 @@ class ChessAi extends ChessGame {
    * - Szukamy max (ruch AI) lub min (ruch przeciwnika)
    */
   private minimax(depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
-    if (depth === 0) {
-      return this.evaluateBoard()
-    }
+    if (depth === 0) return this.evaluateBoard()
 
     const currentColor = isMaximizing ? this._aiColour : this._opponentColour
     const moves = this.board.getLegalMoves(currentColor)
-    // Jeżeli nie ma ruchów, kończymy oceną
-    if (!moves || moves.length === 0) {
-      return this.evaluateBoard()
-    }
+    if (!moves.length) return this.evaluateBoard()
 
     if (isMaximizing) {
       let maxEval = -Infinity
-
       for (const move of moves) {
         if (!this.board.moveFigure(move, true)) continue
-
         const evalValue = this.minimax(depth - 1, false, alpha, beta)
         this.board.undoLastMove()
-
-        if (evalValue > maxEval) {
-          maxEval = evalValue
-        }
-        if (evalValue > alpha) {
-          alpha = evalValue
-        }
-        // Beta-cutoff
-        if (beta <= alpha) break
+        maxEval = evalValue > maxEval ? evalValue : maxEval
+        alpha = Math.max(alpha, evalValue)
+        if (beta <= alpha) break // Beta-cutoff
       }
       return maxEval
     } else {
       let minEval = Infinity
-
       for (const move of moves) {
         if (!this.board.moveFigure(move, true)) continue
-
         const evalValue = this.minimax(depth - 1, true, alpha, beta)
         this.board.undoLastMove()
-
-        if (evalValue < minEval) {
-          minEval = evalValue
-        }
-        if (evalValue < beta) {
-          beta = evalValue
-        }
-        // Alpha-cutoff
-        if (beta <= alpha) break
+        minEval = evalValue < minEval ? evalValue : minEval
+        beta = Math.min(beta, evalValue)
+        if (beta <= alpha) break // Alpha-cutoff
       }
       return minEval
     }
@@ -237,40 +206,28 @@ class ChessAi extends ChessGame {
    */
   private determineCandidateMoves(): Move[] {
     const allMoves = this.board.getLegalMoves(this._aiColour)
-    if (!allMoves || allMoves.length === 0) {
-      return []
-    }
+    if (!allMoves.length) return []
 
     let bestEval = -Infinity
     const movesWithEval: { move: Move; eval: number }[] = []
-
-    // Potrzebne do alpha-beta
     let alpha = -Infinity
     let beta = Infinity
 
     for (const move of allMoves) {
-      // Symulujemy
       if (!this.board.moveFigure(move, true)) continue
-
       const evalValue = this.minimax(this._searchDepth - 1, false, alpha, beta)
       this.board.undoLastMove()
-
       movesWithEval.push({ move, eval: evalValue })
-      if (evalValue > bestEval) {
-        bestEval = evalValue
-      }
-      // aktualizujemy alpha
+      bestEval = evalValue > bestEval ? evalValue : bestEval
       alpha = Math.max(alpha, evalValue)
     }
 
-    // Tolerancja (np. 10) – żeby brać ruchy zbliżone do najlepszego
-    const TOLERANCE = 10
+    const TOLERANCE = 4
     const candidateMoves = movesWithEval
       .filter((item) => bestEval - item.eval <= TOLERANCE)
       .sort((a, b) => b.eval - a.eval)
       .map((item) => item.move)
 
-    // Zostawiamy max 6 najlepszych
     return candidateMoves.slice(0, 6)
   }
 }
