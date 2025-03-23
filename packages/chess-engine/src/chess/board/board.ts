@@ -178,7 +178,7 @@ class Board {
     let capturedFigure = toPos.figure
 
     if (toPos.figure) {
-      console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
+      // console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
       // Usuwamy referencję z pozycji – dalsze usunięcie z tablicy nastąpi poniżej
       toPos.figure = null
     }
