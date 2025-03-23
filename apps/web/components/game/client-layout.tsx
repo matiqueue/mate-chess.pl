@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
   const pathname = usePathname()
 
   // Jeśli ścieżka URL dotyczy trybów gry, zwracamy tylko zawartość.
-  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local" || pathname.startsWith("/bot/")) {
     return <>{children}</>
   }
 
