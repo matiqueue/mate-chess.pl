@@ -153,9 +153,11 @@ class Board {
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      throw new Error(
+      /**@experimental*/
+      console.error(
         `No figure performing the move. \nSimulate: ${simulate}\nFrom: ${fromPos.notation}, X: ${fromPos.x} Y: ${fromPos.y}\nTo: ${toPos.notation}, X: ${toPos.x} Y: ${toPos.y}`,
       )
+      return false
     }
 
     if (!simulate) {
