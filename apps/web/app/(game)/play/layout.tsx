@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import ClientLayout from "./client-layout"
+import ClientLayout from "@/components/game/client-layout"
 
 /**
  * Metadane strony.
