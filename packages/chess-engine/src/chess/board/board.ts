@@ -159,6 +159,10 @@ class Board {
       )
       return false
     }
+    //might help with optimization
+    if (figure.type !== figureType.king && toPos.figure?.color === figure.color) {
+      return false
+    }
 
     if (!simulate) {
       const legalMoves = this.getLegalMoves(figure.color)
