@@ -111,7 +111,6 @@
       "title": "Advanced Bot",
       "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
       "buttonText": "Advanced!"
-      
     },
     "chessGrandmaster": {
       "title": "Chess Grandmaster",
@@ -349,5 +348,171 @@
     "play": "Play",
     "learn": "Learn",
     "community": "Community"
+  },
+  "seo": {
+    "puzzles": {
+      "title": "Chess Puzzles | Mate-Chess",
+      "description": "Test your chess knowledge with our interactive puzzles and quizzes"
+    }
+  },
+  "quiz": {
+    "loading": "Loading Chess Puzzles...",
+    "questionLabel": "Question {current} of {total}",
+    "checkAnswer": "Check Answer",
+    "nextQuestion": "Next Question",
+    "seeResults": "See Results",
+    "previous": "Previous",
+    "explanation": "Explanation:",
+    "quizCompleted": "Quiz Completed!",
+    "score": "You scored {score} out of {total}",
+    "perfect": "Perfect score! You're a chess master!",
+    "great": "Great job! You have excellent chess knowledge.",
+    "good": "Good effort! Keep studying to improve your chess knowledge.",
+    "keepPracticing": "Keep practicing! Chess has a lot to learn.",
+    "didYouKnow": "Did you know?",
+    "tryAgain": "Try Again"
+  },
+  "tabs": {
+    "quiz": "Quiz",
+    "learn": "Learn"
+  },
+  "hero": {
+    "title": "Chess Puzzles & Learning"
+  },
+  "learn": {
+    "learnChess": "Learn Chess",
+    "description": "Chess is a game that develops not only strategic abilities, but also logical thinking, patience and analytical skills. It is not just a game, but also an art, a science, and philosophy.",
+    "historyTitle": "History of Chess",
+    "historyDescription": "Chess has a long and fascinating history dating back to antiquity. The game was popular among kings, warriors and scholars. Over the centuries, it evolved, taking on different forms and styles. Originally known as 'Chaturanga' in India, chess passed through Persia and then reached Europe, where it took on its current form.",
+    "historyNote": "The history of chess is also the history of culture, art and science, with each era contributing something new to this royal game.",
+    "basicsTitle": "Basic Rules",
+    "basicsDescription": "Learning chess starts with mastering the basic moves of individual pieces, the rules of the game and its objectives. Each piece has unique properties, and understanding their significance is key to success.",
+    "basicsList": {
+      "pawn": "Pawn moves – only forward, with diagonal capture.",
+      "knight": "Knight moves – in an L shape, can jump over other pieces.",
+      "bishop": "Bishop moves – diagonally, effective on long diagonals.",
+      "rook": "Rook moves – horizontally and vertically, controls lines and columns.",
+      "queen": "Queen moves – combining the powers of rook and bishop.",
+      "king": "King moves – one square in any direction."
+    },
+    "tacticsTitle": "Tactics and Strategies",
+    "tacticsDescription": "Advanced players use tactics such as double attack, pin or fork. Understanding strategies allows planning several moves ahead and better responding to threats.",
+    "tacticsNote": "Analyzing famous games, studying openings and practicing on training sets is a way to develop strategic skills.",
+    "mastersTitle": "Famous Masters and Inspirations",
+    "mastersDescription": "Figures such as Garry Kasparov, Bobby Fischer, or Magnus Carlsen have become icons not only in the chess world but also in popular culture. Their games are studied by successive generations of players, and their approach to the game inspires both amateurs and professionals.",
+    "moreInfo": "Learn more on Chess.com"
+  },
+  "chessQuiz": {
+    "quizzes": [
+      {
+        "question": "Which piece can only move diagonally?",
+        "options": {
+          "a": "Rook",
+          "b": "Knight",
+          "c": "Bishop",
+          "d": "Queen"
+        },
+        "explanation": "The Bishop can only move diagonally, while the Rook moves horizontally and vertically, the Knight moves in an L-shape, and the Queen can move in any direction."
+      },
+      {
+        "question": "What is the name of the opening move 1.e4 e5 2.Nf3 Nc6 3.Bb5?",
+        "options": {
+          "a": "Italian Game",
+          "b": "Ruy Lopez",
+          "c": "Sicilian Defense",
+          "d": "French Defense"
+        },
+        "explanation": "The Ruy Lopez (also called the Spanish Opening) is one of the oldest and most classic chess openings, named after the Spanish priest Ruy López de Segura who analyzed it in 1561."
+      },
+      {
+        "question": "What is 'en passant' in chess?",
+        "options": {
+          "a": "A special king move",
+          "b": "A special pawn capture",
+          "c": "A checkmate pattern",
+          "d": "A draw offer"
+        },
+        "explanation": "En passant is a special pawn capture that can occur when a pawn moves two squares forward from its starting position and lands beside an opponent's pawn."
+      },
+      {
+        "question": "What does 'zugzwang' mean in chess?",
+        "options": {
+          "a": "A winning position",
+          "b": "A draw by repetition",
+          "c": "A position where any move worsens the situation",
+          "d": "A special castling move"
+        },
+        "explanation": "Zugzwang is a situation where a player is forced to make a move that will worsen their position, but they would prefer to pass and not move at all if that were allowed."
+      },
+      {
+        "question": "Which of these is NOT a way for a chess game to end in a draw?",
+        "options": {
+          "a": "Stalemate",
+          "b": "Threefold repetition",
+          "c": "Fifty-move rule",
+          "d": "King capture"
+        },
+        "explanation": "King capture is not a legal move in chess. The game ends before the king is captured. The other options are all legitimate ways for a game to end in a draw."
+      },
+      {
+        "question": "Which chess piece is worth 3 points?",
+        "options": {
+          "a": "Pawn",
+          "b": "Knight",
+          "c": "Rook",
+          "d": "Queen"
+        },
+        "explanation": "In standard piece valuation, a Knight is worth 3 points, a Bishop is worth 3 points, a Rook is worth 5 points, a Queen is worth 9 points, and a Pawn is worth 1 point."
+      },
+      {
+        "question": "What is the name of the checkmate pattern where a queen and knight work together?",
+        "options": {
+          "a": "Scholar's Mate",
+          "b": "Fool's Mate",
+          "c": "Anastasia's Mate",
+          "d": "Smothered Mate"
+        },
+        "explanation": "Anastasia's Mate is a checkmate pattern where a knight and queen (or rook) work together to trap the enemy king against the side of the board."
+      },
+      {
+        "question": "Which famous chess player was known as the 'Mozart of Chess'?",
+        "options": {
+          "a": "Garry Kasparov",
+          "b": "Magnus Carlsen",
+          "c": "Bobby Fischer",
+          "d": "José Raúl Capablanca"
+        },
+        "explanation": "José Raúl Capablanca was known as the 'Mozart of Chess' due to his natural talent and seemingly effortless playing style. He was world champion from 1921 to 1927."
+      }
+    ],
+    "quotes": [
+      {
+        "quote": "Chess is the gymnasium of the mind.",
+        "author": "Blaise Pascal"
+      },
+      {
+        "quote": "Every chess master was once a beginner.",
+        "author": "Irving Chernev"
+      },
+      {
+        "quote": "Chess is life in miniature. Chess is a struggle, chess battles.",
+        "author": "Garry Kasparov"
+      },
+      {
+        "quote": "Chess is the art which expresses the science of logic.",
+        "author": "Mikhail Botvinnik"
+      },
+      {
+        "quote": "Chess is mental torture.",
+        "author": "Garry Kasparov"
+      }
+    ],
+    "facts": [
+      "The number of possible unique chess games is much greater than the number of electrons in the universe.",
+      "The longest official chess game lasted 269 moves and ended in a draw.",
+      "The word 'Checkmate' comes from the Persian phrase 'Shah Mat,' which means 'the king is dead.'",
+      "The folding chess board was invented by a priest who was forbidden to play chess.",
+      "The new chess piece – the queen – was introduced in the 15th century and was originally the weakest piece."
+    ]
   }
 }

@@ -103,17 +103,17 @@
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
       "title": "Początkujący Bot",
-      "description": "Idealny dla nowicjuszy. Bot wykonuje proste ruchy, pozwalając Ci opanować podstawy strategii szachowej.",
+      "description": "Idealny dla nowicjuszy.",
       "buttonText": "Początkujący!"
     },
     "advancedBot": {
       "title": "Zaawansowany Bot",
-      "description": "Wyzwanie dla średnio zaawansowanych. Bot używa bardziej złożonych strategii i taktyk.",
+      "description": "Wyzwanie dla średnio zaawansowanych.",
       "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
       "title": "Arcymistrz Szachowy",
-      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi. Przygotuj się na zaawansowane strategie i głęboką grę pozycyjną.",
+      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi.",
       "buttonText": "Arcymistrz!"
     },
     "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"
@@ -192,20 +192,20 @@
     "offerDrawDescription": "Jeśli przeciwnik zaakceptuje, gra zakończy się remisem. Jeśli odmówi, gra będzie kontynuowana.",
     "sendOffer": "Wyślij propozycję"
   },
-    "linkLobby": {
-      "home": "Strona główna",
-      "waitingForSecondPlayer": "Oczekiwanie na drugiego gracza",
-      "bothPlayersInLobby": "Obaj gracze są w lobby",
-      "guest": "Gość",
-      "waiting": "Oczekiwanie...",
-      "acceptGame": "Akceptuj grę",
-      "kickPlayer": "Wyrzuć gracza",
-      "countdown": "Start za {{count}}...",
-      "linkLabel": "Link: {{code}}",
-      "copyTooltip": "Kliknij, aby skopiować kod",
-      "kickedFromLobby": "Zostałeś wyrzucony z lobby",
-      "startingIn": "Start za: "
-    },
+  "linkLobby": {
+    "home": "Strona główna",
+    "waitingForSecondPlayer": "Oczekiwanie na drugiego gracza",
+    "bothPlayersInLobby": "Obaj gracze są w lobby",
+    "guest": "Gość",
+    "waiting": "Oczekiwanie...",
+    "acceptGame": "Akceptuj grę",
+    "kickPlayer": "Wyrzuć gracza",
+    "countdown": "Start za {{count}}...",
+    "linkLabel": "Link: {{code}}",
+    "copyTooltip": "Kliknij, aby skopiować kod",
+    "kickedFromLobby": "Zostałeś wyrzucony z lobby",
+    "startingIn": "Start za: "
+  },
   "notFound": {
     "pageNotFound": "Strona nie znaleziona",
     "description": "Ups! Strona, której szukasz, nie istnieje.",
@@ -346,5 +346,172 @@
     "play": "Graj",
     "learn": "Ucz się",
     "community": "Społeczność"
+  },
+  "seo": {
+    "puzzles": {
+      "title": "Zagadki Szachowe | Mate-Chess",
+      "description": "Sprawdź swoją wiedzę szachową w naszych interaktywnych zagadkach i quizach"
+    }
+  },
+
+  "quiz": {
+    "loading": "Ładowanie łamigłówek szachowych...",
+    "questionLabel": "Pytanie {current} z {total}",
+    "checkAnswer": "Sprawdź odpowiedź",
+    "nextQuestion": "Następne pytanie",
+    "seeResults": "Zobacz wyniki",
+    "previous": "Poprzednie",
+    "explanation": "Wyjaśnienie:",
+    "quizCompleted": "Quiz ukończony!",
+    "score": "Uzyskałeś {score} punktów na {total}",
+    "perfect": "Perfekcyjny wynik! Jesteś mistrzem szachowym!",
+    "great": "Świetna robota! Masz doskonałą wiedzę szachową.",
+    "good": "Dobra robota! Kontynuuj naukę, aby poprawić swoją wiedzę szachową.",
+    "keepPracticing": "Ćwicz dalej! Szachy to gra, z której można się wiele nauczyć.",
+    "didYouKnow": "Czy wiesz, że?",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "tabs": {
+    "quiz": "Quiz",
+    "learn": "Ucz się"
+  },
+  "hero": {
+    "title": "Łamigłówki szachowe i nauka"
+  },
+  "learn": {
+    "learnChess": "Ucz się szachów",
+    "description": "Szachy to gra, która rozwija nie tylko zdolności strategiczne, ale także logiczne myślenie, cierpliwość i zdolności analityczne. To nie tylko rozgrywka, ale także sztuka, nauka i filozofia.",
+    "historyTitle": "Historia szachów",
+    "historyDescription": "Szachy mają długą i fascynującą historię, sięgającą starożytności. Gra była popularna wśród królów, wojowników oraz uczonych. Przez wieki rozwijała się, przybierając różne formy i style. Pierwotnie znana jako 'Chaturanga' w Indiach, szachy przeszły przez Persję, a następnie trafiły do Europy, gdzie przybrały obecny kształt.",
+    "historyNote": "Historia szachów to także historia kultury, sztuki i nauki, a każda epoka wnosiła coś nowego do tej królewskiej gry.",
+    "basicsTitle": "Podstawowe zasady",
+    "basicsDescription": "Nauka szachów zaczyna się od opanowania podstawowych ruchów poszczególnych figur, zasad gry oraz celów. Każda figura ma unikalne właściwości, a zrozumienie ich znaczenia jest kluczem do sukcesu.",
+    "basicsList": {
+      "pawn": "Ruchy pionka – tylko do przodu, z możliwością bicia po skosie.",
+      "knight": "Ruchy skoczka – w kształcie litery L, może przeskakiwać inne figury.",
+      "bishop": "Ruchy gońca – po przekątnych, działające na długich przekątnych.",
+      "rook": "Ruchy wieży – poziomo i pionowo, kontrola linii i kolumn.",
+      "queen": "Ruchy hetmana – łączące możliwości wieży i gońca.",
+      "king": "Ruchy króla – poruszanie się o jedno pole w dowolnym kierunku."
+    },
+    "tacticsTitle": "Taktyki i strategie",
+    "tacticsDescription": "Zaawansowani gracze korzystają z taktyk, takich jak atak podwójny, szpilka czy widełki. Poznanie strategii pozwala na planowanie kilku ruchów do przodu i lepsze reagowanie na zagrożenia.",
+    "tacticsNote": "Analiza znanych partii, studiowanie otwarć i ćwiczenia na zestawach treningowych to sposób na rozwój umiejętności strategicznych.",
+    "mastersTitle": "Znani mistrzowie i inspiracje",
+    "mastersDescription": "Postaci takie jak Garry Kasparov, Bobby Fischer czy Magnus Carlsen stały się ikonami nie tylko świata szachowego, ale i kultury masowej. Ich partie są studiowane przez kolejne pokolenia graczy, a ich podejście do gry inspiruje zarówno amatorów, jak i profesjonalistów.",
+    "moreInfo": "Dowiedz się więcej na Chess.com"
+  },
+  "chessQuiz": {
+    "quizzes": [
+      {
+        "question": "Która figura porusza się wyłącznie po przekątnych?",
+        "options": {
+          "a": "Wieża",
+          "b": "Skoczek",
+          "c": "Goniec",
+          "d": "Królowa"
+        },
+        "explanation": "Goniec porusza się wyłącznie po przekątnych, podczas gdy wieża porusza się poziomo i pionowo, skoczek wykonuje ruch w kształcie litery L, a królowa może poruszać się w dowolnym kierunku."
+      },
+      {
+        "question": "Jak nazywa się otwarcie 1.e4 e5 2.Nf3 Nc6 3.Bb5?",
+        "options": {
+          "a": "Gra włoska",
+          "b": "Ruy Lopez",
+          "c": "Obrona sycylijska",
+          "d": "Obrona francuska"
+        },
+        "explanation": "Ruy Lopez (nazywana również otwarciem hiszpańskim) jest jednym z najstarszych i najbardziej klasycznych otwarć szachowych, nazwanym na cześć hiszpańskiego księdza Ruy Lópeza de Segury, który je przeanalizował w 1561 roku."
+      },
+      {
+        "question": "Co oznacza 'en passant' w szachach?",
+        "options": {
+          "a": "Specjalny ruch króla",
+          "b": "Specjalne bicie pionem",
+          "c": "Wzór mata",
+          "d": "Propozycja remisu"
+        },
+        "explanation": "En passant to specjalne bicie pionem, które może nastąpić, gdy pion przesuwa się o dwa pola do przodu z pozycji startowej i ląduje obok pionka przeciwnika."
+      },
+      {
+        "question": "Co oznacza 'zugzwang' w szachach?",
+        "options": {
+          "a": "Wygrywająca pozycja",
+          "b": "Remis przez powtórzenie",
+          "c": "Pozycja, w której każdy ruch pogarsza sytuację",
+          "d": "Specjalny ruch roszady"
+        },
+        "explanation": "Zugzwang to sytuacja, w której gracz jest zmuszony do wykonania ruchu, który pogorszy jego pozycję, choć wolałby nie wykonywać żadnego ruchu, gdyby to było możliwe."
+      },
+      {
+        "question": "Która z poniższych metod nie jest sposobem na zakończenie partii szachowej remisem?",
+        "options": {
+          "a": "Pat",
+          "b": "Potrójna powtórka",
+          "c": "Zasada pięćdziesięciu ruchów",
+          "d": "Bicie króla"
+        },
+        "explanation": "Bicie króla nie jest legalnym ruchem w szachach. Gra kończy się przed zbiciem króla. Pozostałe opcje są prawidłowymi sposobami na zakończenie partii remisem."
+      },
+      {
+        "question": "Która figura szachowa jest warta 3 punkty?",
+        "options": {
+          "a": "Pionek",
+          "b": "Skoczek",
+          "c": "Wieża",
+          "d": "Królowa"
+        },
+        "explanation": "W standardowej wycenie figur, skoczek jest wart 3 punkty, goniec jest wart 3 punkty, wieża jest warta 5 punktów, królowa jest warta 9 punktów, a pionek jest wart 1 punkt."
+      },
+      {
+        "question": "Jak nazywa się wzór mata, w którym królowa i skoczek współpracują?",
+        "options": {
+          "a": "Mat ucznia",
+          "b": "Mat głupca",
+          "c": "Mat Anastazji",
+          "d": "Mat duszący"
+        },
+        "explanation": "Mat Anastazji to wzór mata, w którym skoczek i królowa (lub wieża) współpracują, aby zablokować przeciwnika i uwięzić króla przy krawędzi szachownicy."
+      },
+      {
+        "question": "Który znany szachista był nazywany 'Mozartem szachowym'?",
+        "options": {
+          "a": "Garry Kasparov",
+          "b": "Magnus Carlsen",
+          "c": "Bobby Fischer",
+          "d": "José Raúl Capablanca"
+        },
+        "explanation": "José Raúl Capablanca był nazywany 'Mozartem szachowym' ze względu na swój naturalny talent i pozornie bezwysiłkowy styl gry. Był mistrzem świata w latach 1921-1927."
+      }
+    ],
+    "quotes": [
+      {
+        "quote": "Szachy to gimnastyka umysłu.",
+        "author": "Blaise Pascal"
+      },
+      {
+        "quote": "Każdy mistrz szachowy kiedyś był początkującym.",
+        "author": "Irving Chernev"
+      },
+      {
+        "quote": "Szachy to życie w miniaturze. Szachy to walka, szachowe bitwy.",
+        "author": "Garry Kasparov"
+      },
+      {
+        "quote": "Szachy to sztuka, która wyraża naukę o logice.",
+        "author": "Mikhail Botvinnik"
+      },
+      {
+        "quote": "Szachy to mentalna tortura.",
+        "author": "Garry Kasparov"
+      }
+    ],
+    "facts": [
+      "Liczba możliwych unikalnych partii szachowych jest znacznie większa niż liczba elektronów we wszechświecie.",
+      "Najdłuższa oficjalna partia szachowa trwała 269 ruchów i zakończyła się remisem.",
+      "Słowo 'szach-mat' pochodzi od perskiego wyrażenia 'Shah Mat', co oznacza 'król jest martwy'.",
+      "Składana szachownica została wynaleziona przez księdza, któremu zakazano gry w szachy.",
+      "Nowa figura szachowa – królowa – została wprowadzona w XV wieku i początkowo była najsłabszą figurą."
+    ]
   }
 }
