@@ -19,7 +19,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function LoginPage(): JSX.Element {
+export default function LoginPage() {
   // Stan przechowujący wprowadzoną nazwę użytkownika.
   const [username, setUsername] = useState("")
   // Stan przechowujący wprowadzone hasło.

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className="dark">
       <body className={inter.className}>
