@@ -36,7 +36,9 @@ export default function Game({ params }: { params: Promise<{ id: string }> }): J
     // Nasłuchiwanie na nowe wiadomości
     socket.on("newMessage", (msg: string) => setMessages((prev) => [...prev, msg]))
     // Czyszczenie nasłuchiwania przy odmontowaniu komponentu
-    return () => socket.off("newMessage")
+    return () => {
+      socket.off("newMessage");
+    };
   }, [id])
 
   /**

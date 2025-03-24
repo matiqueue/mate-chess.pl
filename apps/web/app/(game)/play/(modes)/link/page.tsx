@@ -328,7 +328,7 @@ export default function LinkLobby(): JSX.Element | null {
                   {t("linkLobby.acceptGame")}
                 </Button>
                 {lobby[1] && (
-                  <Button onClick={() => handleKickPlayer(lobby[1].id)} className="px-8 py-4 bg-red-500 text-white">
+                  <Button onClick={() => handleKickPlayer(lobby[1]!.id)} className="px-8 py-4 bg-red-500 text-white">
                     {t("linkLobby.kickPlayer")}
                   </Button>
                 )}
