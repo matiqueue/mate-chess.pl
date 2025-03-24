@@ -186,14 +186,7 @@ export default function ChessLessons() {
       <div className="container mx-auto py-8 px-4">
         {/* Featured lesson */}
         <h2 className="text-4xl font-bold mb-6">{t("lessonPage.titles.recomendedLesson")}</h2>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-          whileHover={{ scale: 1.05 }}
-          className="mb-12"
-        >
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden mb-5">
             <div className="flex flex-col sm:flex-row">
               <div className="sm:w-2/5 relative ml-5">
                 <img src={featuredLesson.image || "/placeholder.svg"} alt={featuredLesson.title} className="h-64 sm:h-full w-full object-cover rounded-lg" />
@@ -243,9 +236,14 @@ export default function ChessLessons() {
                 <div className="mb-4">
                   <div className="flex flex-wrap gap-2">
                     {featuredLesson.topics.map((topic, index) => (
+                      <motion.div
+                       whileHover={ {scale: 1.06 }}
+                       transition={{ duration: 0.2 }}
+                                                       >
                       <Badge key={index} variant="secondary">
                         {topic}
                       </Badge>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -258,29 +256,43 @@ export default function ChessLessons() {
                   </h4>
                   <ul className="grid grid-cols-1 lg:grid-cols-2 gap-1">
                     {featuredLesson.learningPoints.map((point, index) => (
+                      <motion.div
+                         whileHover={ {scale: 1.03 }}
+                         transition={{ duration: 0.2 }}
+                                    >
                       <li key={index} className="flex items-start">
                         <CheckCircle2 className="h-4 w-4 mr-2 text-primary mt-0.5 shrink-0" />
                         <span className="text-sm">{point}</span>
                       </li>
+                      </motion.div>
                     ))}
                   </ul>
                 </div>
 
                 {/* Action buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+                <motion.div
+                    whileHover={ {scale: 1.06 }}
+                    transition={{ duration: 0.2 }}
+                  >
                   <Button size="lg" className="flex items-center gap-2">
                     <UserPlus className="h-5 w-5" />
                     <span>{t("lessonPage.recomendedLesson.buttonJoin")}</span>
                   </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={ {scale: 1.06 }}
+                    transition={{ duration: 0.2 }}
+                  >
                   <Button variant="outline" size="lg" className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
                     <span>{t("lessonPage.recomendedLesson.buttonRead")}</span>
                   </Button>
+                  </motion.div>
                 </div>
               </div>
             </div>
           </Card>
-        </motion.div>
 
         {/* Smaller lessons */}
         <div className="mb-6 flex justify-between items-center">
@@ -297,7 +309,6 @@ export default function ChessLessons() {
               whileHover={{ scale: 1.03 }}
               onHoverStart={() => setHoveredId(lesson.id)}
               onHoverEnd={() => setHoveredId(null)}
-              onClick={() => (window.location.href = "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")}
             >
               <Card className="overflow-hidden h-full flex flex-col">
                 <div className="p-4 h-full flex flex-col relative">

@@ -166,7 +166,6 @@ export default function ChessOpenings() {
               <Button
                 size="lg"
                 className="flex items-center gap-2"
-                onClick={() => (window.location.href = "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")}
               >
                 <BookOpen className="h-5 w-5" />
                 <span>{t("openingsPage.startLearing")}</span>
@@ -188,7 +187,6 @@ export default function ChessOpenings() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.03 }}
-              onClick={() => (window.location.href = "https://www.chessable.com/?utm_source=chess.com&utm_medium=navigation&utm_campaign=learn_expanded")}
             >
               <Card className="overflow-hidden h-full flex flex-col">
                 <div className="p-6 h-full flex flex-col relative">
