@@ -3,18 +3,7 @@
 import { useUser } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import {
-  Home,
-  PlayCircle,
-  PuzzleIcon as PuzzlePiece,
-  Bot,
-  GraduationCap,
-  Trophy,
-  Users,
-  BookOpen,
-  Activity,
-  Settings,
-} from "lucide-react"
+import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings } from "lucide-react"
 
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { Separator } from "@workspace/ui/components/separator"
@@ -35,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/av
 import { SignedIn, SignedOut, SignInButton, useClerk } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
+import { use, useEffect, useState } from "react"
 
 interface NavItemProps {
   href: string
@@ -45,19 +35,12 @@ interface NavItemProps {
 
 function NavItem({ href, icon: Icon, children, badge }: NavItemProps) {
   return (
-    <Link
-      href={href}
-      className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-    >
+    <Link href={href} className="flex items-center justify-between px-6 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-2">
         <Icon size={20} />
         <span>{children}</span>
       </div>
-      {badge && (
-        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-          {badge}
-        </span>
-      )}
+      {badge && <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{badge}</span>}
     </Link>
   )
 }
@@ -69,12 +52,16 @@ export function Sidebar() {
   const clerk = useClerk()
   const { t } = useTranslation()
 
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
   // Jeśli jesteśmy na określonych ścieżkach, nie renderujemy sidebaru
-  if (
-    pathname.startsWith("/play/online") ||
-    pathname.startsWith("/play/link") ||
-    pathname === "/play/local"
-  ) {
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
     return null
   }
 
@@ -112,9 +99,7 @@ export function Sidebar() {
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  {t("navPlay")}
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">{t("navPlay")}</h2>
               </div>
               <NavItem href="/play" icon={PlayCircle} badge={t("live")}>
                 {t("playOnline")}
@@ -129,9 +114,7 @@ export function Sidebar() {
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  {t("navLearn")}
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">{t("navLearn")}</h2>
               </div>
               <NavItem href="/puzzles" icon={PuzzlePiece} badge={t("daily")}>
                 {t("puzzles")}
@@ -146,9 +129,7 @@ export function Sidebar() {
 
             <div>
               <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">
-                  {t("navCommunity")}
-                </h2>
+                <h2 className="text-xs font-semibold text-muted-foreground">{t("navCommunity")}</h2>
               </div>
               <NavItem href="/players" icon={Users}>
                 {t("players")}
@@ -200,9 +181,7 @@ export function Sidebar() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.fullName}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.primaryEmailAddress?.emailAddress}
-                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
                   </div>
                 </DropdownMenuLabel>
 
@@ -212,16 +191,12 @@ export function Sidebar() {
                   <Link href="/profile">{t("profile")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href={"profile/stats/" + user?.id}>
-                    {t("yourStatistics")}
-                  </Link>
+                  <Link href={"profile/stats/" + user?.id}>{t("yourStatistics")}</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => clerk.signOut()}>
-                  {t("logout")}
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => clerk.signOut()}>{t("logout")}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
