@@ -46,8 +46,8 @@ export default function LoginPage(): JSX.Element {
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME
-    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+    const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin"
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "tajnehaslo"
 
     if (username === adminUsername && password === adminPassword) {
       localStorage.setItem("isLoggedIn", "true")
