@@ -10,8 +10,10 @@ import SkeletonChessboard from "@/components/landing-page/skeletonChessboard" //
  * @remarks
  * Autor: awres (Filip Serwartka)
  */
+// @ts-expect-error
 const Chessboard = dynamic(() => import("@/components/landing-page/chessboard"), {
   ssr: false,
+  // @ts-ignore
   loading: () => <SkeletonChessboard progress={0} />,
 })
 
