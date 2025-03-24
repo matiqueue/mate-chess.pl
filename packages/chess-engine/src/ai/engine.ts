@@ -37,7 +37,7 @@ class ChessAi extends ChessGame {
     this.moveProcessor()
     super.process()
   }
-  private async moveProcessor(): void {
+  private async moveProcessor(): Promise<void> {
     if (this.currentPlayer === this._aiColour) {
       if (this.awaitingPromotion) {
         // W prostym wydaniu promujemy do hetmana

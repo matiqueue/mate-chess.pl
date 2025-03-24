@@ -16,6 +16,7 @@ const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
 
 export const GameProvider = ({ children, ai }: GameProviderProps) => {
   const game = useGame(ai)
+  // @ts-ignore
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>
 }
 
