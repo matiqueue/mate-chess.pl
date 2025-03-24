@@ -81,7 +81,7 @@ const Circuit = () => {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function NotFound(): JSX.Element {
+export default function NotFound() {
   const { t } = useTranslation()
   const [isHovered, setIsHovered] = useState(false)
 
