@@ -56,7 +56,7 @@ function ChessPageContent(): JSX.Element | null {
  */
 export default function ChessPage(): JSX.Element {
   return (
-    <GameProvider>
+    <GameProvider ai={true}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
