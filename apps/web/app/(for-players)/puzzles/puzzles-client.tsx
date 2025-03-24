@@ -209,11 +209,11 @@ export default function PuzzlesClient() {
   const [isAnswered, setIsAnswered] = useState<boolean>(false)
   const [score, setScore] = useState<number>(0)
   const [quizCompleted, setQuizCompleted] = useState<boolean>(false)
-  const [randomQuote, setRandomQuote] = useState<Quote>(chessQuotes[0])
+  const [randomQuote, setRandomQuote] = useState<Quote>(chessQuotes[0]!)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isProgressLoaded, setIsProgressLoaded] = useState<boolean>(false)
 
-  const currentQuiz: Quiz = chessQuizzes[currentQuizIndex]
+  const currentQuiz: Quiz = chessQuizzes[currentQuizIndex]!
   const progress: number = ((currentQuizIndex + (isAnswered ? 1 : 0)) / chessQuizzes.length) * 100
 
   useEffect(() => {
@@ -234,7 +234,7 @@ export default function PuzzlesClient() {
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000)
     const quoteIndex = Math.floor(Math.random() * chessQuotes.length)
-    setRandomQuote(chessQuotes[quoteIndex])
+    setRandomQuote(chessQuotes[quoteIndex]!)
     return () => clearTimeout(timer)
   }, [])
 
