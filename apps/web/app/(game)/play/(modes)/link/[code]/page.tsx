@@ -34,7 +34,9 @@ export default function Game({ params }: { params: Promise<{ code: string }> }):
     socket.emit("joinLobby", code)
     socket.on("newMessage", (msg: string) => setMessages((prev) => [...prev, msg]))
     // Czyszczenie nasłuchiwania przy demontażu komponentu
-    return () => socket.off("newMessage")
+    return () => {
+      socket.off("newMessage");
+    };
   }, [code])
 
   /**
