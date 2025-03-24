@@ -12,6 +12,7 @@ import { ErrorContextProvider } from "@/contexts/ErrorContextProvider"
 import { ClerkProvider } from "@clerk/nextjs"
 
 import { SidebarLayout } from "@/components/main/SidebarLayout" // dopasuj ścieżkę do lokalizacji pliku
+import { JSX } from "react"
 
 /**
  * Providers
@@ -26,7 +27,7 @@ import { SidebarLayout } from "@/components/main/SidebarLayout" // dopasuj ście
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export function Providers({ children }: { children: React.ReactNode }): JSX.Element {
+export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   // Jeśli ścieżka to "/", renderujemy tylko dzieci.
@@ -44,7 +45,8 @@ export function Providers({ children }: { children: React.ReactNode }): JSX.Elem
     pathname.startsWith("/settings") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up")
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/easter-egg")
   ) {
     return (
       <ClerkProvider>
