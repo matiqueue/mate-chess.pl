@@ -12,10 +12,16 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Icons } from "@workspace/ui/components/icons"
 import { cn } from "@workspace/ui/lib/utils"
+import { motion} from "framer-motion"
+import { AlertTriangle } from "lucide-react"
 
 export default function SignUpPage() {
   const searchParams = useSearchParams()
   const afterSSO = searchParams.get("after_sso") === "true"
+
+  const title = searchParams.get("title") || "Stwórz swoje konto"
+  const description = searchParams.get("description") || "Wypełnij dane, aby rozpocząć."
+  const message = searchParams.get("message") || ""
 
   return (
     <div className="z-10 grid w-full grow items-center px-4 sm:justify-center">
@@ -25,10 +31,19 @@ export default function SignUpPage() {
             <>
               {/* Krok 1: Start - pełny formularz lub SSO */}
               <SignUp.Step name="start">
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="relative flex w-full max-w-sm flex-col items-center gap-3 rounded-xl p-6 text-yellow-800 shadow-lg"
+              >
+
+                {/* Wiadomość */}
+                <div className="pt-6 text-center text-sm font-medium">{message}</div>
                 <Card className="w-full sm:w-96">
                   <CardHeader>
-                    <CardTitle className="text-lg">Stwórz swoje konto</CardTitle>
-                    <CardDescription className="text-md">Wypełnij dane, aby rozpocząć.</CardDescription>
+                    <CardTitle className="text-lg">{title}</CardTitle>
+                    <CardDescription className="text-md">{description}</CardDescription>
                   </CardHeader>
                   <CardContent className="grid gap-y-4">
                     {/* Logowanie społecznościowe */}
@@ -135,10 +150,16 @@ export default function SignUpPage() {
                     </div>
                   </CardFooter>
                 </Card>
+                </motion.div>
               </SignUp.Step>
 
               {/* Krok 2: Continue - tylko username po SSO */}
               <SignUp.Step name="continue">
+                  <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.25 }}
+                  >
                 <Card className="w-full sm:w-96">
                   <CardHeader>
                     <CardTitle>Uzupełnij rejestrację</CardTitle>
@@ -171,11 +192,17 @@ export default function SignUpPage() {
                     </div>
                   </CardFooter>
                 </Card>
+                </motion.div>
               </SignUp.Step>
 
               {/* Krok 3: Weryfikacja emaila */}
               <SignUp.Step name="verifications">
                 <SignUp.Strategy name="email_code">
+                  <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.25 }}
+                  >
                   <Card className="w-full sm:w-96">
                     <CardHeader>
                       <CardTitle>Zweryfikuj swój email</CardTitle>
@@ -238,6 +265,7 @@ export default function SignUpPage() {
                       </div>
                     </CardFooter>
                   </Card>
+                  </motion.div>
                 </SignUp.Strategy>
               </SignUp.Step>
             </>

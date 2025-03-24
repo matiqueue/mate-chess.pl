@@ -11,6 +11,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Icons } from "@workspace/ui/components/icons"
 import { cn } from "@workspace/ui/lib/utils"
+import { motion} from "framer-motion"
 
 export default function SignInPage() {
   return (
@@ -21,6 +22,11 @@ export default function SignInPage() {
             <>
               {/* Krok 1: Start - identyfikator (email lub username) */}
               <SignIn.Step name="start">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
                 <Card className="w-full sm:w-96 h-full">
                   <CardHeader>
                     <CardTitle className="text-xl">Zaloguj się</CardTitle>
@@ -91,6 +97,7 @@ export default function SignInPage() {
                     </div>
                   </CardFooter>
                 </Card>
+                </motion.div>
               </SignIn.Step>
 
               {/* Krok 2: Wybór strategii */}
@@ -128,6 +135,11 @@ export default function SignInPage() {
               <SignIn.Step name="verifications">
                 {/* Strategia: Hasło */}
                 <SignIn.Strategy name="password">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
                   <Card className="w-full sm:w-96">
                     <CardHeader>
                       <CardTitle>Podaj hasło</CardTitle>
@@ -162,10 +174,16 @@ export default function SignInPage() {
                       </div>
                     </CardFooter>
                   </Card>
+                </motion.div>
                 </SignIn.Strategy>
 
                 {/* Strategia: Kod email */}
                 <SignIn.Strategy name="email_code">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
                   <Card className="w-full sm:w-96">
                     <CardHeader>
                       <CardTitle>Sprawdź email</CardTitle>
@@ -234,6 +252,7 @@ export default function SignInPage() {
                       </div>
                     </CardFooter>
                   </Card>
+                  </motion.div>
                 </SignIn.Strategy>
               </SignIn.Step>
             </>
