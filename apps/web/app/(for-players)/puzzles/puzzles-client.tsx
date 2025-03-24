@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ChevronRight, Trophy, Brain, Lightbulb, ChevronLeft, PuzzleIcon as Chess } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
@@ -13,168 +14,155 @@ import { loadQuizProgress, saveQuizProgress, resetQuizProgress } from "@/utils/q
 
 type Option = {
   id: string
-  text: string
+  text: string // key for translation, e.g.: "chessQuiz.quizzes.0.options.a"
 }
 
 type Quiz = {
   id: number
-  question: string
+  question: string // key for translation, e.g.: "chessQuiz.quizzes.0.question"
   options: Option[]
   correctAnswer: string
-  explanation: string
+  explanation: string // key for translation, e.g.: "chessQuiz.quizzes.0.explanation"
   image: string
 }
 
 type Quote = {
-  quote: string
-  author: string
+  quote: string // key for translation, e.g.: "chessQuiz.quotes.0.quote"
+  author: string // key for translation, e.g.: "chessQuiz.quotes.0.author"
 }
 
+// Quiz texts are now stored as keys matching our translation files.
 const chessQuizzes: Quiz[] = [
   {
     id: 1,
-    question: "Which piece can only move diagonally?",
+    question: "chessQuiz.quizzes.0.question",
     options: [
-      { id: "a", text: "Rook" },
-      { id: "b", text: "Knight" },
-      { id: "c", text: "Bishop" },
-      { id: "d", text: "Queen" },
+      { id: "a", text: "chessQuiz.quizzes.0.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.0.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.0.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.0.options.d" },
     ],
     correctAnswer: "c",
-    explanation:
-      "The Bishop can only move diagonally, while the Rook moves horizontally and vertically, the Knight moves in an L-shape, and the Queen can move in any direction.",
+    explanation: "chessQuiz.quizzes.0.explanation",
     image: "https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/PedroPinhata/phpZIuH5s.png",
   },
   {
     id: 2,
-    question: "What is the name of the opening move 1.e4 e5 2.Nf3 Nc6 3.Bb5?",
+    question: "chessQuiz.quizzes.1.question",
     options: [
-      { id: "a", text: "Italian Game" },
-      { id: "b", text: "Ruy Lopez" },
-      { id: "c", text: "Sicilian Defense" },
-      { id: "d", text: "French Defense" },
+      { id: "a", text: "chessQuiz.quizzes.1.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.1.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.1.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.1.options.d" },
     ],
     correctAnswer: "b",
-    explanation:
-      "The Ruy Lopez (also called the Spanish Opening) is one of the oldest and most classic chess openings, named after the Spanish priest Ruy López de Segura who analyzed it in 1561.",
+    explanation: "chessQuiz.quizzes.1.explanation",
     image: "https://www.thechesswebsite.com/wp-content/uploads/2012/07/ruy-lopez.jpg",
   },
   {
     id: 3,
-    question: "What is 'en passant' in chess?",
+    question: "chessQuiz.quizzes.2.question",
     options: [
-      { id: "a", text: "A special king move" },
-      { id: "b", text: "A special pawn capture" },
-      { id: "c", text: "A checkmate pattern" },
-      { id: "d", text: "A draw offer" },
+      { id: "a", text: "chessQuiz.quizzes.2.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.2.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.2.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.2.options.d" },
     ],
     correctAnswer: "b",
-    explanation:
-      "En passant is a special pawn capture that can occur when a pawn moves two squares forward from its starting position and lands beside an opponent's pawn.",
+    explanation: "chessQuiz.quizzes.2.explanation",
     image: "https://www.chess.com/bundles/web/images/offline-play/en-passant.c51a5.png",
   },
   {
     id: 4,
-    question: "What does 'zugzwang' mean in chess?",
+    question: "chessQuiz.quizzes.3.question",
     options: [
-      { id: "a", text: "A winning position" },
-      { id: "b", text: "A draw by repetition" },
-      { id: "c", text: "A position where any move worsens the situation" },
-      { id: "d", text: "A special castling move" },
+      { id: "a", text: "chessQuiz.quizzes.3.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.3.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.3.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.3.options.d" },
     ],
     correctAnswer: "c",
-    explanation:
-      "Zugzwang is a situation where a player is forced to make a move that will worsen their position, but they would prefer to pass and not move at all if that were allowed.",
+    explanation: "chessQuiz.quizzes.3.explanation",
     image: "https://www.chess.com/bundles/web/images/puzzles/zugzwang-puzzle.e9e0c.png",
   },
   {
     id: 5,
-    question: "Which of these is NOT a way for a chess game to end in a draw?",
+    question: "chessQuiz.quizzes.4.question",
     options: [
-      { id: "a", text: "Stalemate" },
-      { id: "b", text: "Threefold repetition" },
-      { id: "c", text: "Fifty-move rule" },
-      { id: "d", text: "King capture" },
+      { id: "a", text: "chessQuiz.quizzes.4.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.4.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.4.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.4.options.d" },
     ],
     correctAnswer: "d",
-    explanation:
-      "King capture is not a legal move in chess. The game ends before the king is captured. The other options are all legitimate ways for a game to end in a draw.",
+    explanation: "chessQuiz.quizzes.4.explanation",
     image: "https://www.chess.com/bundles/web/images/offline-play/stalemate.c7c8e.png",
   },
   {
     id: 6,
-    question: "Which chess piece is worth 3 points?",
+    question: "chessQuiz.quizzes.5.question",
     options: [
-      { id: "a", text: "Pawn" },
-      { id: "b", text: "Knight" },
-      { id: "c", text: "Rook" },
-      { id: "d", text: "Queen" },
+      { id: "a", text: "chessQuiz.quizzes.5.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.5.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.5.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.5.options.d" },
     ],
     correctAnswer: "b",
-    explanation:
-      "In standard piece valuation, a Knight is worth 3 points, a Bishop is worth 3 points, a Rook is worth 5 points, a Queen is worth 9 points, and a Pawn is worth 1 point.",
+    explanation: "chessQuiz.quizzes.5.explanation",
     image: "https://www.chess.com/bundles/web/images/offline-play/pieces/neo/150/wn.d1e8b.png",
   },
   {
     id: 7,
-    question: "What is the name of the checkmate pattern where a queen and knight work together?",
+    question: "chessQuiz.quizzes.6.question",
     options: [
-      { id: "a", text: "Scholar's Mate" },
-      { id: "b", text: "Fool's Mate" },
-      { id: "c", text: "Anastasia's Mate" },
-      { id: "d", text: "Smothered Mate" },
+      { id: "a", text: "chessQuiz.quizzes.6.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.6.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.6.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.6.options.d" },
     ],
     correctAnswer: "c",
-    explanation:
-      "Anastasia's Mate is a checkmate pattern where a knight and queen (or rook) work together to trap the enemy king against the side of the board.",
+    explanation: "chessQuiz.quizzes.6.explanation",
     image: "https://www.chess.com/bundles/web/images/puzzles/anastasia-mate.c7c8e.png",
   },
   {
     id: 8,
-    question: "Which famous chess player was known as the 'Mozart of Chess'?",
+    question: "chessQuiz.quizzes.7.question",
     options: [
-      { id: "a", text: "Garry Kasparov" },
-      { id: "b", text: "Magnus Carlsen" },
-      { id: "c", text: "Bobby Fischer" },
-      { id: "d", text: "José Raúl Capablanca" },
+      { id: "a", text: "chessQuiz.quizzes.7.options.a" },
+      { id: "b", text: "chessQuiz.quizzes.7.options.b" },
+      { id: "c", text: "chessQuiz.quizzes.7.options.c" },
+      { id: "d", text: "chessQuiz.quizzes.7.options.d" },
     ],
     correctAnswer: "d",
-    explanation:
-      "José Raúl Capablanca was known as the 'Mozart of Chess' due to his natural talent and seemingly effortless playing style. He was world champion from 1921 to 1927.",
+    explanation: "chessQuiz.quizzes.7.explanation",
     image: "https://upload.wikimedia.org/wikipedia/commons/3/34/Jos%C3%A9_Ra%C3%BAl_Capablanca_1931.jpg",
   },
 ]
 
 const chessQuotes: Quote[] = [
   {
-    quote: "Chess is the gymnasium of the mind.",
-    author: "Blaise Pascal",
+    quote: "chessQuiz.quotes.0.quote",
+    author: "chessQuiz.quotes.0.author",
   },
   {
-    quote: "Every chess master was once a beginner.",
-    author: "Irving Chernev",
+    quote: "chessQuiz.quotes.1.quote",
+    author: "chessQuiz.quotes.1.author",
   },
   {
-    quote: "Chess is life in miniature. Chess is a struggle, chess battles.",
-    author: "Garry Kasparov",
+    quote: "chessQuiz.quotes.2.quote",
+    author: "chessQuiz.quotes.2.author",
   },
   {
-    quote: "Chess is the art which expresses the science of logic.",
-    author: "Mikhail Botvinnik",
+    quote: "chessQuiz.quotes.3.quote",
+    author: "chessQuiz.quotes.3.author",
   },
   {
-    quote: "Chess is mental torture.",
-    author: "Garry Kasparov",
+    quote: "chessQuiz.quotes.4.quote",
+    author: "chessQuiz.quotes.4.author",
   },
 ]
 
-const chessFacts: string[] = [
-  "The number of possible unique chess games is much greater than the number of electrons in the universe.",
-  "The longest official chess game lasted 269 moves and ended in a draw.",
-  "The word 'Checkmate' comes from the Persian phrase 'Shah Mat,' which means 'the king is dead.'",
-  "The folding chess board was invented by a priest who was forbidden to play chess.",
-  "The new chess piece – the queen – was introduced in the 15th century and was originally the weakest piece.",
-]
+const chessFacts: string[] = ["chessQuiz.facts.0", "chessQuiz.facts.1", "chessQuiz.facts.2", "chessQuiz.facts.3", "chessQuiz.facts.4"]
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -202,6 +190,7 @@ const itemVariants = {
 }
 
 export default function PuzzlesClient() {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const [activeTab, setActiveTab] = useState<"quiz" | "learn">("quiz")
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0)
@@ -290,7 +279,7 @@ export default function PuzzlesClient() {
           >
             <Chess size={48} className="text-primary" />
           </motion.div>
-          <h2 className="text-2xl font-bold">Loading Chess Puzzles...</h2>
+          <h2 className="text-2xl font-bold">{t("quiz.loading")}</h2>
         </motion.div>
       </div>
     )
@@ -321,35 +310,35 @@ export default function PuzzlesClient() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            Chess Puzzles & Learning
+            {t("hero.title")}
           </motion.h1>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }} className="max-w-3xl mx-auto">
-            <blockquote className="text-xl md:text-2xl italic mb-4">"{randomQuote.quote}"</blockquote>
-            <p className="text-lg">— {randomQuote.author}</p>
+            <blockquote className="text-xl md:text-2xl italic mb-4">"{t(randomQuote.quote)}"</blockquote>
+            <p className="text-lg">— {t(randomQuote.author)}</p>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Tabs Navigation – wersja z podkreśleniem, powiększone do maxa */}
+      {/* Tabs Navigation */}
       <motion.div variants={itemVariants} className="relative mb-5 flex justify-center">
         <div className="w-full max-w-200 flex justify-around p-2 border border rounded-lg px-6 pt-3 pb-4">
           <Button variant="ghost" className="relative px-8 py-4 text-4xl font-bold" onClick={() => setActiveTab("quiz")}>
-            Quiz
+            {t("tabs.quiz")}
             {activeTab === "quiz" && <motion.div layoutId="underline" className="absolute -bottom-3 left-0 right-0 h-1 bg-primary rounded-full" />}
           </Button>
           <Button variant="ghost" className="relative px-8 py-4 text-4xl font-bold" onClick={() => setActiveTab("learn")}>
-            Learn
+            {t("tabs.learn")}
             {activeTab === "learn" && <motion.div layoutId="underline" className="absolute -bottom-3 left-0 right-0 h-1 bg-primary rounded-full" />}
           </Button>
         </div>
       </motion.div>
 
-      {/* Progress Bar – renderowany tylko dla Quiz, poza animowaną zawartością */}
+      {/* Progress Bar for Quiz */}
       {activeTab === "quiz" && (
         <motion.div variants={itemVariants} className="flex flex-col items-center mb-8">
           <div className="w-full max-w-2xl mb-4">
             <div className="flex justify-between mb-2">
-              <span className="text-md font-medium">Progress</span>
+              <span className="text-md font-medium">{t("quiz.progress", "Progress")}</span>
               <span className="text-md font-medium">{Math.round(progress)}%</span>
             </div>
             <div className={cn("w-full rounded-full h-4", theme === "light" ? "bg-gray-300" : "bg-stone-800")}>
@@ -379,10 +368,10 @@ export default function PuzzlesClient() {
                   <div className="flex items-center gap-2 mb-2">
                     <Brain className="h-5 w-5 text-primary" />
                     <span className="text-sm font-medium text-muted-foreground">
-                      Question {currentQuizIndex + 1} of {chessQuizzes.length}
+                      {t("quiz.questionLabel", { current: currentQuizIndex + 1, total: chessQuizzes.length })}
                     </span>
                   </div>
-                  <CardTitle className="text-2xl">{currentQuiz.question}</CardTitle>
+                  <CardTitle className="text-2xl">{t(currentQuiz.question)}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <RadioGroup value={selectedAnswer || ""} className="space-y-3">
@@ -415,7 +404,7 @@ export default function PuzzlesClient() {
                           )}
                         />
                         <Label htmlFor={`option-${option.id}`} className="flex-1 text-base font-medium">
-                          {option.id.toUpperCase()}. {option.text}
+                          {option.id.toUpperCase()}. {t(option.text)}
                         </Label>
                       </motion.div>
                     ))}
@@ -431,8 +420,8 @@ export default function PuzzlesClient() {
                         <div className="flex items-start gap-2">
                           <Lightbulb className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
-                            <h4 className="font-semibold mb-1">Explanation:</h4>
-                            <p>{currentQuiz.explanation}</p>
+                            <h4 className="font-semibold mb-1">{t("quiz.explanation")}</h4>
+                            <p>{t(currentQuiz.explanation)}</p>
                           </div>
                         </div>
                       </motion.div>
@@ -442,20 +431,20 @@ export default function PuzzlesClient() {
                 <CardFooter className="flex justify-between">
                   <Button variant="outline" onClick={handlePrevQuestion} disabled={currentQuizIndex === 0} className="flex items-center">
                     <ChevronLeft className="mr-2 h-4 w-4" />
-                    Previous
+                    {t("quiz.previous")}
                   </Button>
                   <Button onClick={handleSubmit} disabled={!selectedAnswer} className="flex items-center">
                     {isAnswered ? (
                       currentQuizIndex < chessQuizzes.length - 1 ? (
                         <>
-                          Next Question
+                          {t("quiz.nextQuestion")}
                           <ChevronRight className="ml-2 h-4 w-4" />
                         </>
                       ) : (
-                        "See Results"
+                        t("quiz.seeResults")
                       )
                     ) : (
-                      "Check Answer"
+                      t("quiz.checkAnswer")
                     )}
                   </Button>
                 </CardFooter>
@@ -478,10 +467,8 @@ export default function PuzzlesClient() {
                     >
                       <Trophy className="h-20 w-20 text-primary" />
                     </motion.div>
-                    <CardTitle className="text-3xl">Quiz Completed!</CardTitle>
-                    <CardDescription className="text-xl mt-2">
-                      You scored {score} out of {chessQuizzes.length}
-                    </CardDescription>
+                    <CardTitle className="text-3xl">{t("quiz.quizCompleted")}</CardTitle>
+                    <CardDescription className="text-xl mt-2">{t("quiz.score", { score, total: chessQuizzes.length })}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <motion.div
@@ -490,24 +477,22 @@ export default function PuzzlesClient() {
                       className="h-4 bg-primary rounded-full mb-6 mx-auto"
                     />
                     <div className="text-lg mb-6">
-                      {score === chessQuizzes.length ? (
-                        <p>Perfect score! You&apos;re a chess master!</p>
-                      ) : score >= chessQuizzes.length * 0.7 ? (
-                        <p>Great job! You have excellent chess knowledge.</p>
-                      ) : score >= chessQuizzes.length * 0.5 ? (
-                        <p>Good effort! Keep studying to improve your chess knowledge.</p>
-                      ) : (
-                        <p>Keep practicing! Chess has a lot to learn.</p>
-                      )}
+                      {score === chessQuizzes.length
+                        ? t("quiz.perfect")
+                        : score >= chessQuizzes.length * 0.7
+                          ? t("quiz.great")
+                          : score >= chessQuizzes.length * 0.5
+                            ? t("quiz.good")
+                            : t("quiz.keepPracticing")}
                     </div>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="p-4 bg-muted rounded-lg">
-                      <h3 className="font-bold mb-2">Did you know?</h3>
-                      <p>{chessFacts[Math.floor(Math.random() * chessFacts.length)]}</p>
+                      <h3 className="font-bold mb-2">{t("quiz.didYouKnow")}</h3>
+                      <p>{t(chessFacts[Math.floor(Math.random() * chessFacts.length)])}</p>
                     </motion.div>
                   </CardContent>
                   <CardFooter className="flex justify-center">
                     <Button onClick={resetQuiz} className="px-8">
-                      Try Again
+                      {t("quiz.tryAgain")}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -521,80 +506,62 @@ export default function PuzzlesClient() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="min-h-screen w-full" // pełna szerokość
+            className="min-h-screen w-full"
           >
             <div className="w-full px-4 py-8 space-y-8">
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-4xl font-bold">Learn Chess</CardTitle>
+                  <CardTitle className="text-4xl font-bold">{t("learn.learnChess")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg">
-                    Szachy to gra, która rozwija nie tylko zdolności strategiczne, ale także logiczne myślenie, cierpliwość i zdolności analityczne. To nie
-                    tylko rozgrywka, ale także sztuka, nauka i filozofia.
-                  </p>
+                  <p className="text-lg">{t("learn.description")}</p>
                 </CardContent>
               </Card>
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-3xl font-semibold">Historia Szachów</CardTitle>
+                  <CardTitle className="text-3xl font-semibold">{t("learn.historyTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    Szachy mają długą i fascynującą historię, sięgającą starożytności. Gra była popularna wśród królów, wojowników oraz uczonych. Przez wieki
-                    rozwijała się, przybierając różne formy i style. Pierwotnie znana jako "Chaturanga" w Indiach, szachy przeszły przez Persję, a następnie
-                    trafiły do Europy, gdzie zyskały obecny kształt.
-                  </p>
-                  <p className="mt-2">Historia szachów to także historia kultury, sztuki i nauki, a każda epoka wnosiła coś nowego do tej królewskiej gry.</p>
+                  <p>{t("learn.historyDescription")}</p>
+                  <p className="mt-2">{t("learn.historyNote")}</p>
                 </CardContent>
               </Card>
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-3xl font-semibold">Podstawowe zasady</CardTitle>
+                  <CardTitle className="text-3xl font-semibold">{t("learn.basicsTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="mb-4">
-                    Nauka szachów zaczyna się od opanowania podstawowych ruchów poszczególnych figur, zasad gry oraz celów. Każda figura ma unikalne
-                    właściwości, a zrozumienie ich znaczenia to klucz do sukcesu.
-                  </p>
+                  <p className="mb-4">{t("learn.basicsDescription")}</p>
                   <ul className="list-disc list-inside">
-                    <li>Ruchy pionka – tylko do przodu, z możliwością bicia po skosie.</li>
-                    <li>Ruchy skoczka – w kształcie litery L, mogą przeskakiwać inne figury.</li>
-                    <li>Ruchy gońca – po przekątnych, działające na długich przekątnych.</li>
-                    <li>Ruchy wieży – poziomo i pionowo, kontrola linii i kolumn.</li>
-                    <li>Ruchy hetmana – łączące możliwości wieży i gońca.</li>
-                    <li>Ruchy króla – poruszanie się o jedno pole w dowolnym kierunku.</li>
+                    <li>{t("learn.basicsList.pawn")}</li>
+                    <li>{t("learn.basicsList.knight")}</li>
+                    <li>{t("learn.basicsList.bishop")}</li>
+                    <li>{t("learn.basicsList.rook")}</li>
+                    <li>{t("learn.basicsList.queen")}</li>
+                    <li>{t("learn.basicsList.king")}</li>
                   </ul>
                 </CardContent>
               </Card>
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-3xl font-semibold">Taktyki i strategie</CardTitle>
+                  <CardTitle className="text-3xl font-semibold">{t("learn.tacticsTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    Zaawansowani gracze korzystają z taktyk, takich jak atak podwójny, szpilka czy widełki. Poznanie strategii pozwala na planowanie kilku
-                    ruchów do przodu i lepsze reagowanie na zagrożenia.
-                  </p>
-                  <p className="mt-2">
-                    Analiza znanych partii, studiowanie otwarć i ćwiczenia na zestawach treningowych to sposób na rozwój umiejętności strategicznych.
-                  </p>
+                  <p>{t("learn.tacticsDescription")}</p>
+                  <p className="mt-2">{t("learn.tacticsNote")}</p>
                 </CardContent>
               </Card>
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-3xl font-semibold">Znani mistrzowie i inspiracje</CardTitle>
+                  <CardTitle className="text-3xl font-semibold">{t("learn.mastersTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    Postaci takie jak Garry Kasparov, Bobby Fischer czy Magnus Carlsen stały się ikonami nie tylko świata szachowego, ale i kultury masowej. Ich
-                    partie są studiowane przez kolejne pokolenia graczy, a ich podejście do gry inspiruje zarówno amatorów, jak i profesjonalistów.
-                  </p>
+                  <p>{t("learn.mastersDescription")}</p>
                 </CardContent>
               </Card>
               <div className="text-center">
                 <Button variant="outline" onClick={() => window.open("https://www.chess.com", "_blank")}>
-                  Dowiedz się więcej na Chess.com
+                  {t("learn.moreInfo")}
                 </Button>
               </div>
             </div>
