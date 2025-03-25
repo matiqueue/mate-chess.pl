@@ -9,8 +9,12 @@ import { Label } from "@workspace/ui/components/label"
 import { Icons } from "@workspace/ui/components/icons"
 import { cn } from "@workspace/ui/lib/utils"
 import { motion } from "framer-motion"
+import RedirectCounter from "@/components/auth/signInRedirectCounter"
+
+
 
 export default function SignInPage() {
+
   return (
     <div className="z-10 grid w-full grow items-center px-4 sm:justify-center">
       <SignIn.Root>
@@ -92,7 +96,6 @@ export default function SignInPage() {
                   </Card>
                 </motion.div>
               </SignIn.Step>
-
               {/* Krok 2: Wybór strategii */}
               <SignIn.Step name="choose-strategy">
                 <Card className="w-full sm:w-96">
@@ -239,6 +242,20 @@ export default function SignInPage() {
                     </Card>
                   </motion.div>
                 </SignIn.Strategy>
+              </SignIn.Step>
+
+              <SignIn.Step name="sso-callback">
+                <Card className="w-full sm:w-96">
+                  <CardHeader>
+                    <CardTitle>Nie znaleźliśmy twojego konta</CardTitle>
+                    <CardDescription>
+                        Zaraz przekierujemy cię na stronie gdzie będziesz mógł/mogła się zarejestrować
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-y-4">
+                    Przekierowanie nastąpi za: <RedirectCounter></RedirectCounter>
+                  </CardContent>
+                </Card>
               </SignIn.Step>
             </>
           )}
