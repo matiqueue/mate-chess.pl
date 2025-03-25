@@ -1,13 +1,13 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "",
     "beforeDevCommand": "",
     "devPath": "http://localhost:3000",
     "distDir": "../.next"
   },
   "package": {
-    "productName": "web",
+    "productName": "Mate Chess",
     "version": "0.1.0"
   },
   "tauri": {
@@ -49,10 +49,10 @@
     },
     "windows": [
       {
-        "fullscreen": false,
+        "fullscreen": true,
         "height": 600,
         "resizable": true,
-        "title": "mate-chess",
+        "title": "Mate Chess",
         "width": 800
       }
     ]

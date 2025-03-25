@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build  && cd apps/desktop && pnpm build",
     "dev": "turbo dev",
     "devall": "turbo dev && cd apps/desktop && pnpm dev",
     "lint": "turbo lint",
