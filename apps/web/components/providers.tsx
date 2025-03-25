@@ -44,7 +44,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/profile") ||
     pathname.startsWith("/sign-in") ||
     pathname.startsWith("/sign-up") ||
-    pathname.startsWith("/easter-egg")
+    pathname.startsWith("/easter-egg") ||
+    pathname.startsWith("/activity") ||
+    pathname.startsWith("/settings")
   ) {
     return (
       <ClerkProvider>
