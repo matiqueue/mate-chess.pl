@@ -13,9 +13,9 @@ import { Separator } from "@workspace/ui/components/separator"
 import { Badge } from "@workspace/ui/components/badge"
 import { Slider } from "@workspace/ui/components/slider"
 import { useAudio } from "@/components/home/audio-provider"
-import { useTranslation } from "react-i18next"
 import i18next from "i18next"
 import { motion } from "framer-motion"
+import { useUser } from "@clerk/nextjs"
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [musicVolume, setMusicVolume] = useState([30])
   const [soundVolume, setSoundVolume] = useState([70])
   const { isPlaying, toggleMusic } = useAudio()
+  const { user } = useUser()
 
   const changeLanguage = (lng: string) => {
     i18next.changeLanguage(lng)
@@ -34,9 +35,6 @@ export default function SettingsPage() {
   useEffect( () => {
     toggleMusic()
   }, [backgroundMusic])
-
-  
-
 
   return (
     <div className="container mx-auto py-6 space-y-8">
@@ -50,7 +48,7 @@ export default function SettingsPage() {
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="appearance">Appearance</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="social">Social</TabsTrigger>
+          {user ? <TabsTrigger value="social">Social</TabsTrigger> : ""}
         </TabsList>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
@@ -310,6 +308,7 @@ export default function SettingsPage() {
         </motion.div>
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+        {user ?
         <TabsContent value="social" className="space-y-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.2}}>
           <Card>
@@ -437,6 +436,8 @@ export default function SettingsPage() {
           </Card>
           </motion.div>
         </TabsContent>
+        : ""}
+
         </motion.div>
       </Tabs>
       </motion.div>
