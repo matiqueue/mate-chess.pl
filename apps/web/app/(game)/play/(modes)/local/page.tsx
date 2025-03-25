@@ -17,7 +17,7 @@ import { useEffect, useState } from "react"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-function ChessPageContent(): JSX.Element | null {
+function ChessPageContent() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
 
@@ -53,9 +53,9 @@ function ChessPageContent(): JSX.Element | null {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function ChessPage(): JSX.Element {
+export default function ChessPage() {
   return (
-    <GameProvider>
+    <GameProvider ai={false}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>

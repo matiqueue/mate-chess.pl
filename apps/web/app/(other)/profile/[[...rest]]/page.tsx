@@ -12,7 +12,7 @@ import { Footer } from "@/components/other/main-footer"
  * @remarks
  * Autor: nasakrator i matiqueue
  */
-export default function Page(): JSX.Element {
+export default function Page() {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-shrink-0">

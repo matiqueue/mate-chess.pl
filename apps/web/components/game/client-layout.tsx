@@ -20,11 +20,11 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar"
  * @remarks
  * Autor: nasakrator
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   // Jeśli ścieżka URL dotyczy trybów gry, zwracamy tylko zawartość.
-  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local") {
+  if (pathname.startsWith("/play/online") || pathname.startsWith("/play/link") || pathname === "/play/local" || pathname.startsWith("/bot/")) {
     return <>{children}</>
   }
 

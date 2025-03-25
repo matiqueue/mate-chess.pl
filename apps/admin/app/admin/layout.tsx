@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation" // Import hooka useRouter
  *
  * @note ta funkcja jest zrobiona z AI
  */
-export default function AdminLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {

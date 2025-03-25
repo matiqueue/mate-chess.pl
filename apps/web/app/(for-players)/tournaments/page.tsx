@@ -23,7 +23,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: nasakrator (Kuba Batko)
  */
-export default function TournamentsPage(): JSX.Element {
+export default function TournamentsPage() {
   return (
     <div className="flex flex-col h-screen">
       <div className="grid h-screen w-full">

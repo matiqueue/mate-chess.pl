@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import ClientLayout from "./client-layout"
+import ClientLayout from "@/components/game/client-layout"
 
 /**
  * Metadane strony.
@@ -24,6 +24,6 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <ClientLayout>{children}</ClientLayout>
 }

@@ -153,7 +153,15 @@ class Board {
 
     const figure = this.getFigureAtPosition(fromPos)
     if (!figure) {
-      throw new Error("No figure performing the move")
+      /**@experimental*/
+      console.error(
+        `No figure performing the move. \nSimulate: ${simulate}\nFrom: ${fromPos.notation}, X: ${fromPos.x} Y: ${fromPos.y}\nTo: ${toPos.notation}, X: ${toPos.x} Y: ${toPos.y}`,
+      )
+      return false
+    }
+    //might help with optimization
+    if (figure.type !== figureType.king && toPos.figure?.color === figure.color) {
+      return false
     }
 
     if (!simulate) {
@@ -174,7 +182,7 @@ class Board {
     let capturedFigure = toPos.figure
 
     if (toPos.figure) {
-      console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
+      // console.log(`Captured: ${toPos.figure.type} at ${toPos.notation}`)
       // Usuwamy referencję z pozycji – dalsze usunięcie z tablicy nastąpi poniżej
       toPos.figure = null
     }
@@ -303,7 +311,7 @@ class Board {
 
   /**
    * Undoes the last move executed on the board. <br>
-   * Used internally for simulating moves<br>
+   * Used mostly internally for simulating moves<br>
    * PLEASE be very mindful, careful and cautious when tinkering with this method, as it may cause a brutal memory leak when mishandled, especially in loops.
    * @private
    * @returns {boolean} True if the move was undone, false if move history is empty.
@@ -335,23 +343,28 @@ class Board {
     const capturedFigure = lastMove.figureCaptured
     if (capturedFigure) {
       let capPos: Position | null
+      //en passant
       if (lastMove.enPassant && capturedFigure instanceof Pawn) {
         capturedFigure.isEnPassantPossible = true
-        // Dla en passant wyliczamy oryginalną pozycję zbitego pionka
         if (figurePerforming.color === color.White) {
-          // Dla białego pionka – captured była poniżej pola docelowego
           capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y + 1)
         } else {
-          // Dla czarnego pionka – captured była powyżej pola docelowego
           capPos = this.getPositionByCords(lastMove.move.to.x, lastMove.move.to.y - 1)
         }
       } else {
-        // Standardowe zbicie – używamy pozycji zapisanej w obiekcie zbitej figury
+        // Standard
         capPos = this.getPosition(capturedFigure.position)
       }
       if (!capPos) throw new Error("Critical error: no position for captured figure")
       capPos.figure = capturedFigure
       capturedFigure.position = capPos
+
+      if (capturedFigure.color === color.White && !this._whiteFigures.includes(capturedFigure)) {
+        this._whiteFigures.push(capturedFigure)
+      }
+      if (capturedFigure.color === color.Black && !this._blackFigures.includes(capturedFigure)) {
+        this._blackFigures.push(capturedFigure)
+      }
     }
     this._moveHistory.pop()
     if (lastMove.castleMove) {
@@ -376,19 +389,11 @@ class Board {
    * @returns {boolean} True if the preview move was rewound, false otherwise.
    */
   public rewindMove(): boolean {
-    // Jeśli jesteśmy na początku partii, nie da się cofnąć dalej
     if (this._previewIndex === 0) return false
     else this.previewMode = true
-    // Bierzemy ruch, który chcemy cofnąć
     const moveRecord = this._moveHistory[this._previewIndex - 1]
     if (!moveRecord) return false
-
-    // Wykonujemy cofnięcie podobne do undoLastMove, ALE:
-    //  - Nie usuwamy nic z _moveHistory
-    //  - Po prostu cofamy fizycznie ruch na planszy
-    this._unapplyMoveRecord(moveRecord)
-
-    // Zmniejszamy _previewIndex, bo jesteśmy teraz „o ruch wstecz”
+    this.unapplyMoveRecord(moveRecord)
     this._previewIndex -= 1
 
     return true
@@ -412,7 +417,7 @@ class Board {
     if (!moveRecord) return false
 
     // Fizycznie aplikujemy ruch na planszy, ale nie zmieniamy _moveHistory
-    this._applyMoveRecord(moveRecord)
+    this.applyMoveRecord(moveRecord)
 
     // Zwiększamy _previewIndex, bo jesteśmy „o ruch do przodu”
     this._previewIndex += 1
@@ -428,7 +433,7 @@ class Board {
    * @param {MoveRecord} moveRecord - The move record to unapply.
    * @throws {Error} Throws error if critical positions or figures are missing.
    */
-  private _unapplyMoveRecord(moveRecord: MoveRecord): void {
+  private unapplyMoveRecord(moveRecord: MoveRecord): void {
     const beforePosition = this.getPosition(moveRecord.move.from)
     const afterPosition = this.getPosition(moveRecord.move.to)
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
@@ -436,32 +441,27 @@ class Board {
     const figurePerforming = moveRecord.figurePerforming
     if (!figurePerforming) throw new Error("Critical error: no performing figure")
 
-    // Cofamy figurę na pole startowe
     beforePosition.figure = figurePerforming
     figurePerforming.position = beforePosition
     afterPosition.figure = null
 
-    // Przywróć status isFirstMove/hasMoved
     if (figurePerforming instanceof Pawn) {
       figurePerforming.isFirstMove = moveRecord.wasFirstMove
     } else if (figurePerforming instanceof Rook || figurePerforming instanceof King) {
       figurePerforming.hasMoved = !moveRecord.wasFirstMove
     }
 
-    // Jeżeli była bita figura – przywróć ją
     const capturedFigure = moveRecord.figureCaptured
     if (capturedFigure) {
       let capPos: Position | null
       if (moveRecord.enPassant && capturedFigure instanceof Pawn) {
         capturedFigure.isEnPassantPossible = true
-        // Ustal właściwą pozycję pionka (poniżej/powyżej) analogicznie do undoLastMove
         if (figurePerforming.color === color.White) {
           capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y + 1)
         } else {
           capPos = this.getPositionByCords(moveRecord.move.to.x, moveRecord.move.to.y - 1)
         }
       } else {
-        // Normalne bicie – przywróć figurę na jej (poprzednią) pozycję
         capPos = this.getPosition(capturedFigure.position)
       }
       if (!capPos) throw new Error("Critical error: no position for captured figure")
@@ -472,6 +472,8 @@ class Board {
       // (Opcjonalnie) jeżeli w normalnym ruchu usuwałeś figurę z tablicy,
       // tu należałoby dodać ją ponownie do _whiteFigures / _blackFigures, jeśli
       // chcesz, by stan tablic też odzwierciedlał podgląd.
+
+      // zostawie ten powyższy komentarz bo mi nieźle dupe uratował jak mi referencje zaczęły znikać. Szok że dopiero po miesiącu zobaczyłem że mi one znikają XD
       if (capturedFigure.color === color.White && !this._whiteFigures.includes(capturedFigure)) {
         this._whiteFigures.push(capturedFigure)
       }
@@ -481,9 +483,8 @@ class Board {
       this.updateAllFiguresArray()
     }
 
-    // Jeśli ruch był roszadą (castleMove), trzeba też cofnąć wieżę –
-    // analogicznie jak w undoLastMove, ale bez manipulacji w _moveHistory.
     if (moveRecord.castleMove) {
+      //TODO
       // UWAGA: w Twoim kodzie roszada bywa zapisywana w 2 MoveRecordach (król i wieża)
       // Tutaj musisz sam zadecydować, jak to odwzorować w podglądzie
       // (np. wyszukać poprzedni MoveRecord i cofnąć wieżę).
@@ -499,7 +500,7 @@ class Board {
    * @param {MoveRecord} moveRecord - The move record to apply.
    * @throws {Error} Throws error if critical positions or figures are missing.
    */
-  private _applyMoveRecord(moveRecord: MoveRecord): void {
+  private applyMoveRecord(moveRecord: MoveRecord): void {
     const beforePosition = this.getPosition(moveRecord.move.from)
     const afterPosition = this.getPosition(moveRecord.move.to)
     if (!beforePosition || !afterPosition) throw new Error("Critical error: no position")
@@ -550,7 +551,8 @@ class Board {
    * @param {Position} position - The starting position.
    * @returns {Position[]} Array of positions to which a move is possible.
    */
-  public getValidMovesForPosition(position: Position): Position[] {
+  // //to co jest zakomentowane w tej metodzie to są rzeczy do testowania w konsoli
+  public getValidMovesForPositionDeprecated(position: Position): Position[] {
     const validMoves: Position[] = []
     // console.debug("\nValidating moves for position: ", position.notation)
     // console.debug(`\nFigure: ${position.figure?.type} \nof color: ${position.figure?.color} \nat ${position.notation} \nnoted as [o]`)
@@ -592,172 +594,194 @@ class Board {
     }
     return validMoves
   }
-  // public getValidMovesForPosition(position: Position): Position[] {
-  //   const validMoves: Position[] = []
-  //   const figure = position.figure
-  //   if (!figure) return validMoves
-  //
-  //   console.debug("\nValidating moves for position:", position.notation)
-  //   console.debug(`\nFigure: ${figure.type} \nof color: ${figure.color} \nat ${position.notation} \nnoted as [o]`)
-  //
-  //   const x = position.x
-  //   const y = position.y
-  //
-  //   switch (figure.type) {
-  //     case figureType.pawn: {
-  //       const direction = figure.color === color.White ? -1 : 1
-  //
-  //       // Normal move forward
-  //       const oneStep = this.getPositionByCords(x, y + direction)
-  //       if (oneStep && !oneStep.figure) validMoves.push(oneStep)
-  //
-  //       // Two steps forward if first move
-  //       if ((figure as Pawn).isFirstMove) {
-  //         const twoSteps = this.getPositionByCords(x, y + 2 * direction)
-  //         if (twoSteps && !twoSteps.figure && oneStep) validMoves.push(twoSteps)
-  //       }
-  //
-  //       // Diagonal capture
-  //       ;[-1, 1].forEach((side) => {
-  //         const diag = this.getPositionByCords(x + side, y + direction)
-  //         if (diag && diag.figure && diag.figure.color !== figure.color) validMoves.push(diag)
-  //       })
-  //
-  //       break
-  //     }
-  //
-  //     case figureType.rook: {
-  //       for (let i = -7; i <= 7; i++) {
-  //         if (i === 0) continue
-  //         const horizontal = this.getPositionByCords(x + i, y)
-  //         const vertical = this.getPositionByCords(x, y + i)
-  //
-  //         if (horizontal) {
-  //           if (horizontal.figure) {
-  //             if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
-  //             break
-  //           }
-  //           validMoves.push(horizontal)
-  //         }
-  //
-  //         if (vertical) {
-  //           if (vertical.figure) {
-  //             if (vertical.figure.color !== figure.color) validMoves.push(vertical)
-  //             break
-  //           }
-  //           validMoves.push(vertical)
-  //         }
-  //       }
-  //       break
-  //     }
-  //
-  //     case figureType.bishop: {
-  //       for (let i = -7; i <= 7; i++) {
-  //         if (i === 0) continue
-  //         const diag1 = this.getPositionByCords(x + i, y + i)
-  //         const diag2 = this.getPositionByCords(x - i, y + i)
-  //
-  //         if (diag1) {
-  //           if (diag1.figure) {
-  //             if (diag1.figure.color !== figure.color) validMoves.push(diag1)
-  //             break
-  //           }
-  //           validMoves.push(diag1)
-  //         }
-  //
-  //         if (diag2) {
-  //           if (diag2.figure) {
-  //             if (diag2.figure.color !== figure.color) validMoves.push(diag2)
-  //             break
-  //           }
-  //           validMoves.push(diag2)
-  //         }
-  //       }
-  //       break
-  //     }
-  //
-  //     case figureType.queen: {
-  //       // Rook + Bishop moves combined
-  //       for (let i = -7; i <= 7; i++) {
-  //         if (i === 0) continue
-  //         const horizontal = this.getPositionByCords(x + i, y)
-  //         const vertical = this.getPositionByCords(x, y + i)
-  //         const diag1 = this.getPositionByCords(x + i, y + i)
-  //         const diag2 = this.getPositionByCords(x - i, y + i)
-  //
-  //         if (horizontal) {
-  //           if (horizontal.figure) {
-  //             if (horizontal.figure.color !== figure.color) validMoves.push(horizontal)
-  //             break
-  //           }
-  //           validMoves.push(horizontal)
-  //         }
-  //
-  //         if (vertical) {
-  //           if (vertical.figure) {
-  //             if (vertical.figure.color !== figure.color) validMoves.push(vertical)
-  //             break
-  //           }
-  //           validMoves.push(vertical)
-  //         }
-  //
-  //         if (diag1) {
-  //           if (diag1.figure) {
-  //             if (diag1.figure.color !== figure.color) validMoves.push(diag1)
-  //             break
-  //           }
-  //           validMoves.push(diag1)
-  //         }
-  //
-  //         if (diag2) {
-  //           if (diag2.figure) {
-  //             if (diag2.figure.color !== figure.color) validMoves.push(diag2)
-  //             break
-  //           }
-  //           validMoves.push(diag2)
-  //         }
-  //       }
-  //       break
-  //     }
-  //
-  //     case figureType.knight: {
-  //       const knightMoves = [
-  //         [2, 1],
-  //         [2, -1],
-  //         [-2, 1],
-  //         [-2, -1],
-  //         [1, 2],
-  //         [1, -2],
-  //         [-1, 2],
-  //         [-1, -2],
-  //       ]
-  //
-  //       knightMoves.forEach(([dx, dy]) => {
-  //         if (!dx || !dy) return
-  //         const newPos = this.getPositionByCords(x + dx, y + dy)
-  //         if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
-  //           validMoves.push(newPos)
-  //         }
-  //       })
-  //       break
-  //     }
-  //
-  //     case figureType.king: {
-  //       for (let dx = -1; dx <= 1; dx++) {
-  //         for (let dy = -1; dy <= 1; dy++) {
-  //           if (dx === 0 && dy === 0) continue
-  //           const newPos = this.getPositionByCords(x + dx, y + dy)
-  //           if (newPos && (!newPos.figure || newPos.figure.color !== figure.color)) {
-  //             validMoves.push(newPos)
-  //           }
-  //         }
-  //       }
-  //       break
-  //     }
-  //   }
-  //
-  //   return validMoves
-  // }
+
+  public getValidMovesForPosition(position: Position): Position[] {
+    const validMoves: Position[] = []
+    const figure = position.figure
+    if (!figure) return validMoves
+
+    const x = position.x
+    const y = position.y
+
+    // Quick helper for board limits
+    const isWithinBounds = (nx: number, ny: number) => nx >= 0 && nx < 8 && ny >= 0 && ny < 8
+
+    switch (figure.type) {
+      case figureType.pawn: {
+        // We try the typical “one step,” “two step,” “diagonal” squares
+        // then confirm each with isMoveValid(...)
+        const direction = figure.color === color.White ? -1 : 1
+
+        // One step forward
+        const oneY = y + direction
+        if (isWithinBounds(x, oneY)) {
+          const oneStep = this.getPositionByCords(x, oneY)
+          if (oneStep && figure.isMoveValid(oneStep)) {
+            validMoves.push(oneStep)
+          }
+        }
+
+        // Two steps forward if it's the pawn’s first move
+        if ((figure as Pawn).isFirstMove) {
+          const twoY = y + 2 * direction
+          if (isWithinBounds(x, twoY)) {
+            const twoSteps = this.getPositionByCords(x, twoY)
+            if (twoSteps && figure.isMoveValid(twoSteps)) {
+              validMoves.push(twoSteps)
+            }
+          }
+        }
+
+        // Diagonals (captures and possibly en passant)
+        for (const side of [-1, 1]) {
+          const diagX = x + side
+          const diagY = y + direction
+          if (isWithinBounds(diagX, diagY)) {
+            const diagPos = this.getPositionByCords(diagX, diagY)
+            if (diagPos && figure.isMoveValid(diagPos)) {
+              validMoves.push(diagPos)
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.knight: {
+        // The 8 possible “L” moves, then check isMoveValid(...)
+        const knightMoves = [
+          [2, 1],
+          [2, -1],
+          [-2, 1],
+          [-2, -1],
+          [1, 2],
+          [1, -2],
+          [-1, 2],
+          [-1, -2],
+        ]
+        for (const [dx, dy] of knightMoves) {
+          if (!dx || !dy) {
+            break
+          }
+          const nx = x + dx
+          const ny = y + dy
+          if (!isWithinBounds(nx, ny)) continue
+
+          const pos = this.getPositionByCords(nx, ny)
+          if (pos && figure.isMoveValid(pos)) {
+            validMoves.push(pos)
+          }
+        }
+        break
+      }
+
+      case figureType.rook: {
+        // Move horizontally or vertically until blocked or invalid
+        const directions = [
+          { dx: 1, dy: 0 }, // right
+          { dx: -1, dy: 0 }, // left
+          { dx: 0, dy: 1 }, // down
+          { dx: 0, dy: -1 }, // up
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              // If there's a piece on pos, we can't move beyond it
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.bishop: {
+        // Move diagonally until blocked or invalid
+        const directions = [
+          { dx: 1, dy: 1 }, // down-right
+          { dx: -1, dy: -1 }, // up-left
+          { dx: 1, dy: -1 }, // up-right
+          { dx: -1, dy: 1 }, // down-left
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.queen: {
+        // Combination of Rook & Bishop directions
+        const directions = [
+          // Rook-like
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 0, dy: -1 },
+          // Bishop-like
+          { dx: 1, dy: 1 },
+          { dx: -1, dy: -1 },
+          { dx: 1, dy: -1 },
+          { dx: -1, dy: 1 },
+        ]
+        for (const { dx, dy } of directions) {
+          for (let step = 1; step < 8; step++) {
+            const nx = x + dx * step
+            const ny = y + dy * step
+            if (!isWithinBounds(nx, ny)) break
+
+            const pos = this.getPositionByCords(nx, ny)
+            if (!pos) break
+
+            if (figure.isMoveValid(pos)) {
+              validMoves.push(pos)
+              if (pos.figure) break
+            } else {
+              break
+            }
+          }
+        }
+        break
+      }
+
+      case figureType.king: {
+        for (let y = 0; y < 8; y++) {
+          for (let x = 0; x < 8; x++) {
+            const newPos = this.getPositionByCords(x, y)
+            if (!newPos) break
+
+            if (figure?.isMoveValid(newPos)) {
+              validMoves.push(newPos)
+            }
+          }
+        }
+        break
+      }
+    }
+
+    return validMoves
+  }
 
   /**
    * Returns the reference to white king figure.

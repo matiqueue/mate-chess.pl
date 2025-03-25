@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export function Footer(): JSX.Element {
+export function Footer() {
   const { t } = useTranslation()
   return (
     <footer className="w-full border-t bg-background">

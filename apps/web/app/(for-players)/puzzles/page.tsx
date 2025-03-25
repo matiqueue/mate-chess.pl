@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import PuzzlesClient from "./puzzles-client"
-
+import { t } from "i18next"
 /**
  * Metadane strony puzzli szachowych.
  *
@@ -8,10 +8,9 @@ import PuzzlesClient from "./puzzles-client"
  * Autor: matiqueue (Szymon Góral)
  */
 export const metadata: Metadata = {
-  title: "Chess Puzzles | Mate-Chess",
-  description: "Test your chess knowledge with our interactive puzzles and quizzes",
+  title: t("seo.puzzles.title"),
+  description: t("seo.puzzles.description"),
 }
-
 /**
  * PuzzlesPage
  *
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function PuzzlesPage(): JSX.Element {
+export default function PuzzlesPage() {
   return (
     <>
       <PuzzlesClient />

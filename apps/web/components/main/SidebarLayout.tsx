@@ -18,7 +18,7 @@ import { Sidebar } from "@/components/home/sidebar"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export function SidebarLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">

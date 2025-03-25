@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useRef } from "react"
+import { createContext, useContext, useEffect, useRef, ReactNode } from "react"
 
 /**
  * Kontekst przechowujący funkcję raportowania błędów.
@@ -32,7 +32,7 @@ export function useErrorReporter(): (data: any) => void {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export function ErrorContextProvider({ children }: { children: React.ReactNode }): JSX.Element {
+export function ErrorContextProvider({ children }: { children: ReactNode }) {
   const wsRef = useRef<WebSocket | null>(null)
 
   /**

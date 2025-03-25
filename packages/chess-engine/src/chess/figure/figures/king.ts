@@ -4,8 +4,9 @@ import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 import { kingMaterialTable } from "@shared/types/material"
 
+/**Chess class for King figure.
+ * */
 class King extends Figure {
-  private _isCheck: boolean = false
   private _hasMoved: boolean
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
     super(figureType.king, color, position, board, 3000, kingMaterialTable)
@@ -48,8 +49,6 @@ class King extends Figure {
         if (currentPosition.figure) return false
         currentX -= signX
       }
-
-      const newPos = this._board.getPositionByCords(this.position.x + 2 * signX, target.y)
       return true
     } else if (target.figure && target.figure.color === this.color) return false
     for (const opponentFigure of opponentFigures) {
@@ -63,15 +62,6 @@ class King extends Figure {
 
     return true
   }
-
-  get isCheck(): boolean {
-    return this._isCheck
-  }
-
-  set isCheck(value: boolean) {
-    this._isCheck = value
-  }
-
   get hasMoved(): boolean {
     return this._hasMoved
   }

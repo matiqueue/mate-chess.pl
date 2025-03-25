@@ -20,7 +20,7 @@ import { Button } from "@workspace/ui/components/button" // Import komponentu Bu
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function AdminPage(): JSX.Element {
+export default function AdminPage() {
   // Stan aktywnej zakładki: "users" lub "logs".
   const [activeTab, setActiveTab] = useState<"users" | "logs">("users")
 

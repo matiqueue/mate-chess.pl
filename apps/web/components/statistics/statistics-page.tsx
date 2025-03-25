@@ -46,7 +46,7 @@ import { useTheme } from "next-themes"
  * @remarks
  * Autor: nasakrator (Kuba Batko)
  */
-export default function StatisticsPage(): JSX.Element {
+export default function StatisticsPage() {
   const { t } = useTranslation()
   const { user } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)

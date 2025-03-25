@@ -1,7 +1,4 @@
-import { MobileHeader } from "@/components/home/mobile-header"
-import { Navbar } from "@/components/home/navbar"
-import { Sidebar } from "@/components/home/sidebar"
-import { SidebarProvider } from "@workspace/ui/components/sidebar"
+import ClientLayout from "@/components/game/client-layout"
 
 /**
  * Layout
@@ -16,19 +13,8 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar"
  * @remarks
  * Autor: nasakrator
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   // W przypadku, gdy URL jest dokładnie "/play/online", "/play/link" lub "/play/local",
   // lub zupełnie inny – wyświetlamy pełny layout (sidebar, nagłówki, navbar, itd.)
-  return (
-    <SidebarProvider>
-      <div className="flex mon-h-screen w-full bg-sidebar">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <MobileHeader className="md:hidden" />
-          <Navbar className="hidden md:flex" />
-          <main className="flex flex-col flex-grow justify-center">{children}</main>
-        </div>
-      </div>
-    </SidebarProvider>
-  )
+  return <ClientLayout>{children}</ClientLayout>
 }

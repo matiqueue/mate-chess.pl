@@ -1,0 +1,11 @@
+{
+  "name": "desktop",
+  "private": true,
+  "scripts": {
+    "dev": "cd ../web && pnpm tauri dev",
+    "build": "cd ../web && pnpm tauri build"
+  },
+  "dependencies": {
+    "tauri": "^0.15.0"
+  }
+}

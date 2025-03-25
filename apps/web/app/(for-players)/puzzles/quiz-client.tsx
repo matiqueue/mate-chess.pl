@@ -11,11 +11,13 @@ import { CheckCircle, XCircle } from "lucide-react"
 type Quiz = {
   id: number
   question: string
-  options: {
-    id: string
-    text: string
-  }[]
+  options: Options[]
   correctAnswer: string
+}
+
+type Options = {
+  id: string
+  text: string
 }
 
 export function QuizClient({ quizzes }: { quizzes: Quiz[] }) {
@@ -79,7 +81,7 @@ export function QuizClient({ quizzes }: { quizzes: Quiz[] }) {
         </CardHeader>
         <CardContent>
           <RadioGroup value={selectedAnswer || ""} onValueChange={handleAnswerSelect}>
-            {currentQuiz.options.map((option) => (
+            {currentQuiz.options.map((option: Options) => (
               <div
                 key={option.id}
                 className={`flex items-center space-x-2 p-2 rounded-md ${
@@ -106,7 +108,7 @@ export function QuizClient({ quizzes }: { quizzes: Quiz[] }) {
             <div className="mt-4 p-3 rounded-md bg-muted">
               <p className="font-medium">{isCorrect ? "Correct! 🎉" : "Incorrect! 😕"}</p>
               <p className="text-sm text-muted-foreground mt-1">
-                The correct answer is: {currentQuiz.correctAnswer.toUpperCase()}. {currentQuiz.options.find((o) => o.id === currentQuiz.correctAnswer)?.text}
+                The correct answer is: {currentQuiz.correctAnswer.toUpperCase()}. {currentQuiz.options.find((o: Options) => o.id === currentQuiz.correctAnswer)?.text}
               </p>
             </div>
           )}

@@ -3,7 +3,8 @@ import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 import { rookMaterialTable } from "@shared/types/material"
-
+/**Chess class for rook figure.
+ * */
 class Rook extends Figure {
   private _hasMoved: boolean
 

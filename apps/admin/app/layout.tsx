@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "@/styles/globals.css"
+import "@workspace/ui/styles/globals.css"
 import { ErrorContextProvider } from "@/context/ErrorContextProvider"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className="dark">
       <body className={inter.className}>

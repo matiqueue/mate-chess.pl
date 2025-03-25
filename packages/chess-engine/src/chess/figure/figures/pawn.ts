@@ -3,16 +3,15 @@ import { figureType } from "@shared/types/figureType"
 import { color } from "@shared/types/colorType"
 import { Board, Position } from "@utils/boardUtils"
 import { pawnMaterialTable } from "@shared/types/material"
-
+/**Chess class for pawn figure.
+ * */
 class Pawn extends Figure {
   private _isFirstMove: boolean
   public isEnPassantPossible: boolean = false
 
   constructor(color: color.White | color.Black, position: Position, board: Board) {
     super(figureType.pawn, color, position, board, 1, pawnMaterialTable)
-    if (position.y === 6 || position.y === 1) {
-      this._isFirstMove = true
-    } else this._isFirstMove = false
+    this._isFirstMove = position.y === 6 || position.y === 1
   }
 
   override isPositionValid(target: Position): boolean {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import express from "express" // Import express
 import { v4 as uuidv4 } from "uuid" // Import funkcji do generowania UUID
 import { lobbies, io } from "../index" // Import przechowywanych lobby oraz instancji socket.io

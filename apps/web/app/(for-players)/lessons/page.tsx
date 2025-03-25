@@ -22,7 +22,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: nasakrator (Kuba Batko)
  */
-export default function Home(): JSX.Element {
+export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <ChessLessons />

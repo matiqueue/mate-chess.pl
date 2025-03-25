@@ -16,7 +16,7 @@ import { useErrorReporter } from "@/context/ErrorContextProvider"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }): JSX.Element {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   // Pobiera funkcję raportowania błędów z kontekstu.
   const reportError = useErrorReporter()
 

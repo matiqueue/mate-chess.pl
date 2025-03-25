@@ -3,6 +3,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { useGameContext } from "@/contexts/GameContext"
+import { useTheme } from "next-themes"
 
 // Typy (dostosuj do swojego GameContext)
 interface Position {
@@ -28,6 +29,7 @@ export function ChessBoard3D() {
   const movePieceRef = useRef(movePiece)
   const currentPlayerRef = useRef(currentPlayer)
   const getValidMovesRef = useRef(getValidMoves)
+  const { theme } = useTheme()
 
   useEffect(() => {
     boardRef.current = board
@@ -250,9 +252,10 @@ export function ChessBoard3D() {
         }
       }
     }
+    const boardModelPath = theme === "light" ? "/models/game/chessboards/white-game-chessboard.glb" : "/models/game/chessboards/dark-game-chessboard.glb"
 
     loader.load(
-      "/models/game/chessboards/dark-game-chessboard.glb",
+      boardModelPath,
       (gltf: GLTF) => {
         const boardModel = gltf.scene
         boardModel.scale.set(BOARD_SCALE, BOARD_SCALE, BOARD_SCALE)

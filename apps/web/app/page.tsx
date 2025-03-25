@@ -10,8 +10,10 @@ import SkeletonChessboard from "@/components/landing-page/skeletonChessboard" //
  * @remarks
  * Autor: awres (Filip Serwartka)
  */
+
 const Chessboard = dynamic(() => import("@/components/landing-page/chessboard"), {
   ssr: false,
+  // @ts-ignore
   loading: () => <SkeletonChessboard progress={0} />,
 })
 
@@ -25,7 +27,7 @@ const Chessboard = dynamic(() => import("@/components/landing-page/chessboard"),
  * @remarks
  * Autor: wojoo (Wojtek Piątek)
  */
-export default function Page(): JSX.Element {
+export default function Page() {
   return (
     <div
       style={{

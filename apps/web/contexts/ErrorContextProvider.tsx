@@ -88,6 +88,6 @@ export function ErrorContextProvider({ children }: { children: React.ReactNode }
   const reportError = (data: any) => {
     sendToErrors(data)
   }
-
+ // @ts-ignore
   return <ErrorContext.Provider value={reportError}>{children}</ErrorContext.Provider>
 }
