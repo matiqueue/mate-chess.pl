@@ -317,6 +317,10 @@ importers:
         version: 5.8.2
 
   packages/eslint-config:
+    dependencies:
+      '@eslint/js':
+        specifier: ^9.23.0
+        version: 9.23.0
     devDependencies:
       '@next/eslint-plugin-next':
         specifier: ^15.1.7
