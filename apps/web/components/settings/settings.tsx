@@ -15,6 +15,7 @@ import { Slider } from "@workspace/ui/components/slider"
 import { useAudio } from "@/components/home/audio-provider"
 import { useTranslation } from "react-i18next"
 import i18next from "i18next"
+import { motion } from "framer-motion"
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
@@ -40,7 +41,7 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">Manage your account settings and preferences.</p>
       </div>
-
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="grid w-full md:w-auto md:inline-flex grid-cols-4 md:grid-cols-none">
           <TabsTrigger value="general">General</TabsTrigger>
@@ -49,7 +50,9 @@ export default function SettingsPage() {
           <TabsTrigger value="social">Social</TabsTrigger>
         </TabsList>
 
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="general" className="space-y-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.2}}>
           <Card>
             <CardHeader>
               <CardTitle>Language</CardTitle>
@@ -71,7 +74,9 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
 
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.3}}>
           <Card>
             <CardHeader>
               <CardTitle>Board View</CardTitle>
@@ -126,8 +131,11 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
         </TabsContent>
+        </motion.div>
 
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="appearance" className="space-y-6">
           <Card>
             <CardHeader>
@@ -192,7 +200,9 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
+        </motion.div>
 
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="notifications" className="space-y-6">
           <Card>
             <CardHeader>
@@ -287,6 +297,9 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
+        </motion.div>
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="social" className="space-y-6">
           <Card>
             <CardHeader>
@@ -410,7 +423,9 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
+        </motion.div>
       </Tabs>
+      </motion.div>
     </div>
   )
 }
