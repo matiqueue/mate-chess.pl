@@ -11,13 +11,9 @@ import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from "uuid"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@workspace/ui/components/dialog" // Import komponentów dialogu z ShadCN
 
-/**
- * Obiekt animacji kontenera.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
+/** Animacja kontenera */
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -26,59 +22,21 @@ const container = {
   },
 }
 
-/**
- * Obiekt animacji elementu.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
+/** Animacja elementu */
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 }
 
-/**
- * Animacja unoszenia elementu.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
+/** Animacja unoszenia elementu */
 const floatingAnimation = {
   y: [0, 5, 0],
-  transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse" as const, ease: "easeInOut" },
+  transition: { duration: 1.5, repeat: Infinity, repeatType: "reverse" as "reverse", ease: "easeInOut" },
 }
 
-/**
- * Motion-enabled Button.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
 const MotionButton = motion.create(Button)
-
-/**
- * Motion-enabled Card.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
 const MotionCard = motion.create(Card)
 
-/**
- * GameModeSelector
- *
- * Komponent pozwalający wybrać tryb gry, umożliwiający:
- * - stworzenie lobby za pomocą linku,
- * - dołączenie do lobby za pomocą podanego kodu,
- * - dołączenie do lobby online (tylko dla zalogowanych użytkowników).
- *
- * Obsługuje animacje przy użyciu framer-motion oraz tłumaczenia dzięki react-i18next.
- *
- * @returns {JSX.Element} Element JSX reprezentujący selektor trybu gry.
- *
- * @remarks
- * Autor: matiqueue (Szymon Góral)
- */
 export default function GameModeSelector() {
   const router = useRouter()
   const { theme } = useTheme()
@@ -86,45 +44,23 @@ export default function GameModeSelector() {
   const { t } = useTranslation()
 
   const [mounted, setMounted] = useState(false)
-  const [showJoinInput, setShowJoinInput] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false) // Stan do kontrolowania dialogu
+  const [showJoinInput, setShowJoinInput] = useState(false) // Stan do pokazywania inputu w dialogu
   const [joinCode, setJoinCode] = useState("")
   const [showOnlineTooltip, setShowOnlineTooltip] = useState(false)
 
-  // Ustawienie flagi mounted po zamontowaniu komponentu
   useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) return null
 
-  // Definicja dostępnych trybów gry
   const gameModes = [
-    {
-      key: "local",
-      title: t("gameModeLocal"),
-      description: t("gameModeLocalDescription"),
-      icon: Users,
-    },
-    {
-      key: "withLink",
-      title: t("gameModeWithLink"),
-      description: t("gameModeWithLinkDescription"),
-      icon: Link2,
-    },
-    {
-      key: "online",
-      title: t("gameModeOnline"),
-      description: t("gameModeOnlineDescription"),
-      icon: Server,
-    },
+    { key: "local", title: t("gameModeLocal"), description: t("gameModeLocalDescription"), icon: Users },
+    { key: "withLink", title: t("gameModeWithLink"), description: t("gameModeWithLinkDescription"), icon: Link2 },
+    { key: "online", title: t("gameModeOnline"), description: t("gameModeOnlineDescription"), icon: Server },
   ]
 
-  /**
-   * handleCreateLinkLobby
-   *
-   * Tworzy nowe lobby typu "link". Pobiera dane gracza z konta użytkownika lub generuje dane gościa,
-   * wysyła żądanie POST do API oraz przekierowuje użytkownika do nowo utworzonego lobby.
-   */
   const handleCreateLinkLobby = async () => {
     const player = user
       ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
@@ -143,12 +79,6 @@ export default function GameModeSelector() {
     router.push(`/play/link?code=${data.code}&lobbyId=${data.lobbyId}`)
   }
 
-  /**
-   * handleJoinLinkLobby
-   *
-   * Dołącza użytkownika do istniejącego lobby za pomocą kodu.
-   * Wysyła żądanie POST do API i przekierowuje do lobby, jeśli operacja się powiedzie.
-   */
   const handleJoinLinkLobby = async () => {
     const player = user
       ? { id: user.id, name: user.firstName || "User", avatar: user.imageUrl || "", isGuest: false }
@@ -171,12 +101,6 @@ export default function GameModeSelector() {
     }
   }
 
-  /**
-   * handleJoinOnlineLobby
-   *
-   * Dołącza użytkownika do lobby online.
-   * Jeśli użytkownik nie jest zalogowany, wyświetla tooltip informujący o konieczności logowania.
-   */
   const handleJoinOnlineLobby = async () => {
     if (!user) {
       setShowOnlineTooltip(true)
@@ -232,6 +156,130 @@ export default function GameModeSelector() {
           <motion.div variants={container} initial="hidden" animate="show" className="grid md:grid-cols-3 gap-6 w-full max-w-4xl">
             {gameModes.map((mode) => {
               const isOnline = mode.key === "online"
+              if (mode.key === "withLink") {
+                return (
+                  <Dialog key={mode.key} open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <MotionCard
+                        variants={item}
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-card/50 border border-border transition-transform duration-300 cursor-pointer"
+                      >
+                        <CardContent className="p-6 md:p-8 flex flex-col items-center justify-center gap-4 h-full relative">
+                          <motion.div animate={floatingAnimation} className="p-3 rounded-full bg-background mb-2">
+                            <mode.icon className="w-8 h-8" />
+                          </motion.div>
+                          <motion.h2
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className="text-2xl md:text-3xl font-semibold"
+                          >
+                            {mode.title}
+                          </motion.h2>
+                          <motion.p
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            className="text-muted-foreground text-center mb-4 text-base md:text-lg"
+                          >
+                            {mode.description}
+                          </motion.p>
+                          <MotionButton
+                            className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
+                              Rozpocznij grę link
+                            </motion.span>
+                            <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
+                              <ArrowRight className="w-4 h-4" />
+                            </motion.div>
+                          </MotionButton>
+                        </CardContent>
+                      </MotionCard>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+                      <DialogHeader>
+                        <DialogTitle>
+                          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: "easeOut" }}>
+                            Select an action
+                          </motion.div>
+                        </DialogTitle>
+                      </DialogHeader>
+                      <motion.div
+                        className="flex flex-col gap-4 p-4"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      >
+                        <div className="flex flex-row gap-3 md:gap-4 justify-center">
+                          <MotionButton
+                            onClick={() => {
+                              setIsDialogOpen(false)
+                              handleCreateLinkLobby()
+                            }}
+                            className="flex-1 bg-popover-foreground border border-[hsla(var(--foreground),0.1)] rounded-lg shadow-sm"
+                            whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+                          >
+                            Create Lobby
+                          </MotionButton>
+                          <MotionButton
+                            onClick={() => setShowJoinInput((prev) => !prev)} // Przełączanie widoczności inputu
+                            className="flex-1 bg-popover-foreground border border-[hsla(var(--foreground),0.1)] rounded-lg shadow-sm"
+                            whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+                          >
+                            {showJoinInput ? "Hide Code Input" : "Join with Code"}
+                          </MotionButton>
+                        </div>
+                        {showJoinInput && (
+                          <motion.div
+                            className="mt-4 flex flex-col gap-3"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                          >
+                            <motion.input
+                              type="text"
+                              value={joinCode}
+                              onChange={(e) => setJoinCode(e.target.value.slice(0, 6).toUpperCase())}
+                              placeholder="Enter lobby code"
+                              className="p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, delay: 0.1 }}
+                            />
+                            <MotionButton
+                              onClick={() => {
+                                setIsDialogOpen(false)
+                                handleJoinLinkLobby()
+                              }}
+                              className="w-full bg-popover-foreground border border-[hsla(var(--foreground),0.1)] rounded-lg shadow-sm"
+                              whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}
+                              whileTap={{ scale: 0.97 }}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, delay: 0.2 }}
+                            >
+                              Join Lobby
+                            </MotionButton>
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    </DialogContent>
+                  </Dialog>
+                )
+              }
               return (
                 <MotionCard
                   key={mode.key}
@@ -245,7 +293,6 @@ export default function GameModeSelector() {
                     <motion.div animate={floatingAnimation} className="p-3 rounded-full bg-background mb-2">
                       <mode.icon className="w-8 h-8" />
                     </motion.div>
-
                     <motion.h2
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -254,7 +301,6 @@ export default function GameModeSelector() {
                     >
                       {mode.title}
                     </motion.h2>
-
                     <motion.p
                       initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -263,18 +309,11 @@ export default function GameModeSelector() {
                     >
                       {mode.description}
                     </motion.p>
-
                     <MotionButton
                       className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={
-                        mode.key === "withLink"
-                          ? handleCreateLinkLobby
-                          : mode.key === "online"
-                            ? handleJoinOnlineLobby
-                            : () => router.push(`/play/${mode.key.toLowerCase()}`)
-                      }
+                      onClick={mode.key === "online" ? handleJoinOnlineLobby : () => router.push(`/play/${mode.key.toLowerCase()}`)}
                       disabled={isOnline && !user}
                     >
                       <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
@@ -284,7 +323,6 @@ export default function GameModeSelector() {
                         <ArrowRight className="w-4 h-4" />
                       </motion.div>
                     </MotionButton>
-
                     {isOnline && !user && showOnlineTooltip && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
@@ -299,46 +337,6 @@ export default function GameModeSelector() {
                 </MotionCard>
               )
             })}
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 w-full max-w-4xl flex flex-col items-center gap-4">
-            <MotionButton
-              className="w-1/2 bg-popover-foreground hover:bg-primary border"
-              onClick={() => setShowJoinInput((prev) => !prev)}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              {t("joinGameViaCode")}
-            </MotionButton>
-            {showJoinInput && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="flex flex-row items-center gap-4 mt-4 w-1/2"
-              >
-                <motion.input
-                  type="text"
-                  value={joinCode}
-                  onChange={(e) => setJoinCode(e.target.value.slice(0, 6).toUpperCase())}
-                  placeholder={t("enterCodePlaceholder")}
-                  className="flex-1 p-2 border border-gray-300 rounded shadow-lg text-center bg-background text-foreground"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                />
-                <MotionButton
-                  className="flex-1 bg-popover-foreground hover:bg-primary border"
-                  onClick={handleJoinLinkLobby}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
-                  {t("joinLobby")}
-                </MotionButton>
-              </motion.div>
-            )}
           </motion.div>
         </motion.div>
       </div>
