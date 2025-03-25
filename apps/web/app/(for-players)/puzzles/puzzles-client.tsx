@@ -321,7 +321,7 @@ export default function PuzzlesClient() {
 
       {/* Tabs Navigation */}
       <motion.div variants={itemVariants} className="relative mb-5 flex justify-center">
-        <div className="w-full max-w-200 flex justify-around p-2 border border rounded-lg px-6 pt-3 pb-4">
+        <div className="w-full max-w-200 flex justify-around p-2 border rounded-lg px-6 pt-3 pb-4">
           <Button variant="ghost" className="relative px-8 py-4 text-4xl font-bold" onClick={() => setActiveTab("quiz")}>
             {t("tabs.quiz")}
             {activeTab === "quiz" && <motion.div layoutId="underline" className="absolute -bottom-3 left-0 right-0 h-1 bg-primary rounded-full" />}
@@ -487,7 +487,7 @@ export default function PuzzlesClient() {
                     </div>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="p-4 bg-muted rounded-lg">
                       <h3 className="font-bold mb-2">{t("quiz.didYouKnow")}</h3>
-                      <p>{t(chessFacts[Math.floor(Math.random() * chessFacts.length)])}</p>
+                      <p>{t(chessFacts[Math.floor(Math.random() * chessFacts.length)] || "chessQuiz.facts.default")}</p>{" "}
                     </motion.div>
                   </CardContent>
                   <CardFooter className="flex justify-center">

@@ -20,7 +20,7 @@ const socket = io("http://localhost:4000")
  * @remarks
  * Autor: nasakrator
  */
-export default function Game({ params }: { params: Promise<{ code: string }> }): JSX.Element {
+export default function Game({ params }: { params: Promise<{ code: string }> }) {
   // Pobranie kodu pokoju z parametrów (Next.js 15)
   const { code } = use(params)
 
@@ -35,8 +35,8 @@ export default function Game({ params }: { params: Promise<{ code: string }> }):
     socket.on("newMessage", (msg: string) => setMessages((prev) => [...prev, msg]))
     // Czyszczenie nasłuchiwania przy demontażu komponentu
     return () => {
-      socket.off("newMessage");
-    };
+      socket.off("newMessage")
+    }
   }, [code])
 
   /**

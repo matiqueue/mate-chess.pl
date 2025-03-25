@@ -10,6 +10,6 @@ import StatiscticsPage from "@/components/statistics/statistics-page"
  * @remarks
  * Autor: nasakrator (Kuba Batko)
  */
-export default async function Page(): Promise<JSX.Element> {
+export default async function Page() {
   return <StatiscticsPage />
 }

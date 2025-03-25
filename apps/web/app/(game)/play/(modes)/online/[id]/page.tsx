@@ -21,7 +21,7 @@ const socket = io("http://localhost:4000")
  * @remarks
  * Autor: nasakrator
  */
-export default function Game({ params }: { params: Promise<{ id: string }> }): JSX.Element {
+export default function Game({ params }: { params: Promise<{ id: string }> }) {
   // Pobranie parametrów (Next.js 15)
   const { id } = use(params)
 
@@ -37,8 +37,8 @@ export default function Game({ params }: { params: Promise<{ id: string }> }): J
     socket.on("newMessage", (msg: string) => setMessages((prev) => [...prev, msg]))
     // Czyszczenie nasłuchiwania przy odmontowaniu komponentu
     return () => {
-      socket.off("newMessage");
-    };
+      socket.off("newMessage")
+    }
   }, [id])
 
   /**

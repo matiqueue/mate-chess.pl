@@ -13,7 +13,7 @@ import ClientLayout from "@/components/game/client-layout"
  * @remarks
  * Autor: nasakrator
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   // W przypadku, gdy URL jest dokładnie "/play/online", "/play/link" lub "/play/local",
   // lub zupełnie inny – wyświetlamy pełny layout (sidebar, nagłówki, navbar, itd.)
   return <ClientLayout>{children}</ClientLayout>

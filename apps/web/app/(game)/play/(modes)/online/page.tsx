@@ -20,7 +20,7 @@ const socket = io("http://localhost:4000")
  * @remarks
  * Autor: nasakrator
  */
-export default function Game({ params }: { params: Promise<{ id: string }> }): JSX.Element {
+export default function Game({ params }: { params: Promise<{ id: string }> }) {
   // Pobranie identyfikatora pokoju (Next.js 15)
   const { id } = use(params)
 
@@ -37,7 +37,7 @@ export default function Game({ params }: { params: Promise<{ id: string }> }): J
     // Czyszczenie nasłuchiwania przy demontażu komponentu
     return () => {
       socket.off("newMessage")
-    };
+    }
   }, [id])
 
   /**

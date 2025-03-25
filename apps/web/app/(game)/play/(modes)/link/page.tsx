@@ -31,7 +31,7 @@ const socket = io("http://localhost:4000")
  * @remarks
  * Autor: nasakrator
  */
-function Navbar({ code }: { code: string }): JSX.Element {
+function Navbar({ code }: { code: string }) {
   const { open, setOpen } = useSidebar()
   const { t } = useTranslation()
   const sidebarOffset = 128
@@ -93,7 +93,7 @@ function Navbar({ code }: { code: string }): JSX.Element {
  * @remarks
  * Autor: nasakrator
  */
-function FloatingPaths({ position }: { position: number }): JSX.Element {
+function FloatingPaths({ position }: { position: number }) {
   const paths = Array.from({ length: 36 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 5 * position}`,
@@ -142,7 +142,7 @@ function FloatingPaths({ position }: { position: number }): JSX.Element {
  * @remarks
  * Autor: nasakrator
  */
-export default function LinkLobby(): JSX.Element | null {
+export default function LinkLobby() {
   const { isSignedIn, user } = useUser()
   const { theme } = useTheme()
   const { t } = useTranslation()

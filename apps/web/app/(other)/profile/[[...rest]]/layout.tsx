@@ -14,7 +14,7 @@ import { ClerkProvider, useUser } from "@clerk/nextjs"
  * @remarks
  * Autor: nasakrator
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useUser()
 
   if (user) {

@@ -16,7 +16,7 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function HomeLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export default function PuzzlesPage(): JSX.Element {
+export default function PuzzlesPage() {
   return (
     <>
       <PuzzlesClient />

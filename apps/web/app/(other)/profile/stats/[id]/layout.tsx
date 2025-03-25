@@ -24,7 +24,7 @@ export const metadata: Metadata = {
  * @remarks
  * Autor: nasakrator (Kuba Batko) i matiqueue
  */
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-sidebar">

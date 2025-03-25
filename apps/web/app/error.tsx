@@ -16,7 +16,7 @@ import { useErrorReporter } from "@/contexts/ErrorContextProvider" // Poprawna Å
  * @remarks
  * Autor: matiqueue (Szymon GÃ³ral)
  */
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }): JSX.Element {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const reportError = useErrorReporter()
 
   useEffect(() => {

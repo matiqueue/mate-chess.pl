@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next"
  * @remarks
  * Autor: matiqueue (Szymon Góral)
  */
-export function Navbar(): JSX.Element {
+export function Navbar() {
   const { t } = useTranslation()
   const pathname = usePathname()
 
