@@ -4,7 +4,7 @@ import SettingsPage from "@/components/settings/settings"
  * Metadane strony Chess Openings.
  *
  * @remarks
- * Autor: matiqueue (Jakub Batko)
+ * Autor: Jakub Batko (Jakub Batko)
  */
 export const metadata: Metadata = {
   title: "Settings| Mate-Chess",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  * @returns {JSX.Element} Element JSX reprezentujący stronę ustawień.
  *
  * @remarks
- * Autor: matiqueue (Jakub Batko)
+ * Autor: Jakub Batko (Jakub Batko)
  */
 export default function Home() {
   return (
