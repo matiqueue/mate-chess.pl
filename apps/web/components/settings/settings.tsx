@@ -105,28 +105,16 @@ export default function SettingsPage() {
                   </Label>
                 </div>
               </RadioGroup>
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className={`border rounded-md p-3 ${boardView === "2d" ? "border-primary" : "border-muted"}`}>
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-1 gap-6">
+                <div className={`rounded-md p-3 xl:w-3/4 xl:h-3/4 2xl:w-1/2 2xl:h-1/2 mx-auto`}>
                   <div className="aspect-square bg-muted relative overflow-hidden rounded-md">
                     <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="2D Chess Board Example"
-                      className="object-cover"
+                      src={boardView == "2d" ? theme == "dark" ? "/backgrounds/2dExampleDark.png" : "/backgrounds/2dExampleLight.png" : theme == "dark" ? "/backgrounds/3dExampleDark.png" : "/backgrounds/3dExampleLight.png"}
+                      alt={boardView == "2d" ? "2D CHess Board Example" : "3D Chess Board Example" } 
+                      className="object-center w-full h-full"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-sm font-medium bg-background/80 px-2 py-1 rounded">2D View Example</span>
-                    </div>
-                  </div>
-                </div>
-                <div className={`border rounded-md p-3 ${boardView === "3d" ? "border-primary" : "border-muted"}`}>
-                  <div className="aspect-square bg-muted relative overflow-hidden rounded-md">
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="3D Chess Board Example"
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-sm font-medium bg-background/80 px-2 py-1 rounded">3D View Example</span>
+                      <span className="text-sm font-medium bg-background/80 px-2 py-1 rounded">{boardView == "2d" ? "2D Example" : "3D Example"}</span>
                     </div>
                   </div>
                 </div>
@@ -167,7 +155,7 @@ export default function SettingsPage() {
               <CardDescription>Customize the appearance of your chess board.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 opacity-50 pointer-events-none">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 opacity-50 pointer-events-none">
                 <div className="border rounded-md p-2 text-center">
                   <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-900 mb-2 rounded"></div>
                   <span className="text-sm">Dark Sky</span>
@@ -178,11 +166,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="border rounded-md p-2 text-center">
                   <div className="aspect-square bg-gradient-to-br from-emerald-800 to-emerald-950 mb-2 rounded"></div>
-                  <span className="text-sm">Classic</span>
-                </div>
-                <div className="border rounded-md p-2 text-center">
-                  <div className="aspect-square bg-gradient-to-br from-amber-700 to-amber-900 mb-2 rounded"></div>
-                  <span className="text-sm">Medieval</span>
+                  <span className="text-sm">More Soon!</span>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mt-4 text-center">
