@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Bell, Globe, Monitor, Moon, PanelRight, Volume2, VolumeX } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@workspace/ui/components/separator"
 import { Badge } from "@workspace/ui/components/badge"
 import { Slider } from "@workspace/ui/components/slider"
-
+import { useAudio } from "@/components/home/audio-provider"
 import { useTranslation } from "react-i18next"
 import i18next from "i18next"
 
@@ -24,10 +24,15 @@ export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true)
   const [musicVolume, setMusicVolume] = useState([30])
   const [soundVolume, setSoundVolume] = useState([70])
-
+  const { isPlaying, toggleMusic } = useAudio()
   const changeLanguage = (lng: string) => {
     i18next.changeLanguage(lng)
   }
+
+  useEffect( () => {
+    toggleMusic()
+  }, [backgroundMusic])
+
 
   return (
     <div className="container mx-auto py-6 space-y-8">
