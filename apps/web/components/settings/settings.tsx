@@ -155,17 +155,29 @@ export default function SettingsPage() {
               <CardDescription>Customize the appearance of your chess board.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 opacity-50 pointer-events-none">
-                <div className="border rounded-md p-2 text-center">
-                  <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-900 mb-2 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 opacity-80 gap-4 pointer-events-none">
+                <div className="border rounded-lg p-2 text-center">
+                    <img
+                      src="/backgrounds/3dExampleDark.png"
+                      alt="3D Chess Board Theme Example"
+                      className="object-center w-full aspect-square rounded-md"
+                    />
                   <span className="text-sm">Dark Sky</span>
                 </div>
                 <div className="border rounded-md p-2 text-center">
-                  <div className="aspect-square bg-gradient-to-br from-sky-300 to-amber-200 mb-2 rounded"></div>
+                <img
+                      src="/backgrounds/3dExampleLight.png"
+                      alt="3D Chess Board Theme Example"
+                      className="object-center w-full aspect-square rounded-md"
+                    />
                   <span className="text-sm">Sunny Weather</span>
                 </div>
                 <div className="border rounded-md p-2 text-center">
-                  <div className="aspect-square bg-gradient-to-br from-emerald-800 to-emerald-950 mb-2 rounded"></div>
+                    <img
+                      src="/backgrounds/sign-in-background.webp"
+                      alt="3D Chess Board Theme Example"
+                      className="object-center w-full aspect-square rounded-md"
+                    />
                   <span className="text-sm">More Soon!</span>
                 </div>
               </div>
