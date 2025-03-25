@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [musicVolume, setMusicVolume] = useState([30])
   const [soundVolume, setSoundVolume] = useState([70])
   const { isPlaying, toggleMusic } = useAudio()
+
   const changeLanguage = (lng: string) => {
     i18next.changeLanguage(lng)
   }
@@ -33,6 +34,8 @@ export default function SettingsPage() {
   useEffect( () => {
     toggleMusic()
   }, [backgroundMusic])
+
+  
 
 
   return (
@@ -61,7 +64,7 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Globe className="h-5 w-5 text-muted-foreground" />
-                <Select defaultValue="en">
+                <Select defaultValue="en" onValueChange={(value) => changeLanguage(value)}>
                   <SelectTrigger className="w-full md:w-[200px]">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
@@ -137,6 +140,7 @@ export default function SettingsPage() {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="appearance" className="space-y-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.2}}>
           <Card>
             <CardHeader>
               <CardTitle>Theme</CardTitle>
@@ -156,7 +160,8 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.3}}>
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -199,11 +204,13 @@ export default function SettingsPage() {
               </p>
             </CardContent>
           </Card>
+          </motion.div>
         </TabsContent>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="notifications" className="space-y-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.2}}>
           <Card>
             <CardHeader>
               <CardTitle>Sound Settings</CardTitle>
@@ -249,7 +256,9 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-
+          </motion.div>
+          
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.3}}>
           <Card>
             <CardHeader>
               <CardTitle>Notifications</CardTitle>
@@ -296,11 +305,13 @@ export default function SettingsPage() {
               )}
             </CardContent>
           </Card>
+          </motion.div>
         </TabsContent>
         </motion.div>
         
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
         <TabsContent value="social" className="space-y-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.2}}>
           <Card>
             <CardHeader>
               <CardTitle>Privacy Settings</CardTitle>
@@ -392,7 +403,9 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-
+          </motion.div>
+          
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.3}}>
           <Card>
             <CardHeader>
               <CardTitle>Friend Management</CardTitle>
@@ -422,6 +435,7 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
         </TabsContent>
         </motion.div>
       </Tabs>
