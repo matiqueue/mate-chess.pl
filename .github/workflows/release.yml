@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Add environment variables
+        run: pnpm env:mac
+
       - name: Build application
         run: pnpm build
 
