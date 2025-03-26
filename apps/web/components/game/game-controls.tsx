@@ -17,6 +17,7 @@ import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
 import { useTranslation } from "react-i18next"
+import { gameStatusType } from "@modules/shared/types/gameStatusType"
 
 export function GameControls() {
   const { t } = useTranslation()
@@ -24,10 +25,10 @@ export function GameControls() {
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
-  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState } = useGameContext() // pobieramy funkcję cofania ruchu
+  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState, setGameStatus } = useGameContext() // pobieramy funkcję cofania ruchu
 
-  function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
-    throw new Error("Function not implemented.")
+  function confirmSurrender() {
+    setGameStatus(gameStatusType.blackWins)
   }
 
   function sendDrawOffer(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {

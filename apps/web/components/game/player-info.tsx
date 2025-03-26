@@ -12,6 +12,7 @@ export function PlayerInfo() {
   const { theme } = useTheme()
   const { currentPlayer, gameStatus, whiteTime, blackTime } = useGameContext()
   const { user, isSignedIn } = useUser()
+  const pathname = typeof window !== "undefined" ? window.location.pathname : ""
 
   const textColor = theme === "dark" ? "text-white" : "text-zinc-900"
   const mutedTextColor = theme === "dark" ? "text-white/60" : "text-zinc-600"
@@ -25,13 +26,45 @@ export function PlayerInfo() {
   const blackSeconds = blackTime % 60
   const blackTimeDisplay = `${blackMinutes}:${blackSeconds < 10 ? "0" : ""}${blackSeconds}`
 
-  const firstUserImage = isSignedIn && user?.imageUrl ? user.imageUrl : "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
-  const firstUserFallback = isSignedIn && user?.firstName ? user.firstName.slice(0, 2).toUpperCase() : "GU"
-  const firstUserName = isSignedIn && user?.firstName ? user.firstName : t("playerInfo.guest")
+  // Default Clerk-based user info
+  const clerkImage = isSignedIn && user?.imageUrl ? user.imageUrl : "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
+  const clerkFallback = isSignedIn && user?.firstName ? user.firstName.slice(0, 2).toUpperCase() : "GU"
+  const clerkName = isSignedIn && user?.firstName ? user.firstName : t("playerInfo.guest")
 
-  const secondUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
-  const secondUserFallback = "GU"
-  const secondUserName = t("playerInfo.guest")
+  // Player profile logic based on pathname
+  let firstUserImage = clerkImage
+  let firstUserFallback = clerkFallback
+  let firstUserName = clerkName
+  let secondUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
+  let secondUserFallback = "GU"
+  let secondUserName = t("playerInfo.guest")
+
+  if (pathname.startsWith("/play/link/") || pathname.startsWith("/play/online")) {
+    // For online/link games, keep current profiles (assuming they're handled elsewhere)
+    firstUserImage = clerkImage
+    firstUserFallback = clerkFallback
+    firstUserName = clerkName
+    secondUserImage = clerkImage // This could be updated based on actual opponent data
+    secondUserFallback = clerkFallback
+    secondUserName = clerkName
+  } else if (pathname === "/play/local") {
+    // Local game: both players are the same Clerk user
+    firstUserImage = clerkImage
+    firstUserFallback = clerkFallback
+    firstUserName = clerkName
+    secondUserImage = clerkImage
+    secondUserFallback = clerkFallback
+    secondUserName = clerkName
+  } else if (pathname.startsWith("/bot/")) {
+    // Changed from '/play/bot/' to '/bot/'
+    // Bot game: first player from Clerk, second player is explicitly Mate Bot
+    firstUserImage = clerkImage
+    firstUserFallback = clerkFallback
+    firstUserName = clerkName
+    secondUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp" // Could use a bot-specific image
+    secondUserFallback = "MB"
+    secondUserName = "Mate Bot" // Hardcoded to ensure it always shows "Mate Bot"
+  }
 
   const currentTurn = currentPlayer ? t(`playerInfo.${currentPlayer.toLowerCase()}`) : t("playerInfo.white")
 

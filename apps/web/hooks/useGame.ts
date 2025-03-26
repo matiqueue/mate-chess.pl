@@ -180,6 +180,7 @@ const useGame = (ai: boolean = false) => {
     getPositionByCords: (x: number, y: number) => getPositionByCords(getBoard(game), x, y),
     getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
     getPositionById: (id: number) => getPositionById(getBoard(game), id),
+    setGameStatus,
   }
 }
 
