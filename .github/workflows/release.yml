@@ -1,29 +1,12 @@
-name: Build and Release Tauri Desktop App
+name: Build Tauri + Next.js Desktop App
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - dev
 
 jobs:
-  create-release:
-    runs-on: Ubuntu-22.04
-    outputs:
-      upload_url: ${{ steps.create-release.outputs.upload_url }}
-    steps:
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
-
   build-linux:
-    needs: create-release
     runs-on: Ubuntu-22.04
     steps:
       - name: Checkout repository
@@ -60,21 +43,13 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      - name: Zip Linux artifact
-        run: zip -r mate-chess-linux.zip apps/desktop/src-tauri/release/mate-chess
-
-      - name: Upload Linux artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive Linux build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: mate-chess-linux.zip
-          asset_name: mate-chess-linux.zip
-          asset_content_type: application/zip
+          name: mate-chess-linux
+          path: apps/desktop/src-tauri/release/mate-chess
 
   build-windows:
-    needs: create-release
     runs-on: windows-2022
     steps:
       - name: Checkout repository
@@ -102,21 +77,13 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      - name: Zip Windows artifact
-        run: Compress-Archive -Path apps/desktop/src-tauri/release/mate-chess.exe -DestinationPath mate-chess-windows.zip
-
-      - name: Upload Windows artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive Windows build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: mate-chess-windows.zip
-          asset_name: mate-chess-windows.zip
-          asset_content_type: application/zip
+          name: mate-chess-windows
+          path: apps/desktop/src-tauri/release/mate-chess.exe
 
   build-macos:
-    needs: create-release
     runs-on: macOS-12
     steps:
       - name: Checkout repository
@@ -144,15 +111,8 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      - name: Zip macOS artifact
-        run: zip -r mate-chess-macos.zip apps/desktop/src-tauri/release/mate-chess.app
-
-      - name: Upload macOS artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive macOS build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: mate-chess-macos.zip
-          asset_name: mate-chess-macos.zip
-          asset_content_type: application/zip
+          name: mate-chess-macos
+          path: apps/desktop/src-tauri/release/mate-chess.app
