@@ -1,10 +1,10 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "$schema": "../../web/node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
     "devPath": "http://localhost:3000",
-    "distDir": "../.next"
+    "distDir": "../../web//.next"
   },
   "package": {
     "productName": "Mate Chess",
@@ -53,7 +53,9 @@
         "height": 600,
         "resizable": true,
         "title": "Mate Chess",
-        "width": 800
+        "width": 800,
+        "transparent": true,
+        "decorations": false
       }
     ]
   }

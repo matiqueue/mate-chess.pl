@@ -182,6 +182,9 @@ importers:
       '@prisma/client':
         specifier: ^6.4.1
         version: 6.5.0(typescript@5.8.2)
+      '@tauri-apps/api':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@types/three':
         specifier: ^0.174.0
         version: 0.174.0
@@ -1843,6 +1846,9 @@ packages:
 
   '@tailwindcss/postcss@4.0.15':
     resolution: {integrity: sha512-qyrpoDKIO7wzkRbKCvGLo7gXRjT9/Njf7ZJiJhG4njrfZkvOhjwnaHpYbpxYeDysEg+9pB1R4jcd+vQ7ZUDsmQ==}
+
+  '@tauri-apps/api@2.4.0':
+    resolution: {integrity: sha512-F1zXTsmwcCp+ocg6fbzD/YL0OHeSG1eynCag1UNlX2tD5+dlXy7eRbTu9cAcscPjcR7Nix7by2wiv/+VfWUieg==}
 
   '@tauri-apps/cli-darwin-arm64@1.6.3':
     resolution: {integrity: sha512-fQN6IYSL8bG4NvkdKE4sAGF4dF/QqqQq4hOAU+t8ksOzHJr0hUlJYfncFeJYutr/MMkdF7hYKadSb0j5EE9r0A==}
@@ -8431,6 +8437,8 @@ snapshots:
       lightningcss: 1.29.2
       postcss: 8.5.3
       tailwindcss: 4.0.15
+
+  '@tauri-apps/api@2.4.0': {}
 
   '@tauri-apps/cli-darwin-arm64@1.6.3':
     optional: true
