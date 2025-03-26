@@ -18,7 +18,7 @@ import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation }
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
-  const { board, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
+  const { board, currentPlayer, isMoveEnPassant: checkEnPassant, aiMovePerform } = useGameContext()
 
   const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
   const { arrows, handleMouseDownSquare, handleMouseUpSquare, clearArrows } = useChessArrows()
@@ -329,6 +329,9 @@ export function ChessBoard2D() {
           </div>
         </div>
       </div>
+      <button onClick={aiMovePerform} className={"outline-4 bg-gray-500"}>
+        Ai move
+      </button>
     </div>
   )
 }

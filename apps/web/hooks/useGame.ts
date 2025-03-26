@@ -22,6 +22,7 @@ import {
   startGame,
   undoMove,
   whosTurn,
+  callAiToPerformMove,
 } from "@modules/index"
 import { color, figureType } from "@chess-engine/types"
 import MovePair from "@shared/types/movePair"
@@ -101,18 +102,28 @@ const useGame = (ai: boolean = false) => {
     const move = { from, to }
     if (makeMove(game, move)) {
       updateBoard()
-      if (game instanceof ChessGameExtraAI && game.currentPlayer === whosTurn(game)) {
-        const aimove = game.callAiToFindMove()
-        if (aimove) {
-          makeMove(game, aimove)
-        } else {
-          console.error("ai move not performed. Move is either undefined or null")
-        }
-        updateBoard()
-      }
       return true
     }
     return false
+  }
+
+  const aiMovePerform = () => {
+    if (game instanceof ChessGameExtraAI && game.currentPlayer === whosTurn(game)) {
+      const aimove = callAiToPerformMove(game)
+      if (aimove) {
+        console.log("ai movement was attempted")
+        console.log("attempt: ", makeMove(game, aimove))
+        console.log(`from: ${aimove.from.notation} to: ${aimove.to.notation}`)
+        console.log(`piece: ${aimove.from.figure?.type} of color: ${aimove.from.figure?.color}`)
+        if (isAwaitingPromotion(game)) {
+          game.promotionTo(figureType.queen) //to trzeba zrobić lepiej żeby ai mogło decydować na co promocja
+          updateBoard()
+        }
+      } else {
+        console.error("ai move not performed. Move is either undefined or null")
+      }
+      updateBoard()
+    }
   }
 
   const undoLastMove = (): boolean => {
@@ -182,6 +193,7 @@ const useGame = (ai: boolean = false) => {
     getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
     getPositionById: (id: number) => getPositionById(getBoard(game), id),
     setGameStatus,
+    aiMovePerform,
   }
 }
 
