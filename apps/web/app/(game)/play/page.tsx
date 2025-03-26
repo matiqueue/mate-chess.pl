@@ -142,7 +142,7 @@ export default function GameModeSelector() {
           initial={{ y: 30 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[15vh] overflow-hidden flex-grow"
+          className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[10vh] overflow-hidden flex-grow"
         >
           <motion.h1
             initial={{ opacity: 0, y: -50 }}

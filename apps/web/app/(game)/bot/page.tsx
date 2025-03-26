@@ -125,7 +125,7 @@ export default function GameModeSelector() {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mt-25 text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
           >
             {t("selectGameMode")}
           </motion.h1>
