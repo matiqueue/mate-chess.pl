@@ -22,6 +22,8 @@ jobs:
           cache: "pnpm"
       - name: Enable corepack
         run: corepack enable
+      - name: Install pnpm
+        run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
       - name: Install Linux dependencies
