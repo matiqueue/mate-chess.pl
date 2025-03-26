@@ -160,106 +160,104 @@ export default function ChessTournaments() {
   }
 
   return (
-    <ScrollArea className="w-full">
-      <div className="relative w-full">
-        {theme === "dark" && (
-          <motion.div
-            className="absolute inset-0 sm:m-[5%] rounded-[70%_20%_90%_15%_/15%_60%_25%_40%]"
-            style={{
-              backgroundImage: "url('/backgrounds/playBgImage.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              opacity: 0.1,
-            }}
-          />
-        )}
-
+    <div className="relative w-full">
+      {theme === "dark" && (
         <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className=" text-foreground flex flex-col items-center h-screen w-full py-10"
-        >
-          <h1 className="mt-50 text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
+          className="absolute inset-0 sm:m-[5%] rounded-[70%_20%_90%_15%_/15%_60%_25%_40%]"
+          style={{
+            backgroundImage: "url('/backgrounds/playBgImage.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            opacity: 0.1,
+          }}
+        />
+      )}
 
-          <div className="relative w-full md:w-[70vw] mb-4">
-            <div
-              className="flex justify-center items-center items overflow-hidden h-[450px]"
-              onMouseDown={handleDragStart}
-              onMouseUp={handleDragEnd}
-              onMouseLeave={() => setIsDragging(false)}
-            >
-              <AnimatePresence initial={false}>
-                {tournaments.map((tournament, index) => (
-                  <MotionCard
-                    key={tournament.id}
-                    className="absolute w-full max-w-[400px] h-[450px] transition-all duration-300"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                      opacity: (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) || (!isWideScreen && index === currentIndex) ? 1 : 0,
-                      scale: index === currentIndex ? 1.1 : 0.9,
-                      x: (index - currentIndex) * (isWideScreen ? 430 : 0),
-                      zIndex: index === currentIndex ? 30 : isWideScreen ? 20 : 10,
-                    }}
-                    transition={{ duration: 0.5, zIndex: { delay: index === currentIndex ? 0 : 0.2 } }}
-                  >
-                    <CardContent className="p-6 flex flex-col items-center justify-between h-full">
-                      <motion.img
-                        src={tournament.logo}
-                        alt={`${t("chessTournaments.tournamentNames." + tournament.nameKey)} logo`}
-                        className="w-32 h-32 mb-4"
-                        animate={floatingAnimation}
-                      />
-                      <h3 className="text-2xl font-semibold mb-4 text-center">{t("chessTournaments.tournamentNames." + tournament.nameKey)}</h3>
-                      <div className="flex items-center mb-2">
-                        <Calendar className="mr-2 h-5 w-5" />
-                        <span>
-                          {formatDate(tournament.startDate)} - {formatDate(tournament.endDate)}
-                        </span>
-                      </div>
-                      <div className="flex items-center mb-4">
-                        <Users className="mr-2 h-5 w-5" />
-                        <span>
-                          {tournament.participants}/{tournament.maxParticipants} {t("chessTournaments.participants")}
-                        </span>
-                      </div>
-                      {tournament.status === "upcoming" && (
-                        <span className="text-yellow-500">
-                          {t("chessTournaments.startsIn", {
-                            days: daysUntilStart[index],
-                          })}
-                        </span>
-                      )}
-                      {tournament.status === "active" && <span className="text-green-500">{t("chessTournaments.inProgress")}</span>}
-                      {tournament.status === "finished" && <span className="text-blue-500">{t("chessTournaments.finished")}</span>}
-                      <Button
-                        className="mt-4 w-full"
-                        disabled={!isRegistrationActive(tournament)}
-                        onClick={() => console.log(`Registered for ${t("chessTournaments.tournamentNames." + tournament.nameKey)}`)}
-                      >
-                        {isRegistrationActive(tournament) ? t("chessTournaments.register") : t("chessTournaments.registrationClosed")}
-                      </Button>
-                    </CardContent>
-                  </MotionCard>
-                ))}
-              </AnimatePresence>
-            </div>
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className=" text-foreground flex flex-col items-center w-full py-10"
+      >
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
 
-            <div className="flex justify-center items-center space-x-4 mt-4 pt-5">
-              <Button onClick={handlePrev} disabled={currentIndex === 0} className="z-20 rounded-full p-2" variant="outline">
-                <ChevronLeft className="h-6 w-6" />
-              </Button>
-              <Button onClick={handleReset} className="z-20 rounded-full p-2" variant="outline">
-                <RotateCcw className="h-6 w-6" />
-              </Button>
-              <Button onClick={handleNext} disabled={currentIndex === tournaments.length - 1} className="z-20 rounded-full p-2" variant="outline">
-                <ChevronRight className="h-6 w-6" />
-              </Button>
-            </div>
+        <div className="relative w-full md:w-[70vw] ">
+          <div
+            className="flex justify-center items-center items overflow-hidden h-[450px]"
+            onMouseDown={handleDragStart}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={() => setIsDragging(false)}
+          >
+            <AnimatePresence initial={false}>
+              {tournaments.map((tournament, index) => (
+                <MotionCard
+                  key={tournament.id}
+                  className="absolute w-full max-w-[400px] h-[450px] transition-all duration-300"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{
+                    opacity: (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) || (!isWideScreen && index === currentIndex) ? 1 : 0,
+                    scale: index === currentIndex ? 1.1 : 0.9,
+                    x: (index - currentIndex) * (isWideScreen ? 430 : 0),
+                    zIndex: index === currentIndex ? 30 : isWideScreen ? 20 : 10,
+                  }}
+                  transition={{ duration: 0.5, zIndex: { delay: index === currentIndex ? 0 : 0.2 } }}
+                >
+                  <CardContent className="p-6 flex flex-col items-center justify-between h-full">
+                    <motion.img
+                      src={tournament.logo}
+                      alt={`${t("chessTournaments.tournamentNames." + tournament.nameKey)} logo`}
+                      className="w-32 h-32 mb-4"
+                      animate={floatingAnimation}
+                    />
+                    <h3 className="text-2xl font-semibold mb-4 text-center">{t("chessTournaments.tournamentNames." + tournament.nameKey)}</h3>
+                    <div className="flex items-center mb-2">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      <span>
+                        {formatDate(tournament.startDate)} - {formatDate(tournament.endDate)}
+                      </span>
+                    </div>
+                    <div className="flex items-center mb-4">
+                      <Users className="mr-2 h-5 w-5" />
+                      <span>
+                        {tournament.participants}/{tournament.maxParticipants} {t("chessTournaments.participants")}
+                      </span>
+                    </div>
+                    {tournament.status === "upcoming" && (
+                      <span className="text-yellow-500">
+                        {t("chessTournaments.startsIn", {
+                          days: daysUntilStart[index],
+                        })}
+                      </span>
+                    )}
+                    {tournament.status === "active" && <span className="text-green-500">{t("chessTournaments.inProgress")}</span>}
+                    {tournament.status === "finished" && <span className="text-blue-500">{t("chessTournaments.finished")}</span>}
+                    <Button
+                      className="mt-4 w-full"
+                      disabled={!isRegistrationActive(tournament)}
+                      onClick={() => console.log(`Registered for ${t("chessTournaments.tournamentNames." + tournament.nameKey)}`)}
+                    >
+                      {isRegistrationActive(tournament) ? t("chessTournaments.register") : t("chessTournaments.registrationClosed")}
+                    </Button>
+                  </CardContent>
+                </MotionCard>
+              ))}
+            </AnimatePresence>
           </div>
-        </motion.div>
-      </div>
-    </ScrollArea>
+
+          <div className="flex justify-center items-center space-x-4 mt-4 pt-5">
+            <Button onClick={handlePrev} disabled={currentIndex === 0} className="z-20 rounded-full p-2" variant="outline">
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+            <Button onClick={handleReset} className="z-20 rounded-full p-2" variant="outline">
+              <RotateCcw className="h-6 w-6" />
+            </Button>
+            <Button onClick={handleNext} disabled={currentIndex === tournaments.length - 1} className="z-20 rounded-full p-2" variant="outline">
+              <ChevronRight className="h-6 w-6" />
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   )
 }
