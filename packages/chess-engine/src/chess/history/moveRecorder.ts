@@ -100,9 +100,7 @@ class MoveRecorder {
         }
         return false
       })
-      console.log("candidates ", candidates)
       if (candidates.length > 0) {
-        console.log("candidates ")
         const fromNotation = record.move.from.notation
         const file = fromNotation.charAt(0)
         const rank = fromNotation.slice(1)

@@ -175,7 +175,6 @@ class ChessGame {
    * @returns formatted move history
    */
   public getMoveHistory(): any {
-    console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
     return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 

@@ -70,13 +70,10 @@ const useGame = (ai: boolean = false) => {
     }
 
     const playerTimer = setInterval(() => {
-      console.log("Timer tick. Current player:", currentPlayer, "White time:", whiteTime, "Black time:", blackTime)
       if (currentPlayer?.toLowerCase() === "white") {
         setWhiteTime((prevWhiteTime) => {
           const newTime = prevWhiteTime > 0 ? prevWhiteTime - 1 : 0
-          console.log("Updating white time to:", newTime)
           if (newTime === 0) {
-            console.log("White time ran out, setting status to blackWins")
             setGameStatus(gameStatusType.blackWins)
           }
           return newTime
@@ -84,15 +81,13 @@ const useGame = (ai: boolean = false) => {
       } else if (currentPlayer?.toLowerCase() === "black") {
         setBlackTime((prevBlackTime) => {
           const newTime = prevBlackTime > 0 ? prevBlackTime - 1 : 0
-          console.log("Updating black time to:", newTime)
           if (newTime === 0) {
-            console.log("Black time ran out, setting status to whiteWins")
             setGameStatus(gameStatusType.whiteWins)
           }
           return newTime
         })
       } else {
-        console.log("No valid current player detected")
+        console.error("No valid current player detected")
       }
     }, 1000)
 
@@ -151,7 +146,6 @@ const useGame = (ai: boolean = false) => {
   }
 
   const updateBoard = () => {
-    console.log("Updating board. New status:", getGameStatus(game), "New player:", whosTurn(game))
     setBoard(getBoard(game))
     setMoveHistory(getMoveHistory(game))
     setCurrentPlayer(whosTurn(game))
