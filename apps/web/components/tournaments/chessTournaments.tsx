@@ -109,7 +109,7 @@ export default function ChessTournaments() {
   useEffect(() => {
     // Dopiero w przeglądarce sprawdzamy szerokość
     const handleResize = () => {
-      setIsWideScreen(window.innerWidth >= 1400)
+      setIsWideScreen(window.innerWidth >= 1600)
     }
     handleResize()
     window.addEventListener("resize", handleResize)
@@ -181,11 +181,11 @@ export default function ChessTournaments() {
           transition={{ duration: 0.5 }}
           className=" text-foreground flex flex-col items-center h-screen w-full py-10"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
+          <h1 className="mt-50 text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
 
           <div className="relative w-full md:w-[70vw] mb-4">
             <div
-              className="flex justify-center items-center overflow-hidden h-[450px]"
+              className="flex justify-center items-center items overflow-hidden h-[450px]"
               onMouseDown={handleDragStart}
               onMouseUp={handleDragEnd}
               onMouseLeave={() => setIsDragging(false)}
@@ -199,7 +199,7 @@ export default function ChessTournaments() {
                     animate={{
                       opacity: (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) || (!isWideScreen && index === currentIndex) ? 1 : 0,
                       scale: index === currentIndex ? 1.1 : 0.9,
-                      x: (index - currentIndex) * (isWideScreen ? 400 : 0),
+                      x: (index - currentIndex) * (isWideScreen ? 430 : 0),
                       zIndex: index === currentIndex ? 30 : isWideScreen ? 20 : 10,
                     }}
                     transition={{ duration: 0.5, zIndex: { delay: index === currentIndex ? 0 : 0.2 } }}

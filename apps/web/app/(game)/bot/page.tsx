@@ -119,13 +119,13 @@ export default function GameModeSelector() {
           initial={{ y: 30 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
-          className="absolute z-10 text-foreground flex flex-col items-center justify-start pt-[8vh] overflow-hidden flex-grow mx-20"
+          className="relative z-10 text-foreground flex flex-col items-center justify-start pt-[8vh] overflow-hidden flex-grow mx-20"
         >
           <motion.h1
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
+            className="mt-25 text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
           >
             {t("selectGameMode")}
           </motion.h1>
