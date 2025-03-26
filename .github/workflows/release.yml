@@ -1,4 +1,4 @@
-name: Build and Release Tauri + Next.js Desktop App
+name: Build and Release Tauri Desktop App
 
 on:
   push:
