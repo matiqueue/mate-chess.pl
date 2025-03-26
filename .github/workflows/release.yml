@@ -40,7 +40,7 @@ jobs:
           pnpm build # Budowanie aplikacji Next.js oraz Tauri w jednym kroku
 
       - name: Upload build artifacts (optional)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: tauri-build
           path: apps/desktop/src-tauri/release/
