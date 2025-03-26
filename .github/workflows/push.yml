@@ -1,4 +1,4 @@
-name: Create Release with Random File
+name: Randomly Add File to Release
 
 on:
   push:
@@ -6,28 +6,22 @@ on:
       - dev
 
 jobs:
-  build-and-release:
+  release:
     runs-on: ubuntu-latest
     steps:
-      # Pobierz kod źródłowy
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Przygotuj artefakty do release'u
-      - name: Prepare release artifacts
+      - name: Randomly include apps/server/src/index.ts
         run: |
           mkdir -p release-artifacts
-          # Przykładowe skopiowanie zbudowanego pliku (dostosuj ścieżkę)
-          cp ./dist/my-app release-artifacts/my-app
-          # Losowe dodanie pliku apps/server/src/index.ts (50% szans)
           if [ $((RANDOM % 2)) -eq 0 ]; then
             cp apps/server/src/index.ts release-artifacts/index.ts
-            echo "Added index.ts to release artifacts"
+            echo "File index.ts added to release"
           else
-            echo "Skipped adding index.ts this time"
+            echo "File index.ts skipped this time"
           fi
 
-      # Utwórz release na GitHubie
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
