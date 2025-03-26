@@ -1,41 +1,46 @@
-name: Release
+name: Build Tauri + Next.js App
 
 on:
   push:
     branches:
-      - dev
+      - dev # lub zmień na inną gałąź, której używasz
+  pull_request:
+    branches:
+      - main # lub zmień na inną gałąź, której używasz
 
 jobs:
-  publish:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v2
         with:
-          node-version: "20"
-          cache: "pnpm"
-      - name: Enable corepack and prepare pnpm
+          node-version: "16" # Możesz dostosować wersję Node.js
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install Rust
         run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          source $HOME/.cargo/env
+
       - name: Install dependencies
-        run: pnpm install
-      - name: Install Linux dependencies
-        if: matrix.platform == 'ubuntu-latest'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Cache Rust
-        uses: swatinem/rust-cache@v2
-      - name: Build and publish
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pnpm install
+
+      - name: Build the app
+        run: |
+          # Ustawienie folderu roboczego dla Tauri w monorepo (dostosuj ścieżkę, jeśli to konieczne)
+          cd apps/desktop
+          pnpm build # Budowanie aplikacji Next.js oraz Tauri w jednym kroku
+
+      - name: Upload build artifacts (optional)
+        uses: actions/upload-artifact@v3
+        with:
+          name: tauri-build
+          path: apps/desktop/src-tauri/release/
