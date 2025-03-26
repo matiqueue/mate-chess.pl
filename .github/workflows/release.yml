@@ -1,4 +1,4 @@
-name: "publish"
+name: Release
 
 on:
   push:
@@ -6,62 +6,34 @@ on:
       - main
 
 jobs:
-  publish-tauri:
-    permissions:
-      contents: write
+  publish:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - platform: "macos-latest" # dla Maców z procesorami Arm (M1 i nowsze).
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # dla Maców z procesorami Intel.
-            args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04" # dla Tauri v1 można zastąpić to ubuntu-20.04.
-            args: ""
-          - platform: "windows-latest"
-            args: ""
-
+        platform: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8 # Opcjonalnie: określ wersję pnpm
-
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          # Te targety są używane tylko na runnerach macOS, więc są w 'if', aby nieco przyspieszyć budowanie na Windows i Linux.
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-
-      - name: Install dependencies (Ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04' # Musi odpowiadać wartości platformy zdefiniowanej powyżej.
+          node-version: "20"
+          cache: "pnpm"
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-        # webkitgtk 4.0 jest dla Tauri v1 - webkitgtk 4.1 jest dla Tauri v2.
-        # Możesz usunąć tę, która nie dotyczy Twojej aplikacji, aby nieco przyspieszyć workflow.
-
-      - name: Install frontend dependencies
-        working-directory: apps/web
-        run: pnpm install # zmień to na npm, pnpm lub bun w zależności od tego, którego używasz.
-
-      - uses: tauri-apps/tauri-action@v0
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+      - name: Build and publish
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectPath: apps/web
-          tagName: app-v__VERSION__ # akcja automatycznie zastępuje __VERSION__ wersją aplikacji.
-          releaseName: "App v__VERSION__"
-          releaseBody: "Zobacz załączniki, aby pobrać i zainstalować tę wersję."
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.args }}
