@@ -6,7 +6,7 @@ import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
 import { gameStatusType } from "@shared/types/gameStatusType"
-import { PromotionFigureType } from "@shared/types/promotionType.js"
+import { PromotionFigureType } from "@shared/types/promotionType"
 
 /**
  * Represents a basic chess game logic.

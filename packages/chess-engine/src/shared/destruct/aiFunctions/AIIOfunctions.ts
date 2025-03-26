@@ -1,4 +1,4 @@
-import ChessAi from "@modules/ai/engine.js"
+import ChessAi from "@modules/ai/engine"
 
 export const callAiToPerformMove = (game: ChessAi) => {
   return game.callAiToFindMove()
