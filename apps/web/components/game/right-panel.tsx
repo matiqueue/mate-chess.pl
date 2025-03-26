@@ -261,18 +261,13 @@ export function RightPanel() {
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
                     moveHistory.map((movePair: any, index: any) => {
-                      const whiteMoveNumber = 2 * index + 1
-                      const blackMoveNumber = 2 * index + 2
+                      const moveNumber = index + 1
                       return (
                         <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
                           <span>
-                            {whiteMoveNumber}. Biały: {movePair.white}
+                            {moveNumber}. Biały: {movePair.white}
                           </span>
-                          {movePair.black && (
-                            <span className="ml-4">
-                              {blackMoveNumber}. Czarny: {movePair.black}
-                            </span>
-                          )}
+                          {movePair.black && <span className="ml-4">Czarny: {movePair.black}</span>}
                         </div>
                       )
                     })
