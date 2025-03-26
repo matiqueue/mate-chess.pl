@@ -13,23 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Skonfiguruj Node.js (jeśli potrzebujesz PNPM lub npm)
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install PNPM
-        run: npm install -g pnpm
-
-      # Zainstaluj zależności projektu
-      - name: Install dependencies
-        run: pnpm install
-
-      # Zbuduj aplikację (przykładowa komenda, dostosuj do swojego projektu)
-      - name: Build application
-        run: pnpm build
-
       # Przygotuj artefakty do release'u
       - name: Prepare release artifacts
         run: |
