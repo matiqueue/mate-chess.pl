@@ -21,31 +21,34 @@ jobs:
       - name: Install system dependencies (Ubuntu)
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libssl-dev build-essential curl wget
-        # Zastąpiłem libwebkit2gtk-4.0-dev na libwebkit2gtk-4.1-dev, bo jest dostępny w Ubuntu 22.04
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libssl-dev build-essential curl wget libsoup2.4-dev
 
-      # Krok 3: Zainstaluj Node.js
+      # Krok 3: Ustaw PKG_CONFIG_PATH
+      - name: Set PKG_CONFIG_PATH
+        run: echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig" >> $GITHUB_ENV
+
+      # Krok 4: Zainstaluj Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      # Krok 4: Zainstaluj PNPM
+      # Krok 5: Zainstaluj PNPM
       - name: Install PNPM
         run: npm install -g pnpm
 
-      # Krok 5: Zainstaluj Rust
+      # Krok 6: Zainstaluj Rust
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           components: rustfmt, clippy
 
-      # Krok 6: Zainstaluj zależności projektu
+      # Krok 7: Zainstaluj zależności projektu
       - name: Install dependencies
         run: pnpm install
 
-      # Krok 7: Zbuduj aplikację
+      # Krok 8: Zbuduj aplikację
       - name: Build application
         run: pnpm build
 
