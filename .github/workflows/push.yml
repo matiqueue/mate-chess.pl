@@ -3,7 +3,7 @@ name: Create Release with Random File
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   build-and-release:
