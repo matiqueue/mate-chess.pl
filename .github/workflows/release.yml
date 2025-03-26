@@ -1,46 +1,50 @@
-name: Build Tauri + Next.js App
+name: Build Tauri + Next.js Desktop App
 
 on:
   push:
     branches:
-      - dev # lub zmień na inną gałąź, której używasz
+      - dev
   pull_request:
     branches:
-      - main # lub zmień na inną gałąź, której używasz
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Możesz zmienić na windows-latest lub macos-latest w zależności od potrzeb
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Krok 1: Pobierz kod z repozytorium
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      # Krok 2: Zainstaluj Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "16" # Możesz dostosować wersję Node.js
+          node-version: "20" # Możesz zmienić wersję Node.js na tę, której używasz
 
-      - name: Install pnpm
+      # Krok 3: Zainstaluj PNPM
+      - name: Install PNPM
         run: npm install -g pnpm
 
-      - name: Install Rust
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-          source $HOME/.cargo/env
-
-      - name: Install dependencies
-        run: |
-          pnpm install
-
-      - name: Build the app
-        run: |
-          # Ustawienie folderu roboczego dla Tauri w monorepo (dostosuj ścieżkę, jeśli to konieczne)
-          cd apps/desktop
-          pnpm build # Budowanie aplikacji Next.js oraz Tauri w jednym kroku
-
-      - name: Upload build artifacts (optional)
-        uses: actions/upload-artifact@v2
+      # Krok 4: Zainstaluj Rust
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          name: tauri-build
+          toolchain: stable
+          components: rustfmt, clippy # Opcjonalne, możesz usunąć jeśli nie potrzebujesz
+
+      # Krok 5: Zainstaluj zależności projektu
+      - name: Install dependencies
+        run: pnpm install
+
+      # Krok 6: Zbuduj aplikację
+      - name: Build application
+        run: pnpm build
+
+      # Opcjonalny krok: Archiwizacja buildów
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-app-build
           path: apps/desktop/src-tauri/release/
