@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import {
   forwardMove,
@@ -36,9 +35,10 @@ const useGame = (ai: boolean = false) => {
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
+  const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut w sekundach
 
   useEffect(() => {
-    //tu trzeba wrzucić wyświetlenie popupu z pytaniem kim gra ai
+    // Inicjalizacja gry
     const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame()
     startGame(newGame)
     setGame(newGame)
@@ -46,6 +46,20 @@ const useGame = (ai: boolean = false) => {
     setCurrentPlayer(whosTurn(newGame))
     setMoveHistory(getMoveHistory(newGame))
     setGameStatus(getGameStatus(newGame))
+
+    // Uruchomienie licznika czasu
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(timer)
+          return 0
+        }
+        return prevTime - 1
+      })
+    }, 1000)
+
+    // Czyszczenie interwału przy unmount
+    return () => clearInterval(timer)
   }, [])
 
   const movePiece = (from: any, to: any): boolean => {
@@ -64,6 +78,7 @@ const useGame = (ai: boolean = false) => {
     }
     return false
   }
+
   const reviewLastMove = (): boolean => {
     if (rewindMove(game)) {
       updateBoard()
@@ -71,6 +86,7 @@ const useGame = (ai: boolean = false) => {
     }
     return false
   }
+
   const forwardLastMove = (): boolean => {
     if (forwardMove(game)) {
       updateBoard()
@@ -78,11 +94,13 @@ const useGame = (ai: boolean = false) => {
     }
     return false
   }
+
   const returnToCurrentGameState = () => {
     if (returnToCurrentState(game)) {
       updateBoard()
     }
   }
+
   const updateBoard = () => {
     console.log("update board called")
     setBoard(getBoard(game))
@@ -95,12 +113,14 @@ const useGame = (ai: boolean = false) => {
     promote(game, figure)
     updateBoard()
   }
+
   return {
     game,
     board,
     moveHistory,
     currentPlayer,
     gameStatus,
+    timeLeft, // Eksport licznika czasu
     movePiece,
     undoLastMove,
     forwardLastMove,
@@ -113,7 +133,6 @@ const useGame = (ai: boolean = false) => {
     getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
     isCheckmate: () => isCheckmate(game),
     isStalemate: () => isStalemate(game),
-    // Dodajemy funkcje do pobierania pozycji – wykorzystując funkcje eksportowane z index
     getPositionByCords: (x: number, y: number) => getPositionByCords(getBoard(game), x, y),
     getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
     getPositionById: (id: number) => getPositionById(getBoard(game), id),

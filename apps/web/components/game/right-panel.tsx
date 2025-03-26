@@ -35,7 +35,7 @@ export function RightPanel() {
   })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory, promoteFigure, isAwaitingPromotion } = useGameContext()
+  const { moveHistory, promoteFigure, isAwaitingPromotion, timeLeft } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -45,6 +45,11 @@ export function RightPanel() {
   const bgColor = "bg-background/30"
 
   const isNarrow = currentWidth <= 220
+
+  // Konwersja czasu na format minut:sekundy
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
+  const timeDisplay = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
 
   // Aktualizujemy stan podczas zmiany rozmiaru
   const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
@@ -125,7 +130,7 @@ export function RightPanel() {
                   <div className="flex">
                     <div className={`flex items-center ${textColor}`}>
                       <Clock className="h-5 w-5 mr-2 flex-shrink-0" />
-                      <span>10:00</span>
+                      <span>{timeDisplay}</span>
                     </div>
                     <div className={`pl-[1rem] flex items-center ${textColor}`}>
                       <Flag className="h-5 w-5 mr-2 flex-shrink-0" />
@@ -266,20 +271,14 @@ export function RightPanel() {
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
                     moveHistory.map((movePair: any, index: any) => {
-                      // Numer ruchu dla białych = 2*index + 1
-                      // Numer ruchu dla czarnych = 2*index + 2
                       const whiteMoveNumber = 2 * index + 1
                       const blackMoveNumber = 2 * index + 2
 
                       return (
                         <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
-                          {/* Ruch białych */}
                           <span>
                             {whiteMoveNumber}. Biały: {movePair.white}
                           </span>
-
-                          {/* Ruch czarnych */}
-                          {/* Jeżeli zdarzyłoby się, że czarny ruch jest pusty (np. nieparzysta liczba ruchów), można warunkowo wyświetlać */}
                           {movePair.black && (
                             <span className="ml-4">
                               {blackMoveNumber}. Czarny: {movePair.black}
