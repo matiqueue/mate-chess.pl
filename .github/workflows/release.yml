@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  Release:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: Install system dependencies (Ubuntu)
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libssl-dev build-essential curl wget libsoup2.4-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libssl-dev build-essential curl wget libsoup2.4-dev libjavascriptcoregtk-4.1-dev
 
       # Krok 3: Ustaw PKG_CONFIG_PATH
       - name: Set PKG_CONFIG_PATH
