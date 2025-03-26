@@ -25,7 +25,6 @@ export function RightPanel() {
   const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
 
-  // Lazy initial state – odczytujemy panelWidth z localStorage lub ustawiamy 320 domyślnie
   const [currentWidth, setCurrentWidth] = useState(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("panelWidth")
@@ -46,17 +45,14 @@ export function RightPanel() {
 
   const isNarrow = currentWidth <= 220
 
-  // Konwersja czasu na format minut:sekundy
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
   const timeDisplay = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
 
-  // Aktualizujemy stan podczas zmiany rozmiaru
   const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
 
-  // Po zakończeniu zmiany rozmiaru zapisujemy nową szerokość do localStorage
   const handleResizeStop = (e: unknown, direction: unknown, ref: HTMLElement) => {
     const newWidth = ref.offsetWidth
     setCurrentWidth(newWidth)
@@ -65,9 +61,7 @@ export function RightPanel() {
 
   const renderMove = (moveRecord: MoveRecordPublic): string => {
     const playerTranslated = moveRecord.playerColor === color.White ? t("playerInfo.white") : t("playerInfo.black")
-
     let translatedMove = `${playerTranslated}: ${moveRecord.moveString}`
-
     switch (notationStyle) {
       case "algebraic":
         return translatedMove
@@ -94,9 +88,7 @@ export function RightPanel() {
     modeColor = "text-green-500"
   }
 
-  // Ustalamy, czy wyświetlać chat – nie pokazujemy go, gdy ścieżka to /play/local
   const showChat = !pathname.startsWith("/play/local")
-
   const { open, setOpen } = useSidebar()
 
   const bottomButtonClass = isNarrow
@@ -159,7 +151,6 @@ export function RightPanel() {
                         <li>
                           <Button
                             variant="ghost"
-                            className="justify-center"
                             onClick={() => {
                               setViewMode("2D")
                               setActivePopover(null)
@@ -171,7 +162,6 @@ export function RightPanel() {
                         <li>
                           <Button
                             variant="ghost"
-                            className="justify-center"
                             onClick={() => {
                               setViewMode("3D")
                               setActivePopover(null)
@@ -273,7 +263,6 @@ export function RightPanel() {
                     moveHistory.map((movePair: any, index: any) => {
                       const whiteMoveNumber = 2 * index + 1
                       const blackMoveNumber = 2 * index + 2
-
                       return (
                         <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
                           <span>
@@ -298,35 +287,19 @@ export function RightPanel() {
               <div className={isAwaitingPromotion() ? "block" : "hidden"}>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.rook)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.rook)}>
                     <ChessRook className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.rook")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.queen)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.queen)}>
                     <ChessQueen className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.queen")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.bishop)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.bishop)}>
                     <ChessBishop className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.bishop")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.knight)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.knight)}>
                     <ChessKnight className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.knight")}</span>
                   </Button>
@@ -353,12 +326,7 @@ export function RightPanel() {
                   </div>
                 </div>
               ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "w-full p-2 flex items-center justify-center"}
-                  onClick={() => setIsChatOpen(true)}
-                >
+                <Button variant="outline" size="sm" className={isNarrow ? "w-fit p-2" : "w-full p-2"} onClick={() => setIsChatOpen(true)}>
                   <MessageCircle className="h-4 w-4 flex-shrink-0" />
                   {!isNarrow && <span className="ml-2">{t("rightPanel.openChat")}</span>}
                 </Button>
@@ -369,7 +337,6 @@ export function RightPanel() {
                 <span className="flex-shrink-0">{open ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}</span>
                 {!isNarrow && (open ? t("rightPanel.hideSidebar") : t("rightPanel.showSidebar"))}
               </Button>
-
               <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setTheme(isDark ? "light" : "dark")}>
                 <span className="flex-shrink-0">{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</span>
                 {!isNarrow && (isDark ? t("rightPanel.lightMode") : t("rightPanel.darkMode"))}

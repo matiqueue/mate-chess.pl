@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import {
   forwardMove,
@@ -35,10 +36,12 @@ const useGame = (ai: boolean = false) => {
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
-  const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut w sekundach
+  const [whiteTime, setWhiteTime] = useState<number>(300) // 5 minut dla białych
+  const [blackTime, setBlackTime] = useState<number>(300) // 5 minut dla czarnych
+  const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut ogólnego czasu
 
+  // Inicjalizacja gry
   useEffect(() => {
-    // Inicjalizacja gry
     const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame()
     startGame(newGame)
     setGame(newGame)
@@ -46,24 +49,63 @@ const useGame = (ai: boolean = false) => {
     setCurrentPlayer(whosTurn(newGame))
     setMoveHistory(getMoveHistory(newGame))
     setGameStatus(getGameStatus(newGame))
+    console.log("Initial game status:", getGameStatus(newGame))
+    console.log("Initial current player:", whosTurn(newGame))
+  }, [ai])
 
-    // Uruchomienie licznika czasu
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 0) {
-          clearInterval(timer)
-          return 0
-        }
-        return prevTime - 1
-      })
+  // Timer dla ogólnego czasu gry
+  useEffect(() => {
+    const gameTimer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
 
-    // Czyszczenie interwału przy unmount
-    return () => clearInterval(timer)
+    return () => clearInterval(gameTimer)
   }, [])
+
+  // Timer dla czasu graczy z logiką końca czasu
+  useEffect(() => {
+    console.log("Player timer effect triggered. Game status:", gameStatus, "Current player:", currentPlayer)
+    if (gameStatus !== gameStatusType.active) {
+      console.log("Game not active, timer not started")
+      return
+    }
+
+    const playerTimer = setInterval(() => {
+      console.log("Timer tick. Current player:", currentPlayer, "White time:", whiteTime, "Black time:", blackTime)
+      if (currentPlayer?.toLowerCase() === "white") {
+        setWhiteTime((prevWhiteTime) => {
+          const newTime = prevWhiteTime > 0 ? prevWhiteTime - 1 : 0
+          console.log("Updating white time to:", newTime)
+          if (newTime === 0) {
+            console.log("White time ran out, setting status to blackWins")
+            setGameStatus(gameStatusType.blackWins)
+          }
+          return newTime
+        })
+      } else if (currentPlayer?.toLowerCase() === "black") {
+        setBlackTime((prevBlackTime) => {
+          const newTime = prevBlackTime > 0 ? prevBlackTime - 1 : 0
+          console.log("Updating black time to:", newTime)
+          if (newTime === 0) {
+            console.log("Black time ran out, setting status to whiteWins")
+            setGameStatus(gameStatusType.whiteWins)
+          }
+          return newTime
+        })
+      } else {
+        console.log("No valid current player detected")
+      }
+    }, 1000)
+
+    return () => {
+      console.log("Cleaning up player timer")
+      clearInterval(playerTimer)
+    }
+  }, [currentPlayer, gameStatus])
 
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
+    console.log("Move attempted:", move)
     if (makeMove(game, move)) {
       updateBoard()
       return true
@@ -102,7 +144,7 @@ const useGame = (ai: boolean = false) => {
   }
 
   const updateBoard = () => {
-    console.log("update board called")
+    console.log("Updating board. New status:", getGameStatus(game), "New player:", whosTurn(game))
     setBoard(getBoard(game))
     setMoveHistory(getMoveHistory(game))
     setCurrentPlayer(whosTurn(game))
@@ -120,7 +162,9 @@ const useGame = (ai: boolean = false) => {
     moveHistory,
     currentPlayer,
     gameStatus,
-    timeLeft, // Eksport licznika czasu
+    whiteTime,
+    blackTime,
+    timeLeft,
     movePiece,
     undoLastMove,
     forwardLastMove,
