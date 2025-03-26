@@ -14,19 +14,19 @@ class ChessAi extends ChessGame {
     super()
     this.aiColor = aiColor
     this.aiDifficulty = aiDifficulty
-    console.log("HELLO, AI IS ACTIVE!")
     this.searchDepth = 1
   }
 
-  public callAiToFindMove(): Move | null {
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  public async callAiToFindMove(): Promise<Move | null> {
     if (super.awaitingPromotion) {
       this.promotionTo(figureType.queen)
     }
 
-    // const start = Date.now()
-    // while (Date.now() - start < 4000) {
-    //   // Czekaj 4 sekundy bez użycia Promisa
-    // }
+    await this.delay(2000)
 
     const move = this.board.getLegalMoves(this.aiColor)[1]
     if (move) {

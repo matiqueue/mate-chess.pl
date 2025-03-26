@@ -107,24 +107,27 @@ const useGame = (ai: boolean = false) => {
     return false
   }
 
-  const aiMovePerform = () => {
+  const aiMovePerform = async () => {
     if (game instanceof ChessGameExtraAI && game.currentPlayer === whosTurn(game)) {
-      const aimove = callAiToPerformMove(game)
-      if (aimove) {
-        console.log("ai movement was attempted")
-        console.log("attempt: ", makeMove(game, aimove))
-        console.log(`from: ${aimove.from.notation} to: ${aimove.to.notation}`)
-        console.log(`piece: ${aimove.from.figure?.type} of color: ${aimove.from.figure?.color}`)
-        if (isAwaitingPromotion(game)) {
-          game.promotionTo(figureType.queen) //to trzeba zrobić lepiej żeby ai mogło decydować na co promocja
-          updateBoard()
+      try {
+        const aimove = await callAiToPerformMove(game)
+        if (aimove) {
+          if (isAwaitingPromotion(game)) {
+            game.promotionTo(figureType.queen)
+            updateBoard()
+          }
+
+          makeMove(game, aimove)
+        } else {
+          console.error("ai move not performed. Move is either undefined or null")
         }
-      } else {
-        console.error("ai move not performed. Move is either undefined or null")
+        updateBoard()
+      } catch (error) {
+        console.error("Error during AI move:", error)
       }
-      updateBoard()
     }
   }
+
   useEffect(() => {
     aiMovePerform()
   }, [currentPlayer])
