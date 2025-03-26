@@ -204,7 +204,7 @@ export default function GameModeSelector() {
                       <DialogHeader>
                         <DialogTitle>
                           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: "easeOut" }}>
-                            Select an action
+                            {t("selectAction")}
                           </motion.div>
                         </DialogTitle>
                       </DialogHeader>
@@ -227,7 +227,7 @@ export default function GameModeSelector() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
                           >
-                            Create Lobby
+                            {t("createLobby")}
                           </MotionButton>
                           <MotionButton
                             onClick={() => setShowJoinInput((prev) => !prev)} // Przełączanie widoczności inputu
@@ -238,7 +238,7 @@ export default function GameModeSelector() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
                           >
-                            {showJoinInput ? "Hide Code Input" : "Join with Code"}
+                            {showJoinInput ? t("hide_code_input") : t("join_with_code")}
                           </MotionButton>
                         </div>
                         {showJoinInput && (
@@ -253,7 +253,7 @@ export default function GameModeSelector() {
                               type="text"
                               value={joinCode}
                               onChange={(e) => setJoinCode(e.target.value.slice(0, 6).toUpperCase())}
-                              placeholder="Enter lobby code"
+                              placeholder={t("enterLobbyCode")}
                               className="p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -271,7 +271,7 @@ export default function GameModeSelector() {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.3, delay: 0.2 }}
                             >
-                              Join Lobby
+                              {t("joinLobby2")}
                             </MotionButton>
                           </motion.div>
                         )}
