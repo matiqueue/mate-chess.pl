@@ -184,7 +184,7 @@ export default function ChessTournaments() {
 
         <div className="relative w-full md:w-[70vw] ">
           <div
-            className="flex justify-center items-center items overflow-hidden h-[450px]"
+            className="flex justify-center items-center items overflow-hidden h-[50vh]"
             onMouseDown={handleDragStart}
             onMouseUp={handleDragEnd}
             onMouseLeave={() => setIsDragging(false)}
@@ -193,7 +193,7 @@ export default function ChessTournaments() {
               {tournaments.map((tournament, index) => (
                 <MotionCard
                   key={tournament.id}
-                  className="absolute w-full max-w-[400px] h-[450px] transition-all duration-300"
+                  className="absolute w-full max-w-[350px] h-[50vh] transition-all duration-300"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{
                     opacity: (isWideScreen && index >= currentIndex - 1 && index <= currentIndex + 1) || (!isWideScreen && index === currentIndex) ? 1 : 0,
@@ -203,7 +203,7 @@ export default function ChessTournaments() {
                   }}
                   transition={{ duration: 0.5, zIndex: { delay: index === currentIndex ? 0 : 0.2 } }}
                 >
-                  <CardContent className="p-6 flex flex-col items-center justify-between h-full">
+                  <CardContent className="p-2 flex flex-col items-center justify-between h-full">
                     <motion.img
                       src={tournament.logo}
                       alt={`${t("chessTournaments.tournamentNames." + tournament.nameKey)} logo`}
