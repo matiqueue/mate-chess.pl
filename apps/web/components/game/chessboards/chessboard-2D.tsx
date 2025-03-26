@@ -329,9 +329,6 @@ export function ChessBoard2D() {
           </div>
         </div>
       </div>
-      <button onClick={aiMovePerform} className={"outline-4 bg-gray-500"}>
-        Ai move
-      </button>
     </div>
   )
 }

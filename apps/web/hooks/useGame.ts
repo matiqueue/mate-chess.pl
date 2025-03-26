@@ -125,6 +125,9 @@ const useGame = (ai: boolean = false) => {
       updateBoard()
     }
   }
+  useEffect(() => {
+    aiMovePerform()
+  }, [currentPlayer])
 
   const undoLastMove = (): boolean => {
     if (undoMove(game)) {
