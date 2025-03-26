@@ -1,0 +1,58 @@
+name: Create Release with Random File
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      # Pobierz kod źródłowy
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Skonfiguruj Node.js (jeśli potrzebujesz PNPM lub npm)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install PNPM
+        run: npm install -g pnpm
+
+      # Zainstaluj zależności projektu
+      - name: Install dependencies
+        run: pnpm install
+
+      # Zbuduj aplikację (przykładowa komenda, dostosuj do swojego projektu)
+      - name: Build application
+        run: pnpm build
+
+      # Przygotuj artefakty do release'u
+      - name: Prepare release artifacts
+        run: |
+          mkdir -p release-artifacts
+          # Przykładowe skopiowanie zbudowanego pliku (dostosuj ścieżkę)
+          cp ./dist/my-app release-artifacts/my-app
+          # Losowe dodanie pliku apps/server/src/index.ts (50% szans)
+          if [ $((RANDOM % 2)) -eq 0 ]; then
+            cp apps/server/src/index.ts release-artifacts/index.ts
+            echo "Added index.ts to release artifacts"
+          else
+            echo "Skipped adding index.ts this time"
+          fi
+
+      # Utwórz release na GitHubie
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ github.run_number }}"
+          name: "Release ${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: |
+            release-artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
