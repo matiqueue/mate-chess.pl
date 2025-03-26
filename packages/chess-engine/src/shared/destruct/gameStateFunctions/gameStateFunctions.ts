@@ -1,8 +1,9 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import chessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { color } from "@shared/types/colorType"
+import ChessGame from "@modules/chess/chessGame.js"
 
-export const isCheckmate = (game: ChessGameExtraLayer): color | false => {
+export const isCheckmate = (game: ChessGame): color | false => {
   if (game.board) {
     const checkState = game.board.isCheckmate()
     switch (checkState) {
@@ -14,26 +15,16 @@ export const isCheckmate = (game: ChessGameExtraLayer): color | false => {
   }
   return false
 }
-export const isStalemate = (game: ChessGameExtraLayer): boolean => {
+export const isStalemate = (game: ChessGame): boolean => {
   if (game.board) {
     if (game.gameStatus === "stalemate") return true
   }
   return false
 }
-export const getGameStatus = (game: chessGameExtraLayer) => {
+export const getGameStatus = (game: ChessGame) => {
   return game.gameStatus
 }
-// export const setSurrender = (game: chessGameExtraLayer, surrenderingColor: color) => {
-//   if (game.board) {
-//     const whoSurrenders = surrenderingColor === color.White ? (game.gameStatus = "black wins") : (game.gameStatus = "white wins")
-//   }
-// }
-// export const setDraw = (game: chessGameExtraLayer) => {
-//   if (game.board) {
-//     game.gameStatus = "draw"
-//   }
-// }
 
-export const isPreviewModeOn = (game: chessGameExtraLayer) => {
+export const isPreviewModeOn = (game: ChessGame) => {
   return game.board.previewMode
 }

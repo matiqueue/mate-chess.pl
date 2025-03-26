@@ -50,7 +50,7 @@ class ChessGame {
   }
   /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
    * */
-  protected async process() {
+  public async process() {
     this.stateProcessor()
 
     for (const figure of this._board.allFigures) {
