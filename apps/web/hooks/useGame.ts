@@ -104,9 +104,17 @@ const useGame = (ai: boolean = false) => {
 
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
-    console.log("Move attempted:", move)
     if (makeMove(game, move)) {
       updateBoard()
+      if (game instanceof ChessGameExtraAI && game.currentPlayer === whosTurn(game)) {
+        const aimove = game.callAiToFindMove()
+        if (aimove) {
+          makeMove(game, aimove)
+        } else {
+          console.error("ai move not performed. Move is either undefined or null")
+        }
+        updateBoard()
+      }
       return true
     }
     return false

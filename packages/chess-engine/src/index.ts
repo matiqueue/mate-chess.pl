@@ -11,6 +11,7 @@ import { promote, isAwaitingPromotion } from "@modules/shared/destruct/movementF
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
 import { color } from "@shared/types/colorType.js"
+import { callAiToPerformMove } from "@shared/destruct/aiFunctions/AIIOfunctions.js"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
@@ -45,4 +46,5 @@ export {
   isMoveEnPassant,
   isAwaitingPromotion,
   isPreviewModeOn,
+  callAiToPerformMove,
 }
