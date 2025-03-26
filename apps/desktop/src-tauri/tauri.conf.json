@@ -54,7 +54,6 @@
         "resizable": true,
         "title": "Mate Chess",
         "width": 800,
-        "transparent": true,
         "decorations": false
       }
     ]
