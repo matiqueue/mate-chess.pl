@@ -3,7 +3,10 @@ name: Randomly Add File to Release
 on:
   push:
     branches:
-      - dev
+      - main
+
+permissions:
+  contents: write # Uprawnienia do zapisu w repozytorium (tworzenie release'ów)
 
 jobs:
   release:
