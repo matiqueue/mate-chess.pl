@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useGameView } from "@/contexts/GameViewContext"
 import { ChessBoard2D } from "./chessboards/chessboard-2D"
 import { ChessBoard3D } from "./chessboards/chessboard-3D"
@@ -17,12 +17,15 @@ export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
   const { showPreviewAlert } = useChessBoardInteractions()
 
+
   // Przy montowaniu odczytujemy zapisany tryb widoku z localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedViewMode = localStorage.getItem("viewMode")
       if (savedViewMode === "2D" || savedViewMode === "3D") {
         setViewMode(savedViewMode)
+      }else{
+        setViewMode("2D")
       }
     }
   }, [setViewMode])
@@ -30,9 +33,12 @@ export default function ChessBoardContainer() {
   // Zapisujemy tryb widoku do localStorage przy każdej jego zmianie
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("viewMode", viewMode)
+      if(viewMode !== undefined){
+        localStorage.setItem("viewMode", viewMode)
+      }
     }
   }, [viewMode])
+
 
   return (
     <>
@@ -63,7 +69,7 @@ export default function ChessBoardContainer() {
               </div>
               {/* Wrapper dla planszy */}
               <div className="absolute inset-0 pt-[10%]">
-                <ChessBoard3D />
+                <ChessBoard3D></ChessBoard3D>
               </div>
               {/* Wrapper dla GameControls */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
