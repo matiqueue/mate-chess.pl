@@ -25,6 +25,10 @@
   "brandName": "Mate Chess",
   "home": "Home",
   "navPlay": "PLAY",
+  "selectBotDifficulty": "Select AI difficulty level",
+  "enterDifficultyLevel": "Enter AI difficulty level (1 - 3)",
+  "difficultyLevel": "AI difficulty level",
+  "goNext": "Go to game!",
   "live": "Live",
   "tournaments": "Tournaments",
   "navLearn": "LEARN",
@@ -35,6 +39,7 @@
   "navCommunity": "COMMUNITY",
   "players": "Players",
   "activity": "Activity",
+  "startLinkGame": "Start game via Link",
   "settings": "Settings",
   "enterLobbyCode": "Enter the lobby code",
   "login": "Login",
@@ -109,18 +114,18 @@
     "aiBotsHeading": "AI Bots",
     "chessMasterHeading": "Chess Master",
     "beginnerBot": {
-      "title": "Beginner Bot",
-      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy.",
+      "title": "Algorithm Bot",
+      "description": "Perfect for newcomers.",
       "buttonText": "Beginner!"
     },
     "advancedBot": {
-      "title": "Advanced Bot",
-      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
+      "title": "AI Bot",
+      "description": "Challenging for intermediate players.",
       "buttonText": "Advanced!"
     },
     "chessGrandmaster": {
-      "title": "Chess Grandmaster",
-      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play.",
+      "title": "Grandmaster Bot",
+      "description": "Test your skills against a simulated Grandmaster.",
       "buttonText": "Grandmaster!"
     },
     "playButton": "Play {{botName}}",

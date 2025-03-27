@@ -10,6 +10,10 @@
   "bullet": "Błyskawiczne",
   "oneMin": "1 minuta",
   "blitz": "Blitz",
+  "selectBotDifficulty": "Wybierz poziom trudności AI",
+  "enterDifficultyLevel": "Wpisz poziom trudności (1 - 3)",
+  "difficultyLevel": "Poziom trudności",
+  "goNext": "Przejdź dalej!",
   "threePlusTwo": "3+2",
   "computer": "Komputer",
   "vsAi": "Przeciwko AI",
@@ -49,6 +53,7 @@
   "logout": "Wyloguj się",
   "online": "Online",
   "selectGameMode": "Wybierz tryb gry",
+  "startLinkGame": "Zacznij grę przez Link",
   "gameModeLocal": "Lokalnie",
   "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze.",
   "gameModeWithLink": "Poprzez link",
@@ -108,17 +113,17 @@
     "aiBotsHeading": "Boty AI",
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
-      "title": "Początkujący Bot",
+      "title": "Tryb Algorytm",
       "description": "Idealny dla nowicjuszy.",
       "buttonText": "Początkujący!"
     },
     "advancedBot": {
-      "title": "Zaawansowany Bot",
+      "title": "Tryb AI",
       "description": "Wyzwanie dla średnio zaawansowanych.",
       "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
-      "title": "Arcymistrz Szachowy",
+      "title": "Tryb Arcymistrz",
       "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi.",
       "buttonText": "Arcymistrz!"
     },

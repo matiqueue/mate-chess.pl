@@ -1,4 +1,8 @@
 {
+  "selectBotDifficulty": "Выберите уровень сложности ИИ",
+  "enterDifficultyLevel": "Введите уровень сложности ИИ (1 - 3)",
+  "difficultyLevel": "Уровень сложности ИИ",
+  "goNext": "Перейти к игре!",
   "playChessOnline": "Играйте в шахматы онлайн!",
   "masterTheGameOfKings": "Овладейте игрой королей...",
   "activePlayers": "Активные игроки",
@@ -15,6 +19,7 @@
   "blitz": "Блиц",
   "threePlusTwo": "3+2",
   "computer": "Компьютер",
+  "startLinkGame": "Начать игру через ссылку",
   "vsAi": "против ИИ",
   "joinLobby2": "Присоединяйтесь к лобби",
   "tournament": "Турнир",

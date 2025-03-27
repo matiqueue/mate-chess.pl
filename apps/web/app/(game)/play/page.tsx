@@ -191,7 +191,7 @@ export default function GameModeSelector() {
                             whileTap={{ scale: 0.95 }}
                           >
                             <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
-                              Rozpocznij grę link
+                              {t("startLinkGame")}
                             </motion.span>
                             <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
                               <ArrowRight className="w-4 h-4" />
