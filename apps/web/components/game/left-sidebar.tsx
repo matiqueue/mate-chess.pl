@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
+import { redirect } from "next/navigation"
 
 export function LeftSidebar() {
   const { t } = useTranslation()
@@ -132,15 +133,15 @@ export function LeftSidebar() {
         <div>
           {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>{t("sidebar.learnSection")}</h2>}
           <div className="space-y-1">
-            <Button variant="ghost" className={buttonClass}>
+            <Button onClick={() => {redirect("/puzzles")}} variant="ghost" className={buttonClass}>
               <PuzzlePiece className={iconClass} />
               {open && t("sidebar.puzzles")}
             </Button>
-            <Button variant="ghost" className={buttonClass}>
+            <Button onClick={() => {redirect("/lessons")}} variant="ghost" className={buttonClass}>
               <GraduationCap className={iconClass} />
               {open && t("sidebar.lessons")}
             </Button>
-            <Button variant="ghost" className={buttonClass}>
+            <Button onClick={() => {redirect("/openings")}} variant="ghost" className={buttonClass}>
               <BookOpen className={iconClass} />
               {open && t("sidebar.openings")}
             </Button>
@@ -162,6 +163,20 @@ export function LeftSidebar() {
             </Button>
           </div>
         </div>
+
+        <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
+
+        <div>
+          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>{t("sidebar.communitySection")}</h2>}
+          <div className="space-y-1">
+            <Button onClick={() => {redirect("/settings")}} variant="ghost" className={buttonClass}>
+              <Settings className={iconClass} />
+              {open && t("sidebar.settings")}
+            </Button>
+          </div>
+        </div>
+
+
       </SidebarContent>
       <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
       <SidebarFooter className="p-4">
