@@ -8,7 +8,7 @@ import { knightMaterialTable } from "@shared/types/material"
  * */
 class Knight extends Figure {
   constructor(color: color.White | color.Black, position: Position, board: Board) {
-    super(figureType.knight, color, position, board, 3, knightMaterialTable)
+    super(figureType.knight, color, position, board, 300, knightMaterialTable)
   }
 
   override isPositionValid(target: Position): boolean {

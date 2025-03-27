@@ -107,7 +107,7 @@ abstract class Figure {
   }
   /** Material value of given piece
    * @returns standard piece value multiplied by 100*/
-  get materialValue(): number {
+  get materialValueWithBonus(): number {
     const x = this.position.x
     const y = this.position.y
     if (!this.position) throw new RangeError("position cannot be null")
@@ -133,7 +133,10 @@ abstract class Figure {
         break
     }
 
-    return this._materialValue + bonus
+    return this._materialValue * bonus
+  }
+  get rawMaterialValue(): number {
+    return this._materialValue
   }
 }
 export default Figure
