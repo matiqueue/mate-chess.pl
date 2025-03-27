@@ -710,7 +710,7 @@ Projekt udostępniany jest na własnej, niestandardowej licencji.
         - `queen.ts` – logika dla królowej
         - `rook.ts` – logika dla wieży
     - **`history/`** – historia ruchów:
-      - `move.ts` – reprezentacja ruchu
+      - `move.ts` – reprezentacja ruchów
       - `moveRecorder.ts` – mechanizm zapisywania ruchów
     - `position.ts` – reprezentacja pozycji na szachownicy
   - `chessGameExtraAI.ts` – dodatkowa logika AI
