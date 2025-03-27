@@ -14,6 +14,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { SidebarLayout } from "@/components/main/SidebarLayout" // dopasuj ścieżkę do lokalizacji pliku
 import { JSX } from "react"
 import { MinimalLayout } from "./main/minimalLayout"
+import path from "path"
 
 /**
  * Providers
@@ -44,8 +45,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/bot") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/easter-egg") ||
-    pathname.startsWith("/activity") ||
-    pathname.startsWith("/settings")
+    pathname.startsWith("/activity")
   ) {
     return (
       <ClerkProvider>
@@ -61,9 +61,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     )
   }
 
+  // Minimal layout
   if (
     pathname.startsWith("/sign-up") ||
-    pathname.startsWith("/sign-in")
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/settings")
   ){
     return (
       <ClerkProvider>
