@@ -19,7 +19,7 @@ import { useUser } from "@clerk/nextjs"
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
-  const [boardView, setBoardView] = useState("2d")
+  const [boardView, setBoardView] = useState<"2D" | "3D" | undefined>(undefined)
   const [backgroundMusic, setBackgroundMusic] = useState(false)
   const [gameSounds, setGameSounds] = useState(true)
   const [notifications, setNotifications] = useState(true)
@@ -27,6 +27,25 @@ export default function SettingsPage() {
   const [soundVolume, setSoundVolume] = useState([70])
   const { isPlaying, toggleMusic } = useAudio()
   const { user } = useUser()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedViewMode = localStorage.getItem("viewMode")
+      if (savedViewMode === "2D" || savedViewMode === "3D") {
+        setBoardView(savedViewMode)
+      }else{
+        setBoardView("2D")
+      }
+    }
+  }, [setBoardView])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if(boardView !== undefined){
+        localStorage.setItem("viewMode", boardView)
+      }
+    }
+  }, [boardView])
 
   const changeLanguage = (lng: string) => {
     i18next.changeLanguage(lng)
@@ -86,11 +105,11 @@ export default function SettingsPage() {
             <CardContent>
               <RadioGroup
                 defaultValue={boardView}
-                onValueChange={setBoardView}
+                onValueChange={(value) => setBoardView(value as "2D" | "3D")}
                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
               >
                 <div>
-                  <RadioGroupItem value="2d" id="2d" className="peer sr-only" />
+                  <RadioGroupItem value="2D" id="2d" className="peer sr-only" />
                   <Label
                     htmlFor="2d"
                     className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
@@ -103,7 +122,7 @@ export default function SettingsPage() {
                   </Label>
                 </div>
                 <div>
-                  <RadioGroupItem value="3d" id="3d" className="peer sr-only" />
+                  <RadioGroupItem value="3D" id="3d" className="peer sr-only" />
                   <Label
                     htmlFor="3d"
                     className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
@@ -120,12 +139,12 @@ export default function SettingsPage() {
                 <div className={`rounded-md p-3 xl:w-3/4 xl:h-3/4 2xl:w-1/2 2xl:h-1/2 mx-auto`}>
                   <div className="aspect-square bg-muted relative overflow-hidden rounded-md">
                     <img
-                      src={boardView == "2d" ? theme == "dark" ? "/backgrounds/2dExampleDark.png" : "/backgrounds/2dExampleLight.png" : theme == "dark" ? "/backgrounds/3dExampleDark.png" : "/backgrounds/3dExampleLight.png"}
-                      alt={boardView == "2d" ? "2D CHess Board Example" : "3D Chess Board Example" } 
+                      src={boardView == "2D" ? theme == "dark" ? "/backgrounds/2dExampleDark.png" : "/backgrounds/2dExampleLight.png" : theme == "dark" ? "/backgrounds/3dExampleDark.png" : "/backgrounds/3dExampleLight.png"}
+                      alt={boardView == "2D" ? "2D CHess Board Example" : "3D Chess Board Example" } 
                       className="object-center w-full h-full"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-sm font-medium bg-background/80 px-2 py-1 rounded">{boardView == "2d" ? "2D Example" : "3D Example"}</span>
+                      <span className="text-sm font-medium bg-background/80 px-2 py-1 rounded">{boardView == "2D" ? "2D Example" : "3D Example"}</span>
                     </div>
                   </div>
                 </div>
