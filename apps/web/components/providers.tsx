@@ -43,7 +43,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/home") ||
     pathname.startsWith("/play") ||
     pathname.startsWith("/bot") ||
-    pathname.startsWith("/profile") ||
+    pathname === "/profile" ||
     pathname.startsWith("/easter-egg") ||
     pathname.startsWith("/activity")
   ) {
@@ -65,6 +65,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   if (
     pathname.startsWith("/sign-up") ||
     pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/profile/stats/") ||
     pathname.startsWith("/settings")
   ){
     return (
