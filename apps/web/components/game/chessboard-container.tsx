@@ -23,14 +23,19 @@ export default function ChessBoardContainer() {
       const savedViewMode = localStorage.getItem("viewMode")
       if (savedViewMode === "2D" || savedViewMode === "3D") {
         setViewMode(savedViewMode)
+      }else{
+        setViewMode("2D")
       }
     }
   }, [setViewMode])
+  
 
   // Zapisujemy tryb widoku do localStorage przy każdej jego zmianie
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("viewMode", viewMode)
+      if(viewMode !== undefined){
+        localStorage.setItem("viewMode", viewMode)
+      }
     }
   }, [viewMode])
 

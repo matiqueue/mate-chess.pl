@@ -13,7 +13,7 @@ interface GameViewContextType {
 const GameViewContext = createContext<GameViewContextType | undefined>(undefined)
 
 export const GameViewProvider = ({ children }: { children: ReactNode }) => {
-  const [viewMode, setViewMode] = useState<"2D" | "3D">("2D")
+  const [viewMode, setViewMode] = useState<"2D" | "3D" | undefined>(undefined)
   // @ts-ignore
   return <GameViewContext.Provider value={{ viewMode, setViewMode }}>{children}</GameViewContext.Provider>
 }
