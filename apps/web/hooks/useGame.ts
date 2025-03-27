@@ -108,22 +108,23 @@ const useGame = (ai: boolean = false) => {
   }
 
   const aiMovePerform = async () => {
-    if (game instanceof ChessGameExtraAI && game.currentPlayer === whosTurn(game)) {
-      try {
-        const aimove = await callAiToPerformMove(game)
-        if (aimove) {
-          if (isAwaitingPromotion(game)) {
-            game.promotionTo(figureType.queen)
-            updateBoard()
-          }
-
-          makeMove(game, aimove)
-        } else {
-          console.error("ai move not performed. Move is either undefined or null")
-        }
+    if (!(game instanceof ChessGameExtraAI)) throw new Error("Wrong game instance")
+    if (game.aiColor === whosTurn(game)) {
+      if (isAwaitingPromotion(game)) {
+        game.promotionTo(figureType.queen)
         updateBoard()
-      } catch (error) {
-        console.error("Error during AI move:", error)
+      } else {
+        try {
+          const aimove = await callAiToPerformMove(game)
+          if (aimove) {
+            makeMove(game, aimove)
+          } else {
+            console.error("ai move not performed. Move is either undefined or null")
+          }
+          updateBoard()
+        } catch (error) {
+          console.error("Error during AI move:", error)
+        }
       }
     }
   }
