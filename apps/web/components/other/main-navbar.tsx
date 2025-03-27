@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { redirect, usePathname } from "next/navigation"
 import { PuzzleIcon as Chess, Menu } from "lucide-react"
 
 import { Button } from "@workspace/ui/components/button"
@@ -28,7 +28,7 @@ export function Navbar() {
 
   const navItems = [
     { name: t("navbar.play"), href: "/play" },
-    { name: t("navbar.learn"), href: "/learn" },
+    { name: t("navbar.learn"), href: "/lessons" },
     { name: t("navbar.puzzles"), href: "/puzzles" },
     { name: t("navbar.community"), href: "/community" },
   ]
@@ -57,7 +57,7 @@ export function Navbar() {
             </nav>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="outline" className="hidden md:inline-flex">
+            <Button onClick={() => {redirect("/play")}} variant="outline" className="hidden md:inline-flex">
               <Chess className="mr-2 h-4 w-4" />
               {t("navbar.quickPlay")}
             </Button>
