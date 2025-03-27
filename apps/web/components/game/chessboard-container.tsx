@@ -12,10 +12,13 @@ import { RightPanel } from "./right-panel"
 import { GameStatusPopupDialog } from "@/components/game/game-status-popup-dialog"
 import { PreviewModeAlertPopup } from "@/components/game/preview-mode-alert-popup"
 import { useChessBoardInteractions } from "@/utils/chessboard/chessBoardUtils"
+import { useTheme } from "next-themes"
 
 export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
+  const { theme } = useTheme()
   const { showPreviewAlert } = useChessBoardInteractions()
+  const [board, setBoard] = useState(<ChessBoard3D></ChessBoard3D>);
 
 
   // Przy montowaniu odczytujemy zapisany tryb widoku z localStorage
@@ -39,6 +42,17 @@ export default function ChessBoardContainer() {
     }
   }, [viewMode])
 
+  useEffect( () => {
+    const prev = viewMode
+    setViewMode(viewMode == "2D" ? "3D" : "2D")
+    setTimeout( () => {
+      setViewMode(prev)
+    }, 0)
+  }, [theme])
+
+  const reloadChessBoard3D = () => {
+    return <ChessBoard3D></ChessBoard3D>
+  }
 
   return (
     <>
@@ -69,7 +83,7 @@ export default function ChessBoardContainer() {
               </div>
               {/* Wrapper dla planszy */}
               <div className="absolute inset-0 pt-[10%]">
-                <ChessBoard3D></ChessBoard3D>
+                  {board}
               </div>
               {/* Wrapper dla GameControls */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
