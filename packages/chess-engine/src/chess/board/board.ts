@@ -82,7 +82,7 @@ class Board {
    * @returns {Position | null} The corresponding position, or null if not found.
    */
   public getPositionById(id: number): Position | null {
-    return this.positionsById[id] || null // Dostęp w O(1)
+    return this.positionsById[id] || null
   }
   /**
    * Returns a reference to position by its x and y coordinates.
@@ -950,6 +950,25 @@ class Board {
     return legalMoves
   }
 
+  public getPseudoLegalMoves(colorType: color.White | color.Black): Move[] {
+    const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
+    const moves: Move[] = []
+
+    if (!figures) return []
+
+    for (const figure of figures) {
+      const pseudoLegalMoves = this.getValidMovesForPosition(figure.position)
+
+      for (const moveToVerify of pseudoLegalMoves) {
+        const move = {
+          from: figure.position,
+          to: moveToVerify,
+        }
+        moves.push(move)
+      }
+    }
+    return moves
+  }
   /**
    * Updates the internal array of all figures (white and black).
    * @private
@@ -1100,7 +1119,7 @@ class Board {
     let total = 0
     for (const piece of figureArray) {
       if (piece) {
-        total += piece.materialValue
+        total += piece.materialValueWithBonus
       }
     }
     return total

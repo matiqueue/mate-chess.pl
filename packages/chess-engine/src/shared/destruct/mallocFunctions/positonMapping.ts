@@ -1,6 +1,6 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Board } from "@utils/boardUtils"
-import ChessGame from "@modules/chess/chessGame.js"
+import ChessGame from "@modules/chess/chessGame"
 
 export const getBoard = (game: ChessGame) => {
   return game.board

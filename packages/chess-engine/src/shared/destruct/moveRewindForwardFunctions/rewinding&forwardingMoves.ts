@@ -1,5 +1,5 @@
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import ChessGame from "@modules/chess/chessGame.js"
+import ChessGame from "@modules/chess/chessGame"
 
 export const rewindMove = (game: ChessGame): boolean => {
   return game.board.rewindMove()

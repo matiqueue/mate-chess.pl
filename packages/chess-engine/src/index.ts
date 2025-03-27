@@ -10,7 +10,8 @@ import ChessGameExtraAI from "@modules/chessGameExtraAI"
 import { promote, isAwaitingPromotion } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
-import { color } from "@shared/types/colorType.js"
+import { color } from "@shared/types/colorType"
+import { callAiToPerformMove } from "@shared/destruct/aiFunctions/AIIOfunctions"
 
 const setupGame = () => {
   const game = new ChessGameExtraLayer()
@@ -45,4 +46,5 @@ export {
   isMoveEnPassant,
   isAwaitingPromotion,
   isPreviewModeOn,
+  callAiToPerformMove,
 }

@@ -1,73 +1,56 @@
 import ChessGame from "@modules/chess/chessGame"
-import { color, figureType, Move } from "@modules/types"
-import { Board } from "@utils/boardUtils"
-import { PromotionFigureType } from "@modules/types.js"
+import { color } from "@shared/types/colorType"
+import aiDifficulty from "@shared/types/aiDifficulty"
+import { Move } from "@shared/types/moveType"
+import { figureType } from "@shared/types/figureType"
+import move from "@modules/chess/history/move.js"
 
-/**
- * Klasa ChessAi – z dodaną heurystyką preferującą
- * korzystne bicie i unikającą oddawania figur
- * za bezcen.
- */
 class ChessAi extends ChessGame {
-  private _aiColour: color
-  private _opponentColour: color
+  private _aiColor: color
+  private _opponentColor: color
+  private _aiDifficulty: aiDifficulty
+  private _searchDepth: number
 
-  private _searchDepth: number = 4
-  private _aiLevel: 1 | 2 | 3 | 4
-
-  private static readonly EXCHANGE_MULTIPLIER = 0.2
-
-  constructor(aiColour: color, aiLevel: 1 | 2 | 3 | 4) {
+  private readonly EXCHANGE_MULTIPLIER = 1.2
+  constructor(aiColor: color, aiDifficulty: aiDifficulty) {
     super()
-    this._aiColour = aiColour
-    this._opponentColour = aiColour === color.White ? color.Black : color.White
-    this._aiLevel = aiLevel
-  }
-
-  override start() {
-    super.start()
-  }
-
-  /**
-   * Główna pętla procesu – gdy przychodzi kolej AI,
-   * wyliczamy ruch i go wykonujemy.
-   */
-  protected override async process() {
-    super.stateProcessor()
-    this.moveProcessor()
-    super.process()
-  }
-  private async moveProcessor(): Promise<void> {
-    if (this.currentPlayer === this._aiColour) {
-      if (this.awaitingPromotion) {
-        // W prostym wydaniu promujemy do hetmana
-        this.promotionTo(figureType.queen)
-      } else {
-        const candidateMoves = this.determineCandidateMoves()
-        if (candidateMoves.length === 0) {
-          throw new Error("Ai runtime exception: no candidate moves available")
-        }
-        const randomIndex = Math.floor(Math.random() * candidateMoves.length)
-        const aiMove = candidateMoves[randomIndex]
-        if (!aiMove) {
-          throw new Error("Ai runtime exception: chosen move is invalid")
-        }
-        this.makeMove(aiMove)
-      }
+    this._aiColor = aiColor
+    switch (aiColor) {
+      case color.White:
+        this._opponentColor = color.Black
+        break
+      case color.Black:
+        this._opponentColor = color.White
+        break
     }
-  }
-  override makeMove(move: Move): boolean {
-    return super.makeMove(move)
+    this._aiDifficulty = aiDifficulty
+    this._searchDepth = 4
   }
 
-  /**
-   * Funkcja oceny pozycji.
-   * 1) Różnica w wartości materiału (AI - Opponent)
-   * 2) Dodatkowy term – preferencje co do bicia
-   */
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  public async callAiToFindMove(): Promise<Move | null> {
+    if (this.gameStatus !== "active") return null
+    if (super.awaitingPromotion) {
+      this.promotionTo(figureType.queen)
+    }
+
+    await this.delay(200)
+
+    const moveArray = this.aiDetermineBestMove()
+    const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
+    if (move) {
+      console.log("move ready!!!")
+      return move
+    }
+    return null
+  }
+
   private evaluateBoard(): number {
-    const aiValue = this.board.getAllMaterialValue(this._aiColour)
-    const oppValue = this.board.getAllMaterialValue(this._opponentColour)
+    const aiValue = this.board.getAllMaterialValue(this._aiColor)
+    const oppValue = this.board.getAllMaterialValue(this._opponentColor)
 
     const baseMaterialDifference = aiValue - oppValue
     const exchangesScore = this.evaluateExchanges()
@@ -75,102 +58,11 @@ class ChessAi extends ChessGame {
     return baseMaterialDifference + exchangesScore
   }
 
-  /**
-   * Funkcja przyznająca drobny bonus za to, że AI może
-   * tanio zbić droższą figurę, oraz karę za to,
-   * że przeciwnik może zrobić to samo nam.
-   */
-  private evaluateExchanges(): number {
-    let exchangeScore = 0
-    const processCaptures = (captures: { capturingValue: number; capturedValue: number }[], factor: number) => {
-      for (const { capturingValue, capturedValue } of captures) {
-        const diff = capturedValue - capturingValue
-        if (diff > 0) exchangeScore += diff * factor
-      }
-    }
-    processCaptures(this.getCapturingMoves(this._aiColour), ChessAi.EXCHANGE_MULTIPLIER)
-    processCaptures(this.getCapturingMoves(this._opponentColour), -ChessAi.EXCHANGE_MULTIPLIER)
-    return exchangeScore
-  }
-
-  /**
-   * Pomocnicza metoda zwracająca listę wszystkich bić
-   * (w tym en passant) danego koloru.
-   * Każdy element to para: wartość bijącej figury i wartość figury bitej.
-   */
-  private getCapturingMoves(sideColor: color): { capturingValue: number; capturedValue: number }[] {
-    const results: { capturingValue: number; capturedValue: number }[] = []
-
-    // Wszystkie legalne ruchy danej strony
-    const moves = this.board.getLegalMoves(sideColor)
-
-    for (const move of moves) {
-      // Figura bijąca (może być null, w razie braku figur – na wszelki wypadek sprawdzamy)
-      const fromPos = move.from
-      const capturingFig = fromPos.figure
-      if (!capturingFig) continue
-
-      // Czy to bicie w przelocie?
-      if (this.board.isMoveEnPassant(move)) {
-        // Jeśli tak, musimy wyliczyć, która figura jest bita
-        const capturedPawn = this.getPawnCapturedEnPassant(move)
-        if (capturedPawn) {
-          results.push({
-            capturingValue: capturingFig.materialValue,
-            capturedValue: capturedPawn.materialValue,
-          })
-        }
-      } else {
-        // Normalne bicie – sprawdzamy, czy na polu docelowym jest przeciwnik
-        const toPos = move.to
-        const occupant = toPos.figure
-        if (occupant && occupant.color !== capturingFig.color) {
-          results.push({
-            capturingValue: capturingFig.materialValue,
-            capturedValue: occupant.materialValue,
-          })
-        }
-      }
-    }
-    return results
-  }
-
-  /**
-   * Metoda pomocnicza do wyznaczenia, który pionek jest bity en passant.
-   * Zwraca referencję do tej figury (lub null, jeśli coś się nie zgadza).
-   */
-  private getPawnCapturedEnPassant(move: Move) {
-    // Kolor bijącego piona
-    const fromFig = move.from.figure
-    if (!fromFig || fromFig.type !== figureType.pawn) return null
-
-    const direction = fromFig.color === color.White ? +1 : -1
-
-    // Jeśli biały bije w przelocie, to bity pion stoi "poniżej" ruchu,
-    // jeśli czarny bije w przelocie, stoi "powyżej".
-    const capturedPosY = move.to.y - direction
-    const capturedPosX = move.to.x
-    const capturedPos = this.board.getPositionByCords(capturedPosX, capturedPosY)
-    if (!capturedPos) return null
-
-    const victim = capturedPos.figure
-    if (!victim || victim.type !== figureType.pawn) return null
-
-    return victim
-  }
-
-  /**
-   * Minimax z alpha-beta pruning:
-   * - Symulujemy ruch
-   * - Rekurencyjnie schodzimy w głąb
-   * - Cofamy ruch
-   * - Szukamy max (ruch AI) lub min (ruch przeciwnika)
-   */
   private minimax(depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
     if (depth === 0) return this.evaluateBoard()
 
-    const currentColor = isMaximizing ? this._aiColour : this._opponentColour
-    const moves = this.board.getLegalMoves(currentColor)
+    const currentColor = isMaximizing ? this._aiColor : this._opponentColor
+    const moves = this.board.getPseudoLegalMoves(currentColor)
     if (!moves.length) return this.evaluateBoard()
 
     if (isMaximizing) {
@@ -181,7 +73,7 @@ class ChessAi extends ChessGame {
         this.board.undoLastMove()
         maxEval = evalValue > maxEval ? evalValue : maxEval
         alpha = Math.max(alpha, evalValue)
-        if (beta <= alpha) break // Beta-cutoff
+        if (beta <= alpha) break
       }
       return maxEval
     } else {
@@ -192,20 +84,72 @@ class ChessAi extends ChessGame {
         this.board.undoLastMove()
         minEval = evalValue < minEval ? evalValue : minEval
         beta = Math.min(beta, evalValue)
-        if (beta <= alpha) break // Alpha-cutoff
+        if (beta <= alpha) break
       }
       return minEval
     }
   }
+  private evaluateExchanges(): number {
+    let exchangeScore = 0
+    const processCaptures = (captures: { capturingValue: number; capturedValue: number }[], factor: number) => {
+      for (const { capturingValue, capturedValue } of captures) {
+        const diff = capturedValue - capturingValue
+        if (diff > 0) exchangeScore += diff * factor
+      }
+    }
+    processCaptures(this.getCapturingMoves(this._aiColor), this.EXCHANGE_MULTIPLIER)
+    processCaptures(this.getCapturingMoves(this._opponentColor), -this.EXCHANGE_MULTIPLIER)
+    return exchangeScore
+  }
 
-  /**
-   * Główna metoda dobierająca kandydatów na ruch.
-   * - oceniamy każdy legalny ruch
-   * - filtrujemy te, które odstają za bardzo od najlepszego wyniku
-   * - zwracamy maksymalnie np. 6
-   */
-  private determineCandidateMoves(): Move[] {
-    const allMoves = this.board.getLegalMoves(this._aiColour)
+  private getCapturingMoves(sideColor: color): { capturingValue: number; capturedValue: number }[] {
+    const results: { capturingValue: number; capturedValue: number }[] = []
+
+    const moves = this.board.getPseudoLegalMoves(sideColor)
+
+    for (const move of moves) {
+      const fromPos = move.from
+      const capturingFig = fromPos.figure
+      if (!capturingFig) continue
+
+      if (this.board.isMoveEnPassant(move)) {
+        const capturedPawn = this.getPawnCapturedEnPassant(move)
+        if (capturedPawn) {
+          results.push({
+            capturingValue: capturingFig.materialValueWithBonus,
+            capturedValue: capturedPawn.materialValueWithBonus,
+          })
+        }
+      } else {
+        const toPos = move.to
+        const occupant = toPos.figure
+        if (occupant && occupant.color !== capturingFig.color) {
+          results.push({
+            capturingValue: capturingFig.materialValueWithBonus,
+            capturedValue: occupant.materialValueWithBonus,
+          })
+        }
+      }
+    }
+    return results
+  }
+  private getPawnCapturedEnPassant(move: Move) {
+    const fromFig = move.from.figure
+    if (!fromFig || fromFig.type !== figureType.pawn) return null
+
+    const direction = fromFig.color === color.White ? +1 : -1
+    const capturedPosY = move.to.y - direction
+    const capturedPosX = move.to.x
+    const capturedPos = this.board.getPositionByCords(capturedPosX, capturedPosY)
+    if (!capturedPos) return null
+
+    const victim = capturedPos.figure
+    if (!victim || victim.type !== figureType.pawn) return null
+
+    return victim
+  }
+  private aiDetermineBestMove(): Move[] {
+    const allMoves = this.board.getLegalMoves(this._aiColor)
     if (!allMoves.length) return []
 
     let bestEval = -Infinity
@@ -228,8 +172,20 @@ class ChessAi extends ChessGame {
       .sort((a, b) => b.eval - a.eval)
       .map((item) => item.move)
 
+    console.log("Candidate moves: ", candidateMoves.slice(0, 6))
     return candidateMoves.slice(0, 6)
   }
-}
 
+  get aiColor(): color {
+    return this._aiColor
+  }
+
+  get aiDifficulty(): aiDifficulty {
+    return this._aiDifficulty
+  }
+
+  get searchDepth(): number {
+    return this._searchDepth
+  }
+}
 export default ChessAi

@@ -2,7 +2,7 @@ import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Position, Board } from "@utils/boardUtils"
 import { Move } from "@shared/types/moveType"
 import { color } from "@shared/types/colorType"
-import ChessGame from "@modules/chess/chessGame.js"
+import ChessGame from "@modules/chess/chessGame"
 
 export const isMoveValid = (board: Board, move: Move): boolean => {
   return board.isLegalMove(move)

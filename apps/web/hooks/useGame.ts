@@ -22,6 +22,7 @@ import {
   startGame,
   undoMove,
   whosTurn,
+  callAiToPerformMove,
 } from "@modules/index"
 import { color, figureType } from "@chess-engine/types"
 import MovePair from "@shared/types/movePair"
@@ -70,13 +71,10 @@ const useGame = (ai: boolean = false) => {
     }
 
     const playerTimer = setInterval(() => {
-      console.log("Timer tick. Current player:", currentPlayer, "White time:", whiteTime, "Black time:", blackTime)
       if (currentPlayer?.toLowerCase() === "white") {
         setWhiteTime((prevWhiteTime) => {
           const newTime = prevWhiteTime > 0 ? prevWhiteTime - 1 : 0
-          console.log("Updating white time to:", newTime)
           if (newTime === 0) {
-            console.log("White time ran out, setting status to blackWins")
             setGameStatus(gameStatusType.blackWins)
           }
           return newTime
@@ -84,15 +82,13 @@ const useGame = (ai: boolean = false) => {
       } else if (currentPlayer?.toLowerCase() === "black") {
         setBlackTime((prevBlackTime) => {
           const newTime = prevBlackTime > 0 ? prevBlackTime - 1 : 0
-          console.log("Updating black time to:", newTime)
           if (newTime === 0) {
-            console.log("Black time ran out, setting status to whiteWins")
             setGameStatus(gameStatusType.whiteWins)
           }
           return newTime
         })
       } else {
-        console.log("No valid current player detected")
+        console.error("No valid current player detected")
       }
     }, 1000)
 
@@ -104,13 +100,38 @@ const useGame = (ai: boolean = false) => {
 
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
-    console.log("Move attempted:", move)
     if (makeMove(game, move)) {
       updateBoard()
       return true
     }
     return false
   }
+
+  const aiMovePerform = async () => {
+    if (!(game instanceof ChessGameExtraAI)) throw new Error("Wrong game instance")
+    if (game.aiColor === whosTurn(game)) {
+      if (isAwaitingPromotion(game)) {
+        game.promotionTo(figureType.queen)
+        updateBoard()
+      } else {
+        try {
+          const aimove = await callAiToPerformMove(game)
+          if (aimove) {
+            makeMove(game, aimove)
+          } else {
+            console.error("ai move not performed. Move is either undefined or null")
+          }
+          updateBoard()
+        } catch (error) {
+          console.error("Error during AI move:", error)
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    aiMovePerform()
+  }, [currentPlayer])
 
   const undoLastMove = (): boolean => {
     if (undoMove(game)) {
@@ -143,7 +164,6 @@ const useGame = (ai: boolean = false) => {
   }
 
   const updateBoard = () => {
-    console.log("Updating board. New status:", getGameStatus(game), "New player:", whosTurn(game))
     setBoard(getBoard(game))
     setMoveHistory(getMoveHistory(game))
     setCurrentPlayer(whosTurn(game))
@@ -180,6 +200,7 @@ const useGame = (ai: boolean = false) => {
     getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
     getPositionById: (id: number) => getPositionById(getBoard(game), id),
     setGameStatus,
+    aiMovePerform,
   }
 }
 

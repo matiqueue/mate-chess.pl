@@ -6,7 +6,7 @@ import MoveRecord from "@shared/types/moveRecord"
 import { figureType } from "@shared/types/figureType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
 import { gameStatusType } from "@shared/types/gameStatusType"
-import { PromotionFigureType } from "@shared/types/promotionType.js"
+import { PromotionFigureType } from "@shared/types/promotionType"
 
 /**
  * Represents a basic chess game logic.
@@ -51,6 +51,7 @@ class ChessGame {
   /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
    * */
   public async process() {
+    console.log("processing...")
     this.stateProcessor()
 
     for (const figure of this._board.allFigures) {
@@ -175,7 +176,6 @@ class ChessGame {
    * @returns formatted move history
    */
   public getMoveHistory(): any {
-    console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
     return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 

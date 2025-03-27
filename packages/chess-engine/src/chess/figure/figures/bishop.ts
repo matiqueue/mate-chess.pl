@@ -8,7 +8,7 @@ import { bishopMaterialTable } from "@shared/types/material"
  * */
 class Bishop extends Figure {
   constructor(color: color, position: Position, board: Board) {
-    super(figureType.bishop, color, position, board, 3, bishopMaterialTable)
+    super(figureType.bishop, color, position, board, 300, bishopMaterialTable)
   }
 
   override isPositionValid(target: Position): boolean {
