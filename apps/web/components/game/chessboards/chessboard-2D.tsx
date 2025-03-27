@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   FaChessRook as ChessRook,
   FaChessKnight as ChessKnight,
@@ -14,11 +14,15 @@ import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
 import { Position, ArrowData } from "@/utils/chessboard/types"
 import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation } from "@/utils/chessboard/chessBoardUtils"
+import LoadingAnimation from "./loading/loading-animation"
+import { motion } from "framer-motion"
 
 export function ChessBoard2D() {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
-  const { board, currentPlayer, isMoveEnPassant: checkEnPassant, aiMovePerform } = useGameContext()
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+
+  const { board, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
   const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
   const { arrows, handleMouseDownSquare, handleMouseUpSquare, clearArrows } = useChessArrows()
@@ -35,6 +39,12 @@ export function ChessBoard2D() {
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"],
   ]
+
+  useEffect( () => {
+    setTimeout(() => {
+      setModelsLoaded(true);
+    }, 1500);
+  }, [])
 
   const rawBoard = board ? board.getBoardArray() : initialBoard
   const boardRows = rawBoard.slice(rawBoard.length - 8)
@@ -263,8 +273,9 @@ export function ChessBoard2D() {
   }
 
   return (
-    <div className="relative w-full max-w-[68vh] aspect-square">
-      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")}>
+    <div className={`w-full max-w-[68vh] aspect-square ${modelsLoaded ? "relative" : "flex justify-center items-center"}`}>
+      <div style={ {display: modelsLoaded ? "none" : "block"}}><LoadingAnimation></LoadingAnimation></div>
+      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")} style={ {display: modelsLoaded ? "block" : "none"}}>
         <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           <div className="relative w-full h-full box-border">
             <div className="absolute inset-0 pointer-events-none">{renderArrows()}</div>
