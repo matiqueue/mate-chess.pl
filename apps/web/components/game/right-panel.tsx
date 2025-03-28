@@ -2,7 +2,22 @@
 
 import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
+import {
+  Eye,
+  Layout,
+  Settings2,
+  ChevronDown,
+  Clock,
+  MessageCircle,
+  Flag,
+  X,
+  Moon,
+  Sun,
+  PanelLeftClose,
+  PanelLeftOpen,
+  GripVertical,
+  Terminal,
+} from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
@@ -18,6 +33,40 @@ import { useTranslation } from "react-i18next"
 import { figureType } from "@modules/types"
 import MoveRecordPublic from "@modules/chess/history/move"
 import { color } from "@modules/types"
+import { useSidebarContext } from "@/contexts/SidebarContext"
+
+function ToggleSidebarButton({ isNarrow }: { isNarrow: boolean }) {
+  const { mode, setMode, logToSidebar } = useSidebarContext()
+
+  const toggleMode = () => {
+    setMode(mode === "default" ? "console" : "default")
+  }
+
+  const testLog = () => {
+    logToSidebar(`Log entry at ${new Date().toLocaleTimeString()}`)
+  }
+
+  const buttonClass = isNarrow
+    ? "w-fit p-2 flex items-center justify-center"
+    : "flex-1 min-w-[100px] text-sm whitespace-nowrap flex items-center justify-center"
+
+  return (
+    <>
+      <Button variant="outline" size="sm" className={buttonClass} onClick={toggleMode}>
+        <span className="flex-shrink-0">{mode === "default" ? <Terminal className="h-4 w-4" /> : <X className="h-4 w-4" />}</span>
+        {!isNarrow && (mode === "default" ? "Switch to Console" : "Default")}
+      </Button>
+      {mode === "console" && (
+        <Button variant="outline" size="sm" className={buttonClass} onClick={testLog}>
+          <span className="flex-shrink-0">
+            <Clock className="h-4 w-4" />
+          </span>
+          {!isNarrow && "Test Log"}
+        </Button>
+      )}
+    </>
+  )
+}
 
 export function RightPanel() {
   const { t } = useTranslation()
@@ -336,6 +385,7 @@ export function RightPanel() {
                 <span className="flex-shrink-0">{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</span>
                 {!isNarrow && (isDark ? t("rightPanel.lightMode") : t("rightPanel.darkMode"))}
               </Button>
+              <ToggleSidebarButton isNarrow={isNarrow} />
             </div>
           </div>
         </div>
