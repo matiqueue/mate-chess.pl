@@ -12,7 +12,7 @@ import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
 import { color } from "@shared/types/colorType"
 import { callAiToPerformMove } from "@shared/destruct/aiFunctions/AIIOfunctions"
-import { setupFiguresStandard } from "@shared/destruct/mallocFunctions/figureSetup.js"
+import { setupFiguresStandard } from "@shared/destruct/mallocFunctions/figureSetup"
 
 const setupGame = (fenNotation: string = "") => {
   const game = new ChessGameExtraLayer()
@@ -23,6 +23,7 @@ const setupGame = (fenNotation: string = "") => {
 }
 const setupAIGame = (aicolor: color) => {
   const game = new ChessGameExtraAI(aicolor)
+  setupFiguresStandard(game)
   return game
 }
 

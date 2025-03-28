@@ -39,11 +39,11 @@ export function GameControls() {
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
         {/* Przyciski sterujące (strzałki) widoczne wszędzie */}
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoLastMove}>
           <RotateCcw className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
+          <ChevronLeft className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={forwardLastMove}>
           <ChevronRight className="h-6 w-6" />

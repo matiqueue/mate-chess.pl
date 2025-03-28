@@ -166,7 +166,11 @@ class ChessGame {
    * @returns true if move was undone, false if undo is not available
    */
   public undoMove(): boolean {
-    return this.board.previewLastMove()
+    const isSuccess = this.board.undoLastMove()
+    if (isSuccess) {
+      this.switchCurrentPlayer()
+    }
+    return isSuccess
   }
   /**
    * Regenerates and returns the move history using {@link MoveRecorder}.
