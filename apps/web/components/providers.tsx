@@ -44,6 +44,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/play") ||
     pathname.startsWith("/bot") ||
     pathname === "/profile" ||
+    pathname === "/profile/security" ||
     pathname.startsWith("/easter-egg") ||
     pathname.startsWith("/activity")
   ) {
