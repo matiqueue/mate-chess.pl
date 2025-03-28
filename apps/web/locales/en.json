@@ -565,6 +565,10 @@
   "signUp.completeRegistration": "Complete Registration",
   "signUp.haveAccount": "Already have an account? Log in",
   "signUp.resendCode": "Didn't receive the code? Resend",
+  "signUp.verificationCode": "Verification code",
+  "signUp.afterSso1": "You have logged in using a social account. Provide a username to complete the registration.",
+  "signUp.afterSso2": "Provide a username to finish creating your account.",
+  "signUp.completeSignUp": "Complete registration",
   "signIn": {
     "title": "Sign In",
     "welcomeMessage": "Welcome back! Sign in to continue.",

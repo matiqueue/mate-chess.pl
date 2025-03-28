@@ -149,7 +149,113 @@ export default function SignUpPage() {
               </Card>
             </motion.div>
           </SignUp.Step>
-          {/* Krok 2 i 3 również używają tłumaczeń podobnie jak powyżej */}
+           {/* Krok 2: Continue - tylko username po SSO */}
+           <SignUp.Step name="continue">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+                  <Card className="w-full sm:w-96">
+                    <CardHeader>
+                      <CardTitle>{t("signUp.completeSignUp")}</CardTitle>
+                      <CardDescription>
+                        {afterSSO
+                          ? t("signUp.afterSso1")
+                          : t("signUp.afterSso2")}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-y-4">
+                      <Clerk.Field name="username" className="space-y-2">
+                        <Clerk.Label asChild>
+                          <Label>{t("signUp.step1.username")}</Label>
+                        </Clerk.Label>
+                        <Clerk.Input type="text" required asChild>
+                          <Input />
+                        </Clerk.Input>
+                        <Clerk.FieldError className="block text-sm text-destructive" />
+                      </Clerk.Field>
+                    </CardContent>
+                    <CardFooter>
+                      <div className="grid w-full gap-y-4">
+                        <SignUp.Action submit asChild>
+                          <Button disabled={isGlobalLoading}>
+                            <Clerk.Loading>
+                              {(isLoading) => (isLoading ? <Icons.spinner className="size-4 animate-spin" /> : t("signUp.continue"))}
+                            </Clerk.Loading>
+                          </Button>
+                        </SignUp.Action>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
+              </SignUp.Step>
+
+              {/* Krok 3: Weryfikacja emaila */}
+              <SignUp.Step name="verifications">
+                <SignUp.Strategy name="email_code">
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+                    <Card className="w-full sm:w-96">
+                      <CardHeader>
+                        <CardTitle>{t("signUp.step2.emailVerification")}</CardTitle>
+                        <CardDescription>{t("signUp.step3.emailVerificationDescription")}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="grid gap-y-4">
+                        <div className="grid items-center justify-center gap-y-2">
+                          <Clerk.Field name="code" className="space-y-2">
+                            <Clerk.Label className="sr-only">{t("signUp.verificationCode")}</Clerk.Label>
+                            <div className="flex justify-center text-center">
+                              <Clerk.Input
+                                type="otp"
+                                className="flex justify-center has-[:disabled]:opacity-50"
+                                autoSubmit
+                                render={({ value, status }) => (
+                                  <div
+                                    data-status={status}
+                                    className={cn(
+                                      "relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
+                                      {
+                                        "z-10 ring-2 ring-ring ring-offset-background": status === "cursor" || status === "selected",
+                                      },
+                                    )}
+                                  >
+                                    {value}
+                                    {status === "cursor" && (
+                                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                        <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              />
+                            </div>
+                            <Clerk.FieldError className="block text-center text-sm text-destructive" />
+                          </Clerk.Field>
+                          <SignUp.Action
+                            asChild
+                            resend
+                            className="text-muted-foreground"
+                            fallback={({ resendableAfter }) => (
+                              <Button variant="link" size="sm" disabled>
+                                {t("signUp.resendCode")} (<span className="tabular-nums">{resendableAfter}</span>)
+                              </Button>
+                            )}
+                          >
+                            <Button type="button" variant="link" size="sm">
+                              {t("signUp.resendCode")}
+                            </Button>
+                          </SignUp.Action>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <div className="grid w-full gap-y-4">
+                          <SignUp.Action submit asChild>
+                            <Button disabled={isGlobalLoading}>
+                              <Clerk.Loading>{(isLoading) => (isLoading ? <Icons.spinner className="size-4 animate-spin" /> : "Kontynuuj")}</Clerk.Loading>
+                            </Button>
+                          </SignUp.Action>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                </SignUp.Strategy>
+              </SignUp.Step>
         </>
       )}
     </Clerk.Loading>

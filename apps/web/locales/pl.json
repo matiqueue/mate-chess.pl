@@ -564,6 +564,10 @@
   "signUp.completeRegistration": "Zakończ rejestrację",
   "signUp.haveAccount": "Masz już konto? Zaloguj się",
   "signUp.resendCode": "Nie otrzymałeś kodu? Wyślij ponownie",
+  "signUp.verificationCode": "Kod weryfikacyjny",
+  "signUp.afterSso1": "Zalogowano Cię za pomocą konta społecznościowego. Podaj nazwę użytkownika, aby ukończyć rejestrację.",
+  "signUp.afterSso2": "Podaj nazwę użytkownika, aby ukończyć tworzenie konta.",
+  "signUp.completeSignUp": "Uzupełnij rejestrację",
   "signIn": {
     "title": "Zaloguj się",
     "welcomeMessage": "Witaj ponownie! Zaloguj się, aby kontynuować.",
