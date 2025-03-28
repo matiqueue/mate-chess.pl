@@ -25,6 +25,10 @@
   "brandName": "Mate Chess",
   "home": "Home",
   "navPlay": "PLAY",
+  "selectBotDifficulty": "Select AI difficulty level",
+  "enterDifficultyLevel": "Enter AI difficulty level (1 - 3)",
+  "difficultyLevel": "AI difficulty level",
+  "goNext": "Go to game!",
   "live": "Live",
   "tournaments": "Tournaments",
   "navLearn": "LEARN",
@@ -35,6 +39,7 @@
   "navCommunity": "COMMUNITY",
   "players": "Players",
   "activity": "Activity",
+  "startLinkGame": "Start game via Link",
   "settings": "Settings",
   "enterLobbyCode": "Enter the lobby code",
   "login": "Login",
@@ -109,18 +114,18 @@
     "aiBotsHeading": "AI Bots",
     "chessMasterHeading": "Chess Master",
     "beginnerBot": {
-      "title": "Beginner Bot",
-      "description": "Perfect for newcomers. This bot plays simple moves, allowing you to learn the basics of chess strategy.",
+      "title": "Algorithm Bot",
+      "description": "Perfect for newcomers.",
       "buttonText": "Beginner!"
     },
     "advancedBot": {
-      "title": "Advanced Bot",
-      "description": "Challenging for intermediate players. This bot employs more complex strategies and tactics.",
+      "title": "AI Bot",
+      "description": "Challenging for intermediate players.",
       "buttonText": "Advanced!"
     },
     "chessGrandmaster": {
-      "title": "Chess Grandmaster",
-      "description": "Test your skills against a simulated Grandmaster. Prepare for high-level chess strategies and deep positional play.",
+      "title": "Grandmaster Bot",
+      "description": "Test your skills against a simulated Grandmaster.",
       "buttonText": "Grandmaster!"
     },
     "playButton": "Play {{botName}}",
@@ -520,5 +525,67 @@
       "The folding chess board was invented by a priest who was forbidden to play chess.",
       "The new chess piece – the queen – was introduced in the 15th century and was originally the weakest piece."
     ]
+  },
+  "onLoad": {
+    "title": "Loading board",
+    "desc": "Please wait, loading the board..."
+  },
+  "onViewChange": {
+    "title2D": "Switching to 2D view",
+    "desc2D": "Please wait, changing the board...",
+    "title3D": "Switching to 3D view",
+    "desc3D": "Please wait, changing the board..."
+  },
+  "onThemeChange": {
+    "titleLight": "Loading light theme",
+    "descLight": "Please wait, painting the board...",
+    "titleDark": "Loading dark theme",
+    "descDark": "Please wait, painting the board..."
+  },
+  "auth": {
+    "noAccountTitle": "We couldn't find your account",
+    "redirectDescription": "We will redirect you to a page where you can register",
+    "redirectMessage": "Redirecting in:",
+    "createAccount": "Create your account",
+    "fillData": "Fill in the data to get started.",
+    "defaultMessage": ""
+  },
+  "signUp.start.title": "Sign Up",
+  "signUp.start.description": "Create a new account",
+  "signUp.step1.email": "Email Address",
+  "signUp.step1.username": "Username",
+  "signUp.step1.firstName": "First Name",
+  "signUp.or": "or",
+  "signUp.step1.lastName": "Last Name",
+  "signUp.step1.password": "Password",
+  "signUp.step2.username": "Username",
+  "signUp.step3.emailVerification": "Verify your email",
+  "signUp.step3.emailVerificationDescription": "Enter the verification code sent to your email",
+  "signUp.continue": "Continue",
+  "signUp.completeRegistration": "Complete Registration",
+  "signUp.haveAccount": "Already have an account? Log in",
+  "signUp.resendCode": "Didn't receive the code? Resend",
+  "signUp.verificationCode": "Verification code",
+  "signUp.afterSso1": "You have logged in using a social account. Provide a username to complete the registration.",
+  "signUp.afterSso2": "Provide a username to finish creating your account.",
+  "signUp.completeSignUp": "Complete registration",
+  "signIn": {
+    "title": "Sign In",
+    "welcomeMessage": "Welcome back! Sign in to continue.",
+    "google": "Google",
+    "or": "or",
+    "apple": "Apple",
+    "emailOrUsername": "Email or username",
+    "continueButton": "Continue",
+    "signUpLink": "Don't have an account? Sign up",
+    "chooseOtherMethod": "Use another method",
+    "verificationMessage": "Enter the verification code sent to your email.",
+    "password": "Password",
+    "backButton": "Back",
+    "noCodeReceived": "Didn't receive the code? Resend",
+    "redirectMessage": "Redirecting soon...",
+    "resendCode": "Didn't receive the code? Resend",
+    "noAccountTitle": "We couldn't find your account",
+    "redirectDescription": "You will be redirected to a page where you can create one"
   }
 }

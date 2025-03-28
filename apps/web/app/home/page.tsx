@@ -9,6 +9,7 @@ import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { redirect } from "next/navigation"
 
 /**
  * Obiekt animacji fadeInUp.
@@ -165,7 +166,7 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("trainTacticalSkills")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button className="w-full">{t("startSolving")}</Button>
+                <Button onClick={() => {redirect(`/puzzles`)}} className="w-full">{t("startSolving")}</Button>
               </motion.div>
             </CardContent>
           </Card>
@@ -182,7 +183,7 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("learnFromGrandmasters")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button className="w-full">{t("startLearning")}</Button>
+                <Button onClick={() => {redirect(`/lessons`)}} className="w-full">{t("startLearning")}</Button>
               </motion.div>
             </CardContent>
           </Card>

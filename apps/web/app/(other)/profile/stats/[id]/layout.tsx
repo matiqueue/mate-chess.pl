@@ -26,12 +26,10 @@ export const metadata: Metadata = {
  */
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-sidebar">
-        <div className="flex-1 flex flex-col">
-          <main className="flex flex-col flex-grow justify-center">{children}</main>
-        </div>
+    <div className="flex w-full h-full">
+      <div className="flex-1 flex flex-col">
+        <main className="flex flex-col flex-grow justify-center">{children}</main>
       </div>
-    </SidebarProvider>
+  </div>
   )
 }

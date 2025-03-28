@@ -23,8 +23,13 @@ export const metadata: Metadata = {
  */
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
-      <SettingsPage></SettingsPage>
-    </main>
+    <div className="flex w-full h-full">
+      <div className="w-full flex items-center justify-center">
+        <div className="w-full h-full max-w-4xl p-6">
+          <SettingsPage></SettingsPage>
+        </div>
+      </div>
+    </div>
+    
   )
 }

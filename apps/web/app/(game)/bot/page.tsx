@@ -10,6 +10,8 @@ import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@workspace/ui/components/dialog"
+import { Input } from "@workspace/ui/components/input"
 
 /**
  * Obiekt animacji kontenera.
@@ -67,6 +69,8 @@ export default function GameModeSelector() {
   const { user } = useUser()
   const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [botDifficulty, setBotDifficulty] = useState("")
 
   useEffect(() => {
     setMounted(true)
@@ -74,7 +78,6 @@ export default function GameModeSelector() {
 
   if (!mounted) return null
 
-  // Definicja trybów gry
   const gameModes = [
     {
       key: "beginner",
@@ -98,6 +101,30 @@ export default function GameModeSelector() {
       icon: Crown,
     },
   ]
+
+  const openAdvancedDialog = () => {
+    setIsDialogOpen(true)
+  }
+
+  const handleDifficultyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBotDifficulty(event.target.value)
+  }
+
+  const handleGoButtonClick = () => {
+    console.log("Wybrany poziom trudności bota:", botDifficulty)
+
+    if (botDifficulty === "1") {
+      router.push("/bot/ai/easy")
+    } else if (botDifficulty === "2") {
+      router.push("/bot/ai/medium")
+    } else if (botDifficulty === "3") {
+      router.push("/bot/ai/hard")
+    } else {
+      console.log("Nieprawidłowy poziom trudności bota")
+    }
+
+    setIsDialogOpen(false)
+  }
 
   return (
     <ScrollArea>
@@ -132,7 +159,7 @@ export default function GameModeSelector() {
 
           <motion.div variants={container} initial="hidden" animate="show" className="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
             {gameModes.map((mode) => {
-              const isOnline = mode.key === "online" // (Nie jest używane, ale pozostawione dla spójności)
+              const isOnline = mode.key === "online"
               return (
                 <MotionCard
                   key={mode.key}
@@ -168,11 +195,11 @@ export default function GameModeSelector() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={
-                        mode.key === "beginner"
-                          ? () => router.push(`/bot/${mode.key.toLowerCase()}`)
-                          : mode.key === "advance"
-                            ? () => router.push(`/bot/${mode.key.toLowerCase()}`)
-                            : () => router.push(`/play/${mode.key.toLowerCase()}`)
+                        mode.key === "advance"
+                          ? openAdvancedDialog
+                          : mode.key === "beginner"
+                            ? () => router.push(`/bot/algorithm/easy`)
+                            : () => router.push(`/bot/chess-master`)
                       }
                       disabled={isOnline && !user}
                     >
@@ -190,6 +217,20 @@ export default function GameModeSelector() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Dialog for advanced mode */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+          <DialogHeader>
+            <DialogTitle>{t("selectBotDifficulty")}</DialogTitle>
+            <DialogDescription>{t("enterDifficultyLevel")}</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col space-y-4">
+            <Input type="number" value={botDifficulty} onChange={handleDifficultyChange} placeholder={t("difficultyLevel")} />
+            <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </ScrollArea>
   )
 }

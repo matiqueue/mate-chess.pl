@@ -3,14 +3,14 @@
 import { createContext, useContext, useState, ReactNode } from "react"
 
 interface GameViewContextType {
-  viewMode: "2D" | "3D"
-  setViewMode: (mode: "2D" | "3D") => void
+  viewMode: "2D" | "3D" | undefined
+  setViewMode: (mode: "2D" | "3D" | undefined) => void
 }
 
 const GameViewContext = createContext<GameViewContextType | undefined>(undefined)
 
 export const GameViewProvider = ({ children }: { children: ReactNode }) => {
-  const [viewMode, setViewMode] = useState<"2D" | "3D">("2D")
+  const [viewMode, setViewMode] = useState<"2D" | "3D" | undefined>(undefined)
 
   return <GameViewContext.Provider value={{ viewMode, setViewMode }}>{children}</GameViewContext.Provider>
 }

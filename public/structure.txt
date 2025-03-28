@@ -1,0 +1,439 @@
+.
+├── LICENSE.md
+├── README.md
+├── apps
+│   ├── admin
+│   │   ├── README.md
+│   │   ├── app
+│   │   │   ├── admin
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── error.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── login
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── context
+│   │   │   └── ErrorContextProvider.tsx
+│   │   ├── eslint.config.mjs
+│   │   ├── next-env.d.ts
+│   │   ├── next.config.ts
+│   │   ├── package.json
+│   │   ├── postcss.config.mjs
+│   │   ├── public
+│   │   │   ├── file.svg
+│   │   │   ├── globe.svg
+│   │   │   └── window.svg
+│   │   └── tsconfig.json
+│   ├── desktop
+│   │   ├── package.json
+│   │   └── src-tauri
+│   │       ├── Cargo.lock
+│   │       ├── Cargo.toml
+│   │       ├── build.rs
+│   │       ├── icons
+│   │       │   ├── 128x128.png
+│   │       │   ├── 128x128@2x.png
+│   │       │   ├── 32x32.png
+│   │       │   ├── Square107x107Logo.png
+│   │       │   ├── Square142x142Logo.png
+│   │       │   ├── Square150x150Logo.png
+│   │       │   ├── Square284x284Logo.png
+│   │       │   ├── Square30x30Logo.png
+│   │       │   ├── Square310x310Logo.png
+│   │       │   ├── Square44x44Logo.png
+│   │       │   ├── Square71x71Logo.png
+│   │       │   ├── Square89x89Logo.png
+│   │       │   ├── StoreLogo.png
+│   │       │   ├── chess-pawn.png
+│   │       │   ├── chess-pawn128x128.png
+│   │       │   ├── chess-pawn32x32.png
+│   │       │   ├── chess-pawn64x64.png
+│   │       │   ├── icon.icns
+│   │       │   ├── icon.ico
+│   │       │   └── icon.png
+│   │       ├── src
+│   │       │   └── main.rs
+│   │       └── tauri.conf.json
+│   ├── errors
+│   │   ├── dist
+│   │   │   └── index.js
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
+│   ├── server
+│   │   ├── dist
+│   │   │   ├── api
+│   │   │   │   ├── link.js
+│   │   │   │   └── online.js
+│   │   │   ├── index.js
+│   │   │   ├── sockets
+│   │   │   │   └── lobby.js
+│   │   │   └── types.js
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── api
+│   │   │   │   ├── link.ts
+│   │   │   │   └── online.ts
+│   │   │   ├── index.ts
+│   │   │   ├── sockets
+│   │   │   │   └── lobby.ts
+│   │   │   └── types.ts
+│   │   ├── tsconfig.json
+│   │   └── vercel.json
+│   └── web
+│       ├── app
+│       │   ├── (auth)
+│       │   │   ├── sign-in
+│       │   │   │   └── [[...sign-in]]
+│       │   │   │       ├── layout.tsx
+│       │   │   │       └── page.tsx
+│       │   │   └── sign-up
+│       │   │       └── [[...sign-up]]
+│       │   │           ├── layout.tsx
+│       │   │           └── page.tsx
+│       │   ├── (for-players)
+│       │   │   ├── lessons
+│       │   │   │   └── page.tsx
+│       │   │   ├── news
+│       │   │   │   └── page.tsx
+│       │   │   ├── openings
+│       │   │   │   └── page.tsx
+│       │   │   ├── puzzles
+│       │   │   │   ├── page.tsx
+│       │   │   │   ├── puzzles-client.tsx
+│       │   │   │   └── quiz-client.tsx
+│       │   │   ├── social
+│       │   │   │   ├── clubs
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── forums
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── friends
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── members
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── page.tsx
+│       │   │   └── tournaments
+│       │   │       └── page.tsx
+│       │   ├── (game)
+│       │   │   ├── bot
+│       │   │   │   ├── (modes)
+│       │   │   │   │   ├── ai
+│       │   │   │   │   │   └── [level]
+│       │   │   │   │   │       └── page.tsx
+│       │   │   │   │   ├── algorithm
+│       │   │   │   │   │   └── [level]
+│       │   │   │   │   │       └── page.tsx
+│       │   │   │   │   └── chess-master
+│       │   │   │   │       └── page.tsx
+│       │   │   │   ├── layout.tsx
+│       │   │   │   └── page.tsx
+│       │   │   ├── play
+│       │   │   │   ├── (modes)
+│       │   │   │   │   ├── link
+│       │   │   │   │   │   ├── [code]
+│       │   │   │   │   │   │   └── page.tsx
+│       │   │   │   │   │   ├── layout.tsx
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   ├── local
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   └── online
+│       │   │   │   │       ├── [id]
+│       │   │   │   │       │   └── page.tsx
+│       │   │   │   │       ├── layout.tsx
+│       │   │   │   │       └── page.tsx
+│       │   │   │   ├── layout.tsx
+│       │   │   │   └── page.tsx
+│       │   │   └── watch
+│       │   │       ├── layout.tsx
+│       │   │       └── page.tsx
+│       │   ├── (other)
+│       │   │   ├── easter-egg
+│       │   │   │   └── page.tsx
+│       │   │   └── profile
+│       │   │       ├── [[...rest]]
+│       │   │       │   ├── layout.tsx
+│       │   │       │   └── page.tsx
+│       │   │       └── stats
+│       │   │           └── [id]
+│       │   │               ├── layout.tsx
+│       │   │               └── page.tsx
+│       │   ├── api
+│       │   │   ├── chess-stats
+│       │   │   │   └── route.ts
+│       │   │   └── clearCookie
+│       │   │       └── route.ts
+│       │   ├── error.tsx
+│       │   ├── home
+│       │   │   ├── layout.tsx
+│       │   │   └── page.tsx
+│       │   ├── layout.tsx
+│       │   ├── not-found.tsx
+│       │   ├── page.tsx
+│       │   └── settings
+│       │       └── page.tsx
+│       ├── components
+│       │   ├── auth
+│       │   │   └── signInRedirectCounter.tsx
+│       │   ├── game
+│       │   │   ├── chessboard-container.tsx
+│       │   │   ├── chessboards
+│       │   │   │   ├── chessboard-2D.tsx
+│       │   │   │   └── chessboard-3D.tsx
+│       │   │   ├── client-layout.tsx
+│       │   │   ├── floating-options.tsx
+│       │   │   ├── game-controls.tsx
+│       │   │   ├── game-status-popup-dialog.tsx
+│       │   │   ├── left-sidebar.tsx
+│       │   │   ├── player-info.tsx
+│       │   │   ├── preview-mode-alert-popup.tsx
+│       │   │   └── right-panel.tsx
+│       │   ├── home
+│       │   │   ├── audio-provider.tsx
+│       │   │   ├── chess-message-system.tsx
+│       │   │   ├── chess-notifications.tsx
+│       │   │   ├── enhanced-search.tsx
+│       │   │   ├── language-switcher.tsx
+│       │   │   ├── mobile-header.tsx
+│       │   │   ├── navbar.tsx
+│       │   │   ├── sidebar.tsx
+│       │   │   └── user-profile.tsx
+│       │   ├── landing-page
+│       │   │   ├── button.tsx
+│       │   │   ├── camera-scroll-component.tsx
+│       │   │   ├── chessboard.tsx
+│       │   │   ├── navbar.tsx
+│       │   │   ├── scroll-animation.tsx
+│       │   │   └── skeletonChessboard.tsx
+│       │   ├── lessons
+│       │   │   └── lessons.tsx
+│       │   ├── main
+│       │   │   └── SidebarLayout.tsx
+│       │   ├── openings
+│       │   │   └── openings.tsx
+│       │   ├── other
+│       │   │   ├── main-footer.tsx
+│       │   │   └── main-navbar.tsx
+│       │   ├── providers.tsx
+│       │   ├── settings
+│       │   │   └── settings.tsx
+│       │   ├── statistics
+│       │   │   └── statistics-page.tsx
+│       │   └── tournaments
+│       │       └── chessTournaments.tsx
+│       ├── components.json
+│       ├── contexts
+│       │   ├── ErrorContextProvider.tsx
+│       │   ├── GameContext.tsx
+│       │   └── GameViewContext.tsx
+│       ├── eslint.config.js
+│       ├── hooks
+│       │   ├── use-mobile.tsx
+│       │   └── useGame.ts
+│       ├── i18n.ts
+│       ├── lib
+│       ├── locales
+│       │   ├── en.json
+│       │   ├── pl.json
+│       │   └── ru.json
+│       ├── middleware.ts
+│       ├── next-env.d.ts
+│       ├── next.config.mjs
+│       ├── package.json
+│       ├── postcss.config.mjs
+│       ├── public
+│       │   ├── audio
+│       │   │   └── bgMusic.mp3
+│       │   ├── backgrounds
+│       │   │   ├── 2dExampleDark.png
+│       │   │   ├── 2dExampleLight.png
+│       │   │   ├── 3dExampleDark.png
+│       │   │   ├── 3dExampleLight.png
+│       │   │   ├── LightThemeBg.png
+│       │   │   ├── darkThemeBg.png
+│       │   │   ├── finalBackground.hdr
+│       │   │   ├── homeBgImage.png
+│       │   │   ├── playBgImage.png
+│       │   │   ├── readmeBg.png
+│       │   │   └── sign-in-background.webp
+│       │   ├── logo
+│       │   │   ├── lessonsLogo.webp
+│       │   │   ├── openingsLogo.webp
+│       │   │   └── tournamentlogo.png
+│       │   └── models
+│       │       ├── game
+│       │       │   ├── black-pawns
+│       │       │   │   ├── bishop_black.glb
+│       │       │   │   ├── king_black.glb
+│       │       │   │   ├── knight_black.glb
+│       │       │   │   ├── pawn_black.glb
+│       │       │   │   ├── queen_black.glb
+│       │       │   │   └── rook_black.glb
+│       │       │   ├── chessboards
+│       │       │   │   ├── dark-game-chessboard.glb
+│       │       │   │   └── white-game-chessboard.glb
+│       │       │   └── white-pawns
+│       │       │       ├── bishop_white.glb
+│       │       │       ├── king_white.glb
+│       │       │       ├── knight_white.glb
+│       │       │       ├── pawn_white.glb
+│       │       │       ├── queen_white.glb
+│       │       │       └── rook_white.glb
+│       │       └── landing-page
+│       │           └── landing-chessboard.glb
+│       ├── styles
+│       │   └── landing-page
+│       │       ├── LoadingAnimation.module.css
+│       │       ├── button.module.css
+│       │       ├── chessboard.module.css
+│       │       ├── navbar.module.css
+│       │       ├── scrollAnimation.module.css
+│       │       └── skeletonChessboard.module.css
+│       ├── tsconfig.json
+│       └── utils
+│           ├── chessboard
+│           │   ├── chessBoardUtils.ts
+│           │   └── types.ts
+│           └── quizStorage.ts
+├── package.json
+├── packages
+│   ├── chess-engine
+│   │   ├── eslint.config.js
+│   │   ├── jest.config.js
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── ai
+│   │   │   │   └── engine.ts
+│   │   │   ├── chess
+│   │   │   │   ├── board
+│   │   │   │   │   └── board.ts
+│   │   │   │   ├── chessGame.ts
+│   │   │   │   ├── figure
+│   │   │   │   │   ├── figure.ts
+│   │   │   │   │   └── figures
+│   │   │   │   │       ├── bishop.ts
+│   │   │   │   │       ├── king.ts
+│   │   │   │   │       ├── knight.ts
+│   │   │   │   │       ├── pawn.ts
+│   │   │   │   │       ├── queen.ts
+│   │   │   │   │       └── rook.ts
+│   │   │   │   ├── history
+│   │   │   │   │   ├── move.ts
+│   │   │   │   │   └── moveRecorder.ts
+│   │   │   │   └── position.ts
+│   │   │   ├── chessGameExtraAI.ts
+│   │   │   ├── chessGameExtraLayer.ts
+│   │   │   ├── index.ts
+│   │   │   ├── shared
+│   │   │   │   ├── destruct
+│   │   │   │   │   ├── aiFunctions
+│   │   │   │   │   │   └── AIIOfunctions.ts
+│   │   │   │   │   ├── gameStateFunctions
+│   │   │   │   │   │   └── gameStateFunctions.ts
+│   │   │   │   │   ├── mallocFunctions
+│   │   │   │   │   │   └── positonMapping.ts
+│   │   │   │   │   ├── moveRewindForwardFunctions
+│   │   │   │   │   │   └── rewinding&forwardingMoves.ts
+│   │   │   │   │   ├── movementFunctions
+│   │   │   │   │   │   ├── extraMoves
+│   │   │   │   │   │   │   ├── castle.ts
+│   │   │   │   │   │   │   ├── enPassant.ts
+│   │   │   │   │   │   │   └── promotion.ts
+│   │   │   │   │   │   ├── getMoveHistory.ts
+│   │   │   │   │   │   ├── getValidMoves.ts
+│   │   │   │   │   │   ├── makeMove.ts
+│   │   │   │   │   │   └── undoMove.ts
+│   │   │   │   │   └── rootFunc.ts
+│   │   │   │   └── types
+│   │   │   │       ├── aiDifficulty.ts
+│   │   │   │       ├── colorType.ts
+│   │   │   │       ├── enPassantRecord.ts
+│   │   │   │       ├── figureType.ts
+│   │   │   │       ├── gameStatusType.ts
+│   │   │   │       ├── material.ts
+│   │   │   │       ├── movePair.ts
+│   │   │   │       ├── moveRecord.ts
+│   │   │   │       ├── moveType.ts
+│   │   │   │       └── promotionType.ts
+│   │   │   ├── types.ts
+│   │   │   └── utils
+│   │   │       ├── boardUtils.ts
+│   │   │       ├── figureUtils.ts
+│   │   │       └── typeUtils.ts
+│   │   ├── tests
+│   │   │   ├── board.test.ts
+│   │   │   ├── chessGame.test.ts
+│   │   │   ├── figureMovement.test.ts
+│   │   │   ├── king.test.ts
+│   │   │   └── main.test.ts
+│   │   └── tsconfig.json
+│   ├── eslint-config
+│   │   ├── README.md
+│   │   ├── base.js
+│   │   ├── next.js
+│   │   ├── package.json
+│   │   └── react-internal.js
+│   ├── typescript-config
+│   │   ├── README.md
+│   │   ├── base.json
+│   │   ├── nextjs.json
+│   │   ├── package.json
+│   │   └── react-library.json
+│   └── ui
+│       ├── components.json
+│       ├── eslint.config.js
+│       ├── package.json
+│       ├── postcss.config.mjs
+│       ├── src
+│       │   ├── components
+│       │   │   ├── alert-dialog.tsx
+│       │   │   ├── avatar.tsx
+│       │   │   ├── badge.tsx
+│       │   │   ├── breadcrumb.tsx
+│       │   │   ├── button.tsx
+│       │   │   ├── card.tsx
+│       │   │   ├── chart.tsx
+│       │   │   ├── command.tsx
+│       │   │   ├── dialog.tsx
+│       │   │   ├── dropdown-menu.tsx
+│       │   │   ├── form.tsx
+│       │   │   ├── icons.tsx
+│       │   │   ├── input-otp.tsx
+│       │   │   ├── input.tsx
+│       │   │   ├── label.tsx
+│       │   │   ├── mode-toggle.tsx
+│       │   │   ├── popover.tsx
+│       │   │   ├── progress.tsx
+│       │   │   ├── radio-group.tsx
+│       │   │   ├── resizable.tsx
+│       │   │   ├── scroll-area.tsx
+│       │   │   ├── select.tsx
+│       │   │   ├── separator.tsx
+│       │   │   ├── sheet.tsx
+│       │   │   ├── sidebar.tsx
+│       │   │   ├── skeleton.tsx
+│       │   │   ├── slider.tsx
+│       │   │   ├── sonner.tsx
+│       │   │   ├── switch.tsx
+│       │   │   ├── table.tsx
+│       │   │   ├── tabs.tsx
+│       │   │   ├── textarea.tsx
+│       │   │   ├── theme-provider.tsx
+│       │   │   └── tooltip.tsx
+│       │   ├── hooks
+│       │   │   └── use-mobile.ts
+│       │   ├── lib
+│       │   │   └── utils.ts
+│       │   └── styles
+│       │       └── globals.css
+│       ├── tsconfig.json
+│       └── tsconfig.lint.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── public
+│   └── structure.txt
+├── tsconfig.json
+└── turbo.json
+
+127 directories, 310 files
