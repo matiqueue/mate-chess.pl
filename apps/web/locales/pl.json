@@ -553,6 +553,7 @@
   "signUp.start.description": "Utwórz nowe konto",
   "signUp.step1.email": "Adres email",
   "signUp.step1.username": "Nazwa użytkownika",
+  "signUp.or": "lub",
   "signUp.step1.firstName": "Imię",
   "signUp.step1.lastName": "Nazwisko",
   "signUp.step1.password": "Hasło",
@@ -562,7 +563,24 @@
   "signUp.continue": "Kontynuuj",
   "signUp.completeRegistration": "Zakończ rejestrację",
   "signUp.haveAccount": "Masz już konto? Zaloguj się",
-  "signUp.resendCode": "Nie otrzymałeś kodu? Wyślij ponownie"
+  "signUp.resendCode": "Nie otrzymałeś kodu? Wyślij ponownie",
+  "signIn": {
+    "title": "Zaloguj się",
+    "welcomeMessage": "Witaj ponownie! Zaloguj się, aby kontynuować.",
+    "or": "lub",
+    "google": "Google",
+    "apple": "Apple",
+    "emailOrUsername": "Email lub nazwa użytkownika",
+    "continueButton": "Kontynuuj",
+    "signUpLink": "Nie masz konta? Zarejestruj się",
+    "chooseOtherMethod": "Użyj innej metody",
+    "verificationMessage": "Wprowadź kod weryfikacyjny wysłany na Twój email.",
+    "password": "Hasło",
+    "backButton": "Wróć",
+    "noCodeReceived": "Nie otrzymałeś kodu? Wyślij ponownie",
+    "redirectMessage": "Przekierowanie wkrótce...",
+    "resendCode": "Nie otrzymałeś kodu? Wyślij ponownie"
+  }
 }
 
 

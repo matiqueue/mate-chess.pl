@@ -555,6 +555,7 @@
   "signUp.step1.email": "Email Address",
   "signUp.step1.username": "Username",
   "signUp.step1.firstName": "First Name",
+  "signUp.or": "or",
   "signUp.step1.lastName": "Last Name",
   "signUp.step1.password": "Password",
   "signUp.step2.username": "Username",
@@ -563,5 +564,22 @@
   "signUp.continue": "Continue",
   "signUp.completeRegistration": "Complete Registration",
   "signUp.haveAccount": "Already have an account? Log in",
-  "signUp.resendCode": "Didn't receive the code? Resend"
+  "signUp.resendCode": "Didn't receive the code? Resend",
+  "signIn": {
+    "title": "Sign In",
+    "welcomeMessage": "Welcome back! Sign in to continue.",
+    "google": "Google",
+    "or": "or",
+    "apple": "Apple",
+    "emailOrUsername": "Email or username",
+    "continueButton": "Continue",
+    "signUpLink": "Don't have an account? Sign up",
+    "chooseOtherMethod": "Use another method",
+    "verificationMessage": "Enter the verification code sent to your email.",
+    "password": "Password",
+    "backButton": "Back",
+    "noCodeReceived": "Didn't receive the code? Resend",
+    "redirectMessage": "Redirecting soon...",
+    "resendCode": "Didn't receive the code? Resend"
+  }
 }

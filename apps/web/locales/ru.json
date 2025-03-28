@@ -556,11 +556,29 @@
   "signUp.step1.firstName": "Имя",
   "signUp.step1.lastName": "Фамилия",
   "signUp.step1.password": "Пароль",
+  "signUp.or": "или",
   "signUp.step2.username": "Имя пользователя",
   "signUp.step3.emailVerification": "Подтвердите свою электронную почту",
   "signUp.step3.emailVerificationDescription": "Введите код подтверждения, отправленный на ваш email",
   "signUp.continue": "Продолжить",
   "signUp.completeRegistration": "Завершить регистрацию",
   "signUp.haveAccount": "Уже есть аккаунт? Войдите",
-  "signUp.resendCode": "Не получили код? Отправить снова"
+  "signUp.resendCode": "Не получили код? Отправить снова",
+  "signIn": {
+    "title": "Войти",
+    "welcomeMessage": "С возвращением! Войдите, чтобы продолжить.",
+    "google": "Google",
+    "or": "или",
+    "apple": "Apple",
+    "emailOrUsername": "Электронная почта или имя пользователя",
+    "continueButton": "Продолжить",
+    "signUpLink": "Нет аккаунта? Зарегистрируйтесь",
+    "chooseOtherMethod": "Используйте другой метод",
+    "verificationMessage": "Введите код подтверждения, отправленный на вашу электронную почту.",
+    "password": "Пароль",
+    "backButton": "Назад",
+    "noCodeReceived": "Не получили код? Отправить снова",
+    "redirectMessage": "Перенаправление скоро...",
+    "resendCode": "Не получили код? Отправить снова"
+  }
 }
