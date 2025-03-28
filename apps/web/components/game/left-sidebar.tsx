@@ -174,24 +174,6 @@ export function LeftSidebar() {
             </Button>
           </div>
         </div>
-
-        <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
-
-        <div>
-          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>{t("sidebar.communitySection")}</h2>}
-          <div className="space-y-1">
-            <Button
-              onClick={() => {
-                redirect("/settings")
-              }}
-              variant="ghost"
-              className={buttonClass}
-            >
-              <Settings className={iconClass} />
-              {open && t("sidebar.settings")}
-            </Button>
-          </div>
-        </div>
       </>
     )
   }
