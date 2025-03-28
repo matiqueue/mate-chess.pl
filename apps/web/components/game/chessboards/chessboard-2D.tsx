@@ -17,7 +17,7 @@ import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation }
 import LoadingAnimation from "./loading/loading-animation"
 import { motion } from "framer-motion"
 
-export function ChessBoard2D() {
+export function ChessBoard2D({ title , desc }: { title: string, desc: string}) {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
   const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -274,7 +274,7 @@ export function ChessBoard2D() {
 
   return (
     <div className={`w-full max-w-[68vh] aspect-square ${modelsLoaded ? "relative" : "flex justify-center items-center"}`}>
-      <div style={ {display: modelsLoaded ? "none" : "block"}}><LoadingAnimation></LoadingAnimation></div>
+      <div style={ {display: modelsLoaded ? "none" : "block"}}><LoadingAnimation title={title} desc={desc}></LoadingAnimation></div>
       <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")} style={ {display: modelsLoaded ? "block" : "none"}}>
         <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           <div className="relative w-full h-full box-border">

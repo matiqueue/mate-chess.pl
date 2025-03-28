@@ -23,7 +23,7 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-export function ChessBoard3D() {
+export function ChessBoard3D({ title , desc }: { title: string, desc: string}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
   const boardRef = useRef(board)
@@ -514,7 +514,7 @@ export function ChessBoard3D() {
 
   return (
     <div className="flex items-center justify-center h-full">
-      <div style={ {display: modelsLoaded ? "none" : "block"} }><LoadingAnimation></LoadingAnimation></div>
+      <div style={ {display: modelsLoaded ? "none" : "block"} }><LoadingAnimation title={title} desc={desc}></LoadingAnimation></div>
       <div ref={containerRef} style={{ width: "100%", height: "100%", aspectRatio: "2", display: modelsLoaded ? "block" : "none"}} />
 
     </div>
