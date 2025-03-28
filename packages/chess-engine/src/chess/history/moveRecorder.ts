@@ -38,9 +38,27 @@ class MoveRecorder {
       const black = move2 ? this.formatMove(move2) : ""
       result.push({ white, black })
     }
+    console.log(this.regenerateMoveString(movesArray))
     return result
   }
 
+  public regenerateMoveString(movesArray: MoveRecord[]): string {
+    const moves = this.moveCleanup(movesArray)
+    let result = ""
+    for (let i = 0; i < moves.length; i += 2) {
+      const move1 = moves[i]
+      const move2 = moves[i + 1]
+      if (!move1) {
+        console.log("no move1 found")
+        break
+      }
+
+      const white = this.formatMove(move1)
+      const black = move2 ? this.formatMove(move2) : ""
+      result += white + " " + black + " "
+    }
+    return result
+  }
   // public recordMove(movesArray: MoveRecord[]): boolean {
   //   const moves = this.moveCleanup(movesArray)
   //   // Obecnie zapisano ruchy jako pary – każda para zajmuje dwa ruchy
@@ -128,7 +146,6 @@ class MoveRecorder {
     }
     return cleanedMoves
   }
-
   get moveHistoryPublic(): MovePair[] {
     return this._moveHistoryPublic
   }

@@ -177,10 +177,15 @@ class ChessGame {
    *
    * @returns formatted move history
    */
-  public getMoveHistory(): any {
+  public getMoveHistory() {
     return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 
+  public getMoveHistoryString(): string {
+    const moves = this._moveRecorder.regenerateMoveString(this._moves)
+
+    return moves
+  }
   public gameDraw() {
     this._gameStatus = gameStatusType.draw
     this._isGameOn = false
