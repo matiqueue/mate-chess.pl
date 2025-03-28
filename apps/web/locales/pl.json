@@ -583,7 +583,9 @@
     "backButton": "Wróć",
     "noCodeReceived": "Nie otrzymałeś kodu? Wyślij ponownie",
     "redirectMessage": "Przekierowanie wkrótce...",
-    "resendCode": "Nie otrzymałeś kodu? Wyślij ponownie"
+    "resendCode": "Nie otrzymałeś kodu? Wyślij ponownie",
+    "noAccountTitle": "Nie znaleźliśmy twojego konta",
+    "redirectDescription": "Zaraz cie przeniesiemy na strone gdzie będziesz mógł je stworzyć"
   }
 }
 

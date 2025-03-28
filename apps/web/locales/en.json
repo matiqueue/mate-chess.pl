@@ -584,6 +584,8 @@
     "backButton": "Back",
     "noCodeReceived": "Didn't receive the code? Resend",
     "redirectMessage": "Redirecting soon...",
-    "resendCode": "Didn't receive the code? Resend"
+    "resendCode": "Didn't receive the code? Resend",
+    "noAccountTitle": "We couldn't find your account",
+    "redirectDescription": "You will be redirected to a page where you can create one"
   }
 }
