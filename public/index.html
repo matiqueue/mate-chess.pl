@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mate-chess - Platforma Szachowa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f0f0f0;
+            color: #1a1a1a;
+            line-height: 1.8;
+        }
+        .navbar {
+            background: #1a1a1a;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+        .nav-link {
+            font-size: 1.25rem;
+            color: #fff !important;
+            margin: 0 1.5rem;
+            transition: opacity 0.3s;
+        }
+        .nav-link:hover, .navbar-brand:hover {
+            opacity: 0.8;
+        }
+        .hero {
+            background: url('https://images.unsplash.com/photo-1586165368502-4e91c4f8c4b8?auto=format&fit=crop&q=80&w=1920') no-repeat center/cover;
+            color: #fff;
+            padding: 10rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .hero > * {
+            position: relative;
+            z-index: 1;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .hero p {
+            font-size: 1.75rem;
+            font-weight: 300;
+        }
+        .btn-primary {
+            background: #fff;
+            border: 3px solid #1a1a1a;
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            padding: 1rem 3rem;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: #1a1a1a;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        section {
+            padding: 6rem 0;
+        }
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .card {
+            border: none;
+            background: #fff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .card h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        ul, ol {
+            font-size: 1.25rem;
+            padding-left: 2rem;
+        }
+        li {
+            margin-bottom: 1rem;
+        }
+        pre {
+            background: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .accordion-button {
+            font-size: 1.5rem;
+            font-weight: 500;
+            background: #fff;
+            color: #1a1a1a;
+            padding: 1.5rem;
+        }
+        .accordion-button:not(.collapsed) {
+            background: #f8f8f8;
+            color: #1a1a1a;
+        }
+        .accordion-body {
+            font-size: 1.25rem;
+            padding: 2rem;
+        }
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        footer p {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        footer a {
+            color: #ccc;
+            font-size: 1.25rem;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+        .img-fluid {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">mate-chess</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">O Projekcie</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#installation">Instalacja</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#documentation">Dokumentacja</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#resources">Zasoby</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>mate-chess</h1>
+            <p>Minimalistyczna platforma szachowa dla pasjonatów</p>
+            <a href="#installation" class="btn btn-primary mt-4">Rozpocznij</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container">
+        <h2>O mate-chess</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1562016600-c6b395775638?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Szachownica">
+                    <div class="card-body">
+                        <h3><i class="bi bi-chess me-2"></i>Funkcjonalności</h3>
+                        <ul>
+                            <li>Gra z AI na poziomach: łatwy, średni, trudny.</li>
+                            <li>Rozgrywki online z czatem i globalnymi rankingami.</li>
+                            <li>Analiza partii: przegląd ruchów, wykrywanie błędów, sugestie.</li>
+                            <li>Obsługa na web, desktopie i urządzeniach mobilnych.</li>
+                            <li>Panel administracyjny z logami i zarządzaniem graczami.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Pionki szachowe">
+                    <div class="card-body">
+                        <h3><i class="bi bi-gear me-2"></i>Technologie</h3>
+                        <ul>
+                            <li>Node.js – serwer i zarządzanie pakietami.</li>
+                            <li>Rust – wydajny silnik szachowy.</li>
+                            <li>React – nowoczesny interfejs użytkownika.</li>
+                            <li>TypeScript – typowany kod.</li>
+                            <li>Express – routing i sesje gry.</li>
+                            <li>pnpm – szybki menedżer pakietów.</li>
+                            <li>Git – kontrola wersji i współpraca.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="bg-light">
+        <div class="container">
+            <h2>Instalacja</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1589811047957-8a088c5f2e51?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Szachy i kod">
+                        <div class="card-body">
+                            <h3><i class="bi bi-tools me-2"></i>Wymagania</h3>
+                            <ul>
+                                <li>Node.js (wersja 16 lub wyższa)</li>
+                                <li>Rust (stable channel)</li>
+                                <li>Git (do klonowania repozytorium)</li>
+                                <li>pnpm (menedżer pakietów)</li>
+                                <li>ts-node (do uruchamiania TypeScript)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3><i class="bi bi-terminal me-2"></i>Kroki Instalacji</h3>
+                            <ol>
+                                <li><pre><code>git clone https://github.com/matiqueue/mate-chess.pl.git</code></pre></li>
+                                <li><pre><code>cd mate-chess.pl</code></pre></li>
+                                <li><pre><code>pnpm install</code></pre></li>
+                                <li>Środowisko:
+                                    <ul>
+                                        <li>macOS: <code>pnpm env:mac</code></li>
+                                        <li>Windows: <code>pnpm env:win</code></li>
+                                        <li>Linux: <code>pnpm env:linux</code></li>
+                                    </ul>
+                                </li>
+                                <li>Tryb deweloperski: <pre><code>pnpm dev</code></pre></li>
+                                <li>Budowanie: <pre><code>pnpm build</code></pre></li>
+                                <li>Start (np. web): <pre><code>cd apps/web && pnpm start</code></pre></li>
+                            </ol>
+                            <p>Docker: <pre><code>docker run -p 3000:3000 matiqueue/mate-chess:latest</code></pre></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="container">
+        <h2>Dokumentacja</h2>
+        <div class="accordion" id="docsAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#webApp">
+                        <i class="bi bi-globe me-2"></i>Aplikacja Webowa
+                    </button>
+                </h2>
+                <div id="webApp" class="accordion-collapse collapse show" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" class="img-fluid" alt="Szachownica webowa">
+                        <p><strong>Adres:</strong> <a href="http://localhost:3000">localhost:3000</a></p>
+                        <p><strong>Funkcje:</strong> Gra online/offline, wybór poziomu AI, eksport partii w formacie PGN.</p>
+                        <p><strong>Technologie:</strong> React, TypeScript, WebSocket dla rozgrywki na żywo.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminPanel">
+                        <i class="bi bi-person-gear me-2"></i>Panel Admina
+                    </button>
+                </h2>
+                <div id="adminPanel" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <img src="https://images.unsplash.com/photo-1562016600-c6b395775638?auto=format&fit=crop&q=80&w=800" class="img-fluid" alt="Szachy admin">
+                        <p><strong>Adres:</strong> <a href="http://localhost:3001">localhost:3001</a></p>
+                        <p><strong>Funkcje:</strong> Przegląd logów, banowanie graczy, statystyki (wygrane, remisy, przegrane).</p>
+                        <p><strong>Technologie:</strong> React, Express, TypeScript.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#desktopApp">
+                        <i class="bi bi-display me-2"></i>Aplikacja Desktopowa
+                    </button>
+                </h2>
+                <div id="desktopApp" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=800" class="img-fluid" alt="Szachy desktop">
+                        <p><strong>Uruchomienie:</strong> Automatyczne po instalacji.</p>
+                        <p><strong>Funkcje:</strong> Gra offline, synchronizacja z serwerem, tryb ciemny/jasny.</p>
+                        <p><strong>Buildy:</strong> Dostępne w sekcji Releases na GitHubie.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#server">
+                        <i class="bi bi-server me-2"></i>Serwer
+                    </button>
+                </h2>
+                <div id="server" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <p><strong>Uruchomienie:</strong> <code>cd apps/server && pnpm start</code></p>
+                        <p><strong>Funkcje:</strong> Zarządzanie sesjami gry, routing Express, komunikacja WebSocket.</p>
+                        <p><strong>Technologie:</strong> Node.js, Rust (silnik szachowy), Express.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#errors">
+                        <i class="bi bi-bug me-2"></i>Aplikacja Błędów
+                    </button>
+                </h2>
+                <div id="errors" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <p><strong>Lokalizacja:</strong> <code>apps/errors</code></p>
+                        <p><strong>Funkcje:</strong> Analiza błędów monorepo, raporty generowane przez AI, sugestie poprawek.</p>
+                        <p><strong>Uruchomienie:</strong> <code>pnpm start</code></p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#packages">
+                        <i class="bi bi-box me-2"></i>Packages
+                    </button>
+                </h2>
+                <div id="packages" class="accordion-collapse collapse" data-bs-parent="#docsAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li><strong>chess-engine:</strong> Logika ruchów, walidacja, generowanie pozycji.</li>
+                            <li><strong>ai-engine:</strong> Algorytmy minimax, alpha-beta, heurystyki.</li>
+                            <li><strong>ui:</strong> Komponenty React – szachownica, pionki, menu ustawień.</li>
+                            <li><strong>ESLint:</strong> Konfiguracje dla frontendu, backendu, fullstack.</li>
+                            <li><strong>TypeScript:</strong> Konfiguracje dla web, serwera, desktopu.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="bg-light">
+        <div class="container">
+            <h2>Zasoby</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1589811047957-8a088c5f2e51?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Szachy i kod">
+                        <div class="card-body">
+                            <h3><i class="bi bi-github me-2"></i>GitHub</h3>
+                            <p><a href="https://github.com/matiqueue/mate-chess.pl">github.com/matiqueue/mate-chess.pl</a></p>
+                            <ul>
+                                <li><strong>Actions:</strong> Automatyzacja CI/CD – testy, budowanie, deploy.</li>
+                                <li><strong>Commits:</strong> Dodanie AI, optymalizacja UI, naprawa błędów.</li>
+                                <li><strong>Issues:</strong> Zgłoszenia: crash AI, propozycja trybu turniejowego.</li>
+                                <li><strong>PRs:</strong> Refaktoring silnika, nowe endpointy API.</li>
+                                <li><strong>README:</strong> Instrukcje instalacji, opis projektu.</li>
+                                <li><strong>Wiki:</strong> Poradniki: debugowanie, konfiguracja serwera.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Szachy online">
+                        <div class="card-body">
+                            <h3><i class="bi bi-globe2 me-2"></i>Aplikacje Online</h3>
+                            <ul>
+                                <li><a href="https://mate-chess-pl.vercel.app">Web</a>: Graj, przeglądaj rankingi, dostosuj szachownicę.</li>
+                                <li><a href="https://admin-mate-chess-pl.vercel.app">Admin</a>: Zarządzaj graczami, analizuj logi.</li>
+                                <li><a href="https://server-mate-chess.vercel.app">Server</a>: Nieaktywny (problemy z hostingiem).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2023 mate-chess – Minimalistyczna platforma szachowa</p>
+            <p>Zdjęcia: <a href="https://unsplash.com">Unsplash</a></p>
+            <a href="#home">Wróć na górę</a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Płynne przewijanie
+        document.querySelectorAll('.nav-link, footer a[href="#home"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
