@@ -18,7 +18,6 @@ export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
   const { theme } = useTheme()
   const { showPreviewAlert } = useChessBoardInteractions()
-  const [board, setBoard] = useState(<ChessBoard3D></ChessBoard3D>);
 
 
   // Przy montowaniu odczytujemy zapisany tryb widoku z localStorage
@@ -50,10 +49,6 @@ export default function ChessBoardContainer() {
     }, 0)
   }, [theme])
 
-  const reloadChessBoard3D = () => {
-    return <ChessBoard3D></ChessBoard3D>
-  }
-
   return (
     <>
       {/*<PreviewModeAlertPopup open={showPreviewAlert} />*/}
@@ -83,7 +78,7 @@ export default function ChessBoardContainer() {
               </div>
               {/* Wrapper dla planszy */}
               <div className="absolute inset-0 pt-[10%]">
-                  {board}
+                <ChessBoard3D></ChessBoard3D>
               </div>
               {/* Wrapper dla GameControls */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
