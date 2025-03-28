@@ -524,5 +524,23 @@
       "Składana szachownica została wynaleziona przez księdza, któremu zakazano gry w szachy.",
       "Nowa figura szachowa – królowa – została wprowadzona w XV wieku i początkowo była najsłabszą figurą."
     ]
+  },
+  "onLoad": {
+    "title": "Ładowanie planszy",
+    "desc": "Proszę czekać, ładujemy planszę..."
+  },
+  "onViewChange": {
+    "title2D": "Zmiana perspektywy na 2D",
+    "desc2D": "Proszę czekać, zmieniamy planszę...",
+    "title3D": "Zmiana perspektywy na 3D",
+    "desc3D": "Proszę czekać, zmieniamy planszę..."
+  },
+  "onThemeChange": {
+    "titleLight": "Ładowanie jasnego motywu",
+    "descLight": "Proszę czekać, malujemy planszę...",
+    "titleDark": "Ładowanie ciemnego motywu",
+    "descDark": "Proszę czekać, malujemy planszę..."
   }
 }
+
+

@@ -525,5 +525,21 @@
       "The folding chess board was invented by a priest who was forbidden to play chess.",
       "The new chess piece – the queen – was introduced in the 15th century and was originally the weakest piece."
     ]
+  },
+  "onLoad": {
+    "title": "Loading board",
+    "desc": "Please wait, loading the board..."
+  },
+  "onViewChange": {
+    "title2D": "Switching to 2D view",
+    "desc2D": "Please wait, changing the board...",
+    "title3D": "Switching to 3D view",
+    "desc3D": "Please wait, changing the board..."
+  },
+  "onThemeChange": {
+    "titleLight": "Loading light theme",
+    "descLight": "Please wait, painting the board...",
+    "titleDark": "Loading dark theme",
+    "descDark": "Please wait, painting the board..."
   }
 }

@@ -13,7 +13,7 @@ import { GameStatusPopupDialog } from "@/components/game/game-status-popup-dialo
 import { PreviewModeAlertPopup } from "@/components/game/preview-mode-alert-popup"
 import { useChessBoardInteractions } from "@/utils/chessboard/chessBoardUtils"
 import { useTheme } from "next-themes"
-import { cos } from "three/src/nodes/TSL.js"
+import { useTranslation } from "react-i18next"
 
 export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
@@ -22,23 +22,24 @@ export default function ChessBoardContainer() {
   const [title, setTitle] = useState("")
   const [desc, setDesc ]= useState("")
   const [isViewModeLoaded, setIsViewModeLoaded] = useState(false);
+    const { t } = useTranslation()
 
   const text = {
     onLoad: {
-      title: "Ładowanie planszy",
-      desc: "Proszę czekać, ładujemy planszę..."
+      title: t("onLoad.title"),
+      desc: t("onLoad.desc")
     },
     onViewChange: {
-      title2D: "Zmiana perspektywy na 2D",
-      desc2D: "Proszę czekać, zmieniamy planszę...",
-      title3D: "Zmiana perspektywy na 3D",
-      desc3D: "Proszę czekać, zmieniamy planszę..."
+      title2D: t("onViewChange.title2D"),
+      desc2D: t("onViewChange.desc2D"),
+      title3D: t("onViewChange.title3D"),
+      desc3D: t("onViewChange.desc3D")
     },
     onThemeChange: {
-      titleLight: "Ładowanie jasnego motywu",
-      descLight: "Proszę czekać, malujemy planszę...",
-      titleDark: "Ładowanie ciemnego motywu",
-      descDark: "Proszę czekać, malujemy planszę..."
+      titleLight: t("onThemeChange.titleLight"),
+      descLight: t("onThemeChange.descLight"),
+      titleDark: t("onThemeChange.titleDark"),
+      descDark: t("onThemeChange.descDark")
     }
   };
   
