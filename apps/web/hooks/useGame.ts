@@ -42,7 +42,7 @@ const useGame = (ai: boolean = false) => {
 
   // Inicjalizacja gry
   useEffect(() => {
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame()
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
