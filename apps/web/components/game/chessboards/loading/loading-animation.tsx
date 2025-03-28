@@ -4,7 +4,8 @@ import { motion } from "framer-motion"
 import { Loader2 } from "lucide-react"
 import { Card } from "@workspace/ui/components/card"
 
-export default function LoadingAnimation() {
+export default function LoadingAnimation({ title, desc }: { title: string, desc: string}) {
+
   return (
     <div className="flex items-center justify-center min-h-[400px] p-6">
         <motion.div
@@ -14,7 +15,7 @@ export default function LoadingAnimation() {
           >    
       <Card className="w-full max-w-md p-8 shadow-lg bg-gradient-to-br from-background to-muted/50 border border-border/50 backdrop-blur-sm">
         <div className="flex flex-col items-center justify-center gap-6">
-          <h3 className="text-xl font-medium text-center text-foreground">Zmiana perspektywy</h3>
+          <h3 className="text-xl font-medium text-center text-foreground">{title}</h3>
 
           <motion.div
             animate={{ rotate: 360, scale: [1, 1.2, 1] }}
@@ -26,7 +27,7 @@ export default function LoadingAnimation() {
 
           <div className="w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent rounded-full" />
 
-          <p className="text-sm text-muted-foreground text-center">Proszę czekać, trwa ładowanie...</p>
+          <p className="text-sm text-muted-foreground text-center">{desc}</p>
         </div>
       </Card>
       </motion.div>

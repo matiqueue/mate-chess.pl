@@ -68,7 +68,12 @@ function ToggleSidebarButton({ isNarrow }: { isNarrow: boolean }) {
   )
 }
 
-export function RightPanel() {
+interface RightPanelProps {
+  changeTheme: (theme: string) => void,
+  changeView: (view: string) => void
+}
+
+export function RightPanel({ changeTheme, changeView }: RightPanelProps) {
   const { t } = useTranslation()
   const [activePopover, setActivePopover] = useState<string | null>(null)
   const [notationStyle] = useState("algebraic")
@@ -201,7 +206,7 @@ export function RightPanel() {
                           <Button
                             variant="ghost"
                             onClick={() => {
-                              setViewMode("2D")
+                              changeView("2D")
                               setActivePopover(null)
                             }}
                           >
@@ -212,7 +217,7 @@ export function RightPanel() {
                           <Button
                             variant="ghost"
                             onClick={() => {
-                              setViewMode("3D")
+                              changeView("3D")
                               setActivePopover(null)
                             }}
                           >
@@ -381,7 +386,7 @@ export function RightPanel() {
                 <span className="flex-shrink-0">{open ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}</span>
                 {!isNarrow && (open ? t("rightPanel.hideSidebar") : t("rightPanel.showSidebar"))}
               </Button>
-              <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setTheme(isDark ? "light" : "dark")}>
+              <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => {changeTheme(theme == "dark" ? "light" : "dark")}}>
                 <span className="flex-shrink-0">{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</span>
                 {!isNarrow && (isDark ? t("rightPanel.lightMode") : t("rightPanel.darkMode"))}
               </Button>
