@@ -540,7 +540,29 @@
     "descLight": "Proszę czekać, malujemy planszę...",
     "titleDark": "Ładowanie ciemnego motywu",
     "descDark": "Proszę czekać, malujemy planszę..."
-  }
+  },
+  "auth": {
+    "noAccountTitle": "Nie znaleźliśmy twojego konta",
+    "redirectDescription": "Zaraz przekierujemy cię na stronie gdzie będziesz mógł/mogła się zarejestrować",
+    "redirectMessage": "Przekierowanie nastąpi za:",
+    "createAccount": "Stwórz swoje konto",
+    "fillData": "Wypełnij dane, aby rozpocząć.",
+    "defaultMessage": ""
+  },
+  "signUp.start.title": "Zarejestruj się",
+  "signUp.start.description": "Utwórz nowe konto",
+  "signUp.step1.email": "Adres email",
+  "signUp.step1.username": "Nazwa użytkownika",
+  "signUp.step1.firstName": "Imię",
+  "signUp.step1.lastName": "Nazwisko",
+  "signUp.step1.password": "Hasło",
+  "signUp.step2.username": "Nazwa użytkownika",
+  "signUp.step3.emailVerification": "Zweryfikuj swój email",
+  "signUp.step3.emailVerificationDescription": "Wprowadź kod weryfikacyjny wysłany na Twój email",
+  "signUp.continue": "Kontynuuj",
+  "signUp.completeRegistration": "Zakończ rejestrację",
+  "signUp.haveAccount": "Masz już konto? Zaloguj się",
+  "signUp.resendCode": "Nie otrzymałeś kodu? Wyślij ponownie"
 }
 
 

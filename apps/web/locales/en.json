@@ -541,5 +541,27 @@
     "descLight": "Please wait, painting the board...",
     "titleDark": "Loading dark theme",
     "descDark": "Please wait, painting the board..."
-  }
+  },
+  "auth": {
+    "noAccountTitle": "We couldn't find your account",
+    "redirectDescription": "We will redirect you to a page where you can register",
+    "redirectMessage": "Redirecting in:",
+    "createAccount": "Create your account",
+    "fillData": "Fill in the data to get started.",
+    "defaultMessage": ""
+  },
+  "signUp.start.title": "Sign Up",
+  "signUp.start.description": "Create a new account",
+  "signUp.step1.email": "Email Address",
+  "signUp.step1.username": "Username",
+  "signUp.step1.firstName": "First Name",
+  "signUp.step1.lastName": "Last Name",
+  "signUp.step1.password": "Password",
+  "signUp.step2.username": "Username",
+  "signUp.step3.emailVerification": "Verify your email",
+  "signUp.step3.emailVerificationDescription": "Enter the verification code sent to your email",
+  "signUp.continue": "Continue",
+  "signUp.completeRegistration": "Complete Registration",
+  "signUp.haveAccount": "Already have an account? Log in",
+  "signUp.resendCode": "Didn't receive the code? Resend"
 }

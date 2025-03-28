@@ -540,5 +540,27 @@
     "descLight": "Пожалуйста, подождите, красим доску...",
     "titleDark": "Загрузка темной темы",
     "descDark": "Пожалуйста, подождите, красим доску..."
-  }
+  },
+  "auth": {
+    "noAccountTitle": "Мы не нашли вашу учетную запись",
+    "redirectDescription": "Скоро мы перенаправим вас на страницу, где вы сможете зарегистрироваться",
+    "redirectMessage": "Перенаправление через:",
+    "createAccount": "Создайте свою учетную запись",
+    "fillData": "Заполните данные, чтобы начать.",
+    "defaultMessage": ""
+  },
+  "signUp.start.title": "Регистрация",
+  "signUp.start.description": "Создайте новый аккаунт",
+  "signUp.step1.email": "Адрес электронной почты",
+  "signUp.step1.username": "Имя пользователя",
+  "signUp.step1.firstName": "Имя",
+  "signUp.step1.lastName": "Фамилия",
+  "signUp.step1.password": "Пароль",
+  "signUp.step2.username": "Имя пользователя",
+  "signUp.step3.emailVerification": "Подтвердите свою электронную почту",
+  "signUp.step3.emailVerificationDescription": "Введите код подтверждения, отправленный на ваш email",
+  "signUp.continue": "Продолжить",
+  "signUp.completeRegistration": "Завершить регистрацию",
+  "signUp.haveAccount": "Уже есть аккаунт? Войдите",
+  "signUp.resendCode": "Не получили код? Отправить снова"
 }
