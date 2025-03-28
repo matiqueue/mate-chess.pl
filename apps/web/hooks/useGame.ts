@@ -108,7 +108,6 @@ const useGame = (ai: boolean = false) => {
   }
 
   const aiMovePerform = async () => {
-    if (!(game instanceof ChessGameExtraAI)) throw new Error("Wrong game instance")
     if (game.aiColor === whosTurn(game)) {
       if (isAwaitingPromotion(game)) {
         game.promotionTo(figureType.queen)
@@ -130,7 +129,9 @@ const useGame = (ai: boolean = false) => {
   }
 
   useEffect(() => {
-    aiMovePerform()
+    if (game instanceof ChessGameExtraAI) {
+      aiMovePerform()
+    }
   }, [currentPlayer])
 
   const undoLastMove = (): boolean => {
