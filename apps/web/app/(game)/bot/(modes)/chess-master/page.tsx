@@ -5,6 +5,7 @@ import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation";
 
 /**
  * ChessPageContent
@@ -55,8 +56,15 @@ function ChessPageContent() {
  * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis).
  */
 export default function ChessPage() {
+  const searchParams = useSearchParams();
+  const selectedColor = searchParams.get("selectedColor") || "white"; 
+  
+  useEffect( () => {
+    console.error("ChessPage: ", selectedColor)
+  }, [])
+
   return (
-    <GameProvider ai={true}>
+    <GameProvider ai={true} selectedColor={ selectedColor }>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
