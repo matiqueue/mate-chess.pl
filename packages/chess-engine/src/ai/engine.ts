@@ -3,7 +3,7 @@ import { color } from "@shared/types/colorType"
 import aiDifficulty from "@shared/types/aiDifficulty"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
-// import * as fs from "node:fs"
+import * as fs from "node:fs"
 
 class ChessAi extends ChessGame {
   private _aiColor: color
@@ -24,6 +24,8 @@ class ChessAi extends ChessGame {
         this._opponentColor = color.White
         break
     }
+    this._canUseDatabase = true
+
     if (difficulty === aiDifficulty.Advanced) {
       this._canUseDatabase = true
     }
@@ -43,19 +45,22 @@ class ChessAi extends ChessGame {
 
     await this.delay(200)
 
-    // if (this._canUseDatabase) {
-    //   let moveArray = this.findMoveInDatabase()
-    //
-    //   if (moveArray.length < 1) {
-    //     moveArray = this.aiDetermineBestMove()
-    //   }
-    //
-    //   const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
-    //   if (move) {
-    //     console.log("move db ready!!!")
-    //     return move
-    //   }
-    // }
+    if (this._canUseDatabase) {
+      let moveArray: Move[] = await this.findMoveInDatabase()
+
+      if ((await moveArray).length < 1) {
+        console.log("determining move via minmax")
+        moveArray = this.aiDetermineBestMove()
+      } else {
+        console.log("move determined via database")
+      }
+
+      const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
+      if (move) {
+        console.log("move db ready!!!")
+        return move
+      }
+    }
 
     const moveArray = this.aiDetermineBestMove()
     const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
@@ -194,78 +199,84 @@ class ChessAi extends ChessGame {
     return candidateMoves.slice(0, 3)
   }
 
-  // private findMoveInDatabase(): Move[] {
-  //   const arrayOfMoves: Move[] = []
-  //   const path = "moveDB/all_cleaned_games.txt"
-  //
-  //   try {
-  //     const fileContent = fs.readFileSync(path, "utf-8")
-  //     const games = fileContent.split(/\r?\n/)
-  //
-  //     const stringToCompare = this.getMoveHistoryString()
-  //     const matchingGames = games.filter((game) => game.startsWith(stringToCompare))
-  //
-  //     if (matchingGames.length === 0) {
-  //       this._canUseDatabase = false
-  //       return arrayOfMoves
-  //     }
-  //
-  //     // Get next moves from matching games
-  //     const nextMoves = matchingGames
-  //       .map((game) => {
-  //         const moves = game.split(" ")
-  //         if (moves.length <= stringToCompare.split(" ").length) return null
-  //         return moves[stringToCompare.split(" ").length]
-  //       })
-  //       .filter((move): move is string => move !== null)
-  //
-  //     if (nextMoves.length === 0) {
-  //       return arrayOfMoves
-  //     }
-  //
-  //     // Convert move strings to Move objects
-  //     const validMoves = this.board.getLegalMoves(this._aiColor)
-  //     const validMoveStrings = validMoves.map((move) => `${move.from.x},${move.from.y},${move.to.x},${move.to.y}`)
-  //
-  //     const matchingNextMoves = nextMoves.filter((move) => {
-  //       // Convert algebraic notation to coordinates
-  //       const fromSquare = move.slice(0, 2)
-  //       const toSquare = move.slice(2, 4)
-  //       if (!fromSquare[1] || !toSquare[1]) return
-  //
-  //       const fromX = fromSquare.charCodeAt(0) - 97 // Convert letter to 0-7
-  //       const fromY = 8 - parseInt(fromSquare[1]) // Convert number to 0-7
-  //       const toX = toSquare.charCodeAt(0) - 97
-  //       const toY = 8 - parseInt(toSquare[1])
-  //
-  //       return validMoveStrings.includes(`${fromX},${fromY},${toX},${toY}`)
-  //     })
-  //
-  //     if (matchingNextMoves.length === 0) {
-  //       return arrayOfMoves
-  //     }
-  //
-  //     // Convert matching moves to Move objects
-  //     matchingNextMoves.forEach((move) => {
-  //       const fromSquare = move.slice(0, 2)
-  //       const toSquare = move.slice(2, 4)
-  //       if (!fromSquare[1] || !toSquare[1]) return
-  //
-  //       const fromX = fromSquare.charCodeAt(0) - 97
-  //       const fromY = 8 - parseInt(fromSquare[1])
-  //       const toX = toSquare.charCodeAt(0) - 97
-  //       const toY = 8 - parseInt(toSquare[1])
-  //
-  //       const validMove = validMoves.find((m) => m.from.x === fromX && m.from.y === fromY && m.to.x === toX && m.to.y === toY)
-  //       if (validMove) arrayOfMoves.push(validMove)
-  //     })
-  //
-  //     return arrayOfMoves
-  //   } catch (error) {
-  //     console.error("Error reading database file:", error)
-  //     return arrayOfMoves
-  //   }
-  // }
+  private async findMoveInDatabase(): Promise<Move[]> {
+    const arrayOfMoves: Move[] = []
+
+    try {
+      const response = await fetch("") //trzeba tutaj link ustawić do fetcha
+
+      if (!response.ok) {
+        console.error(`Error fetching database: ${response.status}`)
+        return arrayOfMoves
+      }
+
+      const jsonData = await response.json()
+
+      if (!jsonData?.games || !Array.isArray(jsonData.games)) {
+        console.error("Invalid database format")
+        return arrayOfMoves
+      }
+
+      const stringToCompare = this.getMoveHistoryString()
+      const matchingGames = jsonData.games.filter((game: ChessGame) => game.getMoveHistoryString().startsWith(stringToCompare))
+
+      if (matchingGames.length === 0) {
+        this._canUseDatabase = false
+        return arrayOfMoves
+      }
+
+      const nextMoves = matchingGames
+        .map((game: ChessGame) => {
+          const moves = game.getMoveHistoryString().split(" ")
+          if (moves.length <= stringToCompare.split(" ").length) return null
+          return moves[stringToCompare.split(" ").length]
+        })
+        .filter((move): move is string => move !== null)
+
+      if (nextMoves.length === 0) {
+        return arrayOfMoves
+      }
+
+      const validMoves = this.board.getLegalMoves(this._aiColor)
+      const validMoveStrings = validMoves.map((move) => `${move.from.x},${move.from.y},${move.to.x},${move.to.y}`)
+
+      const matchingNextMoves = nextMoves.filter((move) => {
+        const fromSquare = move.slice(0, 2)
+        const toSquare = move.slice(2, 4)
+        if (!fromSquare[1] || !toSquare[1]) return false
+
+        const fromX = fromSquare.charCodeAt(0) - 97
+        const fromY = 8 - parseInt(fromSquare[1])
+        const toX = toSquare.charCodeAt(0) - 97
+        const toY = 8 - parseInt(toSquare[1])
+
+        return validMoveStrings.includes(`${fromX},${fromY},${toX},${toY}`)
+      })
+
+      if (matchingNextMoves.length === 0) {
+        return arrayOfMoves
+      }
+
+      matchingNextMoves.forEach((move) => {
+        const fromSquare = move.slice(0, 2)
+        const toSquare = move.slice(2, 4)
+        if (!fromSquare[1] || !toSquare[1]) return
+
+        const fromX = fromSquare.charCodeAt(0) - 97
+        const fromY = 8 - parseInt(fromSquare[1])
+        const toX = toSquare.charCodeAt(0) - 97
+        const toY = 8 - parseInt(toSquare[1])
+
+        const validMove = validMoves.find((m) => m.from.x === fromX && m.from.y === fromY && m.to.x === toX && m.to.y === toY)
+        if (validMove) arrayOfMoves.push(validMove)
+      })
+
+      return arrayOfMoves
+    } catch (error) {
+      console.error("Error reading database file:", error)
+      return arrayOfMoves
+    }
+  }
 
   get aiColor(): color {
     return this._aiColor
