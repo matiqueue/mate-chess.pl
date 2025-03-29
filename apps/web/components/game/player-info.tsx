@@ -6,10 +6,14 @@ import { useGameContext } from "@/contexts/GameContext"
 import { useUser } from "@clerk/nextjs"
 import { useTranslation } from "react-i18next"
 import { gameStatusType } from "@shared/types/gameStatusType"
+import { useSearchParams } from "next/navigation";
 
 export function PlayerInfo() {
   const { t } = useTranslation()
   const { theme } = useTheme()
+  const searchParams = useSearchParams();
+  const selectedColor = searchParams.get("selectedColor") || "white"; 
+
   const { currentPlayer, gameStatus, whiteTime, blackTime } = useGameContext()
   const { user, isSignedIn } = useUser()
   const pathname = typeof window !== "undefined" ? window.location.pathname : ""
@@ -57,13 +61,22 @@ export function PlayerInfo() {
     secondUserName = clerkName
   } else if (pathname.startsWith("/bot/")) {
     // Changed from '/play/bot/' to '/bot/'
-    // Bot game: first player from Clerk, second player is explicitly Mate Bot
-    firstUserImage = clerkImage
-    firstUserFallback = clerkFallback
-    firstUserName = clerkName
-    secondUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp" // Could use a bot-specific image
-    secondUserFallback = "MB"
-    secondUserName = "Mate Bot" // Hardcoded to ensure it always shows "Mate Bot"
+    // Bot game: first player from Clerk, second player is explicitly Mate Bot or vice versa when player choosed black side
+    if(selectedColor == "white"){
+      firstUserImage = clerkImage
+      firstUserFallback = clerkFallback
+      firstUserName = clerkName
+      secondUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp" // Could use a bot-specific image
+      secondUserFallback = "MB"
+      secondUserName = "Mate Bot" // Hardcoded to ensure it always shows "Mate Bot"
+    }else{
+      firstUserImage = "https://banner2.cleanpng.com/20180603/jx/avomq8xby.webp"
+      firstUserFallback = "MB"
+      firstUserName = "Mate Bot" // Hardcoded to ensure it always shows "Mate Bot"
+      secondUserImage = clerkImage
+      secondUserFallback = clerkFallback
+      secondUserName = clerkName
+    }
   }
 
   const currentTurn = currentPlayer ? t(`playerInfo.${currentPlayer.toLowerCase()}`) : t("playerInfo.white")

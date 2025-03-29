@@ -3,7 +3,7 @@ import { color } from "@shared/types/colorType"
 import aiDifficulty from "@shared/types/aiDifficulty"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
-import * as fs from "node:fs"
+// import * as fs from "node:fs"
 
 class ChessAi extends ChessGame {
   private _aiColor: color

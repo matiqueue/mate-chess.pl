@@ -19,7 +19,7 @@ Team supervisor: **Marcin Stawinoga**.
 Digital Gods grants the following rights:
 - **To any user**:
   - Use the Software for its intended purpose,
-  - Compile and execute the Software,
+  - Modify and compile the software. Redistributing modified software is strictly prohibited.
 - **To Motorola Solutions Polska**:
   - Use, compile, execute, modify, and distribute the Software in any form.
 
@@ -33,7 +33,7 @@ Digital Gods grants the following rights:
   The Software, including its source code and documentation, remains the exclusive intellectual property of the **Digital Gods** team.
 
 ## 5. Disclaimer
-  The Software is provided "as is" without warranty of any kind, express or implied. **Digital Gods** shall not be held liable for any damages arising from the use   of the Software, including but not limited to installation issues, system errors, or other disruptions caused by the Software.
+  The Software is provided "as is" without warranty of any kind, express or implied. **Digital Gods** shall not be held liable for any damages arising from the use of the Software, including but not limited to installation issues, system errors, or other disruptions caused by the Software.
 
 ## 6. Commercial Use
   Any commercial use of the Software requires prior written consent from **Digital Gods**.

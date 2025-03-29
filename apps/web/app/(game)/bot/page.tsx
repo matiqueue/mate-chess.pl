@@ -12,6 +12,9 @@ import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
+import { color } from "@chess-engine/types"
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+import { createLucideIcon } from "lucide-react";
 
 /**
  * Obiekt animacji kontenera.
@@ -70,7 +73,10 @@ export default function GameModeSelector() {
   const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isColorDialogOpen, setIsColorDialogOpen] = useState(false)
   const [botDifficulty, setBotDifficulty] = useState("")
+  const [selectedColor, setSelectedColor] = useState("white")
+  const [selectedGameType, setSelectedGameType] = useState("")
 
   useEffect(() => {
     setMounted(true)
@@ -106,6 +112,10 @@ export default function GameModeSelector() {
     setIsDialogOpen(true)
   }
 
+  const openColorDialog = () => {
+    setIsColorDialogOpen(true)
+  }
+
   const handleDifficultyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBotDifficulty(event.target.value)
   }
@@ -113,16 +123,26 @@ export default function GameModeSelector() {
   const handleGoButtonClick = () => {
     console.log("Wybrany poziom trudności bota:", botDifficulty)
 
-    if (botDifficulty === "1") {
-      router.push("/bot/ai/easy")
-    } else if (botDifficulty === "2") {
-      router.push("/bot/ai/medium")
-    } else if (botDifficulty === "3") {
-      router.push("/bot/ai/hard")
-    } else {
-      console.log("Nieprawidłowy poziom trudności bota")
+    if(isDialogOpen){
+      if (botDifficulty === "1") {
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}`)
+      } else if (botDifficulty === "2") {
+        router.push(`/bot/ai/medium?selectedColor=${selectedColor}`)
+      } else if (botDifficulty === "3") {
+        router.push(`/bot/ai/hard?selectedColor=${selectedColor}`)
+      } else {
+        console.log("Nieprawidłowy poziom trudności bota")
+      }
+    }else if(isColorDialogOpen){
+      if(selectedGameType == "beginner"){
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}`)
+      }else{
+        router.push(`/bot/chess-master?selectedColor=${selectedColor}`) 
+      }
     }
+    
 
+    setIsColorDialogOpen(false)
     setIsDialogOpen(false)
   }
 
@@ -198,8 +218,8 @@ export default function GameModeSelector() {
                         mode.key === "advance"
                           ? openAdvancedDialog
                           : mode.key === "beginner"
-                            ? () => router.push(`/bot/algorithm/easy`)
-                            : () => router.push(`/bot/chess-master`)
+                            ? () => { setSelectedGameType("beginner"); setIsColorDialogOpen(true) }
+                            : () => { setSelectedGameType("chess-master"); setIsColorDialogOpen(true) }
                       }
                       disabled={isOnline && !user}
                     >
@@ -227,6 +247,85 @@ export default function GameModeSelector() {
           </DialogHeader>
           <div className="flex flex-col space-y-4">
             <Input type="number" value={botDifficulty} onChange={handleDifficultyChange} placeholder={t("difficultyLevel")} />
+
+            <DialogHeader>
+              <DialogTitle>{t("selectColorTitle")}</DialogTitle>
+              <DialogDescription>{t("selectColorDesc")}</DialogDescription>
+            </DialogHeader>
+            <RadioGroup
+              value={selectedColor} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedColor(value);
+              }}
+              className="flex gap-4 justify-center"
+            >
+              {/* Biały pionek */}
+              <label htmlFor="white" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === color.White ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="white" id="white" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-white fill-white" />
+                </div>
+              </label>
+
+              {/* Czarny pionek */}
+              <label htmlFor="black" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === color.Black ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="black" id="black" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-black fill-black" />
+                </div>
+              </label>
+            </RadioGroup>
+            <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+          <div className="flex flex-col space-y-4">
+            <DialogHeader>
+              <DialogTitle>{t("selectColorTitle")}</DialogTitle>
+              <DialogDescription>{t("selectColorDesc")}</DialogDescription>
+            </DialogHeader>
+            <RadioGroup
+              value={selectedColor} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedColor(value);
+              }}
+              className="flex gap-4 justify-center"
+            >
+              {/* Biały pionek */}
+              <label htmlFor="white" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === color.White ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="white" id="white" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-white fill-white" />
+                </div>
+              </label>
+
+              {/* Czarny pionek */}
+              <label htmlFor="black" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === color.Black ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="black" id="black" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-black fill-black" />
+                </div>
+              </label>
+            </RadioGroup>
             <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
           </div>
         </DialogContent>
@@ -234,3 +333,7 @@ export default function GameModeSelector() {
     </ScrollArea>
   )
 }
+
+export const ChessPawn = createLucideIcon("ChessPawn", [
+  ["path", { d: "M12 2C9.79 2 8 3.79 8 6c0 1.47.8 2.75 2 3.45V11H8a1 1 0 0 0-1 1v2h10v-2a1 1 0 0 0-1-1h-2V9.45c1.2-.7 2-1.98 2-3.45 0-2.21-1.79-4-4-4Zm-4 14a2 2 0 0 0-2 2v2h12v-2a2 2 0 0 0-2-2H8Z", key: "1" }]
+]);

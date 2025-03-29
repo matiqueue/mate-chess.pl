@@ -587,5 +587,7 @@
     "resendCode": "Didn't receive the code? Resend",
     "noAccountTitle": "We couldn't find your account",
     "redirectDescription": "You will be redirected to a page where you can create one"
-  }
+  },
+  "selectColorTitle": "Choose Color",
+  "selectColorDesc": "Choose which pieces you will play with!"
 }
