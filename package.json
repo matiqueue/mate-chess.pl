@@ -1,6 +1,6 @@
 {
-  "name": "shadcn-ui-monorepo",
-  "version": "0.0.1",
+  "name": "mate-chess-pl",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "turbo build  && cd apps/desktop && pnpm build",
