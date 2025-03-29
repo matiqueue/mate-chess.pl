@@ -3,16 +3,17 @@ import { color } from "@shared/types/colorType"
 import aiDifficulty from "@shared/types/aiDifficulty"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
-import move from "@modules/chess/history/move.js"
+// import * as fs from "node:fs"
 
 class ChessAi extends ChessGame {
   private _aiColor: color
   private _opponentColor: color
   private _aiDifficulty: aiDifficulty
   private _searchDepth: number
+  private _canUseDatabase: boolean = false
 
   private readonly EXCHANGE_MULTIPLIER = 1.2
-  constructor(aiColor: color, aiDifficulty: aiDifficulty) {
+  constructor(aiColor: color, difficulty: aiDifficulty) {
     super()
     this._aiColor = aiColor
     switch (aiColor) {
@@ -23,7 +24,10 @@ class ChessAi extends ChessGame {
         this._opponentColor = color.White
         break
     }
-    this._aiDifficulty = aiDifficulty
+    if (difficulty === aiDifficulty.Advanced) {
+      this._canUseDatabase = true
+    }
+    this._aiDifficulty = difficulty
     this._searchDepth = 4
   }
 
@@ -38,6 +42,20 @@ class ChessAi extends ChessGame {
     }
 
     await this.delay(200)
+
+    // if (this._canUseDatabase) {
+    //   let moveArray = this.findMoveInDatabase()
+    //
+    //   if (moveArray.length < 1) {
+    //     moveArray = this.aiDetermineBestMove()
+    //   }
+    //
+    //   const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
+    //   if (move) {
+    //     console.log("move db ready!!!")
+    //     return move
+    //   }
+    // }
 
     const moveArray = this.aiDetermineBestMove()
     const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
@@ -173,8 +191,81 @@ class ChessAi extends ChessGame {
       .map((item) => item.move)
 
     console.log("Candidate moves: ", candidateMoves.slice(0, 6))
-    return candidateMoves.slice(0, 6)
+    return candidateMoves.slice(0, 3)
   }
+
+  // private findMoveInDatabase(): Move[] {
+  //   const arrayOfMoves: Move[] = []
+  //   const path = "moveDB/all_cleaned_games.txt"
+  //
+  //   try {
+  //     const fileContent = fs.readFileSync(path, "utf-8")
+  //     const games = fileContent.split(/\r?\n/)
+  //
+  //     const stringToCompare = this.getMoveHistoryString()
+  //     const matchingGames = games.filter((game) => game.startsWith(stringToCompare))
+  //
+  //     if (matchingGames.length === 0) {
+  //       this._canUseDatabase = false
+  //       return arrayOfMoves
+  //     }
+  //
+  //     // Get next moves from matching games
+  //     const nextMoves = matchingGames
+  //       .map((game) => {
+  //         const moves = game.split(" ")
+  //         if (moves.length <= stringToCompare.split(" ").length) return null
+  //         return moves[stringToCompare.split(" ").length]
+  //       })
+  //       .filter((move): move is string => move !== null)
+  //
+  //     if (nextMoves.length === 0) {
+  //       return arrayOfMoves
+  //     }
+  //
+  //     // Convert move strings to Move objects
+  //     const validMoves = this.board.getLegalMoves(this._aiColor)
+  //     const validMoveStrings = validMoves.map((move) => `${move.from.x},${move.from.y},${move.to.x},${move.to.y}`)
+  //
+  //     const matchingNextMoves = nextMoves.filter((move) => {
+  //       // Convert algebraic notation to coordinates
+  //       const fromSquare = move.slice(0, 2)
+  //       const toSquare = move.slice(2, 4)
+  //       if (!fromSquare[1] || !toSquare[1]) return
+  //
+  //       const fromX = fromSquare.charCodeAt(0) - 97 // Convert letter to 0-7
+  //       const fromY = 8 - parseInt(fromSquare[1]) // Convert number to 0-7
+  //       const toX = toSquare.charCodeAt(0) - 97
+  //       const toY = 8 - parseInt(toSquare[1])
+  //
+  //       return validMoveStrings.includes(`${fromX},${fromY},${toX},${toY}`)
+  //     })
+  //
+  //     if (matchingNextMoves.length === 0) {
+  //       return arrayOfMoves
+  //     }
+  //
+  //     // Convert matching moves to Move objects
+  //     matchingNextMoves.forEach((move) => {
+  //       const fromSquare = move.slice(0, 2)
+  //       const toSquare = move.slice(2, 4)
+  //       if (!fromSquare[1] || !toSquare[1]) return
+  //
+  //       const fromX = fromSquare.charCodeAt(0) - 97
+  //       const fromY = 8 - parseInt(fromSquare[1])
+  //       const toX = toSquare.charCodeAt(0) - 97
+  //       const toY = 8 - parseInt(toSquare[1])
+  //
+  //       const validMove = validMoves.find((m) => m.from.x === fromX && m.from.y === fromY && m.to.x === toX && m.to.y === toY)
+  //       if (validMove) arrayOfMoves.push(validMove)
+  //     })
+  //
+  //     return arrayOfMoves
+  //   } catch (error) {
+  //     console.error("Error reading database file:", error)
+  //     return arrayOfMoves
+  //   }
+  // }
 
   get aiColor(): color {
     return this._aiColor
