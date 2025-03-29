@@ -3,7 +3,8 @@ import { color } from "@shared/types/colorType"
 import aiDifficulty from "@shared/types/aiDifficulty"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
-// import * as fs from "node:fs"
+
+import * as moveDB from "./moveDB/all_cleaned_games.json"
 
 class ChessAi extends ChessGame {
   private _aiColor: color
@@ -203,79 +204,31 @@ class ChessAi extends ChessGame {
     const arrayOfMoves: Move[] = []
 
     try {
-      const response = await fetch("") //trzeba tutaj link ustawić do fetcha
-
-      if (!response.ok) {
-        console.log(`Error fetching database: ${response.status}`)
-        return arrayOfMoves
-      }
-
-      const jsonData = await response.json()
-
-      if (!jsonData?.games || !Array.isArray(jsonData.games)) {
-        console.log("Invalid database format")
+      if (!moveDB?.games || !Array.isArray(moveDB.games)) {
+        console.error("Invalid database format")
         return arrayOfMoves
       }
 
       const stringToCompare = this.getMoveHistoryString()
-      const matchingGames = jsonData.games.filter((game: ChessGame) => game.getMoveHistoryString().startsWith(stringToCompare))
+      const arrayOfStringMoves = []
 
-      if (matchingGames.length === 0) {
-        this._canUseDatabase = false
-        return arrayOfMoves
+      for (const game of moveDB.games) {
+        if (game.moveString.startsWith(stringToCompare)) {
+          arrayOfStringMoves.push(game.moveString)
+        }
       }
 
-      const nextMoves = matchingGames
-        .map((game: ChessGame) => {
-          const moves = game.getMoveHistoryString().split(" ")
-          if (moves.length <= stringToCompare.split(" ").length) return null
-          return moves[stringToCompare.split(" ").length]
-        })
-        .filter((move): move is string => move !== null)
-
-      if (nextMoves.length === 0) {
-        return arrayOfMoves
+      const possibleMovesInNotation = []
+      for (const moveString of arrayOfStringMoves) {
+        possibleMovesInNotation.push(moveString.split(stringToCompare)[1])
       }
 
-      const validMoves = this.board.getLegalMoves(this._aiColor)
-      const validMoveStrings = validMoves.map((move) => `${move.from.x},${move.from.y},${move.to.x},${move.to.y}`)
-
-      const matchingNextMoves = nextMoves.filter((move) => {
-        const fromSquare = move.slice(0, 2)
-        const toSquare = move.slice(2, 4)
-        if (!fromSquare[1] || !toSquare[1]) return false
-
-        const fromX = fromSquare.charCodeAt(0) - 97
-        const fromY = 8 - parseInt(fromSquare[1])
-        const toX = toSquare.charCodeAt(0) - 97
-        const toY = 8 - parseInt(toSquare[1])
-
-        return validMoveStrings.includes(`${fromX},${fromY},${toX},${toY}`)
-      })
-
-      if (matchingNextMoves.length === 0) {
-        return arrayOfMoves
-      }
-
-      matchingNextMoves.forEach((move) => {
-        const fromSquare = move.slice(0, 2)
-        const toSquare = move.slice(2, 4)
-        if (!fromSquare[1] || !toSquare[1]) return
-
-        const fromX = fromSquare.charCodeAt(0) - 97
-        const fromY = 8 - parseInt(fromSquare[1])
-        const toX = toSquare.charCodeAt(0) - 97
-        const toY = 8 - parseInt(toSquare[1])
-
-        const validMove = validMoves.find((m) => m.from.x === fromX && m.from.y === fromY && m.to.x === toX && m.to.y === toY)
-        if (validMove) arrayOfMoves.push(validMove)
-      })
-
-      return arrayOfMoves
+      console.log(possibleMovesInNotation)
     } catch (error) {
-      console.error("Error reading database file:", error)
-      return arrayOfMoves
+      console.log(error)
     }
+
+    return arrayOfMoves
   }
 
   get aiColor(): color {
