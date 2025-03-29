@@ -30,7 +30,7 @@ import { gameStatusType } from "@shared/types/gameStatusType"
 import ChessGameExtraAI from "@modules/chessGameExtraAI"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-const useGame = (ai: boolean = false) => {
+const useGame = (ai: boolean = false, selectedColor: string) => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
@@ -42,7 +42,7 @@ const useGame = (ai: boolean = false) => {
 
   // Inicjalizacja gry
   useEffect(() => {
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(selectedColor == "white" ? color.Black : color.White) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))

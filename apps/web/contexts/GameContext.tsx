@@ -1,17 +1,18 @@
 "use client"
 
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect } from "react"
 import useGame from "@/hooks/useGame"
 
 interface GameProviderProps {
   children: React.ReactNode
   ai: boolean
+  selectedColor: string
 }
 
 const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
 
-export const GameProvider = ({ children, ai }: GameProviderProps) => {
-  const game = useGame(ai)
+export const GameProvider = ({ children, ai, selectedColor }: GameProviderProps) => {
+  const game = useGame(ai, selectedColor)
 
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>
 }
