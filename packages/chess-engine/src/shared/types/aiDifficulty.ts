@@ -1,6 +1,6 @@
 enum aiDifficulty {
-  "Beginner" = 1,
-  "Intermediate" = 2,
-  "Advanced" = 3,
+  "beginner" = 1,
+  "intermediate" = 2,
+  "advanced" = 3,
 }
 export default aiDifficulty

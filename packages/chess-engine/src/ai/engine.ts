@@ -26,10 +26,23 @@ class ChessAi extends ChessGame {
         this._opponentColor = color.White
         break
     }
-
-    this._canUseDatabase = difficulty === aiDifficulty.Advanced
     this._aiDifficulty = difficulty
-    this._searchDepth = 4
+
+    switch (difficulty) {
+      case aiDifficulty.beginner:
+        this._searchDepth = 3
+        break
+      case aiDifficulty.intermediate:
+        this._searchDepth = 4
+        break
+      case aiDifficulty.advanced:
+        this._canUseDatabase = true
+        this._searchDepth = 5
+        break
+      default:
+        this._searchDepth = 4
+        break
+    }
   }
 
   private delay(ms: number): Promise<void> {
