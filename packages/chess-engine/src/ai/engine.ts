@@ -15,6 +15,7 @@ class ChessAi extends ChessGame {
 
   private readonly EXCHANGE_MULTIPLIER = 1.2
   constructor(aiColor: color, difficulty: aiDifficulty) {
+    //TODO, zrobić tak żeby to ai w ogóle działało gdy gra białymi xddd
     super()
     this._aiColor = aiColor
     switch (aiColor) {
@@ -25,13 +26,23 @@ class ChessAi extends ChessGame {
         this._opponentColor = color.White
         break
     }
-    this._canUseDatabase = true
-
-    if (difficulty === aiDifficulty.Advanced) {
-      this._canUseDatabase = true
-    }
     this._aiDifficulty = difficulty
-    this._searchDepth = 4
+
+    switch (difficulty) {
+      case aiDifficulty.beginner:
+        this._searchDepth = 3
+        break
+      case aiDifficulty.intermediate:
+        this._searchDepth = 4
+        break
+      case aiDifficulty.advanced:
+        this._canUseDatabase = true
+        this._searchDepth = 5
+        break
+      default:
+        this._searchDepth = 4
+        break
+    }
   }
 
   private delay(ms: number): Promise<void> {
