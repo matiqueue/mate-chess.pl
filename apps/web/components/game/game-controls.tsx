@@ -33,6 +33,7 @@ import { gameStatusType } from "@modules/shared/types/gameStatusType" // Typy st
  * są dostępne tylko w grach online lub przez link, a nie w grze lokalnej czy z botem.
  * Stylizacja zależy od motywu (jasny/ciemny).
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function GameControls() {

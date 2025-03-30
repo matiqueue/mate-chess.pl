@@ -27,6 +27,8 @@ const fraunces = Fraunces({
  * kliknięciu na stronie (zgodność z polityką przeglądarek). Obsługuje responsywność
  * i dynamicznie zmienia stan w zależności od ścieżki URL.
  * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwatka)
+ * Autor: Wojciech Piątek
  * @source Własna implementacja
  */
 const Navbar: React.FC = () => {

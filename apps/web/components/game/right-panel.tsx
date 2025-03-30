@@ -45,6 +45,7 @@ import { useSidebarContext } from "@/contexts/SidebarContext" // Kontekst paska 
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 interface ToggleSidebarButtonProps {

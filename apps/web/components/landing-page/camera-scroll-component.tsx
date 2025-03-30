@@ -15,6 +15,8 @@ import * as THREE from "three" // Import całej biblioteki Three.js do obsługi 
  * za pomocą metody `lerp`. Wykorzystuje zdarzenie przewijania (`wheel`) do zmiany sekcji
  * oraz `requestAnimationFrame` do ciągłej animacji kamery.
  * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwatka)
+ * Autor: Wojciech Piątek
  * @source Własna implementacja
  */
 const CameraScrollComponent = (camera: THREE.PerspectiveCamera): THREE.PerspectiveCamera => {

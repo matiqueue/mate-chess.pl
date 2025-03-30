@@ -12,6 +12,13 @@ import { cn } from "@workspace/ui/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { loadQuizProgress, saveQuizProgress, resetQuizProgress } from "@/utils/quizStorage"
 
+/**
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwartka)
+ */
+
 type Option = {
   id: string
   text: string // key for translation, e.g.: "chessQuiz.quizzes.0.options.a"

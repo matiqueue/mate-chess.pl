@@ -32,6 +32,8 @@ const fraunces = Fraunces({
  * predefiniowanymi pozycjami. Wykorzystuje `OrbitControls` z wyłączonymi funkcjami
  * obracania i zoomu dla uproszczenia interakcji.
  * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwatka)
+ * Autor: Wojciech Piątek
  * @source Własna implementacja
  */
 const Chessboard: React.FC = () => {

@@ -29,6 +29,7 @@ const languages = [
  * Komponent renderuje się tylko po zamontowaniu po stronie klienta, aby uniknąć
  * problemów z hydratacją. Wykorzystuje `react-country-flag` do wyświetlania flag.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function LanguageSwitcher() {

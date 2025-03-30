@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next"
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  */
 export function Navbar() {
   const { t } = useTranslation()
@@ -56,7 +57,13 @@ export function Navbar() {
             </nav>
           </div>
           <div className="flex items-center space-x-4">
-            <Button onClick={() => {redirect("/play")}} variant="outline" className="hidden md:inline-flex">
+            <Button
+              onClick={() => {
+                redirect("/play")
+              }}
+              variant="outline"
+              className="hidden md:inline-flex"
+            >
               <Chess className="mr-2 h-4 w-4" />
               {t("navbar.quickPlay")}
             </Button>

@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/component
  * Komponent używa stanu do zarządzania aktywnym popoverem, umożliwiając otwieranie i zamykanie
  * menu kontekstowych. Stylizacja jest stała (szary odcień), niezależna od motywu aplikacji.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function FloatingOptions() {

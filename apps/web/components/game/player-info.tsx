@@ -21,6 +21,7 @@ import { useSearchParams } from "next/navigation" // Hook do pobierania parametr
  * Komponent używa kontekstu gry i danych użytkownika z Clerk, aby dynamicznie wyświetlać informacje.
  * Obsługuje różne tryby gry (lokalny, online, link, bot) i dostosowuje style do motywu (jasny/ciemny).
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function PlayerInfo() {

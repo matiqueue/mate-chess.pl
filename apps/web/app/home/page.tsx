@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
  * Obiekt animacji fadeInUp.
  *
  * @remarks Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwartka)
  */
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -129,8 +130,20 @@ export default function HomePage() {
       {/* Grid z trybami gry */}
       <motion.div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" variants={staggerContainer} initial="hidden" animate="visible">
         {[
-          { icon: Timer, title: t("bullet"), desc: t("oneMin"), bg: "bg-primary/10", onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${60}`)},
-          { icon: Zap, title: t("blitz"), desc: t("threePlusTwo"), bg: "bg-primary/10", onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${300}`) },
+          {
+            icon: Timer,
+            title: t("bullet"),
+            desc: t("oneMin"),
+            bg: "bg-primary/10",
+            onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${60}`),
+          },
+          {
+            icon: Zap,
+            title: t("blitz"),
+            desc: t("threePlusTwo"),
+            bg: "bg-primary/10",
+            onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${300}`),
+          },
           { icon: Bot, title: t("computer"), desc: t("vsAi"), bg: "bg-primary/10", onClick: () => router.push(`/bot`) },
           { icon: Trophy, title: t("tournament"), desc: t("arena"), bg: "bg-primary/10", onClick: () => router.push(`/tournaments`) },
         ].map((item, idx) => {
@@ -168,7 +181,14 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("trainTacticalSkills")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button onClick={() => {redirect(`/puzzles`)}} className="w-full">{t("startSolving")}</Button>
+                <Button
+                  onClick={() => {
+                    redirect(`/puzzles`)
+                  }}
+                  className="w-full"
+                >
+                  {t("startSolving")}
+                </Button>
               </motion.div>
             </CardContent>
           </Card>
@@ -185,7 +205,14 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("learnFromGrandmasters")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button onClick={() => {redirect(`/lessons`)}} className="w-full">{t("startLearning")}</Button>
+                <Button
+                  onClick={() => {
+                    redirect(`/lessons`)
+                  }}
+                  className="w-full"
+                >
+                  {t("startLearning")}
+                </Button>
               </motion.div>
             </CardContent>
           </Card>

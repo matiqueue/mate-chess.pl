@@ -4,6 +4,10 @@ import React from "react"
 import styles from "@/styles/landing-page/skeletonChessboard.module.css"
 import { useTranslation } from "react-i18next"
 
+/**
+ * Autor: awres (Filip Serwatka)
+ */
+
 type SkeletonChessboardProps = {
   progress: number
 }

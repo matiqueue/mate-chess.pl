@@ -19,6 +19,7 @@ import { SidebarProvider } from "@workspace/ui/components/sidebar"
  *
  * @remarks
  * Autor: nasakrator
+ * Tłumaczenie: awres (Filip Serwatka)
  */
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

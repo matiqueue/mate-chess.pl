@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next"
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  */
 export function Footer() {
   const { t } = useTranslation()
