@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react"
+"use client" // Dyrektywa określająca, że hook działa po stronie klienta
+
+import { useEffect, useState } from "react" // Hooki React do efektów i zarządzania stanem
 import {
   forwardMove,
   getBoard,
@@ -23,181 +25,271 @@ import {
   undoMove,
   whosTurn,
   callAiToPerformMove,
-} from "@modules/index"
-import { color, figureType } from "@chess-engine/types"
-import MovePair from "@shared/types/movePair"
-import { gameStatusType } from "@shared/types/gameStatusType"
-import ChessGameExtraAI from "@modules/chessGameExtraAI"
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
+} from "@modules/index" // Funkcje silnika szachowego
+import { color, figureType } from "@chess-engine/types" // Typy dla kolorów i figur
+import MovePair from "@shared/types/movePair" // Typ dla par ruchów
+import { gameStatusType } from "@shared/types/gameStatusType" // Typ statusu gry
+import ChessGameExtraAI from "@modules/chessGameExtraAI" // Klasa gry z AI
+import ChessGameExtraLayer from "@modules/chessGameExtraLayer" // Klasa gry bez AI
 
+/**
+ * useGame
+ *
+ * Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
+ * historią ruchów, timerami graczy, statusem gry i ruchami AI (jeśli włączone).
+ *
+ * @param {boolean} [ai=false] - Czy gra jest z przeciwnikiem AI.
+ * @param {string} selectedColor - Wybrany kolor gracza (obecnie niewykorzystany w logice).
+ * @param {number} timer - Początkowy czas w sekundach dla każdego gracza.
+ * @returns {Object} Obiekt z metodami i stanem gry szachowej.
+ *
+ * @remarks
+ * Hook inicjalizuje grę (z AI lub bez), aktualizuje stany po każdym ruchu i obsługuje
+ * timery z logiką końca czasu. Zawiera metody do manipulacji grą (ruchy, promocje, cofanie).
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
+  // Stan przechowujący instancję gry
   const [game, setGame] = useState<any>(null)
+  // Stan przechowujący aktualny stan planszy
   const [board, setBoard] = useState<any>(null)
+  // Stan przechowujący historię ruchów
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
+  // Stan przechowujący aktualnego gracza
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
+  // Stan przechowujący status gry
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
+  // Początkowy czas gry w sekundach
   const [initialTime, setInitialTime] = useState(timer)
-  const [whiteTime, setWhiteTime] = useState<number>(timer) // x minut dla białych
-  const [blackTime, setBlackTime] = useState<number>(timer) // x minut dla czarnych
-  const [timeLeft, setTimeLeft] = useState<number>(timer*2) // 2x minut ogólnego czasu
+  // Pozostały czas dla białych w sekundach
+  const [whiteTime, setWhiteTime] = useState<number>(timer)
+  // Pozostały czas dla czarnych w sekundach
+  const [blackTime, setBlackTime] = useState<number>(timer)
+  // Całkowity pozostały czas gry (suma czasów obu graczy)
+  const [timeLeft, setTimeLeft] = useState<number>(timer * 2)
+  // Sygnatura czasowa dla białych
   const [timestampWhite, setTimeStampWhite] = useState(Date.now())
+  // Sygnatura czasowa dla czarnych
   const [timestampBlack, setTimeStampBlack] = useState(Date.now())
 
   // Inicjalizacja gry
   useEffect(() => {
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
-    startGame(newGame)
-    setGame(newGame)
-    setBoard(getBoard(newGame))
-    setCurrentPlayer(whosTurn(newGame))
-    setMoveHistory(getMoveHistory(newGame))
-    setGameStatus(getGameStatus(newGame))
+    // Tworzenie nowej gry: z AI (czarne) lub bez AI
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai
+      ? setupAIGame(color.Black) // Gra z AI, AI gra czarnymi
+      : setupGame() // Gra standardowa bez AI
+    // @TODO: Dodać obsługę notacji FEN z try-catch i podświetlaniem błędów zamiast crashowania aplikacji
 
+    startGame(newGame) // Rozpoczęcie gry
+    setGame(newGame) // Ustawienie instancji gry
+    setBoard(getBoard(newGame)) // Ustawienie początkowego stanu planszy
+    setCurrentPlayer(whosTurn(newGame)) // Ustawienie aktualnego gracza
+    setMoveHistory(getMoveHistory(newGame)) // Ustawienie historii ruchów
+    setGameStatus(getGameStatus(newGame)) // Ustawienie statusu gry
+
+    // Ustawienie początkowych sygnatur czasowych
     setTimeStampWhite(Date.now())
     setTimeStampBlack(Date.now())
 
+    // Logowanie początkowego stanu gry dla debugowania
     console.log("Initial game status:", getGameStatus(newGame))
     console.log("Initial current player:", whosTurn(newGame))
-  }, [ai])
-
+  }, [ai]) // Zależność: zmiana trybu AI
 
   // Timer dla czasu graczy z logiką końca czasu
   useEffect(() => {
     console.log("Player timer effect triggered. Game status:", gameStatus, "Current player:", currentPlayer)
     if (gameStatus !== gameStatusType.active) {
       console.log("Game not active, timer not started")
-      return
+      return // Wyjście, jeśli gra nie jest aktywna
     }
-    const currentTimeStamp = Date.now()
+
+    const currentTimeStamp = Date.now() // Aktualny czas
     console.log("CurrentTurn: ", currentPlayer)
+
     if (currentPlayer?.toLowerCase() === "white") {
       setWhiteTime(() => {
-        const newTime = (timestampWhite - currentTimeStamp) * -1 / 1000  - (initialTime - blackTime)
-        return initialTime - Math.floor(newTime)
-      });
+        const newTime = ((timestampWhite - currentTimeStamp) * -1) / 1000 - (initialTime - blackTime) // Obliczenie czasu białych
+        return initialTime - Math.floor(newTime) // Aktualizacja czasu białych
+      })
       console.log("whitetime: ", whiteTime)
       if (whiteTime <= 0) {
-        setGameStatus(gameStatusType.blackWins);
+        setGameStatus(gameStatusType.blackWins) // Czarni wygrywają, gdy czas białych się skończy
       }
     } else if (currentPlayer?.toLowerCase() === "black") {
       setBlackTime(() => {
-        const newTime = (timestampBlack - currentTimeStamp) * -1 / 1000 - (initialTime - whiteTime )
-        return initialTime - Math.floor(newTime)
-      });
+        const newTime = ((timestampBlack - currentTimeStamp) * -1) / 1000 - (initialTime - whiteTime) // Obliczenie czasu czarnych
+        return initialTime - Math.floor(newTime) // Aktualizacja czasu czarnych
+      })
       console.log("blacktime: ", blackTime)
       if (blackTime <= 0) {
-        setGameStatus(gameStatusType.whiteWins);
+        setGameStatus(gameStatusType.whiteWins) // Biali wygrywają, gdy czas czarnych się skończy
       }
     } else {
-      console.error("No valid current player detected");
+      console.error("No valid current player detected") // Błąd, jeśli brak gracza
     }
-  }, [currentPlayer, gameStatus])
+  }, [currentPlayer, gameStatus]) // Zależności: zmiana gracza lub statusu gry
 
+  /**
+   * movePiece
+   *
+   * Wykonuje ruch figurą na planszy i aktualizuje stan gry w przypadku powodzenia.
+   *
+   * @param {any} from - Pozycja startowa ruchu.
+   * @param {any} to - Pozycja docelowa ruchu.
+   * @returns {boolean} `true`, jeśli ruch się powiódł, `false` w przeciwnym razie.
+   */
   const movePiece = (from: any, to: any): boolean => {
     const move = { from, to }
     if (makeMove(game, move)) {
-      updateBoard()
+      updateBoard() // Aktualizacja planszy po udanym ruchu
       return true
     }
     return false
   }
 
+  /**
+   * aiMovePerform
+   *
+   * Wykonuje ruch AI, jeśli jest jego tura. Obsługuje również promocję pionka.
+   */
   const aiMovePerform = async () => {
     if (game.aiColor === whosTurn(game)) {
       if (isAwaitingPromotion(game)) {
-        game.promotionTo(figureType.queen)
+        game.promotionTo(figureType.queen) // Automatyczna promocja na hetmana
         updateBoard()
       } else {
         try {
-          const aimove = await callAiToPerformMove(game)
+          const aimove = await callAiToPerformMove(game) // Wywołanie ruchu AI
           if (aimove) {
-            makeMove(game, aimove)
+            makeMove(game, aimove) // Wykonanie ruchu AI
           } else {
             console.error("ai move not performed. Move is either undefined or null")
           }
-          updateBoard()
+          updateBoard() // Aktualizacja planszy po ruchu AI
         } catch (error) {
-          console.error("Error during AI move:", error)
+          console.error("Error during AI move:", error) // Obsługa błędów AI
         }
       }
     }
   }
 
+  // Efekt uruchamiający ruch AI po zmianie tury
   useEffect(() => {
     if (game instanceof ChessGameExtraAI) {
-      aiMovePerform()
+      aiMovePerform() // Wykonanie ruchu AI, jeśli gra jest z AI
     }
-  }, [currentPlayer])
+  }, [currentPlayer]) // Zależność: zmiana aktualnego gracza
 
+  /**
+   * undoLastMove
+   *
+   * Cofnij ostatni ruch i aktualizuje stan gry.
+   *
+   * @returns {boolean} `true`, jeśli cofnięcie się powiodło, `false` w przeciwnym razie.
+   */
   const undoLastMove = (): boolean => {
     if (undoMove(game)) {
-      updateBoard()
+      updateBoard() // Aktualizacja planszy po cofnięciu
       return true
     }
     return false
   }
 
+  /**
+   * reviewLastMove
+   *
+   * Przegląda ostatni ruch (rewind) i aktualizuje stan gry.
+   *
+   * @returns {boolean} `true`, jeśli przegląd się powiódł, `false` w przeciwnym razie.
+   */
   const reviewLastMove = (): boolean => {
     if (rewindMove(game)) {
-      updateBoard()
+      updateBoard() // Aktualizacja planszy po przewinięciu
       return true
     }
     return false
   }
 
+  /**
+   * forwardLastMove
+   *
+   * Przesuwa do przodu ostatni ruch i aktualizuje stan gry.
+   *
+   * @returns {boolean} `true`, jeśli przesunięcie się powiodło, `false` w przeciwnym razie.
+   */
   const forwardLastMove = (): boolean => {
     if (forwardMove(game)) {
-      updateBoard()
+      updateBoard() // Aktualizacja planszy po przesunięciu
       return true
     }
     return false
   }
 
+  /**
+   * returnToCurrentGameState
+   *
+   * Przywraca aktualny stan gry i aktualizuje planszę.
+   */
   const returnToCurrentGameState = () => {
     if (returnToCurrentState(game)) {
-      updateBoard()
+      updateBoard() // Aktualizacja planszy po przywróceniu
     }
   }
 
+  /**
+   * updateBoard
+   *
+   * Aktualizuje wszystkie stany gry (plansza, historia, gracz, status).
+   */
   const updateBoard = () => {
-    setBoard(getBoard(game))
-    setMoveHistory(getMoveHistory(game))
-    setCurrentPlayer(whosTurn(game))
-    setGameStatus(getGameStatus(game))
+    setBoard(getBoard(game)) // Aktualizacja planszy
+    setMoveHistory(getMoveHistory(game)) // Aktualizacja historii ruchów
+    setCurrentPlayer(whosTurn(game)) // Aktualizacja aktualnego gracza
+    setGameStatus(getGameStatus(game)) // Aktualizacja statusu gry
   }
 
+  /**
+   * promoteFigure
+   *
+   * Promuje pionka na wybraną figurę i aktualizuje stan gry.
+   *
+   * @param {figureType.bishop | figureType.rook | figureType.queen | figureType.knight} figure - Figura, na którą promowany jest pionek.
+   */
   const promoteFigure = (figure: figureType.bishop | figureType.rook | figureType.queen | figureType.knight) => {
-    promote(game, figure)
-    updateBoard()
+    promote(game, figure) // Wykonanie promocji
+    updateBoard() // Aktualizacja planszy
   }
 
+  // Zwrócenie obiektu z metodami i stanem gry
   return {
-    game,
-    board,
-    moveHistory,
-    currentPlayer,
-    gameStatus,
-    whiteTime,
-    blackTime,
-    timeLeft,
-    movePiece,
-    undoLastMove,
-    forwardLastMove,
-    reviewLastMove,
-    returnToCurrentGameState,
-    promoteFigure,
-    isAwaitingPromotion: () => isAwaitingPromotion(game),
-    isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position),
-    isPreviewMode: () => isPreviewModeOn(game),
-    getValidMoves: (position: any) => getValidMoves(getBoard(game), position),
-    isCheckmate: () => isCheckmate(game),
-    isStalemate: () => isStalemate(game),
-    getPositionByCords: (x: number, y: number) => getPositionByCords(getBoard(game), x, y),
-    getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation),
-    getPositionById: (id: number) => getPositionById(getBoard(game), id),
-    setGameStatus,
-    aiMovePerform,
+    game, // Instancja gry
+    board, // Aktualny stan planszy
+    moveHistory, // Historia ruchów
+    currentPlayer, // Aktualny gracz
+    gameStatus, // Status gry
+    whiteTime, // Pozostały czas białych
+    blackTime, // Pozostały czas czarnych
+    timeLeft, // Całkowity pozostały czas
+    movePiece, // Metoda wykonywania ruchu
+    undoLastMove, // Metoda cofania ruchu
+    forwardLastMove, // Metoda przesunięcia do przodu
+    reviewLastMove, // Metoda przeglądu wstecz
+    returnToCurrentGameState, // Metoda powrotu do bieżącego stanu
+    promoteFigure, // Metoda promocji figury
+    isAwaitingPromotion: () => isAwaitingPromotion(game), // Czy gra czeka na promocję
+    isMoveEnPassant: (position: any) => isMoveEnPassant(getBoard(game), position), // Czy ruch to en passant
+    isPreviewMode: () => isPreviewModeOn(game), // Czy aktywny jest tryb podglądu
+    getValidMoves: (position: any) => getValidMoves(getBoard(game), position), // Pobieranie ważnych ruchów
+    isCheckmate: () => isCheckmate(game), // Czy jest szach-mat
+    isStalemate: () => isStalemate(game), // Czy jest pat
+    getPositionByCords: (x: number, y: number) => getPositionByCords(getBoard(game), x, y), // Pobieranie pozycji po współrzędnych
+    getPositionByNotation: (notation: string) => getPositionByNotation(getBoard(game), notation), // Pobieranie pozycji po notacji
+    getPositionById: (id: number) => getPositionById(getBoard(game), id), // Pobieranie pozycji po ID
+    setGameStatus, // Metoda ustawiania statusu gry
+    aiMovePerform, // Metoda wywoływania ruchu AI
   }
 }
 
-export default useGame
+export default useGame // Eksport hooka
