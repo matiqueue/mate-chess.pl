@@ -36,9 +36,12 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
+  const [initialTime, setInitialTime] = useState(300)
   const [whiteTime, setWhiteTime] = useState<number>(300) // 5 minut dla białych
   const [blackTime, setBlackTime] = useState<number>(300) // 5 minut dla czarnych
   const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut ogólnego czasu
+  const [timestampWhite, setTimeStampWhite] = useState(Date.now())
+  const [timestampBlack, setTimeStampBlack] = useState(Date.now())
 
   // Inicjalizacja gry
   useEffect(() => {
@@ -46,11 +49,18 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
-    setCurrentPlayer(whosTurn(newGame))
+
+    if(selectedColor == "black"){
+      setCurrentPlayer("black")
+    }else{
+      setCurrentPlayer("white")
+    }
+
+    setTimeStampWhite(Date.now())
+    setTimeStampBlack(Date.now())
+    setCurrentPlayer("white")
     setMoveHistory(getMoveHistory(newGame))
     setGameStatus(getGameStatus(newGame))
-
-    
 
     console.log("Initial game status:", getGameStatus(newGame))
     console.log("Initial current player:", whosTurn(newGame))
@@ -72,32 +82,26 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
       console.log("Game not active, timer not started")
       return
     }
+    const currentTimeStamp = Date.now()
 
-    const playerTimer = setInterval(() => {
-      if (currentPlayer?.toLowerCase() === "white") {
-        setWhiteTime((prevWhiteTime) => {
-          const newTime = prevWhiteTime > 0 ? prevWhiteTime - 1 : 0
-          if (newTime === 0) {
-            setGameStatus(gameStatusType.blackWins)
-          }
-          return newTime
-        })
-      } else if (currentPlayer?.toLowerCase() === "black") {
-        setBlackTime((prevBlackTime) => {
-          const newTime = prevBlackTime > 0 ? prevBlackTime - 1 : 0
-          if (newTime === 0) {
-            setGameStatus(gameStatusType.whiteWins)
-          }
-          return newTime
-        })
-      } else {
-        console.error("No valid current player detected")
-      }
-    }, 1000)
-
-    return () => {
-      console.log("Cleaning up player timer")
-      clearInterval(playerTimer)
+    if (currentPlayer?.toLowerCase() === "white") {
+      setWhiteTime(() => {
+        const newTime = (timestampWhite - currentTimeStamp) * -1 / 1000  - (initialTime - blackTime)
+        if (newTime <= 0) {
+          setGameStatus(gameStatusType.blackWins);
+        }
+        return initialTime - Math.floor(newTime)
+      });
+    } else if (currentPlayer?.toLowerCase() === "black") {
+      setBlackTime((prevBlackTime) => {
+        const newTime = (timestampBlack - currentTimeStamp) * -1 / 1000 - (initialTime - whiteTime )
+        if (newTime === 0) {
+          setGameStatus(gameStatusType.whiteWins);
+        }
+        return initialTime - Math.floor(newTime)
+      });
+    } else {
+      console.error("No valid current player detected");
     }
   }, [currentPlayer, gameStatus])
 
