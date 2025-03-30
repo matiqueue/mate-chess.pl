@@ -64,7 +64,7 @@ export default function ChessPage() {
   }, [])
 
   return (
-    <GameProvider ai={true} selectedColor={ selectedColor } timer={parseInt(selectedTimer)}>
+    <GameProvider ai={false} selectedColor={ selectedColor } timer={parseInt(selectedTimer)}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
