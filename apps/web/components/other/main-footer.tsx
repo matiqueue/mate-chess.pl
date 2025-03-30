@@ -31,9 +31,6 @@ export function Footer() {
             <Link href="/lessons" className="transition-colors hover:text-foreground/80">
               {t("main-footer.learn")}
             </Link>
-            <Link href="/community" className="transition-colors hover:text-foreground/80">
-              {t("main-footer.community")}
-            </Link>
             <a
               href="https://github.com/matiqueue/mate-chess.pl"
               target="_blank"

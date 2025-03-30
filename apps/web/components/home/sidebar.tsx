@@ -127,18 +127,6 @@ export function Sidebar() {
               </NavItem>
             </div>
 
-            <div>
-              <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">{t("navCommunity")}</h2>
-              </div>
-              <NavItem href="/players" icon={Users}>
-                {t("players")}
-              </NavItem>
-              <NavItem href="/activity" icon={Activity}>
-                {t("activity")}
-              </NavItem>
-            </div>
-
             <Separator className="mx-6" />
 
             <div>
