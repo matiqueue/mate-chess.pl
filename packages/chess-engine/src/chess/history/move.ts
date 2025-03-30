@@ -1,5 +1,4 @@
 import { color } from "@shared/types/colorType"
-import MoveRecord from "@shared/types/moveRecord"
 
 class MoveRecordPublic {
   private _playerColor: color

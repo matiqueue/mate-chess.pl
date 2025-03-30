@@ -1,7 +1,6 @@
 import { King, Pawn } from "@utils/figureUtils"
 import { Position, Board } from "@utils/boardUtils"
 import { color } from "@shared/types/colorType"
-import { figureType } from "@shared/types/figureType"
 
 describe("King", () => {
   let board: Board

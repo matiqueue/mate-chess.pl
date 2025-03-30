@@ -4,14 +4,14 @@ import aiDifficulty from "@shared/types/aiDifficulty"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 
-import * as moveDB from "./moveDB/all_cleaned_games.json"
+import moveDB from "./moveDB/all_cleaned_games.json"
 
 class ChessAi extends ChessGame {
   private _aiColor: color
   private _opponentColor: color
   private _aiDifficulty: aiDifficulty
   private _searchDepth: number
-  private _canUseDatabase: boolean = false
+  private _canUseDatabase: boolean = true
 
   private readonly EXCHANGE_MULTIPLIER = 1.2
   constructor(aiColor: color, difficulty: aiDifficulty) {
@@ -224,7 +224,7 @@ class ChessAi extends ChessGame {
         console.error("Invalid database format")
         return arrayOfMoves
       }
-      // console.log("Connection successful")
+      console.log("Connection successful")
 
       const stringToCompare = this.getMoveHistoryString()
       // console.log(`Move history string: '${stringToCompare}'`)

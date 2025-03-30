@@ -1,5 +1,3 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import { Board, Position } from "@utils/boardUtils"
 import { Move } from "@shared/types/moveType"
 import ChessGame from "@modules/chess/chessGame"
 

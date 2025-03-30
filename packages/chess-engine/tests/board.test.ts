@@ -1,7 +1,6 @@
 import { King, Rook } from "@utils/figureUtils"
-import { Position, Board } from "@utils/boardUtils"
+import { Board } from "@utils/boardUtils"
 import { color } from "@shared/types/colorType"
-import { figureType } from "@shared/types/figureType"
 import type { Move } from "@shared/types/moveType"
 
 describe("Board", () => {

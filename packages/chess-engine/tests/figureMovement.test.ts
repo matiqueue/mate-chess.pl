@@ -1,5 +1,5 @@
 import { Board } from "@utils/boardUtils"
-import { Pawn, Rook, Knight, Bishop, Queen, King } from "@utils/figureUtils"
+import { Pawn, Rook, Bishop } from "@utils/figureUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import ChessGame from "@modules/chess/chessGame"
