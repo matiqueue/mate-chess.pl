@@ -1194,6 +1194,15 @@ class Board {
     return this._blackFigures
   }
 
+  /**
+   * Unique method used exclusivelly by ai to find if a move from a formatted string is possible to perform on a board in a given state.
+   * @param figureColor - color of the figures that should perform the move
+   * @param performingFigureType - figure that should be performing the move
+   * @param doesMoveCaptureFig - if true, the method will only return moves that capture another figure. if false, only non-capturing moves will be returned
+   * @param targetPositionNotation - position that a figure should end up on after the move
+   *
+   * @return An array of all legal moves that pass the given criteria
+   * */
   public findValidMovesWithGivenArguments(
     figureColor: color,
     performingFigureType: figureType.knight | figureType.king | figureType.queen | figureType.rook | figureType.bishop | figureType.pawn,

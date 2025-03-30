@@ -193,15 +193,19 @@ class ChessGame {
     return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 
+  /**
+   * Regenerates and returns the move history using {@link MoveRecorder}.
+   *
+   * @returns move history as a pgn notation string
+   */
   public getMoveHistoryString(): string {
     const moves = this._moveRecorder.regenerateMoveString(this._moves)
 
     return moves
   }
-  public gameDraw() {
-    this._gameStatus = gameStatusType.draw
-    this._isGameOn = false
-  }
+
+  /**
+   * Method used internally to quickly switch between players*/
   protected switchCurrentPlayer() {
     if (this.currentPlayer === color.White) {
       this.currentPlayer = color.Black
@@ -209,29 +213,36 @@ class ChessGame {
       this.currentPlayer = color.White
     }
   }
+  /**
+   * @return which player has to play now*/
   get currentPlayer(): color.White | color.Black {
     return this._currentPlayer
   }
-
+  /**
+   * Artificially set current player to one of the colours on board
+   * */
   set currentPlayer(value: color.White | color.Black) {
     this._currentPlayer = value
   }
 
+  /**
+   * @return board instance inside game instance
+   * */
   get board(): Board {
     return this._board
   }
 
-  get isGameOn(): boolean {
-    return this._isGameOn
-  }
-
-  set gameStatus(value: gameStatusType) {
-    this._gameStatus = value
-  }
-
+  /**
+   * @return current game status*/
   get gameStatus(): gameStatusType {
     return this._gameStatus
   }
+
+  /**
+   * Method used to play chess in 'from position' variant.
+   * If no parameters are given, the method will setup figures in default positions.
+   * @param fenString - string which contains information about figures position
+   */
 
   public setupFigures(fenString: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"): void {
     // Parse FEN string components
@@ -315,6 +326,8 @@ class ChessGame {
     this.currentPlayer = activeColor === "w" ? color.White : color.Black
   }
 
+  /**
+   * @return true if board is awaiting for promotion, false otherwise*/
   get awaitingPromotion(): boolean {
     return this._awaitingPromotion
   }
