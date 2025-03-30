@@ -17,7 +17,7 @@ import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation }
 import LoadingAnimation from "./loading/loading-animation"
 import { motion } from "framer-motion"
 
-export function ChessBoard2D({ title , desc }: { title: string, desc: string}) {
+export function ChessBoard2D({ title , desc, selectedColor }: { title: string, desc: string, selectedColor: string}) {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
   const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -66,7 +66,13 @@ export function ChessBoard2D({ title , desc }: { title: string, desc: string}) {
       if (square?.figure) {
         const piece = square.figure
         const isWhite = piece.color === "white"
-        const iconColor = isWhite ? "text-white" : "text-black"
+        let iconColor = "";
+        if(selectedColor == "black"){
+          iconColor = isWhite ? "text-black" : "text-white"
+        }else{
+          iconColor = isWhite ? "text-white" : "text-black"
+        }
+
         let IconComponent
         switch (piece.type) {
           case "pawn":
@@ -90,14 +96,26 @@ export function ChessBoard2D({ title , desc }: { title: string, desc: string}) {
           default:
             return null
         }
-        const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        //const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        let dropShadow;
+        if(selectedColor == "black"){
+          dropShadow = isWhite ? "drop-shadow(0 0 6px #fff))" : "drop-shadow(0 0 6px #000)"
+        }else{
+          dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        }
+
         return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
       }
     }
 
     if (!symbol) return null
     const isWhite = symbol === symbol.toUpperCase()
-    const iconColor = isWhite ? "text-white" : "text-black"
+    let iconColor = "";
+    if(selectedColor == "black"){
+      iconColor = isWhite ? "text-black" : "text-white"
+    }else{
+      iconColor = isWhite ? "text-white" : "text-black"
+    }
     let IconComponent
     switch (symbol.toLowerCase()) {
       case "p":
@@ -121,7 +139,12 @@ export function ChessBoard2D({ title , desc }: { title: string, desc: string}) {
       default:
         return null
     }
-    const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+    let dropShadow;
+    if(selectedColor == "black"){
+      dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+    }else{
+      dropShadow = isWhite ? "drop-shadow(0 0 6px #fff))" : "drop-shadow(0 0 6px #000)"
+    }
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 

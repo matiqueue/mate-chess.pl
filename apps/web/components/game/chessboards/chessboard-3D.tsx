@@ -23,7 +23,7 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-export function ChessBoard3D({ title , desc }: { title: string, desc: string}) {
+export function ChessBoard3D({ title , desc, selectedColor }: { title: string, desc: string, selectedColor: string}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
   const boardRef = useRef(board)
@@ -306,24 +306,47 @@ export function ChessBoard3D({ title , desc }: { title: string, desc: string}) {
           loadModel("/models/game/black-pawns/king_black.glb"),
         ])
 
-      const pieceModels: { white: Pieces; black: Pieces } = {
-        white: {
-          pawn: whitePawn.scene,
-          rook: whiteRook.scene,
-          knight: whiteKnight.scene,
-          bishop: whiteBishop.scene,
-          queen: whiteQueen.scene,
-          king: whiteKing.scene,
-        },
-        black: {
-          pawn: blackPawn.scene,
-          rook: blackRook.scene,
-          knight: blackKnight.scene,
-          bishop: blackBishop.scene,
-          queen: blackQueen.scene,
-          king: blackKing.scene,
-        },
-      }
+        let pieceModels: { white: Pieces; black: Pieces };
+
+        if(selectedColor == "black"){
+          pieceModels = {
+            black: {
+              pawn: whitePawn.scene,
+              rook: whiteRook.scene,
+              knight: whiteKnight.scene,
+              bishop: whiteBishop.scene,
+              queen: whiteQueen.scene,
+              king: whiteKing.scene,
+            },
+            white: {
+              pawn: blackPawn.scene,
+              rook: blackRook.scene,
+              knight: blackKnight.scene,
+              bishop: blackBishop.scene,
+              queen: blackQueen.scene,
+              king: blackKing.scene,
+            }
+          }
+        }else{
+          pieceModels = {
+            white: {
+              pawn: whitePawn.scene,
+              rook: whiteRook.scene,
+              knight: whiteKnight.scene,
+              bishop: whiteBishop.scene,
+              queen: whiteQueen.scene,
+              king: whiteKing.scene,
+            },
+            black: {
+              pawn: blackPawn.scene,
+              rook: blackRook.scene,
+              knight: blackKnight.scene,
+              bishop: blackBishop.scene,
+              queen: blackQueen.scene,
+              king: blackKing.scene,
+            }
+          }
+        }
 
       const boardTopY = boardBox.max.y
       const letters = "abcdefgh"
@@ -331,7 +354,9 @@ export function ChessBoard3D({ title , desc }: { title: string, desc: string}) {
       for (let id = 0; id < 64; id++) {
         const pos = boardRef.current?.getPositionById(id)
         if (!pos || !pos.figure) continue
+        
         const colorKey = pos.figure.color === "white" ? "white" : "black"
+
         let model: THREE.Object3D
         switch (pos.figure.type) {
           case "pawn":

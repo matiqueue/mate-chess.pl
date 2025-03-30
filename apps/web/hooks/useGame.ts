@@ -42,13 +42,16 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
 
   // Inicjalizacja gry
   useEffect(() => {
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(selectedColor == "white" ? color.Black : color.White) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
     setCurrentPlayer(whosTurn(newGame))
     setMoveHistory(getMoveHistory(newGame))
     setGameStatus(getGameStatus(newGame))
+
+    
+
     console.log("Initial game status:", getGameStatus(newGame))
     console.log("Initial current player:", whosTurn(newGame))
   }, [ai])
