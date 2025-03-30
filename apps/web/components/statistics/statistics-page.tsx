@@ -23,6 +23,7 @@ import { useTheme } from "next-themes"
  * @property {string} eloChange - Zmiana ratingu ELO.
  *
  * @remarks
+ * Autor: Jakub Batko (Nasakrator)
  * Autor: matiqueue (Szymon Góral)
  * @source Własna implementacja
  */

@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next"
 
 /**
  * @remarks
+ * Autor: Jakub Batko
  * Autor: awres (Filip Serwartka)
  * Autor: matiqueue (Szymon Góral)
  */

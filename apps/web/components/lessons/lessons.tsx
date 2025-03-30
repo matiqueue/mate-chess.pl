@@ -52,7 +52,7 @@ import {
  * @property {number} progress - Procentowy postęp w lekcji.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */

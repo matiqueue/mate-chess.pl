@@ -14,7 +14,7 @@ import { Card } from "@workspace/ui/components/card" // Komponent karty UI
  * @property {string} desc - Opis wyświetlany w animacji ładowania.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 interface LoadingAnimationProps {
@@ -33,7 +33,7 @@ interface LoadingAnimationProps {
  * @remarks
  * Komponent wykorzystuje bibliotekę Framer Motion do animacji (obrót i skalowanie). Stylizacja karty
  * zawiera gradienty i efekt rozmycia tła, dostosowując się do motywu aplikacji.
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 export default function LoadingAnimation({ title, desc }: LoadingAnimationProps) {

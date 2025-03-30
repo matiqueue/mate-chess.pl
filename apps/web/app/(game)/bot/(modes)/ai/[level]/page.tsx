@@ -55,7 +55,7 @@ function ChessPageContent() {
  * @returns {JSX.Element} Element JSX reprezentujący stronę szachową.
  *
  * @remarks
- * Autorzy: maxicom0000 i matiqueue
+ * Autorzy: maxicom0000 i matiqueue i Nasakrator
  */
 export default function ChessPage() {
   const searchParams = useSearchParams()

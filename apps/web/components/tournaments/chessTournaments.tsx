@@ -27,7 +27,7 @@ const MotionCard = motion(Card)
  * @property {string} logo - URL logo turnieju.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 interface Tournament {
@@ -106,7 +106,7 @@ const floatingAnimation = {
  * @returns {JSX.Element} Element JSX reprezentujący stronę z turniejami szachowymi.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 export default function ChessTournaments() {

@@ -5,7 +5,7 @@ import type { Metadata } from "next"
  * Metadane strony Chess Openings.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko
  */
 export const metadata: Metadata = {
   title: "Chess Openigns | Mate-Chess",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  * @returns {JSX.Element} Element JSX reprezentujący stronę otwarć szachowych.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko
  */
 export default function Home() {
   return (

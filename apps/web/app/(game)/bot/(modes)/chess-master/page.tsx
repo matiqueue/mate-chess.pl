@@ -20,7 +20,7 @@ import { Suspense } from "react"
  * @returns {JSX.Element | null} Element JSX reprezentujący zawartość strony lub null, jeśli komponent nie jest jeszcze zamontowany.
  *
  * @remarks
- * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis).
+ * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis) i Jakub Batko.
  */
 function ChessPageContent() {
   const [mounted, setMounted] = useState(false)

@@ -15,7 +15,7 @@ import { Button } from "@workspace/ui/components/button" // Komponent przycisku 
  * Komponent używa hooków useState i useEffect do odliczania czasu oraz automatycznego przekierowania
  * na stronę `/sign-up` z parametrami w URL. Po 5 sekundach następuje przekierowanie, a przycisk
  * появляется tylko po zakończeniu odliczania.
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Nasakrator (Jakub Batko)
  * @source Własna implementacja
  */
 export default function RedirectCounter() {
