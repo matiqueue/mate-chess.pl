@@ -55,7 +55,7 @@
   "selectGameMode": "Wybierz tryb gry",
   "startLinkGame": "Zacznij grę przez Link",
   "gameModeLocal": "Lokalnie",
-  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze.",
+  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze. \n Wypróbuj tryb 3D!",
   "gameModeWithLink": "Poprzez link",
   "gameModeWithLinkDescription": "Utwórz pokój i udostępnij link znajomemu.",
   "gameModeOnline": "Online",

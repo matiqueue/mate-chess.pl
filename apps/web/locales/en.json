@@ -55,7 +55,7 @@
   "online": "Online",
   "selectGameMode": "Select Game Mode",
   "gameModeLocal": "Local",
-  "gameModeLocalDescription": "Play with a friend on the same computer.",
+  "gameModeLocalDescription": "Play with a friend on the same computer. \n Try 3D mode!",
   "gameModeWithLink": "With Link",
   "gameModeWithLinkDescription": "Create a lobby and share the link with your friend.",
   "gameModeOnline": "Online",
