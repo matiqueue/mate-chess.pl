@@ -15,6 +15,7 @@ import { useChessBoardInteractions } from "@/utils/chessboard/chessBoardUtils"
 import { useTheme } from "next-themes"
 import { useTranslation } from "react-i18next"
 import { useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 export default function ChessBoardContainer() {
   const { viewMode, setViewMode } = useGameView()
@@ -24,9 +25,9 @@ export default function ChessBoardContainer() {
   const [desc, setDesc ]= useState("")
   const [isViewModeLoaded, setIsViewModeLoaded] = useState(false);
   const { t } = useTranslation()
-
-    const searchParams = useSearchParams();
-    const selectedColor = searchParams.get("selectedColor") || "white"; 
+  const pathname = usePathname()
+  const searchParams = useSearchParams();
+  const selectedColor = searchParams.get("selectedColor") || "white"; 
 
   const text = {
     onLoad: {
@@ -61,6 +62,12 @@ export default function ChessBoardContainer() {
       } else {
         setViewMode("2D");
       }
+
+      if(!pathname.startsWith("/local")){
+          setViewMode("2D");
+      }
+
+
     }
     setIsViewModeLoaded(true); // Ustawiamy, że `viewMode` już się załadowało
   }, [setViewMode]);

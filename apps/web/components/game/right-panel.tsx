@@ -79,6 +79,7 @@ export function RightPanel({ changeTheme, changeView }: RightPanelProps) {
   const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
 
+
   const [currentWidth, setCurrentWidth] = useState(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("panelWidth")
@@ -191,42 +192,43 @@ export function RightPanel({ changeTheme, changeView }: RightPanelProps) {
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.gameOptions")}</h2>
                 <div className="space-y-2">
+                  {pathname.startsWith("/play/local") ? 
                   <Popover open={activePopover === "view"} onOpenChange={(open) => setActivePopover(open ? "view" : null)}>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-full justify-between">
-                        <span className="flex items-center">
-                          <Eye className="h-4 w-4 mr-2" /> {t("rightPanel.view")}
-                        </span>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
-                      <ul className="flex space-x-1">
-                        <li>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              changeView("2D")
-                              setActivePopover(null)
-                            }}
-                          >
-                            2D
-                          </Button>
-                        </li>
-                        <li>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              changeView("3D")
-                              setActivePopover(null)
-                            }}
-                          >
-                            3D
-                          </Button>
-                        </li>
-                      </ul>
-                    </PopoverContent>
-                  </Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-between">
+                      <span className="flex items-center">
+                        <Eye className="h-4 w-4 mr-2" /> {t("rightPanel.view")}
+                      </span>
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
+                    <ul className="flex space-x-1">
+                      <li>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            changeView("2D")
+                            setActivePopover(null)
+                          }}
+                        >
+                          2D
+                        </Button>
+                      </li>
+                      <li>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            changeView("3D")
+                            setActivePopover(null)
+                          }}
+                        >
+                          3D
+                        </Button>
+                      </li>
+                    </ul>
+                  </PopoverContent>
+                </Popover>: ""}
 
                   <Popover open={activePopover === "layout"} onOpenChange={(open) => setActivePopover(open ? "layout" : null)}>
                     <PopoverTrigger asChild>
