@@ -250,7 +250,7 @@ class ChessAi extends ChessGame {
     candidateMoves = candidateMoves.slice(0, 3)
 
     // console.log("Candidate moves: ", candidateMoves.slice(0, 6))
-    this.writeNerdData(String(bestEval), "minimax algorithm is being used", candidateMoves.toString())
+    this.writeNerdData(String(Math.floor(bestEval)), "minimax algorithm is being used", candidateMoves.toString())
     return candidateMoves
   }
   /**

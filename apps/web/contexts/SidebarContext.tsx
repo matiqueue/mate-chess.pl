@@ -77,7 +77,7 @@ export function SidebarContextProvider({ children }: SidebarContextProviderProps
    * @param {string} message - Wiadomość do zalogowania.
    */
   const logToSidebar = (message: string) => {
-    setConsoleLogs((prev) => [...prev, message]) // Dodaje wiadomość do istniejących logów
+    setConsoleLogs((prev) => [message]) // Dodaje wiadomość do istniejących logów
   }
 
   // Renderowanie providera kontekstu z wartościami paska bocznego
