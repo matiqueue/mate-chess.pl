@@ -93,11 +93,11 @@ export function PlayerInfo() {
             <p className={`font-medium text-lg ${textColor}`}>{firstUserName}</p>
             <p className={`text-sm ${mutedTextColor}`}>{t("playerInfo.playingWhite")}</p>
           </div>
-          <div className={`ml-8 text-3xl font-mono ${timerBg} px-4 py-2 rounded-lg ${textColor}`}>{whiteTimeDisplay}</div>
+          <div className={`ml-8 text-3xl font-mono ${timerBg} px-4 py-2 rounded-lg ${textColor}`}>{selectedColor == "black" ? whiteTimeDisplay : blackTimeDisplay}</div>
         </div>
         <div className={`text-3xl font-bold px-4 ${textColor}`}>VS</div>
         <div className="flex items-center gap-4">
-          <div className={`mr-8 text-3xl font-mono ${timerBg} px-4 py-2 rounded-lg ${textColor}`}>{blackTimeDisplay}</div>
+          <div className={`mr-8 text-3xl font-mono ${timerBg} px-4 py-2 rounded-lg ${textColor}`}>{selectedColor == "black" ? blackTimeDisplay : whiteTimeDisplay}</div>
           <div className="text-right">
             <p className={`font-medium text-lg ${textColor}`}>{secondUserName}</p>
             <p className={`text-sm ${mutedTextColor}`}>{t("playerInfo.playingBlack")}</p>

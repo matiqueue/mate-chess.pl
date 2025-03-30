@@ -55,7 +55,7 @@
   "selectGameMode": "Wybierz tryb gry",
   "startLinkGame": "Zacznij grę przez Link",
   "gameModeLocal": "Lokalnie",
-  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze.",
+  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze. \n Wypróbuj tryb 3D!",
   "gameModeWithLink": "Poprzez link",
   "gameModeWithLinkDescription": "Utwórz pokój i udostępnij link znajomemu.",
   "gameModeOnline": "Online",
@@ -588,7 +588,9 @@
     "redirectDescription": "Zaraz cie przeniesiemy na strone gdzie będziesz mógł je stworzyć"
   },
   "selectColorTitle": "Wybier kolor",
-  "selectColorDesc": "Wybierz którymi pionkami będziesz grał!"
+  "selectColorDesc": "Wybierz którymi pionkami będziesz grał!",
+  "selectGameType": "Wybierz tryb gry!",
+  "selectGameTypeDesc": "Wybierz długość rozgrywki!"
 }
 
 

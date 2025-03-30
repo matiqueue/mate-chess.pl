@@ -158,22 +158,6 @@ export function LeftSidebar() {
             </Button>
           </div>
         </div>
-
-        <Separator className={isDark ? "bg-white/10" : "bg-zinc-200"} />
-
-        <div>
-          {open && <h2 className={`text-xs uppercase font-medium ${mutedTextColor} mb-2 px-2`}>{t("sidebar.communitySection")}</h2>}
-          <div className="space-y-1">
-            <Button variant="ghost" className={buttonClass}>
-              <Users className={iconClass} />
-              {open && t("sidebar.players")}
-            </Button>
-            <Button variant="ghost" className={buttonClass}>
-              <Activity className={iconClass} />
-              {open && t("sidebar.activity")}
-            </Button>
-          </div>
-        </div>
       </>
     )
   }

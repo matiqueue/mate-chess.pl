@@ -30,37 +30,42 @@ import { gameStatusType } from "@shared/types/gameStatusType"
 import ChessGameExtraAI from "@modules/chessGameExtraAI"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-const useGame = (ai: boolean = false, selectedColor: string) => {
+const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
-  const [whiteTime, setWhiteTime] = useState<number>(300) // 5 minut dla białych
-  const [blackTime, setBlackTime] = useState<number>(300) // 5 minut dla czarnych
-  const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut ogólnego czasu
+  const [initialTime, setInitialTime] = useState(timer)
+  const [whiteTime, setWhiteTime] = useState<number>(timer) // x minut dla białych
+  const [blackTime, setBlackTime] = useState<number>(timer) // x minut dla czarnych
+  const [timeLeft, setTimeLeft] = useState<number>(timer*2) // 2x minut ogólnego czasu
+  const [timestampWhite, setTimeStampWhite] = useState(Date.now())
+  const [timestampBlack, setTimeStampBlack] = useState(Date.now())
 
   // Inicjalizacja gry
   useEffect(() => {
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(selectedColor == "white" ? color.Black : color.White) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
-    setCurrentPlayer(whosTurn(newGame))
+
+    if(selectedColor == "black"){
+      setCurrentPlayer("black")
+    }else{
+      setCurrentPlayer("white")
+    }
+
+    setTimeStampWhite(Date.now())
+    setTimeStampBlack(Date.now())
+    setCurrentPlayer("white")
     setMoveHistory(getMoveHistory(newGame))
     setGameStatus(getGameStatus(newGame))
+
     console.log("Initial game status:", getGameStatus(newGame))
     console.log("Initial current player:", whosTurn(newGame))
   }, [ai])
 
-  // Timer dla ogólnego czasu gry
-  useEffect(() => {
-    const gameTimer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-
-    return () => clearInterval(gameTimer)
-  }, [])
 
   // Timer dla czasu graczy z logiką końca czasu
   useEffect(() => {
@@ -69,32 +74,28 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
       console.log("Game not active, timer not started")
       return
     }
-
-    const playerTimer = setInterval(() => {
-      if (currentPlayer?.toLowerCase() === "white") {
-        setWhiteTime((prevWhiteTime) => {
-          const newTime = prevWhiteTime > 0 ? prevWhiteTime - 1 : 0
-          if (newTime === 0) {
-            setGameStatus(gameStatusType.blackWins)
-          }
-          return newTime
-        })
-      } else if (currentPlayer?.toLowerCase() === "black") {
-        setBlackTime((prevBlackTime) => {
-          const newTime = prevBlackTime > 0 ? prevBlackTime - 1 : 0
-          if (newTime === 0) {
-            setGameStatus(gameStatusType.whiteWins)
-          }
-          return newTime
-        })
-      } else {
-        console.error("No valid current player detected")
+    const currentTimeStamp = Date.now()
+    console.log("CurrentTurn: ", currentPlayer)
+    if (currentPlayer?.toLowerCase() === "white") {
+      setWhiteTime(() => {
+        const newTime = (timestampWhite - currentTimeStamp) * -1 / 1000  - (initialTime - blackTime)
+        return initialTime - Math.floor(newTime)
+      });
+      console.log("whitetime: ", whiteTime)
+      if (whiteTime <= 0) {
+        setGameStatus(gameStatusType.blackWins);
       }
-    }, 1000)
-
-    return () => {
-      console.log("Cleaning up player timer")
-      clearInterval(playerTimer)
+    } else if (currentPlayer?.toLowerCase() === "black") {
+      setBlackTime(() => {
+        const newTime = (timestampBlack - currentTimeStamp) * -1 / 1000 - (initialTime - whiteTime )
+        return initialTime - Math.floor(newTime)
+      });
+      console.log("blacktime: ", blackTime)
+      if (blackTime <= 0) {
+        setGameStatus(gameStatusType.whiteWins);
+      }
+    } else {
+      console.error("No valid current player detected");
     }
   }, [currentPlayer, gameStatus])
 

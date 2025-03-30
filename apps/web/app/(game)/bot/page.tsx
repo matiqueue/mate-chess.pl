@@ -77,6 +77,7 @@ export default function GameModeSelector() {
   const [botDifficulty, setBotDifficulty] = useState("")
   const [selectedColor, setSelectedColor] = useState("white")
   const [selectedGameType, setSelectedGameType] = useState("")
+  const [selectedTimer, setSelectedTimer] = useState(300)
 
   useEffect(() => {
     setMounted(true)
@@ -125,19 +126,19 @@ export default function GameModeSelector() {
 
     if(isDialogOpen){
       if (botDifficulty === "1") {
-        router.push(`/bot/ai/easy?selectedColor=${selectedColor}`)
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
       } else if (botDifficulty === "2") {
-        router.push(`/bot/ai/medium?selectedColor=${selectedColor}`)
+        router.push(`/bot/ai/medium?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
       } else if (botDifficulty === "3") {
-        router.push(`/bot/ai/hard?selectedColor=${selectedColor}`)
+        router.push(`/bot/ai/hard?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
       } else {
         console.log("Nieprawidłowy poziom trudności bota")
       }
     }else if(isColorDialogOpen){
       if(selectedGameType == "beginner"){
-        router.push(`/bot/ai/easy?selectedColor=${selectedColor}`)
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
       }else{
-        router.push(`/bot/chess-master?selectedColor=${selectedColor}`) 
+        router.push(`/bot/chess-master?selectedColor=${selectedColor}&gameType=${selectedTimer}`) 
       }
     }
     
@@ -283,6 +284,54 @@ export default function GameModeSelector() {
                 </div>
               </label>
             </RadioGroup>
+
+            { /* Game type */}    
+            <DialogHeader>
+              <DialogTitle>{t("selectGameType")}</DialogTitle>
+              <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
+            </DialogHeader>
+
+            <RadioGroup
+              value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedTimer(parseInt(value));
+              }}
+              className="flex gap-4 justify-center"
+            >
+              <label htmlFor="time900" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 900 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="900" id="time900" className="sr-only" />
+                  <p>Classic</p>
+                </div>
+              </label>
+
+              <label htmlFor="time300" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 300 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="300" id="time300" className="sr-only" />
+                  <p>Rapid</p>
+                </div>
+              </label>
+
+              <label htmlFor="time120" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 120 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="120" id="time120" className="sr-only" />
+                    <p>Blitz</p>
+                </div>
+              </label>
+            </RadioGroup>
+
             <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
           </div>
         </DialogContent>
@@ -326,6 +375,54 @@ export default function GameModeSelector() {
                 </div>
               </label>
             </RadioGroup>
+            
+            { /* Game type */}    
+            <DialogHeader>
+              <DialogTitle>{t("selectGameType")}</DialogTitle>
+              <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
+            </DialogHeader>
+
+            <RadioGroup
+              value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedTimer(parseInt(value));
+              }}
+              className="flex gap-4 justify-center"
+            >
+              <label htmlFor="time900" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 900 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="900" id="time900" className="sr-only" />
+                  <p>Classic</p>
+                </div>
+              </label>
+
+              <label htmlFor="time300" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 300 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="300" id="time300" className="sr-only" />
+                  <p>Rapid</p>
+                </div>
+              </label>
+
+              <label htmlFor="time120" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 120 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="120" id="time120" className="sr-only" />
+                    <p>Blitz</p>
+                </div>
+              </label>
+            </RadioGroup>
+
             <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
           </div>
         </DialogContent>

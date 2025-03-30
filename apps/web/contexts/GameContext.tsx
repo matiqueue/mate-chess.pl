@@ -7,12 +7,13 @@ interface GameProviderProps {
   children: React.ReactNode
   ai: boolean
   selectedColor: string
+  timer: number
 }
 
 const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
 
-export const GameProvider = ({ children, ai, selectedColor }: GameProviderProps) => {
-  const game = useGame(ai, selectedColor)
+export const GameProvider = ({ children, ai, selectedColor, timer }: GameProviderProps) => {
+  const game = useGame(ai, selectedColor, timer)
 
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>
 }

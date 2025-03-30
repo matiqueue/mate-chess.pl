@@ -55,9 +55,9 @@
   "online": "Онлайн",
   "selectGameMode": "Выберите режим игры",
   "gameModeLocal": "Локально",
-  "gameModeLocalDescription": "Играйте с другом на одном компьютере.",
+  "gameModeLocalDescription": "Играйте с другом на одном компьютере. \n Попробуйте 3D-режим!",
   "gameModeWithLink": "Со ссылкой",
-  "gameModeWithLinkDescription": "Создайте лобби и поделитесь ссылкой с другом.",
+  "gameModeWithLinkDescription": "Создайте лобби и поделитесь ссылкой с другом",
   "gameModeOnline": "Онлайн",
   "gameModeOnlineDescription": "Играйте против случайного соперника онлайн.",
   "startGame": "Начать игру {{mode}}",
@@ -588,5 +588,7 @@
     "redirectDescription": "Скоро вы будете перенаправлены на страницу, где сможете создать аккаунт"
   },
   "selectColorTitle": "Выберите цвет",
-  "selectColorDesc": "Выберите, какими фигурами вы будете играть!"
+  "selectColorDesc": "Выберите, какими фигурами вы будете играть!",
+  "selectGameType": "Выберите режим игры!",
+  "selectGameTypeDesc": "Выберите продолжительность игры!"
 }

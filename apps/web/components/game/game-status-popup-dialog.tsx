@@ -17,15 +17,15 @@ import { useRouter } from "next/navigation"
 
 export const GameStatusPopupDialog = () => {
   const { theme } = useTheme()
-  const { gameStatus } = useGameContext()
+  const { gameStatus, whiteTime, blackTime } = useGameContext()
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    if ([gameStatusType.blackWins, gameStatusType.whiteWins, gameStatusType.stalemate].includes(gameStatus)) {
+    if ([gameStatusType.blackWins, gameStatusType.whiteWins, gameStatusType.stalemate].includes(gameStatus) || whiteTime <= 0 || blackTime <= 0) {
       setOpen(true)
     }
-  }, [gameStatus])
+  }, [gameStatus, whiteTime, blackTime])
 
   const getDialogContent = () => {
     switch (gameStatus) {
@@ -36,7 +36,11 @@ export const GameStatusPopupDialog = () => {
       case gameStatusType.stalemate:
         return "Pat! Remis."
       default:
-        return ""
+        if(whiteTime <= 0 ||  blackTime <= 0){
+          return "Koniec czasu"
+        }else{
+          return ""
+        }
     }
   }
 

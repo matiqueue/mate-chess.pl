@@ -30,7 +30,6 @@ export function Navbar() {
     { name: t("navbar.play"), href: "/play" },
     { name: t("navbar.learn"), href: "/lessons" },
     { name: t("navbar.puzzles"), href: "/puzzles" },
-    { name: t("navbar.community"), href: "/community" },
   ]
 
   return (
