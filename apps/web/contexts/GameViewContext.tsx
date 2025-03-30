@@ -12,8 +12,6 @@ const GameViewContext = createContext<GameViewContextType | undefined>(undefined
 export const GameViewProvider = ({ children }: { children: ReactNode }) => {
   const [viewMode, setViewMode] = useState<"2D" | "3D" | undefined>(undefined)
 
-  return <GameViewContext.Provider value={{ viewMode, setViewMode }}>{children}</GameViewContext.Provider>
-}
 
 export const useGameView = () => {
   const context = useContext(GameViewContext)

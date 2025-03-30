@@ -34,7 +34,7 @@ Aplikacja oferuje:
 ✅ Możliwość gry online i offline  
 ✅ Analizę partii szachowych z wykorzystaniem silnika AI  
 ✅ Nauka szachów poprzez interaktywne lekcje i zadania  
-✅ Tworzenie oraz uczestnictwo w turniejach online  
+✅ Tworzenie oraz uczestnictwo w turniejach online
 
 Mate-chess.pl czerpie inspirację z największych serwisów szachowych, ale dodaje nowoczesne funkcjonalności, optymalizację UX oraz wieloplatformowość.
 
@@ -42,16 +42,16 @@ Mate-chess.pl czerpie inspirację z największych serwisów szachowych, ale doda
 
 ## 🎯 Funkcjonalności
 
-| Funkcja                | Opis |
-|------------------------|------|
-| 🎭 **Gra przeciwko AI** | Własny silnik szachowy z poziomami trudności opartymi na AI i gotowych ruchach mistrzów szachowych |
-| 🌍 **Gra online** | Tryb wieloosobowy z czatem na żywo (Socket.io) |
-| 📊 **Ranking graczy** | System oceniania i śledzenia postępów |
-| 🔍 **Analiza partii** | Automatyczna analiza gry oraz zapis szachowy |
-| 📚 **Tryb nauki** | Interaktywne lekcje i zadania treningowe |
-| 🏆 **Turnieje** | Organizacja i dołączanie do zawodów szachowych |
-| 🖥️ **Wieloplatformowość** | Obsługa PC, macOS, Linux, Android, iOS |
-| 🛠 **Personalizacja** | Dostosowywanie wyglądu i ustawień gry |
+| Funkcja                   | Opis                                                                                               |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| 🎭 **Gra przeciwko AI**   | Własny silnik szachowy z poziomami trudności opartymi na AI i gotowych ruchach mistrzów szachowych |
+| 🌍 **Gra online**         | Tryb wieloosobowy z czatem na żywo (Socket.io)                                                     |
+| 📊 **Ranking graczy**     | System oceniania i śledzenia postępów                                                              |
+| 🔍 **Analiza partii**     | Automatyczna analiza gry oraz zapis szachowy                                                       |
+| 📚 **Tryb nauki**         | Interaktywne lekcje i zadania treningowe                                                           |
+| 🏆 **Turnieje**           | Organizacja i dołączanie do zawodów szachowych                                                     |
+| 🖥️ **Wieloplatformowość** | Obsługa PC, macOS, Linux, Android, iOS                                                             |
+| 🛠 **Personalizacja**     | Dostosowywanie wyglądu i ustawień gry                                                              |
 
 ---
 
@@ -60,9 +60,11 @@ Mate-chess.pl czerpie inspirację z największych serwisów szachowych, ale doda
 Aplikacja została zbudowana w oparciu o nowoczesny stack technologiczny:
 
 **Języki programowania:**
+
 - TypeScript, JavaScript, Rust
 
 **Frontend & Mobile:**
+
 - React, Next.js, React Native, Expo
 - Three.js, React Three Fiber, Expo-Three
 - Tailwind CSS, PostCSS, CSS Modules, shadcn
@@ -74,6 +76,7 @@ Aplikacja została zbudowana w oparciu o nowoczesny stack technologiczny:
 - i18next (internacjonalizacja)
 
 **Backend & Serwery:**
+
 - Node.js, Express, Socket.io
 - Prisma, MongoDB
 - ClerkAuth (autoryzacja użytkowników)
@@ -85,6 +88,7 @@ Aplikacja została zbudowana w oparciu o nowoczesny stack technologiczny:
 - Tokio (asynchroniczne I/O w Rust)
 
 **DevOps i narzędzia:**
+
 - GitHub Actions (CI/CD)
 - ESLint (linting), Prettier (formatowanie kodu)
 - Webpack (bundling i optymalizacja)
@@ -94,55 +98,63 @@ Aplikacja została zbudowana w oparciu o nowoczesny stack technologiczny:
 - Sentry (monitorowanie błędów), LogRocket (śledzenie błędów frontendu)
 - Kubernetes (orkiestracja kontenerów)
 - Vercel, (hosting aplikacji i frontendu)
-- 
-**🗂 Krótka struktura projektu (Monorepo)**  
-- `apps/web` – aplikacja webowa (hostowana na Vercel)  
-- `apps/server` – backend (hostowany na VPS)  
-- `packages/chess-engine` – własny silnik szachowy  
+- **🗂 Krótka struktura projektu (Monorepo)**
+- `apps/web` – aplikacja webowa (hostowana na Vercel)
+- `apps/server` – backend (hostowany na VPS)
+- `packages/chess-engine` – własny silnik szachowy
 
 ---
 
 ## 🛠 Instalacja i Uruchomienie
 
-1️⃣ **Klonowanie repozytorium:**  
+1️⃣ **Klonowanie repozytorium:**
+
 ```bash
 git clone https://github.com/matiqueue/mate-chess.pl.git
 ```
 
-2️⃣ **Instalacja zależności:**  
+2️⃣ **Instalacja zależności:**
+
 ```bash
 pnpm install
 ```
 
-3️⃣ **Uruchomienie aplikacji:**  
-- **Frontend (Web) na porcie 3000**  
+3️⃣ **Uruchomienie aplikacji:**
+
+- **Frontend (Web) na porcie 3000**
+
 ```bash
 pnpm dev --filter=apps/web
-```  
-- **Backend (Server) na porcie 4000**  
+```
+
+- **Backend (Server) na porcie 4000**
+
 ```bash
 pnpm dev --filter=apps/server
-```  
+```
 
 ---
 
 ## 📖 Dokumentacja API
 
-### 🔐 **Autoryzacja użytkowników (ClerkAuth)**  
+### 🔐 **Autoryzacja użytkowników (ClerkAuth)**
+
 Endpointy obsługujące logowanie, rejestrację oraz sesje użytkownika.
 
 - **POST** `/auth/login`
 - **POST** `/auth/register`
 - **GET** `/auth/me`
 
-### ♟ **Rozgrywka szachowa**  
+### ♟ **Rozgrywka szachowa**
+
 Zarządzanie rozgrywkami online i lokalnymi.
 
 - **POST** `/game/start`
 - **POST** `/game/move`
 - **GET** `/game/history/:gameId`
 
-### 📈 **Statystyki i ranking**  
+### 📈 **Statystyki i ranking**
+
 Śledzenie wyników i rozwoju graczy.
 
 - **GET** `/leaderboard`
@@ -152,21 +164,22 @@ Zarządzanie rozgrywkami online i lokalnymi.
 
 ## 🔥 Specjalne Tryby Gry
 
-| Tryb                   | Opis |
-|------------------------|------|
-| 🎭 **Szachy 960 (Fischer Random)** | Losowe ustawienie figur początkowych |
-| ⏳ **Bullet Chess** | Superszybka gra z ograniczonym czasem |
-| 🕵️ **Tryb Ukrytych Figur** | Nie widać figur przeciwnika do momentu bicia |
-| 🏰 **Szachy Królewskie** | Dodatkowe zasady wprowadzone dla pionków i królowej |
+| Tryb                               | Opis                                                |
+| ---------------------------------- | --------------------------------------------------- |
+| 🎭 **Szachy 960 (Fischer Random)** | Losowe ustawienie figur początkowych                |
+| ⏳ **Bullet Chess**                | Superszybka gra z ograniczonym czasem               |
+| 🕵️ **Tryb Ukrytych Figur**         | Nie widać figur przeciwnika do momentu bicia        |
+| 🏰 **Szachy Królewskie**           | Dodatkowe zasady wprowadzone dla pionków i królowej |
 
 ---
 
 ## 🔍 Analiza Partii
 
 Po zakończeniu gry dostępne są:
-- Pełny zapis szachowy (PGN)  
-- Powtórka gry ruch po ruchu  
-- Automatyczna analiza strategii i ruchów  
+
+- Pełny zapis szachowy (PGN)
+- Powtórka gry ruch po ruchu
+- Automatyczna analiza strategii i ruchów
 
 ---
 
@@ -174,15 +187,15 @@ Po zakończeniu gry dostępne są:
 
 ✅ **Aktualne funkcje**  
 🔄 **W toku**  
-❌ **Planowane**  
+❌ **Planowane**
 
-| Funkcja | Status |
-|---------|--------|
-| Gra online i przeciwko AI | ✅ |
-| System rankingowy | ✅ |
-| Wsparcie dla znajomych | 🔄 |
-| Tryby specjalne | 🔄 |
-| Integracja z bazą partii szachowych | ❌ |
+| Funkcja                             | Status |
+| ----------------------------------- | ------ |
+| Gra online i przeciwko AI           | ✅     |
+| System rankingowy                   | ✅     |
+| Wsparcie dla znajomych              | 🔄     |
+| Tryby specjalne                     | 🔄     |
+| Integracja z bazą partii szachowych | ❌     |
 
 ---
 
@@ -314,7 +327,7 @@ Wojciech zajmuje się tworzeniem efektownych grafik i animacji, nadając aplikac
 
 ---
 
-**Podsumowanie:**  
+**Podsumowanie:**
 
 Projekt jest realizowany przez zespół specjalistów z jasno określonymi obszarami odpowiedzialności. Kluczowe technologie backendowe, frontendowe oraz DevOps są nadzorowane przez Szymona, który dodatkowo współpracuje z Mateuszem przy Dockerze oraz z Jakubem nad bazami danych. Filip i Wojciech wspólnie rozwijają warstwę wizualną aplikacji, tworząc interaktywne i nowoczesne UI.
 
@@ -346,192 +359,411 @@ Projekt udostępniany jest na własnej, niestandardowej licencji.
 ## 🗂️ Szczegółowa struktura projektu (Monorepo)
 
 **Korzeń projektu:**
-- `LICENSE.md` – plik licencji projektu 📜
-- `README.md` – główny opis projektu, dokumentacja i instrukcje 📝
-- `docker-compose.yml` – konfiguracja dla Docker Compose 🐳
-- `package.json` – główny plik konfiguracyjny npm (zależności, skrypty) 📦
-- `pnpm-lock.yaml` oraz `pnpm-workspace.yaml` – konfiguracja workspace dla pnpm 📂
-- `tsconfig.json` – globalna konfiguracja TypeScript 📘
-- `turbo.json` – konfiguracja narzędzia Turbo do budowania projektu ⚙️
+
+- `LICENSE.md` – plik licencji projektu
+- `README.md` – główny plik dokumentacji projektu
+- `package.json` – główny plik zależności i skryptów projektu
+- `pnpm-lock.yaml` – zablokowane wersje zależności PNPM
+- `pnpm-workspace.yaml` – konfiguracja przestrzeni roboczej PNPM
+- `struktura.txt` – plik ze strukturą projektu
+- `tsconfig.json` – główna konfiguracja TypeScript
+- `turbo.json` – konfiguracja Turbo
 
 ---
 
 **📱 Aplikacje (`apps`):**
 
-### 1. Backend – `apps/server`
-- **`Dockerfile`** – definicja obrazu Dockera dla serwera 🐳
-- **`dist/`** – katalog z wygenerowanymi plikami kompilacji:
-  - `gameManager.d.ts` & `gameManager.d.ts.map` – definicje typów i mapy źródeł dla modułu zarządzania grą ♟️
-  - `gameManager.js` – skompilowany kod modułu gry
-  - `index.d.ts` & `index.d.ts.map` – typy i mapy dla głównego wejścia
-  - `index.js` – skompilowany główny plik serwera 🚀
-- **`package.json`** – zależności i skrypty backendu
+### 1.Admin - `apps/admin`
+
+- `README.md` – dokumentacja aplikacji administracyjnej
+- **`app/`** – kod aplikacji:
+  - **`admin/`** – sekcja administracyjna:
+    - `layout.tsx` – układ strony administracyjnej
+    - `page.tsx` – główna strona administracyjna
+  - `error.tsx` – obsługa błędów
+  - `layout.tsx` – główny układ aplikacji
+  - **`login/`** – sekcja logowania:
+    - `page.tsx` – strona logowania
+  - `page.tsx` – domyślna strona aplikacji
+- **`context/`** – konteksty aplikacji:
+  - `ErrorContextProvider.tsx` – dostawca kontekstu błędów
+  - `eslint.config.mjs` – konfiguracja ESLint
+  - `next-env.d.ts` – definicje typów dla Next.js
+  - `next.config.ts` – konfiguracja Next.js
+  - `package.json` – zależności i skrypty aplikacji administracyjnej
+  - `postcss.config.mjs` – konfiguracja PostCSS
+- **`public/`** – zasoby publiczne:
+  - `file.svg` – ikona pliku
+  - `globe.svg` – ikona globusa
+  - `window.svg` – ikona okna
+- `tsconfig.json` – konfiguracja TypeScript
+
+### 2.Destop version - `apps/desktop`
+
+- `package.json` – zależności i skrypty aplikacji desktopowej
+- **`src-tauri/`** – kod Tauri:
+  - `Cargo.lock` – zablokowane wersje zależności Rust
+  - `Cargo.toml` – konfiguracja projektu Rust
+  - `build.rs` – skrypt budowania Tauri
+  - **`icons/`** – ikony aplikacji:
+    - `128x128.png` – ikona 128x128
+    - `128x128@2x.png` – ikona 128x128 w wysokiej rozdzielczości
+    - `32x32.png` – ikona 32x32
+    - `Square107x107Logo.png` – ikona 107x107
+    - `Square142x142Logo.png` – ikona 142x142
+    - `Square150x150Logo.png` – ikona 150x150
+    - `Square284x284Logo.png` – ikona 284x284
+    - `Square30x30Logo.png` – ikona 30x30
+    - `Square310x310Logo.png` – ikona 310x310
+    - `Square44x44Logo.png` – ikona 44x44
+    - `Square71x71Logo.png` – ikona 71x71
+    - `Square89x89Logo.png` – ikona 89x89
+    - `Logo.png` – główna ikona logo
+    - `chess-pawn.png` – ikona pionka szachowego
+    - `chess-pawn128x128.png` – ikona pionka 128x128
+    - `chess-pawn32x32.png` – ikona pionka 32x32
+    - `chess-pawn64x64.png` – ikona pionka 64x64
+    - `icon.icns` – ikona dla macOS
+    - `icon.ico` – ikona dla Windows
+    - `icon.png` – domyślna ikona PNG
+  - **`src/`** – kod źródłowy Tauri:
+    - `main.rs` – główny plik Rust
+  - `tauri.conf.json` – konfiguracja Tauri
+
+### 3. Errors - `apps/errors`
+
+- **`dist/`** – skompilowane pliki:
+  - `index.js` – skompilowany główny plik
+- `package.json` – zależności i skrypty modułu błędów
 - **`src/`** – kod źródłowy:
-  - `gameManager.ts` – logika zarządzania grą
+  - `index.ts` – główny plik źródłowy
+- `tsconfig.json` – konfiguracja TypeScript
+
+### 4. Backend – `apps/server`
+
+- `Dockerfile` – definicja obrazu Dockera dla serwera 🐳
+- **`dist/`** – katalog z wygenerowanymi plikami kompilacji:
+  - **`api/`** – skompilowane endpoints API:
+    - `link.js` – endpoint API dla linków
+    - `online.js` – endpoint API dla trybu online
+  - `gameManager.d.ts` – definicje typów dla modułu zarządzania grą
+  - `gameManager.d.ts.map` – mapa źródeł dla definicji typów gry
+  - `gameManager.js` – skompilowany kod modułu gry
+  - `index.d.ts` – definicje typów dla głównego wejścia
+  - `index.d.ts.map` – mapa źródeł dla definicji typów głównego wejścia
+  - `index.js` – skompilowany główny plik serwera 🚀
+  - **`sockets/`** – skompilowane moduły socketów:
+    - `lobby.js` – logika socketów dla lobby
+  - `types.js` – skompilowane typy
+- `package.json` – zależności i skrypty backendu
+- **`src/`** – kod źródłowy:
+  - **`api/`** – endpoints API:
+    - `link.ts` – logika API dla linków
+    - `online.ts` – logika API dla trybu online
+  - `gameManager.ts` – logika zarządzania grą ♟️
   - `index.ts` – punkt wejścia serwera
-- **`tsconfig.json`** – konfiguracja TypeScript dla backendu
+  - `sockets/` – moduły socketów:
+    - `lobby.ts` – logika socketów dla lobby
+  - `types.ts` – definicje typów
+- `tsconfig.json` – konfiguracja TypeScript dla backendu
+- `vercel.json` – konfiguracja dla Vercel
 
 ---
 
-### 2. Frontend – `apps/web`
-- **`Dockerfile`** – definicja obrazu Dockera dla aplikacji webowej 🌐
-- **`app/`** – główna aplikacja:
-  - **(auth)/** – moduł autoryzacji:
-    - **`sign-in/[[...sign-in]]/page.tsx`** – strona logowania 🔑
-    - **`sign-up/[[...sign-up]]/page.tsx`** – strona rejestracji 📝
-  - **(game)/** – moduł gry:
-    - **`play/`** – rozgrywka:
-      - **(modes)/** – wybór trybu gry:
+### 5. Frontend – `apps/web`
+
+- **`app/`** – kod aplikacji:
+  - **`(auth)/`** – sekcja autoryzacji:
+    - **`sign-in/`** – logowanie:
+      - **`[[...sign-in]]/`** – dynamiczna trasa logowania:
+        - `layout.tsx` – układ strony logowania
+        - `page.tsx` – strona logowania
+    - **`sign-up/`** – rejestracja:
+      - **`[[...sign-up]]/`** – dynamiczna trasa rejestracji:
+        - `layout.tsx` – układ strony rejestracji
+        - `page.tsx` – strona rejestracji
+  - **`(for-players)/`** – sekcja dla graczy:
+    - **`lessons/`** – lekcje:
+      - `page.tsx` – strona lekcji
+    - **`news/`** – wiadomości:
+      - `page.tsx` – strona wiadomości
+    - **`openings/`** – debiuty:
+      - `page.tsx` – strona debiutów
+    - **`puzzles/`** – zagadki:
+      - `page.tsx` – strona zagadek
+      - `puzzles-client.tsx` – klient zagadek
+      - `quiz-client.tsx` – klient quizów
+    - **`social/`** – sekcja społecznościowa:
+      - **`clubs/`** – kluby:
+        - `page.tsx` – strona klubów
+      - **`forums/`** – fora:
+        - `page.tsx` – strona forów
+      - **`friends/`** – znajomi:
+        - `page.tsx` – strona znajomych
+      - **`members/`** – członkowie:
+        - `page.tsx` – strona członków
+      - `page.tsx` – główna strona społecznościowa
+    - **`tournaments/`** – turnieje:
+      - `page.tsx` – strona turniejów
+  - **`(game)/`** – sekcja gry:
+    - **`bot/`** – gra z botem:
+      - **`(modes)/`** – tryby gry z botem:
+        - **`ai/`** – tryb AI:
+          - **`[level]/`** – dynamiczny poziom AI:
+            - `page.tsx` – strona poziomu AI
+        - **`algorithm/`** – tryb algorytmiczny:
+          - **`[level]/`** – dynamiczny poziom algorytmu:
+            - `page.tsx` – strona poziomu algorytmu
+        - **`chess-master/`** – tryb mistrzowski:
+          - `page.tsx` – strona trybu mistrzowskiego
+      - `layout.tsx` – układ gry z botem
+      - `page.tsx` – główna strona gry z botem
+    - **`play/`** – gra z innymi:
+      - **`(modes)/`** – tryby gry:
         - **`link/`** – gra przez link:
-          - **`[id]/page.tsx`** – dynamiczna trasa gry przez link 🔗
-          - **`page.tsx`** – wybór trybu gry przez link
-        - **`local/page.tsx`** – gra lokalna 🎮
+          - **`[code]/`** – dynamiczny kod gry:
+            - `page.tsx` – strona gry z kodem
+          - **`layout.tsx`** – układ gry przez link
+          - `page.tsx` – główna strona gry przez link
+        - **`local/`** – gra lokalna:
+          - `page.tsx` – strona gry lokalnej
         - **`online/`** – gra online:
-          - **`[id]/page.tsx`** – dynamiczna trasa gry online 🌐
-          - **`page.tsx`** – wybór trybu gry online
-      - **`layout.tsx`** – układ strony rozgrywki
-      - **`page.tsx`** – główna strona rozgrywki
-    - **`watch/`** – moduł do oglądania gier:
-      - **`layout.tsx`** – układ strony oglądania 👀
-      - **`page.tsx`** – strona oglądania gier
-  - **(other)/** – dodatkowe moduły:
-    - **`easter-egg/page.tsx`** – niespodzianka (ukryta funkcjonalność) 🎉
-    - **`news/page.tsx`** – aktualności 📰
+          - **`[id]/`** – dynamiczne ID gry online:
+            - `page.tsx` – strona gry online z ID
+          - `layout.tsx` – układ gry online
+          - `page.tsx` – główna strona gry online
+      - `layout.tsx` – układ sekcji gry z innymi
+      - `page.tsx` – główna strona gry z innymi
+    - **`watch/`** – oglądanie gry:
+      - `layout.tsx` – układ strony oglądania
+      - `page.tsx` – strona oglądania
+  - **`(other)/`** – inne sekcje:
+    - **`easter-egg/`** – easter egg:
+      - `page.tsx` – strona easter egga
     - **`profile/`** – profil użytkownika:
       - **`[[...rest]]/`** – dynamiczna trasa profilu:
-        - **`layout.tsx`** – układ profilu
-        - **`page.tsx`** – strona profilu
-      - **`stats/[id]/page.tsx`** – statystyki użytkownika
-    - **`social/`** – moduł społecznościowy:
-      - **`clubs/page.tsx`** – strony klubów 🤝
-      - **`forums/page.tsx`** – strony forów 🗣️
-      - **`friends/page.tsx`** – strony znajomych 💬
-      - **`layout.tsx`** – ogólny układ modułu społecznościowego
-      - **`members/page.tsx`** – strona członków
-      - **`page.tsx`** – główna strona społecznościowa
-  - **`api/clearCookie/route.ts`** – endpoint API do czyszczenia ciasteczek 🍪
+        - `layout.tsx` – układ strony profilu
+        - `page.tsx` – strona profilu
+      - \*\*`stats/` – statystyki:
+        - **`[id]/`** – dynamiczne ID statystyk:
+          - `layout.tsx` – układ statystyk
+          - `page.tsx` – strona statystyk
+  - **`api/`** – endpoints API:
+    - **`chess-stats/`** – statystyki szachowe:
+      - `route.ts` – trasa API dla statystyk
+    - **`clearCookie/`** – czyszczenie ciasteczek:
+      - `route.ts` – trasa API dla ciasteczek
+  - `error.tsx` – obsługa błędów
   - **`home/`** – strona główna:
-    - **`layout.tsx`** – układ strony głównej
-    - **`page.tsx`** – zawartość strony głównej
-  - **`layout.tsx`** – główny układ aplikacji
-  - **`not-found.tsx`** – strona błędu 404 🚫
-  - **`page.tsx`** – główna strona aplikacji
-
-- **`components/`** – katalog z komponentami UI:
-  - **`auth/`**:
-    - `sign-in-form.tsx` – formularz logowania
-    - `sign-up-form.tsx` – formularz rejestracji
-  - **`game/common/chessboard.tsx`** – komponent szachownicy ♟️
-  - **`home/`**:
-    - `mobile-header.tsx` – nagłówek mobilny 📱
+    - `layout.tsx` – układ strony głównej
+    - `page.tsx` – główna strona
+  - `layout.tsx` – główny układ aplikacji
+  - `not-found.tsx` – strona 404
+  - `page.tsx` – domyślna strona aplikacji
+  - **`settings/`** – ustawienia:
+    - `page.tsx` – strona ustawień
+- **`components/`** – komponenty:
+  - **`auth/`** – komponenty autoryzacji:
+    - `signInRedirectCounter.tsx` – licznik przekierowań logowania
+  - **`game/`** – komponenty gry:
+    - `chessboard-container.tsx` – kontener szachownicy
+    - **`chessboards/**` – szachownice:
+      - `chessboard-2D.tsx` – szachownica 2D
+      - `chessboard-3D.tsx` – szachownica 3D
+    - `client-layout.tsx` – układ klienta
+    - `floating-options.tsx` – pływające opcje
+    - `game-controls.tsx` – kontrolki gry
+    - `game-status-popup-dialog.tsx` – okno dialogowe statusu gry
+    - `left-sidebar.tsx` – lewy pasek boczny
+    - `player-info.tsx` – informacje o graczu
+    - `preview-mode-alert-popup.tsx` – popup trybu podglądu
+    - `right-panel.tsx` – prawy panel
+  - **`home/`** – komponenty strony głównej:
+    - `audio-provider.tsx` – dostawca audio
+    - `chess-message-system.tsx` – system wiadomości szachowych
+    - `chess-notifications.tsx` – powiadomienia szachowe
+    - `enhanced-search.tsx` – ulepszona wyszukiwarka
+    - `language-switcher.tsx` – przełącznik języka
+    - `mobile-header.tsx` – nagłówek mobilny
     - `navbar.tsx` – pasek nawigacyjny
     - `sidebar.tsx` – pasek boczny
-    - `user-profile.tsx` – komponent profilu użytkownika
-  - **`landing-page/`** – strona docelowa:
+    - `user-profile.tsx` – profil użytkownika
+  - **`landing-page/`** – komponenty strony lądowania:
     - `button.tsx` – przycisk
-    - `camera-scroll-component.tsx` – animowany komponent przewijania kamery 📷
+    - `camera-scroll-component.tsx` – komponent przewijania kamery
     - `chessboard.tsx` – szachownica
-    - `loading-animation.tsx` – animacja ładowania ⏳
     - `navbar.tsx` – pasek nawigacyjny
     - `scroll-animation.tsx` – animacja przewijania
-    - `skeletonChessboard.tsx` – szkielet szachownicy (placeholder)
-  - **`other/`**:
-    - `main-footer.tsx` – główna stopka strony
+    - `skeletonChessboard.tsx` – szkielet szachownicy
+  - **`lessons/`** – komponenty lekcji:
+    - `lessons.tsx` – komponent lekcji
+  - **`main/`** – główne komponenty:
+    - `SidebarLayout.tsx` – układ z paskiem bocznym
+  - **`openings/`** – komponenty debiutów:
+    - `openings.tsx` – komponent debiutów
+  - **`other/`** – inne komponenty:
+    - `main-footer.tsx` – główna stopka
     - `main-navbar.tsx` – główny pasek nawigacyjny
-  - `providers.tsx` – dostawcy kontekstu (np. dla zarządzania stanem)
-  - **`statistics/statistics-page.tsx`** – strona statystyk
-
-- Pozostałe pliki i foldery w `apps/web`:
-  - `components.json` – konfiguracja komponentów
-  - `eslint.config.js` – konfiguracja ESLint
-  - **`hooks/`**:
-    - `use-mobile.tsx` – hook do obsługi widoku mobilnego
-  - **`lib/db/`**:
-    - `main.ts` – funkcje dla bazy danych
-    - `prisma.ts` – konfiguracja Prisma
-  - `middleware.ts` – middleware aplikacji
-  - `next-env.d.ts` – deklaracje TypeScript dla Next.js
-  - `next.config.mjs` – konfiguracja Next.js
-  - `package.json` – zależności i skrypty dla aplikacji webowej
-  - `postcss.config.mjs` – konfiguracja PostCSS
-  - **`prisma/`**:
-    - `schema.prisma` – schemat bazy danych
-  - **`public/`** – zasoby publiczne:
-    - **`audio/bgMusic.mp3`** – podkład muzyczny 🎵
-    - **`backgrounds/`**:
-      - `finalBackground.hdr` – tło wysokiej rozdzielczości
-      - `homeBgImage.png` – obraz tła strony głównej
-      - `playBgImage.png` – obraz tła strony gry
-      - `sign-in-background.webp` – tło dla strony logowania
-    - **`models/chess_set_1k.glb`** – model 3D zestawu szachowego
-  - **`styles/landing-page/`**:
-    - `button.module.css` – style przycisku
+  - `providers.tsx` – dostawcy kontekstu
+  - **`settings/`** – komponenty ustawień:
+    - `settings.tsx` – komponent ustawień
+  - **`statistics/`** – komponenty statystyk:
+    - `statistics-page.tsx` – strona statystyk
+  - **`tournaments/`** – komponenty turniejów:
+    - `chessTournaments.tsx` – komponent turniejów szachowych
+- `components.json` – konfiguracja komponentów
+- **`contexts/`** – konteksty:
+  - `ErrorContextProvider.tsx` – dostawca kontekstu błędów
+  - `GameContext.tsx` – kontekst gry
+  - `GameViewContext.tsx` – kontekst widoku gry
+- `eslint.config.js` – konfiguracja ESLint
+- **`hooks/`** – hooki:
+  - `use-mobile.tsx` – hook dla urządzeń mobilnych
+  - `useGame.ts` – hook gry
+- `i18n.ts` – konfiguracja internacjonalizacji
+- **`lib/`** – biblioteka pomocnicza
+- **`locales/`** – pliki lokalizacji:
+  - `en.json` – tłumaczenie angielska
+  - `pl.json` – tłumaczenie polska
+  - `ru.json` – tłumaczenie rosyjska
+- `middleware.ts` – middleware aplikacji
+- `next-env.d.ts` – definicje typów dla Next.js
+- `next.config.mjs` – konfiguracja Next.js
+- `package.json` – zależności i skrypty aplikacji webowej
+- `postcss.config.mjs` – konfiguracja PostCSS
+- **`public/`** – zasoby publiczne:
+  - **`audio/`** – pliki audio:
+    - `bgMusic.mp3` – muzyka w tle
+  - **`backgrounds/`** – tła:
+    - `2dExampleDark.png` – przykład tła 2D ciemnego
+    - `2dExampleLight.png` – przykład tła 2D jasnego
+    - `3dExampleDark.png` – przykład tła 3D ciemnego
+    - `3dExampleLight.png` – przykład tła 3D jasnego
+    - `LightThemeBg.png` – tło jasnego motywu
+    - `darkThemeBg.png` – tło ciemnego motywu
+    - `finalBackground.hdr` – finalne tło HDR
+    - `homeBgImage.png` – tło strony głównej
+    - `playBgImage.png` – tło gry
+    - `readmeBg.png` – tło dla README
+    - `sign-in-background.webp` – tło logowania
+  - **`logo/`** – logotypy:
+    - `lessonsLogo.webp` – logo lekcji
+    - `openingsLogo.webp` – logo debiutów
+    - `tournamentlogo.png` – logo turniejów
+  - **`models/`** – modele 3D:
+    - **`game/`** – modele gry:
+      - **`black-pawns/`** – czarne figury:
+        - `bishop_black.glb` – czarny goniec
+        - `king_black.glb` – czarny król
+        - `knight_black.glb` – czarny skoczek
+        - `pawn_black.glb` – czarny pion
+        - `queen_black.glb` – czarna królowa
+        - `rook_black.glb` – czarna wieża
+      - **`chessboards/`** – szachownice:
+        - `dark-game-chessboard.glb` – ciemna szachownica gry
+        - `white-game-chessboard.glb` – biała szachownica gry
+      - **`white-pawns/`** – białe figury:
+        - `bishop_white.glb` – biały goniec
+        - `king_white.glb` – biały król
+        - `knight_white.glb` – biały skoczek
+        - `pawn_white.glb` – biały pion
+        - `queen_white.glb` – biała królowa
+        - `rook_white.glb` – biała wieża
+    - **`landing-page/`** – modele strony lądowania:
+      - `landing-chessboard.glb` – szachownica strony lądowania
+- **`styles/`** – style:
+  - **`landing-page/`** – style strony lądowania:
+    - `LoadingAnimation.module.css` – animacja ładowania
+    - `button.module.css` – style przycisków
     - `chessboard.module.css` – style szachownicy
     - `navbar.module.css` – style paska nawigacyjnego
-    - `scrollAnimation.module.css` – style animacji przewijania
-    - `skeletonChessboard.module.css` – style szkieletu szachownicy
-  - `tailwind.config.ts` – konfiguracja Tailwind CSS
-  - `tsconfig.json` – konfiguracja TypeScript dla weba
-  - **`utils/db/`**:
-    - `utils.ts` – funkcje pomocnicze dla bazy danych
+    - `scrollAnimation.module.css` – animacja przewijania
+    - `skeletonChessboard.module.css` – szkielet szachownicy
+- `tsconfig.json` – konfiguracja TypeScript
+- **`utils/`** – narzędzia:
+  - **`chessboard/`** – narzędzia szachownicy:
+    - `chessBoardUtils.ts` – funkcje pomocnicze szachownicy
+    - `types.ts` – definicje typów
+  - `quizStorage.ts` – przechowywanie quizów
 
 ---
 
 **🛠️ Pakiety (`packages`):**
 
 ### 1. `chess-engine`
-- **`eslint.config.mjs`** – konfiguracja ESLint dla silnika szachowego
-- **`jest.config.ts`** – konfiguracja testów jednostkowych z użyciem Jest
-- **`package.json`** – zależności i skrypty dla silnika szachowego
+
+- `eslint.config.js` – konfiguracja ESLint dla silnika szachowego
+- `jest.config.js` – konfiguracja testów jednostkowych z użyciem Jest
+- `package.json` – zależności i skrypty dla silnika szachowego
 - **`src/`** – kod źródłowy silnika:
-  - **`base/`**:
-    - **`board/board.ts`** – logika i reprezentacja szachownicy ♟️
-    - `chessEngine.ts` – główna logika silnika szachowego
-    - **`figure/`**:
+  - **`ai/`** – sztuczna inteligencja:
+    - `engine.ts` – silnik AI
+  - **`chess/`** – logika szachowa:
+    - **`board/`** – szachownica:
+      - `board.ts` – logika i reprezentacja szachownicy ♟️
+    - `chessGame.ts` – logika rozgrywki
+    - **`figure/`** – figury:
       - `figure.ts` – klasa bazowa dla figur
-      - **`figures/`**:
+      - **`figures/`** – konkretne figury:
         - `bishop.ts` – logika dla gońca
         - `king.ts` – logika dla króla 👑
         - `knight.ts` – logika dla skoczka
         - `pawn.ts` – logika dla pionka
         - `queen.ts` – logika dla królowej
         - `rook.ts` – logika dla wieży
-    - **`gameHistory/`**:
-      - `move.ts` – reprezentacja ruchu
+    - **`history/`** – historia ruchów:
+      - `move.ts` – reprezentacja ruchów
       - `moveRecorder.ts` – mechanizm zapisywania ruchów
     - `position.ts` – reprezentacja pozycji na szachownicy
-  - `chessGame.ts` – logika rozgrywki
+  - `chessGameExtraAI.ts` – dodatkowa logika AI
+  - `chessGameExtraLayer.ts` – dodatkowa warstwa gry
   - `index.ts` – punkt wejścia silnika
-  - `player.ts` – definicja gracza
   - **`shared/`** – wspólne funkcje i narzędzia:
-    - **`gameStateFunctions/`**:
-      - `checkFunctions.ts` – funkcje sprawdzające szachy
-      - `checkmateFunctions.ts` – wykrywanie szach-matu
-      - `drawFunctions.ts` – obsługa remisu
-      - `stalemateFunctions.ts` – wykrywanie pata
-    - **`moveFunctions/`**:
-      - `moveExecution.ts` – wykonanie ruchu
-      - `moveValidation.ts` – walidacja ruchu
-    - **`positionFunctions/`**:
-      - `coordinateMapping.ts` – mapowanie współrzędnych
-      - `positionValidation.ts` – walidacja pozycji
-    - `rootFunctions.ts` – główne funkcje sterujące logiką gry
-    - **`specialMovesFunctions/`**:
-      - `castlingFunctions.ts` – obsługa roszady
-      - `enPassantFunctions.ts` – obsługa en passant
-      - `promotionFunctions.ts` – promocja pionka
-    - **`utilities/`**:
-      - `boardPrinter.ts` – funkcja do wypisywania szachownicy na konsolę
-      - `moveRecorder.ts` – pomoc w zapisie ruchów
-      - `performanceUtils.ts` – narzędzia do monitorowania wydajności
-  - **`utils/`**:
-    - `board.ts` – funkcje pomocnicze dla szachownicy
-    - `figures.ts` – funkcje pomocnicze dla figur
-- **`tests/`**:
-  - `main.test.ts` – testy jednostkowe silnika
-- **`tsconfig.json`** – konfiguracja TypeScript dla silnika
+    - **`destruct/`** – funkcje destrukcyjne:
+      - **`aiFunctions/`** – funkcje AI:
+        - `AIIOfunctions.ts` – funkcje wejścia/wyjścia AI
+      - **`gameStateFunctions/`** – funkcje stanu gry:
+        - `gameStateFunctions.ts` – logika stanu gry
+      - **`mallocFunctions/`** – funkcje alokacji:
+        - `positonMapping.ts` – mapowanie pozycji
+      - **`moveRewindForwardFunctions/`** – funkcje przewijania:
+        - `rewinding&forwardingMoves.ts` – przewijanie ruchów
+      - **`movementFunctions/`** – funkcje ruchu:
+        - **`extraMoves/`** – dodatkowe ruchy:
+          - `castle.ts` – obsługa roszady
+          - `enPassant.ts` – obsługa en passant
+          - `promotion.ts` – promocja pionka
+        - `getMoveHistory.ts` – historia ruchów
+        - `getValidMoves.ts` – dostępne ruchy
+        - `makeMove.ts` – wykonanie ruchu
+        - `undoMove.ts` – cofnięcie ruchu
+      - `rootFunc.ts` – główna funkcja
+    - **`types/`** – typy:
+      - `aiDifficulty.ts` – trudność AI
+      - `colorType.ts` – typ koloru
+      - `enPassantRecord.ts` – rekord bicia w przelocie
+      - `figureType.ts` – typ figury
+      - `gameStatusType.ts` – typ statusu gry
+      - `material.ts` – materiał
+      - `movePair.ts` – para ruchów
+      - `moveRecord.ts` – rekord ruchu
+      - `moveType.ts` – typ ruchu
+      - `promotionType.ts` – typ promocji
+  - `types.ts` – główne definicje typów
+  - **`utils/`** – narzędzia:
+    - `boardUtils.ts` – funkcje pomocnicze dla szachownicy
+    - `figureUtils.ts` – funkcje pomocnicze dla figur
+    - `typeUtils.ts` – narzędzia typów
+- **`tests/`** – testy:
+  - `board.test.ts` – testy szachownicy
+  - `chessGame.test.ts` – testy gry
+  - `figureMovement.test.ts` – testy ruchu figur
+  - `king.test.ts` – testy króla
+  - `main.test.ts` – główne testy
+- `tsconfig.json` – konfiguracja TypeScript dla silnika
 
 ### 2. `eslint-config`
+
 - `README.md` – dokumentacja konfiguracji ESLint
 - `base.js` – podstawowa konfiguracja ESLint
 - `next.js` – konfiguracja ESLint dla projektów Next.js
@@ -539,6 +771,7 @@ Projekt udostępniany jest na własnej, niestandardowej licencji.
 - `react-internal.js` – wewnętrzne ustawienia ESLint dla projektów React
 
 ### 3. `typescript-config`
+
 - `README.md` – dokumentacja konfiguracji TypeScript
 - `base.json` – podstawowa konfiguracja TypeScript
 - `nextjs.json` – konfiguracja dla Next.js
@@ -546,37 +779,52 @@ Projekt udostępniany jest na własnej, niestandardowej licencji.
 - `react-library.json` – konfiguracja dla bibliotek React
 
 ### 4. `ui`
+
 - `components.json` – konfiguracja komponentów UI
 - `eslint.config.js` – konfiguracja ESLint dla UI
 - `package.json` – zależności i skrypty dla UI
 - `postcss.config.mjs` – konfiguracja PostCSS
 - **`src/`** – kod źródłowy UI:
-  - **`components/`**:
+  - **`components/`** – komponenty:
+    - `alert-dialog.tsx` – okno dialogowe alertu
     - `avatar.tsx` – komponent avatara
+    - `badge.tsx` – odznaka
+    - `breadcrumb.tsx` – okruszki chleba
     - `button.tsx` – przycisk
     - `card.tsx` – karta
+    - `chart.tsx` – wykres
+    - `command.tsx` – polecenie
+    - `dialog.tsx` – okno dialogowe
     - `dropdown-menu.tsx` – rozwijane menu
+    - `form.tsx` – formularz
+    - `icons.tsx` – ikony
     - `input-otp.tsx` – wprowadzanie OTP
     - `input.tsx` – pole wejściowe
     - `label.tsx` – etykieta
     - `mode-toggle.tsx` – przełącznik trybu
+    - `popover.tsx` – popover
+    - `progress.tsx` – pasek postępu
+    - `radio-group.tsx` – grupa radiowa
+    - `resizable.tsx` – komponent zmiennego rozmiaru
     - `scroll-area.tsx` – obszar przewijania
+    - `select.tsx` – wybór
     - `separator.tsx` – separator
     - `sheet.tsx` – modal/arkusz
     - `sidebar.tsx` – pasek boczny
     - `skeleton.tsx` – szkielet ładowania
+    - `slider.tsx` – suwak
+    - `sonner.tsx` – powiadomienia
+    - `switch.tsx` – przełącznik
+    - `table.tsx` – tabela
     - `tabs.tsx` – zakładki
+    - `textarea.tsx` – obszar tekstowy
     - `theme-provider.tsx` – provider motywu
-    - `toast.tsx` – powiadomienia (toast)
-    - `toaster.tsx` – kontener na toasty
     - `tooltip.tsx` – podpowiedź (tooltip)
-  - **`hooks/`**:
-    - `use-mobile.tsx` – hook dla widoku mobilnego
-    - `use-toast.ts` – hook do zarządzania powiadomieniami
-  - **`lib/`**:
+  - **`hooks/`** – hooki:
+    - `use-mobile.ts` – hook dla widoku mobilnego
+  - **`lib/`** – biblioteka:
     - `utils.ts` – funkcje pomocnicze
-  - **`styles/`**:
+  - **`styles/`** – style:
     - `globals.css` – globalne style CSS
-- `tailwind.config.ts` – konfiguracja Tailwind CSS dla UI
 - `tsconfig.json` – konfiguracja TypeScript dla UI
 - `tsconfig.lint.json` – konfiguracja TypeScript do lintowania

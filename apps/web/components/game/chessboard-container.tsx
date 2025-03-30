@@ -58,16 +58,13 @@ export default function ChessBoardContainer() {
       setDesc(text.onLoad.desc);
   
       if (savedViewMode === "2D" || savedViewMode === "3D") {
-        setViewMode(savedViewMode);
-      } else {
-        setViewMode("2D");
+        setViewMode(savedViewMode)
+      }else{
+        setViewMode("2D")
       }
-
-      if(!pathname.startsWith("/local")){
-          setViewMode("2D");
-      }
-
-
+    }
+    if(!pathname.startsWith("/local")){
+      setViewMode("2D");
     }
     setIsViewModeLoaded(true); // Ustawiamy, że `viewMode` już się załadowało
   }, [setViewMode]);
@@ -75,9 +72,8 @@ export default function ChessBoardContainer() {
   // Zapisujemy tryb widoku do localStorage przy każdej jego zmianie
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (viewMode !== undefined) {
-        // Zapisujemy viewMode w localStorage
-        localStorage.setItem("viewMode", viewMode);
+      if(viewMode !== undefined){
+        localStorage.setItem("viewMode", viewMode)
       }
     }
   }, [viewMode, isViewModeLoaded]);

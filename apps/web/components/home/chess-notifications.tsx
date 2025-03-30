@@ -25,12 +25,8 @@ import { Badge } from "@workspace/ui/components/badge" // Komponent odznaki UI
  * @source Własna implementacja
  */
 export default function ChessNotifications() {
-  // Stan określający aktywną zakładkę (all, game, challenge, tournament)
   const [activeTab, setActiveTab] = useState("all")
-  // Stan przechowujący zapytanie wyszukiwania
   const [searchQuery, setSearchQuery] = useState("")
-
-  // Stan przechowujący listę powiadomień
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -118,15 +114,11 @@ export default function ChessNotifications() {
     },
   ])
 
-  // Obliczenie liczby nieprzeczytanych powiadomień
   const unreadCount = notifications.filter((notif) => !notif.read).length
 
-  // Filtrowanie powiadomień na podstawie aktywnej zakładki i zapytania wyszukiwania
   const filteredNotifications = notifications.filter((notification) => {
-    // Filtrowanie według zakładki
     if (activeTab !== "all" && notification.type !== activeTab) return false
 
-    // Filtrowanie według wyszukiwania (sender lub content)
     if (
       searchQuery &&
       !notification.content.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -134,161 +126,135 @@ export default function ChessNotifications() {
     )
       return false
 
-    return true // Powiadomienie spełnia kryteria
+    return true
   })
 
-  /**
-   * markAsRead
-   *
-   * Oznacza powiadomienie o podanym ID jako przeczytane, aktualizując jego stan w tablicy powiadomień.
-   *
-   * @param {number} id - ID powiadomienia do oznaczenia jako przeczytanego.
-   */
   const markAsRead = (id: number) => {
     setNotifications(notifications.map((notif) => (notif.id === id ? { ...notif, read: true } : notif)))
   }
 
-  /**
-   * markAllAsRead
-   *
-   * Oznacza wszystkie powiadomienia jako przeczytane, aktualizując ich stan w tablicy powiadomień.
-   */
   const markAllAsRead = () => {
     setNotifications(notifications.map((notif) => ({ ...notif, read: true })))
   }
 
-  /**
-   * getNotificationTypeColor
-   *
-   * Zwraca klasę CSS dla koloru tła i tekstu na podstawie typu powiadomienia.
-   *
-   * @param {string} type - Typ powiadomienia (np. challenge, game).
-   * @returns {string} Klasa CSS określająca styl kolorystyczny.
-   */
   const getNotificationTypeColor = (type: string): string => {
     switch (type) {
       case "challenge":
-        return "bg-amber-100 text-amber-800 border-amber-200" // Żółty dla wyzwań
+        return "bg-amber-100 text-amber-800 border-amber-200"
       case "game":
-        return "bg-emerald-100 text-emerald-800 border-emerald-200" // Zielony dla gier
+        return "bg-emerald-100 text-emerald-800 border-emerald-200"
       case "friend":
-        return "bg-blue-100 text-blue-800 border-blue-200" // Niebieski dla znajomych
+        return "bg-blue-100 text-blue-800 border-blue-200"
       case "tournament":
-        return "bg-purple-100 text-purple-800 border-purple-200" // Fioletowy dla turniejów
+        return "bg-purple-100 text-purple-800 border-purple-200"
       case "achievement":
-        return "bg-pink-100 text-pink-800 border-pink-200" // Różowy dla osiągnięć
+        return "bg-pink-100 text-pink-800 border-pink-200"
       case "system":
-        return "bg-gray-100 text-gray-800 border-gray-200" // Szary dla systemowych
+        return "bg-gray-100 text-gray-800 border-gray-200"
       default:
-        return "" // Brak stylu dla nieznanych typów
+        return ""
     }
   }
 
-  // Renderowanie komponentu
   return (
     <Sheet>
-      {/* Przycisk otwierający panel powiadomień */}
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" /> {/* Ikona dzwonka */}
+          <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
-              {unreadCount} {/* Liczba nieprzeczytanych powiadomień */}
+              {unreadCount}
             </span>
           )}
-          <span className="sr-only">Notifications</span> {/* Tekst dla czytników ekranu */}
+          <span className="sr-only">Notifications</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-md md:max-w-lg">
-        {/* Nagłówek panelu */}
         <SheetHeader className="border-b pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" /> {/* Ikona dzwonka */}
-              <SheetTitle className="text-xl">Notifications</SheetTitle> {/* Tytuł panelu */}
+              <Bell className="h-5 w-5 text-primary" />
+              <SheetTitle className="text-xl">Notifications</SheetTitle>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                Mark All Read {/* Przycisk oznaczania wszystkich jako przeczytane */}
+                Mark All Read
               </Button>
               <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" /> {/* Przycisk filtrowania */}
+                <Filter className="h-4 w-4" />
               </Button>
             </div>
           </div>
-          {/* Pole wyszukiwania */}
           <div className="relative mt-2">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Ikona wyszukiwania */}
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search notifications..."
               className="pl-8"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Aktualizacja zapytania wyszukiwania
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </SheetHeader>
 
-        {/* Zakładki powiadomień */}
         <Tabs defaultValue="all" className="mt-6" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="all">
               All
               <Badge variant="secondary" className="ml-2">
-                {notifications.length} {/* Liczba wszystkich powiadomień */}
+                {notifications.length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="game">
               Games
               <Badge variant="secondary" className="ml-2">
-                {notifications.filter((n) => n.type === "game").length} {/* Liczba powiadomień o grach */}
+                {notifications.filter((n) => n.type === "game").length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="challenge">
               Challenges
               <Badge variant="secondary" className="ml-2">
-                {notifications.filter((n) => n.type === "challenge").length} {/* Liczba wyzwań */}
+                {notifications.filter((n) => n.type === "challenge").length}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="tournament">
               Tournaments
               <Badge variant="secondary" className="ml-2">
-                {notifications.filter((n) => n.type === "tournament").length} {/* Liczba turniejów */}
+                {notifications.filter((n) => n.type === "tournament").length}
               </Badge>
             </TabsTrigger>
           </TabsList>
 
-          {/* Zawartość zakładki "all" */}
           <TabsContent value="all" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
             {filteredNotifications.length > 0 ? (
               filteredNotifications.map((notification) => (
                 <div
                   key={notification.id}
                   className={`rounded-lg border p-4 transition-colors hover:bg-accent/50 ${!notification.read ? "border-primary bg-primary/5" : ""}`}
-                  onClick={() => markAsRead(notification.id)} // Oznaczanie jako przeczytane po kliknięciu
+                  onClick={() => markAsRead(notification.id)}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-full ${getNotificationTypeColor(notification.type)}`}>
-                      <notification.icon className="h-5 w-5" /> {/* Dynamiczna ikona */}
+                      <notification.icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between items-center">
                         <span className={`font-medium ${!notification.read ? "text-primary" : ""}`}>
-                          {notification.title} {/* Tytuł powiadomienia */}
+                          {notification.title}
                         </span>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           {notification.read ? <CheckCheck className="h-3 w-3 text-primary" /> : <Check className="h-3 w-3" />}
-                          <span>{notification.time}</span> {/* Czas powiadomienia */}
+                          <span>{notification.time}</span>
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        <span className="font-medium">{notification.sender}</span> {notification.content} {/* Treść powiadomienia */}
+                        <span className="font-medium">{notification.sender}</span> {notification.content}
                       </p>
                       <div className="flex justify-between items-center mt-2">
                         <Badge variant="outline" className={`text-xs ${getNotificationTypeColor(notification.type)}`}>
-                          {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)} {/* Typ powiadomienia */}
+                          {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
                         </Badge>
                         <Button variant="ghost" size="sm" className="h-7 text-xs">
-                          {notification.action} {/* Akcja powiadomienia */}
+                          {notification.action}
                         </Button>
                       </div>
                     </div>
@@ -297,28 +263,16 @@ export default function ChessNotifications() {
               ))
             ) : (
               <div className="text-center py-10 text-muted-foreground">
-                <Bell className="mx-auto h-10 w-10 mb-2 opacity-20" /> {/* Ikona dzwonka */}
-                <p>No notifications found</p> {/* Komunikat o braku powiadomień */}
+                <Bell className="mx-auto h-10 w-10 mb-2 opacity-20" />
+                <p>No notifications found</p>
               </div>
             )}
           </TabsContent>
-
-          {/* Pozostałe zakładki - zawartość filtrowana przez filteredNotifications */}
-          <TabsContent value="game" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Powiadomienia o grach */}
-          </TabsContent>
-          <TabsContent value="challenge" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Powiadomienia o wyzwaniach */}
-          </TabsContent>
-          <TabsContent value="tournament" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Powiadomienia o turniejach */}
-          </TabsContent>
         </Tabs>
 
-        {/* Stopka panelu */}
         <SheetFooter className="mt-6 border-t pt-4">
           <Button variant="outline" className="w-full">
-            Settings {/* Przycisk ustawień */}
+            Settings
           </Button>
         </SheetFooter>
       </SheetContent>
