@@ -149,6 +149,7 @@ class Board {
     let toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
+      console.error("No positions were found")
       return false
     }
 
@@ -162,6 +163,7 @@ class Board {
     }
     //might help with optimization
     if (figure.type !== figureType.king && toPos.figure?.color === figure.color) {
+      console.log("tried moving onto friendly piece")
       return false
     }
 
@@ -170,6 +172,7 @@ class Board {
       const isLegal = legalMoves.some((legalMove) => legalMove.from.notation === fromPos.notation && legalMove.to.notation === toPos.notation)
 
       if (!isLegal) {
+        console.error("move not legal")
         return false
       }
     }
@@ -1215,7 +1218,7 @@ class Board {
         console.error("Cant find move in findValidMovesWithGivenArguments")
         break
       }
-      if (this.isLegalMove(move)) {
+      if (this.isLegalMove(move) && validFigure.isMoveValid(targetPosition)) {
         if (this.getFigureAtPosition(targetPosition) && doesMoveCaptureFig) {
           returnedArray.push(move)
         } else if (!this.getFigureAtPosition(targetPosition) && !doesMoveCaptureFig) {
