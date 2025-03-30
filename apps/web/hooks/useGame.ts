@@ -31,26 +31,25 @@ import MovePair from "@shared/types/movePair" // Typ dla par ruchów
 import { gameStatusType } from "@shared/types/gameStatusType" // Typ statusu gry
 import ChessGameExtraAI from "@modules/chessGameExtraAI" // Klasa gry z AI
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer" // Klasa gry bez AI
+/*
+* useGame
+*
+* Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
+* historią ruchów, timerami graczy, statusem gry i ruchami AI (jeśli włączone).
+*
+* @param {boolean} [ai=false] - Czy gra jest z przeciwnikiem AI.
+* @param {string} selectedColor - Wybrany kolor gracza (obecnie niewykorzystany w logice).
+* @param {number} timer - Początkowy czas w sekundach dla każdego gracza.
+* @returns {Object} Obiekt z metodami i stanem gry szachowej.
+*
+* @remarks
+* Hook inicjalizuje grę (z AI lub bez), aktualizuje stany po każdym ruchu i obsługuje
+* timery z logiką końca czasu. Zawiera metody do manipulacji grą (ruchy, promocje, cofanie).
+* Autor: matiqueue (Szymon Góral)
+* @source Własna implementacja
+*/
 
-/**
- * useGame
- *
- * Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
- * historią ruchów, timerami graczy, statusem gry i ruchami AI (jeśli włączone).
- *
- * @param {boolean} [ai=false] - Czy gra jest z przeciwnikiem AI.
- * @param {string} selectedColor - Wybrany kolor gracza (obecnie niewykorzystany w logice).
- * @param {number} timer - Początkowy czas w sekundach dla każdego gracza.
- * @returns {Object} Obiekt z metodami i stanem gry szachowej.
- *
- * @remarks
- * Hook inicjalizuje grę (z AI lub bez), aktualizuje stany po każdym ruchu i obsługuje
- * timery z logiką końca czasu. Zawiera metody do manipulacji grą (ruchy, promocje, cofanie).
- * Autor: matiqueue (Szymon Góral)
- * @source Własna implementacja
- */
-const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
-  // Stan przechowujący instancję gry
+const useGame = (ai: boolean = false, selectedColor: string, timer: number, level: number) => {
   const [game, setGame] = useState<any>(null)
   // Stan przechowujący aktualny stan planszy
   const [board, setBoard] = useState<any>(null)
@@ -72,14 +71,16 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
   const [timestampWhite, setTimeStampWhite] = useState(Date.now())
   // Sygnatura czasowa dla czarnych
   const [timestampBlack, setTimeStampBlack] = useState(Date.now())
-
-  // Inicjalizacja gry
+  
+    // Inicjalizacja gry
   useEffect(() => {
-    // Tworzenie nowej gry: z AI (czarne) lub bez AI
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai
-      ? setupAIGame(color.Black) // Gra z AI, AI gra czarnymi
-      : setupGame() // Gra standardowa bez AI
-    // @TODO: Dodać obsługę notacji FEN z try-catch i podświetlaniem błędów zamiast crashowania aplikacji
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black, level) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
+    startGame(newGame)
+    setGame(newGame)
+    setBoard(getBoard(newGame))
+    setCurrentPlayer(whosTurn(newGame))
+    setMoveHistory(getMoveHistory(newGame))
+    setGameStatus(getGameStatus(newGame))
 
     startGame(newGame) // Rozpoczęcie gry
     setGame(newGame) // Ustawienie instancji gry

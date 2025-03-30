@@ -21,8 +21,8 @@ const setupGame = (fenNotation: string = "") => {
   } else setupFiguresStandard(game)
   return game
 }
-const setupAIGame = (aicolor: color) => {
-  const game = new ChessGameExtraAI(aicolor)
+const setupAIGame = (aicolor: color, level: number) => {
+  const game = new ChessGameExtraAI(aicolor, level)
   setupFiguresStandard(game)
   return game
 }

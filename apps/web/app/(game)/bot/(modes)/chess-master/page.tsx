@@ -65,7 +65,7 @@ function SearchParamsComponent() {
   const selectedTimer = searchParams.get("gameType") || "300";
 
   return (
-    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)}>
+    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)} level={3}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
@@ -80,3 +80,4 @@ export default function ChessPage() {
     </Suspense>
   );
 }
+

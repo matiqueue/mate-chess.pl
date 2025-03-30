@@ -28,7 +28,7 @@ import { motion } from "framer-motion" // Biblioteka do animacji
  * @property {string} selectedColor - Wybrany kolor gracza ("white" lub "black").
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral), Wojciech Piątek
  * @source Własna implementacja
  */
 interface ChessBoard2DProps {
