@@ -58,3 +58,4 @@ export const PreviewModeAlertPopup = ({ isOpen }: PreviewModeAlertPopupProps) =>
     </AlertDialog>
   )
 }
+// Komponent eksportowany jako domyślny
