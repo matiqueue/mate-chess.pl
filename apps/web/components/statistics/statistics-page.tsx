@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -80,7 +78,7 @@ interface UserProfile {
  * Autor: matiqueue (Szymon Góral)
  * @source Własna implementacja
  */
-export default function StatisticsPage(): JSX.Element {
+export default function StatisticsPage() {
   const { t } = useTranslation()
   const { user } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)
