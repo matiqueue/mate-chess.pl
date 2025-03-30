@@ -37,6 +37,7 @@ type MobileHeaderProps = React.HTMLAttributes<HTMLDivElement>
  * Komponent korzysta z kontekstu audio (`useAudio`) do sterowania muzyką w tle.
  * Używa `usePathname` do dynamicznego ukrywania paska wyszukiwania na stronach gry.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function MobileHeader({ className }: MobileHeaderProps) {

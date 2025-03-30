@@ -14,7 +14,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@workspace/ui/components/input"
 import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
 
-
 /**
  * Obiekt animacji kontenera.
  *
@@ -64,6 +63,7 @@ const MotionCard = motion.create(Card)
  *
  * @remarks
  * Autor: nasakrator i matiqueue
+ * Tłumaczenie: awres (Filip Serwartka)
  */
 export default function GameModeSelector() {
   const router = useRouter()
@@ -123,7 +123,7 @@ export default function GameModeSelector() {
   const handleGoButtonClick = () => {
     console.log("Wybrany poziom trudności bota:", botDifficulty)
 
-    if(isDialogOpen){
+    if (isDialogOpen) {
       if (botDifficulty === "1") {
         router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}&gameLevel=${botDifficulty}`)
       } else if (botDifficulty === "2") {
@@ -133,14 +133,13 @@ export default function GameModeSelector() {
       } else {
         console.log("Nieprawidłowy poziom trudności bota")
       }
-    }else if(isColorDialogOpen){
-      if(selectedGameType == "beginner"){
+    } else if (isColorDialogOpen) {
+      if (selectedGameType == "beginner") {
         router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
-      }else{
-        router.push(`/bot/chess-master?selectedColor=${selectedColor}&gameType=${selectedTimer}`) 
+      } else {
+        router.push(`/bot/chess-master?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
       }
     }
-    
 
     setIsColorDialogOpen(false)
     setIsDialogOpen(false)
@@ -218,8 +217,14 @@ export default function GameModeSelector() {
                         mode.key === "advance"
                           ? openAdvancedDialog
                           : mode.key === "beginner"
-                            ? () => { setSelectedGameType("beginner"); setIsColorDialogOpen(true) }
-                            : () => { setSelectedGameType("chess-master"); setIsColorDialogOpen(true) }
+                            ? () => {
+                                setSelectedGameType("beginner")
+                                setIsColorDialogOpen(true)
+                              }
+                            : () => {
+                                setSelectedGameType("chess-master")
+                                setIsColorDialogOpen(true)
+                              }
                       }
                       disabled={isOnline && !user}
                     >
@@ -248,7 +253,7 @@ export default function GameModeSelector() {
           <div className="flex flex-col space-y-4">
             <Input type="number" value={botDifficulty} onChange={handleDifficultyChange} placeholder={t("difficultyLevel")} />
 
-            { /* Game type */}    
+            {/* Game type */}
             <DialogHeader>
               <DialogTitle>{t("selectGameType")}</DialogTitle>
               <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
@@ -257,7 +262,7 @@ export default function GameModeSelector() {
             <RadioGroup
               value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
               onValueChange={(value) => {
-                setSelectedTimer(parseInt(value));
+                setSelectedTimer(parseInt(value))
               }}
               className="flex gap-4 justify-center"
             >
@@ -290,7 +295,7 @@ export default function GameModeSelector() {
                   }`}
                 >
                   <RadioGroupItem value="120" id="time120" className="sr-only" />
-                    <p>Blitz</p>
+                  <p>Blitz</p>
                 </div>
               </label>
             </RadioGroup>
@@ -303,8 +308,7 @@ export default function GameModeSelector() {
       <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
         <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
           <div className="flex flex-col space-y-4">
-            
-            { /* Game type */}    
+            {/* Game type */}
             <DialogHeader>
               <DialogTitle>{t("selectGameType")}</DialogTitle>
               <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
@@ -313,7 +317,7 @@ export default function GameModeSelector() {
             <RadioGroup
               value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
               onValueChange={(value) => {
-                setSelectedTimer(parseInt(value));
+                setSelectedTimer(parseInt(value))
               }}
               className="flex gap-4 justify-center"
             >
@@ -346,7 +350,7 @@ export default function GameModeSelector() {
                   }`}
                 >
                   <RadioGroupItem value="120" id="time120" className="sr-only" />
-                    <p>Blitz</p>
+                  <p>Blitz</p>
                 </div>
               </label>
             </RadioGroup>

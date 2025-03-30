@@ -57,7 +57,7 @@ interface Pieces {
  * @property {string} selectedColor - Wybrany kolor gracza ("white" lub "black").
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral), Wojciech Piątek
  * @source Własna implementacja
  */
 interface ChessBoard3DProps {

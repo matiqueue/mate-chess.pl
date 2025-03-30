@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from "uuid"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@workspace/ui/components/dialog" // Import komponentów dialogu z ShadCN
 import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+import {Circle as ChessPawn} from "lucide-react";
 
 /** Animacja kontenera */
 const container = {
@@ -360,7 +361,43 @@ export default function GameModeSelector() {
 
       <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
         <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
-          <div className="flex flex-col space-y-4">      
+          <div className="flex flex-col space-y-4">     
+            
+          <DialogHeader>
+              <DialogTitle>{t("selectColorTitle")}</DialogTitle>
+              <DialogDescription>{t("selectColorDesc")}</DialogDescription>
+            </DialogHeader>
+            <RadioGroup
+              value={selectedColor} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedColor(value);
+              }}
+              className="flex gap-4 justify-center"
+            >
+              {/* Biały pionek */}
+              <label htmlFor="white" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === "white" ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="white" id="white" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-white fill-white" />
+                </div>
+              </label>
+
+              {/* Czarny pionek */}
+              <label htmlFor="black" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedColor === "black" ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="black" id="black" className="sr-only" />
+                  <ChessPawn className="h-16 w-16 text-black fill-black" />
+                </div>
+              </label>
+            </RadioGroup>
             { /* Game type */}    
             <DialogHeader>
               <DialogTitle>{t("selectGameType")}</DialogTitle>

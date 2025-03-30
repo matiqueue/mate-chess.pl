@@ -26,6 +26,11 @@ import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
 import { use, useEffect, useState } from "react"
 
+/**
+ * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
+ */
+
 interface NavItemProps {
   href: string
   icon: typeof Home

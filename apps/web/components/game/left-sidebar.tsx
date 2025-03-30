@@ -43,6 +43,7 @@ import { useSidebarContext } from "@/contexts/SidebarContext" // Kontekst paska 
  * Komponent integruje autoryzację Clerk, tłumaczenia, motywy oraz kontekst paska bocznego.
  * Obsługuje dwa tryby: domyślny (nawigacja) i konsola (logi). Stylizacja zależy od motywu (jasny/ciemny).
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function LeftSidebar() {

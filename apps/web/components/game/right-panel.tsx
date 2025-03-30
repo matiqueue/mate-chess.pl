@@ -46,6 +46,7 @@ import { getNerdData } from "@chess-engine/functions" // Kontekst paska bocznego
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 interface ToggleSidebarButtonProps {

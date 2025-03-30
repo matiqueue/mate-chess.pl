@@ -42,6 +42,7 @@ type NavbarProps = React.HTMLAttributes<HTMLElement>
  * problemów z hydratacją. Integruje wiele funkcji interaktywnych, takich jak audio
  * i tłumaczenia.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export function Navbar({ className }: NavbarProps) {

@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation" // Hook do programowej nawigacji w N
  * Komponent monitoruje stan gry i czas za pomocą kontekstu gry, otwierając się automatycznie
  * w odpowiednich sytuacjach. Stylizacja dostosowuje się do motywu (jasny/ciemny) z efektem rozmycia tła.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export const GameStatusPopupDialog = () => {

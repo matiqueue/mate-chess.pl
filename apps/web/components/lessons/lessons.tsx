@@ -53,6 +53,7 @@ import {
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 interface FeaturedLesson {
