@@ -589,5 +589,7 @@
     "redirectDescription": "You will be redirected to a page where you can create one"
   },
   "selectColorTitle": "Choose Color",
-  "selectColorDesc": "Choose which pieces you will play with!"
+  "selectColorDesc": "Choose which pieces you will play with!",
+  "selectGameType": "Select game mode!",
+  "selectGameTypeDesc": "Choose the game duration!"
 }

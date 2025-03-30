@@ -30,16 +30,16 @@ import { gameStatusType } from "@shared/types/gameStatusType"
 import ChessGameExtraAI from "@modules/chessGameExtraAI"
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 
-const useGame = (ai: boolean = false, selectedColor: string) => {
+const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
   const [game, setGame] = useState<any>(null)
   const [board, setBoard] = useState<any>(null)
   const [moveHistory, setMoveHistory] = useState<MovePair[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<string | null>(null)
   const [gameStatus, setGameStatus] = useState<gameStatusType>(gameStatusType.paused)
-  const [initialTime, setInitialTime] = useState(300)
-  const [whiteTime, setWhiteTime] = useState<number>(300) // 5 minut dla białych
-  const [blackTime, setBlackTime] = useState<number>(300) // 5 minut dla czarnych
-  const [timeLeft, setTimeLeft] = useState<number>(600) // 10 minut ogólnego czasu
+  const [initialTime, setInitialTime] = useState(timer)
+  const [whiteTime, setWhiteTime] = useState<number>(timer) // x minut dla białych
+  const [blackTime, setBlackTime] = useState<number>(timer) // x minut dla czarnych
+  const [timeLeft, setTimeLeft] = useState<number>(timer*2) // 2x minut ogólnego czasu
   const [timestampWhite, setTimeStampWhite] = useState(Date.now())
   const [timestampBlack, setTimeStampBlack] = useState(Date.now())
 
@@ -66,14 +66,6 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
     console.log("Initial current player:", whosTurn(newGame))
   }, [ai])
 
-  // Timer dla ogólnego czasu gry
-  useEffect(() => {
-    const gameTimer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-
-    return () => clearInterval(gameTimer)
-  }, [])
 
   // Timer dla czasu graczy z logiką końca czasu
   useEffect(() => {
@@ -83,23 +75,25 @@ const useGame = (ai: boolean = false, selectedColor: string) => {
       return
     }
     const currentTimeStamp = Date.now()
-
+    console.log("CurrentTurn: ", currentPlayer)
     if (currentPlayer?.toLowerCase() === "white") {
       setWhiteTime(() => {
         const newTime = (timestampWhite - currentTimeStamp) * -1 / 1000  - (initialTime - blackTime)
-        if (newTime <= 0) {
-          setGameStatus(gameStatusType.blackWins);
-        }
         return initialTime - Math.floor(newTime)
       });
+      console.log("whitetime: ", whiteTime)
+      if (whiteTime <= 0) {
+        setGameStatus(gameStatusType.blackWins);
+      }
     } else if (currentPlayer?.toLowerCase() === "black") {
-      setBlackTime((prevBlackTime) => {
+      setBlackTime(() => {
         const newTime = (timestampBlack - currentTimeStamp) * -1 / 1000 - (initialTime - whiteTime )
-        if (newTime === 0) {
-          setGameStatus(gameStatusType.whiteWins);
-        }
         return initialTime - Math.floor(newTime)
       });
+      console.log("blacktime: ", blackTime)
+      if (blackTime <= 0) {
+        setGameStatus(gameStatusType.whiteWins);
+      }
     } else {
       console.error("No valid current player detected");
     }

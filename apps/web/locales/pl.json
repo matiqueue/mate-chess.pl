@@ -588,7 +588,9 @@
     "redirectDescription": "Zaraz cie przeniesiemy na strone gdzie będziesz mógł je stworzyć"
   },
   "selectColorTitle": "Wybier kolor",
-  "selectColorDesc": "Wybierz którymi pionkami będziesz grał!"
+  "selectColorDesc": "Wybierz którymi pionkami będziesz grał!",
+  "selectGameType": "Wybierz tryb gry!",
+  "selectGameTypeDesc": "Wybierz długość rozgrywki!"
 }
 
 

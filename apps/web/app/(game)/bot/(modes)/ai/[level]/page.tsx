@@ -58,13 +58,14 @@ function ChessPageContent() {
 export default function ChessPage() {
   const searchParams = useSearchParams();
   const selectedColor = searchParams.get("selectedColor") || "white"; 
+  const selectedTimer = searchParams.get("gameType") || "300";
   
   useEffect( () => {
     console.error("ChessPage: ", selectedColor)
   }, [])
 
   return (
-    <GameProvider ai={true} selectedColor={ selectedColor }>
+    <GameProvider ai={true} selectedColor={ selectedColor } timer={parseInt(selectedTimer)}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
