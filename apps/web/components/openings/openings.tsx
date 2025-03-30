@@ -23,7 +23,23 @@ import {
   User,
 } from "lucide-react"
 
-// Define the opening types
+/**
+ * Interfejs ChessOpening
+ *
+ * Definiuje strukturę obiektu reprezentującego otwarcie szachowe.
+ *
+ * @property {number} id - Unikalny identyfikator otwarcia.
+ * @property {string} title - Tytuł otwarcia.
+ * @property {string} description - Opis otwarcia.
+ * @property {React.ReactNode} icon - Ikona reprezentująca otwarcie.
+ * @property {string} duration - Czas trwania nauki otwarcia.
+ * @property {string} difficulty - Poziom trudności otwarcia.
+ * @property {string} author - Autor otwarcia.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 interface ChessOpening {
   id: number
   title: string
@@ -34,6 +50,18 @@ interface ChessOpening {
   author: string
 }
 
+/**
+ * ChessOpenings
+ *
+ * Komponent renderujący stronę z otwarciami szachowymi. Wyświetla baner informacyjny
+ * oraz listę popularnych otwarć z ich opisami, poziomami trudności i autorami.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę z otwarciami szachowymi.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 export default function ChessOpenings() {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(true)
@@ -163,10 +191,7 @@ export default function ChessOpenings() {
             <div className="relative p-8 z-10">
               <h2 className="text-3xl font-bold mb-4">{t("openingsPage.banner.title")}</h2>
               <p className="text-lg mb-6">{t("openingsPage.banner.description")}</p>
-              <Button
-                size="lg"
-                className="flex items-center gap-2"
-              >
+              <Button size="lg" className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5" />
                 <span>{t("openingsPage.startLearing")}</span>
               </Button>
@@ -179,7 +204,7 @@ export default function ChessOpenings() {
           <h2 className="text-2xl font-bold">{t("openingsPage.popularOpenings")}</h2>
         </div>
 
-        <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  gap-6">
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {chessOpenings.map((opening, index) => (
             <motion.div
               key={opening.id}
