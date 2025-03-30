@@ -4,6 +4,7 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 import MoveRecord from "@shared/types/moveRecord"
+import { getPositionByNotation } from "@shared/destruct/mallocFunctions/positonMapping.js"
 
 /**
  * Class representing a chess board. <br>
@@ -148,6 +149,7 @@ class Board {
     let toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
+      console.error("No positions were found")
       return false
     }
 
@@ -161,6 +163,7 @@ class Board {
     }
     //might help with optimization
     if (figure.type !== figureType.king && toPos.figure?.color === figure.color) {
+      console.log("tried moving onto friendly piece")
       return false
     }
 
@@ -169,6 +172,7 @@ class Board {
       const isLegal = legalMoves.some((legalMove) => legalMove.from.notation === fromPos.notation && legalMove.to.notation === toPos.notation)
 
       if (!isLegal) {
+        console.error("move not legal")
         return false
       }
     }
@@ -1189,6 +1193,41 @@ class Board {
    */
   get blackFigures(): Figure[] {
     return this._blackFigures
+  }
+
+  public findValidMovesWithGivenArguments(
+    figureColor: color,
+    performingFigureType: figureType.knight | figureType.king | figureType.queen | figureType.rook | figureType.bishop | figureType.pawn,
+    doesMoveCaptureFig: boolean,
+    targetPositionNotation: string,
+  ) {
+    const returnedArray = []
+    const figTable = figureColor === color.White ? this._whiteFigures : this._blackFigures
+    const validFigures = figTable.filter((fig) => fig.type === performingFigureType)
+
+    for (const validFigure of validFigures) {
+      const targetPosition = this.getPositionByNotation(targetPositionNotation)
+      if (!targetPosition) {
+        continue
+      }
+      const move = {
+        from: validFigure.position,
+        to: targetPosition,
+      }
+      if (!move) {
+        console.error("Cant find move in findValidMovesWithGivenArguments")
+        break
+      }
+      if (this.isLegalMove(move) && validFigure.isMoveValid(targetPosition)) {
+        if (this.getFigureAtPosition(targetPosition) && doesMoveCaptureFig) {
+          returnedArray.push(move)
+        } else if (!this.getFigureAtPosition(targetPosition) && !doesMoveCaptureFig) {
+          returnedArray.push(move)
+        }
+      }
+    }
+    console.log("returning: ", returnedArray)
+    return returnedArray
   }
 }
 export default Board

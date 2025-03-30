@@ -50,14 +50,18 @@ class ChessAi extends ChessGame {
     if (this._canUseDatabase) {
       let moveArray: Move[] = await this.findMoveInDatabase()
 
-      if ((await moveArray).length < 1) {
-        console.log("determining move via minmax")
+      console.log("determining moves")
+      console.log(moveArray)
+      if (moveArray.length < 1) {
+        console.log("database empty. determining move via minmax")
+        console.log(moveArray)
         moveArray = this.aiDetermineBestMove()
       } else {
         console.log("move determined via database")
       }
 
       const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
+      console.log(move)
       if (move) {
         console.log("db move ready!!!")
         return move
@@ -197,38 +201,102 @@ class ChessAi extends ChessGame {
       .sort((a, b) => b.eval - a.eval)
       .map((item) => item.move)
 
-    console.log("Candidate moves: ", candidateMoves.slice(0, 6))
+    // console.log("Candidate moves: ", candidateMoves.slice(0, 6))
     return candidateMoves.slice(0, 3)
   }
 
   private async findMoveInDatabase(): Promise<Move[]> {
-    const arrayOfMoves: Move[] = []
+    let arrayOfMoves: Move[] = []
 
     try {
       if (!moveDB?.games || !Array.isArray(moveDB.games)) {
         console.error("Invalid database format")
         return arrayOfMoves
       }
+      // console.log("Connection successful")
 
       const stringToCompare = this.getMoveHistoryString()
-      const arrayOfStringMoves = []
+      // console.log(`Move history string: '${stringToCompare}'`)
 
-      for (const game of moveDB.games) {
-        if (game.moveString.startsWith(stringToCompare)) {
-          arrayOfStringMoves.push(game.moveString)
+      // Filtrowanie gier pasujących do historii ruchów
+      const arrayOfStringMoves = moveDB.games.filter((game) => game.moveString.startsWith(stringToCompare)).map((game) => game.moveString)
+
+      // console.log("Array of stringified moves:", arrayOfStringMoves)
+
+      // Pobranie fragmentów ruchów po dopasowanym fragmencie
+      const possibleMovesInNotation = arrayOfStringMoves.map((moveString) => moveString.split(stringToCompare)[1] || "")
+
+      // console.log("Possible moves in notation:", possibleMovesInNotation)
+
+      // Ekstrakcja pierwszego ruchu do spacji
+      const extractedMoves = [...new Set(possibleMovesInNotation.map((moveString) => moveString.split(" ")[0]))]
+      // console.log("Extracted moves:", extractedMoves)
+
+      for (const extractedMove of extractedMoves) {
+        if (!extractedMove) break
+        let performingFigureType: figureType
+        let targetPositionNotation: string = ""
+        let doesMoveCaptureFig: boolean = false
+        const letters = "abcdefgh"
+        switch (extractedMove.charAt(0).toLowerCase()) {
+          case "n":
+            performingFigureType = figureType.knight
+            break
+          case "k":
+            performingFigureType = figureType.king
+            break
+          case "q":
+            performingFigureType = figureType.queen
+            break
+          case "r":
+            performingFigureType = figureType.rook
+            break
+          case "b":
+            performingFigureType = figureType.bishop
+            break
+          default:
+            performingFigureType = figureType.pawn
+            break
         }
-      }
+        if (extractedMove.charAt(1).toLowerCase() === "x") {
+          // console.log("Extracted move captures figures:", extractedMove)
+          doesMoveCaptureFig = true
+        }
+        console.log("doesMoveCaptureFig:", doesMoveCaptureFig, "Move:", extractedMove)
 
-      const possibleMovesInNotation = []
-      for (const moveString of arrayOfStringMoves) {
-        possibleMovesInNotation.push(moveString.split(stringToCompare)[1])
-      }
+        const letterIndex = performingFigureType === figureType.pawn ? 0 : 1
+        const numIndex = performingFigureType === figureType.pawn ? 1 : 2
 
-      console.log(possibleMovesInNotation)
+        const lts = extractedMove.charAt(letterIndex + Number(doesMoveCaptureFig)).toLowerCase()
+        const nums = Number(extractedMove.charAt(numIndex + Number(doesMoveCaptureFig)).toLowerCase())
+        console.log(extractedMove)
+        // console.log(letters)
+        // console.log(lts)
+        if (letters.includes(lts)) {
+          targetPositionNotation += lts
+        } else {
+          console.error("something went wrong")
+        }
+
+        if (nums > 0 && nums <= 8) {
+          targetPositionNotation += nums
+        }
+        console.log(
+          "possible moves: ",
+          this.board.findValidMovesWithGivenArguments(this.aiColor, performingFigureType, doesMoveCaptureFig, targetPositionNotation),
+        )
+        const possibleMoves = this.board.findValidMovesWithGivenArguments(this.aiColor, performingFigureType, doesMoveCaptureFig, targetPositionNotation)
+        console.log(possibleMoves)
+        console.log(arrayOfMoves)
+        arrayOfMoves.push(...possibleMoves)
+        console.log(arrayOfMoves)
+        // console.log("Target notation is: ", targetPositionNotation)
+      }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
+    console.log("database moves table: ", arrayOfMoves)
     return arrayOfMoves
   }
 

@@ -55,7 +55,10 @@ class MoveRecorder {
 
       const white = this.formatMove(move1)
       const black = move2 ? this.formatMove(move2) : ""
-      result += white + " " + black + " "
+      result += white + " "
+      if (black !== "") {
+        result += black + " "
+      }
     }
     return result
   }

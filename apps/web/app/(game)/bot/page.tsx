@@ -249,42 +249,6 @@ export default function GameModeSelector() {
           <div className="flex flex-col space-y-4">
             <Input type="number" value={botDifficulty} onChange={handleDifficultyChange} placeholder={t("difficultyLevel")} />
 
-            <DialogHeader>
-              <DialogTitle>{t("selectColorTitle")}</DialogTitle>
-              <DialogDescription>{t("selectColorDesc")}</DialogDescription>
-            </DialogHeader>
-            <RadioGroup
-              value={selectedColor} // Upewniamy się, że wartość jest poprawnie ustawiona
-              onValueChange={(value) => {
-                setSelectedColor(value);
-              }}
-              className="flex gap-4 justify-center"
-            >
-              {/* Biały pionek */}
-              <label htmlFor="white" className="cursor-pointer">
-                <div
-                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
-                    selectedColor === color.White ? "border-primary" : "border-input"
-                  }`}
-                >
-                  <RadioGroupItem value="white" id="white" className="sr-only" />
-                  <ChessPawn className="h-16 w-16 text-white fill-white" />
-                </div>
-              </label>
-
-              {/* Czarny pionek */}
-              <label htmlFor="black" className="cursor-pointer">
-                <div
-                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
-                    selectedColor === color.Black ? "border-primary" : "border-input"
-                  }`}
-                >
-                  <RadioGroupItem value="black" id="black" className="sr-only" />
-                  <ChessPawn className="h-16 w-16 text-black fill-black" />
-                </div>
-              </label>
-            </RadioGroup>
-
             { /* Game type */}    
             <DialogHeader>
               <DialogTitle>{t("selectGameType")}</DialogTitle>
@@ -340,41 +304,6 @@ export default function GameModeSelector() {
       <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
         <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
           <div className="flex flex-col space-y-4">
-            <DialogHeader>
-              <DialogTitle>{t("selectColorTitle")}</DialogTitle>
-              <DialogDescription>{t("selectColorDesc")}</DialogDescription>
-            </DialogHeader>
-            <RadioGroup
-              value={selectedColor} // Upewniamy się, że wartość jest poprawnie ustawiona
-              onValueChange={(value) => {
-                setSelectedColor(value);
-              }}
-              className="flex gap-4 justify-center"
-            >
-              {/* Biały pionek */}
-              <label htmlFor="white" className="cursor-pointer">
-                <div
-                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
-                    selectedColor === color.White ? "border-primary" : "border-input"
-                  }`}
-                >
-                  <RadioGroupItem value="white" id="white" className="sr-only" />
-                  <ChessPawn className="h-16 w-16 text-white fill-white" />
-                </div>
-              </label>
-
-              {/* Czarny pionek */}
-              <label htmlFor="black" className="cursor-pointer">
-                <div
-                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
-                    selectedColor === color.Black ? "border-primary" : "border-input"
-                  }`}
-                >
-                  <RadioGroupItem value="black" id="black" className="sr-only" />
-                  <ChessPawn className="h-16 w-16 text-black fill-black" />
-                </div>
-              </label>
-            </RadioGroup>
             
             { /* Game type */}    
             <DialogHeader>
