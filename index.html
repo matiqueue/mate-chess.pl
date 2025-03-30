@@ -1,205 +1,214 @@
 <!DOCTYPE html>
+<!-- Deklaracja typu dokumentu HTML5 -->
 <html lang="pl">
+<!-- Definicja głównego języka strony jako polski -->
 <head>
+    <!-- Metadane strony -->
     <meta charset="UTF-8">
+    <!-- Kodowanie znaków UTF-8 dla poprawnego wyświetlania polskich liter -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Responsywność strony dla urządzeń mobilnych -->
     <title>mate-chess - Platforma Szachowa</title>
-    <!-- Bootstrap CSS -->
+    <!-- Tytuł strony widoczny na karcie przeglądarki -->
+
+    <!-- Zewnętrzne style i biblioteki -->
+    <!-- Bootstrap CSS - framework do stylizacji -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <!-- Bootstrap Icons - ikony do użycia w treści -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Własne style CSS -->
     <style>
+        /* Stylizacja globalna strony */
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: #f0f0f0;
-            color: #1a1a1a;
-            line-height: 1.8;
+            font-family: 'Montserrat', sans-serif; /* Czcionka Montserrat dla całej strony */
+            background: #f0f0f0; /* Jasnoszare tło */
+            color: #1a1a1a; /* Ciemny kolor tekstu */
+            line-height: 1.8; /* Większa odległość między liniami tekstu */
         }
         .navbar {
-            background: #1a1a1a;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background: #1a1a1a; /* Ciemne tło paska nawigacyjnego */
+            padding: 1.5rem 0; /* Wewnętrzny odstęp */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Cień pod paskiem */
         }
         .navbar-brand {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff !important;
+            font-size: 2rem; /* Rozmiar logo */
+            font-weight: 700; /* Pogrubiona czcionka logo */
+            color: #fff !important; /* Biały kolor logo */
         }
         .nav-link {
-            font-size: 1.25rem;
-            color: #fff !important;
-            margin: 0 1.5rem;
-            transition: opacity 0.3s;
+            font-size: 1.25rem; /* Rozmiar linków nawigacyjnych */
+            color: #fff !important; /* Biały kolor linków */
+            margin: 0 1.5rem; /* Odstępy między linkami */
+            transition: opacity 0.3s; /* Płynna zmiana przezroczystości przy najechaniu */
         }
         .nav-link:hover, .navbar-brand:hover {
-            opacity: 0.8;
+            opacity: 0.8; /* Zmniejszenie przezroczystości przy najechaniu */
         }
         .hero {
-            background: url('https://images.unsplash.com/photo-1586165368502-1bad197a6461?q=80&w=1916&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center/cover;
-            color: #fff;
-            padding: 10rem 2rem;
-            text-align: center;
-            position: relative;
+            background: url('https://images.unsplash.com/photo-1586165368502-1bad197a6461?q=80&w=1916&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center/cover; /* Tło sekcji hero z Unsplash */
+            color: #fff; /* Biały kolor tekstu */
+            padding: 10rem 2rem; /* Duży wewnętrzny odstęp */
+            text-align: center; /* Wyśrodkowanie tekstu */
+            position: relative; /* Pozycjonowanie relatywne dla nakładki */
         }
         .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            content: ''; /* Pusta zawartość dla nakładki */
+            position: absolute; /* Pozycja absolutna nakładki */
+            top: 0; left: 0; width: 100%; height: 100%; /* Pełne pokrycie sekcji */
+            background: rgba(0, 0, 0, 0.7); /* Ciemna nakładka dla kontrastu */
         }
         .hero > * {
-            position: relative;
-            z-index: 1;
+            position: relative; z-index: 1; /* Elementy nad nakładką */
         }
         .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            text-transform: uppercase;
+            font-size: 4rem; /* Duży rozmiar nagłówka */
+            font-weight: 800; /* Bardzo pogrubiona czcionka */
+            text-transform: uppercase; /* Wielkie litery */
         }
         .hero p {
-            font-size: 1.75rem;
-            font-weight: 300;
+            font-size: 1.75rem; /* Rozmiar tekstu pod nagłówkiem */
+            font-weight: 300; /* Lekka czcionka */
         }
         .btn-primary {
-            background: #fff;
-            border: 3px solid #1a1a1a;
-            color: #1a1a1a;
-            font-size: 1.5rem;
-            padding: 1rem 3rem;
-            border-radius: 30px;
-            transition: all 0.3s;
+            background: #fff; /* Białe tło przycisku */
+            border: 3px solid #1a1a1a; /* Czarna ramka */
+            color: #1a1a1a; /* Ciemny tekst */
+            font-size: 1.5rem; /* Rozmiar tekstu */
+            padding: 1rem 3rem; /* Wewnętrzny odstęp */
+            border-radius: 30px; /* Zaokrąglone rogi */
+            transition: all 0.3s; /* Płynne przejścia dla wszystkich zmian */
         }
         .btn-primary:hover {
-            background: #1a1a1a;
-            color: #fff;
-            transform: scale(1.05);
+            background: #1a1a1a; /* Ciemne tło przy najechaniu */
+            color: #fff; /* Biały tekst przy najechaniu */
+            transform: scale(1.05); /* Lekkie powiększenie przy najechaniu */
         }
         section {
-            padding: 6rem 0;
+            padding: 6rem 0; /* Odstęp wewnętrzny dla sekcji */
         }
         h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            text-align: center;
-            margin-bottom: 3rem;
+            font-size: 3rem; /* Rozmiar nagłówków sekcji */
+            font-weight: 700; /* Pogrubiona czcionka */
+            color: #1a1a1a; /* Ciemny kolor */
+            text-align: center; /* Wyśrodkowanie */
+            margin-bottom: 3rem; /* Odstęp pod nagłówkiem */
         }
         .card {
-            border: none;
-            background: #fff;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: transform 0.3s;
+            border: none; /* Brak ramki */
+            background: #fff; /* Białe tło */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+            border-radius: 15px; /* Zaokrąglone rogi */
+            padding: 2rem; /* Wewnętrzny odstęp */
+            margin-bottom: 2rem; /* Odstęp pod kartą */
+            transition: transform 0.3s; /* Płynne przesunięcie przy najechaniu */
         }
         .card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px); /* Podniesienie karty przy najechaniu */
         }
         .card-img-top {
-            height: 250px;
-            object-fit: cover;
-            border-radius: 15px 15px 0 0;
+            height: 250px; /* Stała wysokość obrazka */
+            object-fit: cover; /* Dopasowanie obrazka do rozmiaru */
+            border-radius: 15px 15px 0 0; /* Zaokrąglenie górnych rogów */
         }
         .card-body {
-            padding: 2rem;
+            padding: 2rem; /* Wewnętrzny odstęp w treści karty */
         }
         .card h3 {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-size: 2rem; /* Rozmiar nagłówka w karcie */
+            font-weight: 600; /* Średnio pogrubiona czcionka */
+            margin-bottom: 1.5rem; /* Odstęp pod nagłówkiem */
         }
         ul, ol {
-            font-size: 1.25rem;
-            padding-left: 2rem;
+            font-size: 1.25rem; /* Rozmiar tekstu w listach */
+            padding-left: 2rem; /* Wcięcie listy */
         }
         li {
-            margin-bottom: 1rem;
+            margin-bottom: 1rem; /* Odstęp między elementami listy */
         }
         pre {
-            background: #f8f8f8;
-            padding: 1.5rem;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            color: #333;
+            background: #f8f8f8; /* Jasnoszare tło kodu */
+            padding: 1.5rem; /* Wewnętrzny odstęp */
+            border-radius: 10px; /* Zaokrąglone rogi */
+            font-size: 1.1rem; /* Rozmiar tekstu kodu */
+            color: #333; /* Ciemniejszy kolor tekstu */
         }
         .accordion-button {
-            font-size: 1.5rem;
-            font-weight: 500;
-            background: #fff;
-            color: #1a1a1a;
-            padding: 1.5rem;
+            font-size: 1.5rem; /* Rozmiar tekstu przycisku akordeonu */
+            font-weight: 500; /* Średnio pogrubiona czcionka */
+            background: #fff; /* Białe tło */
+            color: #1a1a1a; /* Ciemny tekst */
+            padding: 1.5rem; /* Wewnętrzny odstęp */
         }
         .accordion-button:not(.collapsed) {
-            background: #f8f8f8;
-            color: #1a1a1a;
+            background: #f8f8f8; /* Jasnoszare tło po rozwinięciu */
+            color: #1a1a1a; /* Ciemny tekst */
         }
         .accordion-body {
-            font-size: 1.25rem;
-            padding: 2rem;
+            font-size: 1.25rem; /* Rozmiar tekstu w treści akordeonu */
+            padding: 2rem; /* Wewnętrzny odstęp */
         }
         footer {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 4rem 0;
-            text-align: center;
+            background: #1a1a1a; /* Ciemne tło stopki */
+            color: #fff; /* Biały tekst */
+            padding: 4rem 0; /* Wewnętrzny odstęp */
+            text-align: center; /* Wyśrodkowanie tekstu */
         }
         footer p {
-            font-size: 1.25rem;
-            margin: 0;
+            font-size: 1.25rem; /* Rozmiar tekstu w stopce */
+            margin: 0; /* Brak marginesu */
         }
         footer a {
-            color: #ccc;
-            font-size: 1.25rem;
-            text-decoration: none;
+            color: #ccc; /* Jasnoszary kolor linków */
+            font-size: 1.25rem; /* Rozmiar tekstu linków */
+            text-decoration: none; /* Brak podkreślenia */
         }
         footer a:hover {
-            color: #fff;
+            color: #fff; /* Biały kolor przy najechaniu */
         }
         .img-fluid {
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
+            border-radius: 10px; /* Zaokrąglone rogi obrazków */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+            margin-bottom: 1.5rem; /* Odstęp pod obrazkiem */
         }
 
-        /* New style for video section */
+        /* Stylizacja sekcji wideo */
         #instructional-video {
-            padding: 6rem 0;
+            padding: 6rem 0; /* Odstęp wewnętrzny dla sekcji wideo */
         }
-
         .embed-responsive {
-            position: relative;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            overflow: hidden;
-            max-width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative; /* Relatywne pozycjonowanie dla iframe */
+            height: 0; /* Zerowa wysokość dla proporcji */
+            padding-bottom: 56.25%; /* Proporcje 16:9 */
+            overflow: hidden; /* Ukrycie nadmiaru */
+            max-width: 100%; /* Maksymalna szerokość */
+            display: flex; /* Wyśrodkowanie wideo */
+            justify-content: center; /* Poziome wyśrodkowanie */
+            align-items: center; /* Pionowe wyśrodkowanie */
         }
-
         .embed-responsive iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; /* Absolutne pozycjonowanie wideo */
+            top: 0; left: 0; /* Wypełnienie całego kontenera */
+            width: 100%; height: 100%; /* Pełne wymiary */
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Nawigacja -->
+    <!-- Pasek nawigacyjny z logo i linkami -->
     <nav class="navbar navbar-expand-lg sticky-top">
+        <!-- Kontener Bootstrap dla responsywności -->
         <div class="container">
+            <!-- Logo strony jako link -->
             <a class="navbar-brand" href="#">mate-chess</a>
+            <!-- Przycisk rozwijania menu na urządzeniach mobilnych -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <!-- Lista linków nawigacyjnych -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Elementy nawigacji -->
                     <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">O Projekcie</a></li>
                     <li class="nav-item"><a class="nav-link" href="#installation">Instalacja</a></li>
@@ -210,24 +219,27 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Sekcja Hero -->
+    <!-- Główna sekcja powitalna z tłem i przyciskiem CTA -->
     <section id="home" class="hero">
         <div class="container">
-            <h1>mate-chess</h1>
-            <p>Minimalistyczna platforma szachowa dla pasjonatów</p>
-            <a href="#installation" class="btn btn-primary mt-4">Rozpocznij</a>
+            <h1>mate-chess</h1> <!-- Główny nagłówek -->
+            <p>Minimalistyczna platforma szachowa dla pasjonatów</p> <!-- Podtytuł -->
+            <a href="#installation" class="btn btn-primary mt-4">Rozpocznij</a> <!-- Przycisk akcji -->
         </div>
     </section>
 
-    <!-- Instructional Video Section -->
+    <!-- Sekcja Wideo Instruktażowego -->
+    <!-- Sekcja z osadzonym wideo instruktażowym -->
     <section id="instructional-video" class="container my-5">
-        <h2 class="text-center mb-4">Instrukcja Obsługi</h2>
+        <h2 class="text-center mb-4">Instrukcja Obsługi</h2> <!-- Nagłówek sekcji -->
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-10">
                 <div class="card">
                     <div class="card-body">
+                        <!-- Kontener na wideo z proporcjami 16:9 -->
                         <div class="embed-responsive">
-                            <iframe class="embed-responsive-item" src="./public/tutorial.mp4" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="./public/tutorial.mp4" allowfullscreen></iframe> <!-- Osadzone wideo -->
                         </div>
                     </div>
                 </div>
@@ -235,15 +247,17 @@
         </div>
     </section>
 
-    <!-- About Section -->
+    <!-- Sekcja O Projekcie -->
+    <!-- Informacje o projekcie mate-chess -->
     <section id="about" class="container">
-        <h2>O mate-chess</h2>
+        <h2>O mate-chess</h2> <!-- Nagłówek sekcji -->
         <div class="row g-4">
+            <!-- Karta z funkcjonalnościami -->
             <div class="col-md-6">
                 <div class="card">
                     <img src="https://plus.unsplash.com/premium_photo-1675762226695-bec5748d4d00?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hlc3Nib2FyZHxlbnwwfHwwfHx8MA%3D%3D" class="card-img-top" alt="Minimalistyczna szachownica">
                     <div class="card-body">
-                        <h3><i class="bi bi-chess me-2"></i>Funkcjonalności</h3>
+                        <h3><i class="bi bi-chess me-2"></i>Funkcjonalności</h3> <!-- Podtytuł z ikoną -->
                         <ul>
                             <li>Gra z AI na poziomach: łatwy, średni, trudny.</li>
                             <li>Rozgrywki online z czatem i globalnymi rankingami.</li>
@@ -254,11 +268,12 @@
                     </div>
                 </div>
             </div>
+            <!-- Karta z technologiami -->
             <div class="col-md-6">
                 <div class="card">
                     <img src="https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDExfHx8ZW58MHx8fHx8" class="card-img-top" alt="Pionki na szachownicy">
                     <div class="card-body">
-                        <h3><i class="bi bi-gear me-2"></i>Technologie</h3>
+                        <h3><i class="bi bi-gear me-2"></i>Technologie</h3> <!-- Podtytuł z ikoną -->
                         <ul>
                             <li>Node.js – serwer i zarządzanie pakietami.</li>
                             <li>Rust – wydajny silnik szachowy.</li>
@@ -274,16 +289,18 @@
         </div>
     </section>
 
-    <!-- Installation Section -->
+    <!-- Sekcja Instalacji -->
+    <!-- Instrukcje instalacji projektu -->
     <section id="installation" class="bg-light">
         <div class="container">
-            <h2>Instalacja</h2>
+            <h2>Instalacja</h2> <!-- Nagłówek sekcji -->
             <div class="row g-4">
+                <!-- Karta z wymaganiami -->
                 <div class="col-md-6">
                     <div class="card">
                         <img src="https://images.unsplash.com/photo-1617083320139-cbee2608df91?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNoZXNzYm9hcmR8ZW58MHx8MHx8fDA%3D" class="card-img-top" alt="Szachy i technologia">
                         <div class="card-body">
-                            <h3><i class="bi bi-tools me-2"></i>Wymagania</h3>
+                            <h3><i class="bi bi-tools me-2"></i>Wymagania</h3> <!-- Podtytuł z ikoną -->
                             <ul>
                                 <li>Node.js (wersja 16 lub wyższa)</li>
                                 <li>Rust (stable channel)</li>
@@ -294,26 +311,27 @@
                         </div>
                     </div>
                 </div>
+                <!-- Karta z krokami instalacji -->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h3><i class="bi bi-terminal me-2"></i>Kroki Instalacji</h3>
+                            <h3><i class="bi bi-terminal me-2"></i>Kroki Instalacji</h3> <!-- Podtytuł z ikoną -->
                             <ol>
-                                <li><pre><code>git clone https://github.com/matiqueue/mate-chess.pl.git</code></pre></li>
-                                <li><pre><code>cd mate-chess.pl</code></pre></li>
-                                <li><pre><code>pnpm install</code></pre></li>
-                                <li>Środowisko:
+                                <li><pre><code>git clone https://github.com/matiqueue/mate-chess.pl.git</code></pre></li> <!-- Klonowanie repozytorium -->
+                                <li><pre><code>cd mate-chess.pl</code></pre></li> <!-- Wejście do katalogu projektu -->
+                                <li><pre><code>pnpm install</code></pre></li> <!-- Instalacja zależności -->
+                                <li>Środowisko: <!-- Konfiguracja środowiska -->
                                     <ul>
                                         <li>macOS: <code>pnpm env:mac</code></li>
                                         <li>Windows: <code>pnpm env:win</code></li>
                                         <li>Linux: <code>pnpm env:linux</code></li>
                                     </ul>
                                 </li>
-                                <li>Tryb deweloperski: <pre><code>pnpm dev</code></pre></li>
-                                <li>Budowanie: <pre><code>pnpm build</code></pre></li>
-                                <li>Start (np. web): <pre><code>cd apps/web && pnpm start</code></pre></li>
+                                <li>Tryb deweloperski: <pre><code>pnpm dev</code></pre></li> <!-- Uruchomienie w trybie deweloperskim -->
+                                <li>Budowanie: <pre><code>pnpm build</code></pre></li> <!-- Budowanie projektu -->
+                                <li>Start (np. web): <pre><code>cd apps/web && pnpm start</code></pre></li> <!-- Uruchomienie aplikacji webowej -->
                             </ol>
-                            <p>Docker: <pre><code>docker run -p 3000:3000 matiqueue/mate-chess:latest</code></pre></p>
+                            <p>Docker: <pre><code>docker run -p 3000:3000 matiqueue/mate-chess:latest</code></pre></p> <!-- Uruchomienie w Dockerze -->
                         </div>
                     </div>
                 </div>
@@ -321,10 +339,12 @@
         </div>
     </section>
 
-    <!-- Documentation Section -->
+    <!-- Sekcja Dokumentacji -->
+    <!-- Akordeon z dokumentacją różnych komponentów projektu -->
     <section id="documentation" class="container">
-        <h2>Dokumentacja</h2>
+        <h2>Dokumentacja</h2> <!-- Nagłówek sekcji -->
         <div class="accordion" id="docsAccordion">
+            <!-- Element akordeonu: Aplikacja Webowa -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#webApp">
@@ -340,6 +360,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Element akordeonu: Panel Admina -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminPanel">
@@ -355,6 +376,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Element akordeonu: Aplikacja Desktopowa -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#desktopApp">
@@ -370,6 +392,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Element akordeonu: Serwer -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#server">
@@ -384,6 +407,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Element akordeonu: Aplikacja Błędów -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#errors">
@@ -398,6 +422,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Element akordeonu: Pakiety -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#packages">
@@ -419,16 +444,18 @@
         </div>
     </section>
 
-    <!-- Resources Section -->
+    <!-- Sekcja Zasobów -->
+    <!-- Informacje o repozytorium i aplikacjach online -->
     <section id="resources" class="bg-light">
         <div class="container">
-            <h2>Zasoby</h2>
+            <h2>Zasoby</h2> <!-- Nagłówek sekcji -->
             <div class="row g-4">
+                <!-- Karta z informacjami o GitHub -->
                 <div class="col-md-6">
                     <div class="card">
                         <img src="https://images.unsplash.com/photo-1654277041218-84424c78f0ae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGdpdGh1YnxlbnwwfHwwfHx8MA%3D%3D" class="card-img-top" alt="Szachy i kod">
                         <div class="card-body">
-                            <h3><i class="bi bi-github me-2"></i>GitHub</h3>
+                            <h3><i class="bi bi-github me-2"></i>GitHub</h3> <!-- Podtytuł z ikoną -->
                             <p><a href="https://github.com/matiqueue/mate-chess.pl">github.com/matiqueue/mate-chess.pl</a></p>
                             <ul>
                                 <li><strong>Actions:</strong> Automatyzacja CI/CD – testy, budowanie, deploy.</li>
@@ -441,11 +468,12 @@
                         </div>
                     </div>
                 </div>
+                <!-- Karta z aplikacjami online -->
                 <div class="col-md-6">
                     <div class="card">
                         <img src="https://plus.unsplash.com/premium_photo-1720152307132-ac9bb41fe2d8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8b25saW5lJTIwd2ViJTIwYXBwbGljYXRpb258ZW58MHx8MHx8fDA%3D" class="card-img-top" alt="Szachy online">
                         <div class="card-body">
-                            <h3><i class="bi bi-globe2 me-2"></i>Aplikacje Online</h3>
+                            <h3><i class="bi bi-globe2 me-2"></i>Aplikacje Online</h3> <!-- Podtytuł z ikoną -->
                             <ul>
                                 <li><a href="https://mate-chess-pl.vercel.app">Web</a>: Graj, przeglądaj rankingi, dostosuj szachownicę.</li>
                                 <li><a href="https://admin-mate-chess-pl.vercel.app">Admin</a>: Zarządzaj graczami, analizuj logi.</li>
@@ -458,30 +486,38 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Stopka -->
+    <!-- Informacje o prawach autorskich i linki -->
     <footer>
         <div class="container">
-            <p>© 2023 mate-chess</p>
-            <p>Zdjęcia: <a href="https://unsplash.com">Unsplash</a></p>
-            <a href="#home">Wróć na górę</a>
+            <p>© 2023 mate-chess</p> <!-- Informacja o prawach autorskich -->
+            <p>Zdjęcia: <a href="https://unsplash.com">Unsplash</a></p> <!-- Źródło zdjęć -->
+            <a href="#home">Wróć na górę</a> <!-- Link powrotu na górę strony -->
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Skrypty zewnętrzne -->
+    <!-- Bootstrap JS - biblioteka dla interaktywności -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Własny skrypt JavaScript -->
     <script>
-        // Płynne przewijanie
+        // Płynne przewijanie do sekcji po kliknięciu linków
         document.querySelectorAll('.nav-link, footer a[href="#home"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
+                e.preventDefault(); // Zapobieganie domyślnemu zachowaniu linku
+                const targetId = this.getAttribute('href').substring(1); // Pobranie ID sekcji
+                const targetSection = document.getElementById(targetId); // Znalezienie sekcji
                 window.scrollTo({
-                    top: targetSection.offsetTop - 80,
-                    behavior: 'smooth'
+                    top: targetSection.offsetTop - 80, // Przewinięcie z marginesem od góry
+                    behavior: 'smooth' // Płynne przewijanie
                 });
             });
         });
     </script>
 </body>
 </html>
+
+<!-- 
+    Autor: matiqueue (Szymon Góral)
+    @source Własna implementacja
+-->
