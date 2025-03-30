@@ -61,7 +61,7 @@ export default function ChessPage() {
   const selectedTimer = searchParams.get("gameType") || "300"
 
   useEffect(() => {
-    console.error("ChessPage: ", selectedColor)
+    console.log("ChessPage: ", selectedColor)
   }, [])
 
   return (
