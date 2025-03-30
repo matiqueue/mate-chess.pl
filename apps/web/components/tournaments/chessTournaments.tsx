@@ -11,6 +11,25 @@ import { useTranslation } from "react-i18next"
 
 const MotionCard = motion(Card)
 
+/**
+ * Interfejs Tournament
+ *
+ * Definiuje strukturę obiektu reprezentującego turniej szachowy.
+ *
+ * @property {number} id - Unikalny identyfikator turnieju.
+ * @property {string} nameKey - Klucz nazwy turnieju używany w tłumaczeniach.
+ * @property {Date} startDate - Data rozpoczęcia turnieju.
+ * @property {Date} endDate - Data zakończenia turnieju.
+ * @property {number} participants - Liczba aktualnych uczestników.
+ * @property {number} maxParticipants - Maksymalna liczba uczestników.
+ * @property {"upcoming" | "active" | "finished"} status - Status turnieju.
+ * @property {string} [winner] - Nazwa zwycięzcy (opcjonalne, dla zakończonych turniejów).
+ * @property {string} logo - URL logo turnieju.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 interface Tournament {
   id: number
   nameKey: string
@@ -27,7 +46,6 @@ const tournaments: Tournament[] = [
   {
     id: 1,
     nameKey: "springChessChampionship",
-    // Ustawiamy daty w UTC, żeby serwer i klient liczyły tak samo
     startDate: new Date(Date.UTC(2024, 2, 1)),
     endDate: new Date(Date.UTC(2024, 2, 15)),
     participants: 64,
@@ -78,6 +96,19 @@ const floatingAnimation = {
   },
 }
 
+/**
+ * ChessTournaments
+ *
+ * Główny komponent strony wyświetlającej turnieje szachowe.
+ * Umożliwia przeglądanie listy turniejów w formie karuzeli z animacjami,
+ * obsługuje przeciąganie myszą oraz rejestrację na nadchodzące turnieje.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący stronę z turniejami szachowymi.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 export default function ChessTournaments() {
   const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(1)
@@ -85,15 +116,10 @@ export default function ChessTournaments() {
   const dragStartX = useRef(0)
   const { theme } = useTheme()
 
-  // Na starcie isWideScreen jest null, więc serwer i klient zwrócą identyczny HTML (placeholder).
-  // Potem dopiero w useEffect pobieramy szerokość okna.
   const [isWideScreen, setIsWideScreen] = useState<boolean | null>(null)
-
-  // Przechowujemy w tablicy dni do startu każdego turnieju, liczone dopiero na kliencie.
   const [daysUntilStart, setDaysUntilStart] = useState<number[]>([])
 
   useEffect(() => {
-    // Liczymy dni do startu dopiero w przeglądarce, unikamy różnic z SSR
     const now = new Date()
     const updated = tournaments.map((t) => {
       if (t.status === "upcoming") {
@@ -105,7 +131,6 @@ export default function ChessTournaments() {
   }, [])
 
   useEffect(() => {
-    // Dopiero w przeglądarce sprawdzamy szerokość
     const handleResize = () => {
       setIsWideScreen(window.innerWidth >= 1600)
     }
@@ -114,8 +139,6 @@ export default function ChessTournaments() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // Jeśli isWideScreen jest null, znaczy że jeszcze nie wiemy, czy ekran jest szeroki.
-  // Zwracamy placeholder, który będzie identyczny na serwerze i kliencie (unikanie błędu hydracji).
   if (isWideScreen === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -143,7 +166,6 @@ export default function ChessTournaments() {
     }
   }
 
-  // Formatowanie dat w strefie UTC, żeby serwer i klient mieli identyczne wartości
   const formatDate = (date: Date) =>
     new Intl.DateTimeFormat("en-US", {
       year: "numeric",
@@ -176,13 +198,13 @@ export default function ChessTournaments() {
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className=" text-foreground flex flex-col items-center w-full py-10"
+        className="text-foreground flex flex-col items-center w-full py-10"
       >
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-12">{t("chessTournaments.heading")}</h1>
 
-        <div className="relative w-full md:w-[70vw] ">
+        <div className="relative w-full md:w-[70vw]">
           <div
-            className="flex justify-center items-center items overflow-hidden h-[50vh]"
+            className="flex justify-center items-center overflow-hidden h-[50vh]"
             onMouseDown={handleDragStart}
             onMouseUp={handleDragEnd}
             onMouseLeave={() => setIsDragging(false)}
