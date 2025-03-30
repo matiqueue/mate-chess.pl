@@ -1,7 +1,7 @@
 "use client" // Dyrektywa określająca, że komponent działa po stronie klienta
 
 // Importy bibliotek i komponentów
-import { useState } from "react" // Hook React do zarządzania stanem
+import { useEffect, useState } from "react" // Hook React do zarządzania stanem
 import { Button } from "@workspace/ui/components/button" // Komponent przycisku UI
 import {
   Eye,
@@ -34,7 +34,8 @@ import { useTranslation } from "react-i18next" // Hook do obsługi tłumaczeń
 import { figureType } from "@modules/types" // Typy figur szachowych
 import MoveRecordPublic from "@modules/chess/history/move" // Komponent historii ruchów
 import { color } from "@modules/types" // Typy kolorów figur
-import { useSidebarContext } from "@/contexts/SidebarContext" // Kontekst paska bocznego
+import { useSidebarContext } from "@/contexts/SidebarContext"
+import { getNerdData } from "@chess-engine/functions" // Kontekst paska bocznego
 
 /**
  * ToggleSidebarButtonProps
@@ -67,7 +68,7 @@ interface ToggleSidebarButtonProps {
  */
 function ToggleSidebarButton({ isNarrow }: ToggleSidebarButtonProps) {
   const { mode, setMode, logToSidebar } = useSidebarContext()
-
+  const { getNerdDataString } = useGameContext()
   // Funkcja przełączająca tryb paska bocznego
   const toggleMode = () => {
     setMode(mode === "default" ? "console" : "default")
@@ -78,6 +79,9 @@ function ToggleSidebarButton({ isNarrow }: ToggleSidebarButtonProps) {
     logToSidebar(`Log entry at ${new Date().toLocaleTimeString()}`)
   }
 
+  useEffect(() => {
+    logToSidebar(getNerdDataString())
+  }, [getNerdDataString()])
   const buttonClass = isNarrow
     ? "w-fit p-2 flex items-center justify-center"
     : "flex-1 min-w-[100px] text-sm whitespace-nowrap flex items-center justify-center"

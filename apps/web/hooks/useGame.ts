@@ -25,6 +25,7 @@ import {
   undoMove,
   whosTurn,
   callAiToPerformMove,
+  getNerdData,
 } from "@modules/index" // Funkcje silnika szachowego
 import { color, figureType } from "@chess-engine/types" // Typy dla kolorów i figur
 import MovePair from "@shared/types/movePair" // Typ dla par ruchów
@@ -32,22 +33,22 @@ import { gameStatusType } from "@shared/types/gameStatusType" // Typ statusu gry
 import ChessGameExtraAI from "@modules/chessGameExtraAI" // Klasa gry z AI
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer" // Klasa gry bez AI
 /*
-* useGame
-*
-* Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
-* historią ruchów, timerami graczy, statusem gry i ruchami AI (jeśli włączone).
-*
-* @param {boolean} [ai=false] - Czy gra jest z przeciwnikiem AI.
-* @param {string} selectedColor - Wybrany kolor gracza (obecnie niewykorzystany w logice).
-* @param {number} timer - Początkowy czas w sekundach dla każdego gracza.
-* @returns {Object} Obiekt z metodami i stanem gry szachowej.
-*
-* @remarks
-* Hook inicjalizuje grę (z AI lub bez), aktualizuje stany po każdym ruchu i obsługuje
-* timery z logiką końca czasu. Zawiera metody do manipulacji grą (ruchy, promocje, cofanie).
-* Autor: matiqueue (Szymon Góral)
-* @source Własna implementacja
-*/
+ * useGame
+ *
+ * Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
+ * historią ruchów, timerami graczy, statusem gry i ruchami AI (jeśli włączone).
+ *
+ * @param {boolean} [ai=false] - Czy gra jest z przeciwnikiem AI.
+ * @param {string} selectedColor - Wybrany kolor gracza (obecnie niewykorzystany w logice).
+ * @param {number} timer - Początkowy czas w sekundach dla każdego gracza.
+ * @returns {Object} Obiekt z metodami i stanem gry szachowej.
+ *
+ * @remarks
+ * Hook inicjalizuje grę (z AI lub bez), aktualizuje stany po każdym ruchu i obsługuje
+ * timery z logiką końca czasu. Zawiera metody do manipulacji grą (ruchy, promocje, cofanie).
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 
 const useGame = (ai: boolean = false, selectedColor: string, timer: number, level: number) => {
   const [game, setGame] = useState<any>(null)
@@ -71,8 +72,8 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number, leve
   const [timestampWhite, setTimeStampWhite] = useState(Date.now())
   // Sygnatura czasowa dla czarnych
   const [timestampBlack, setTimeStampBlack] = useState(Date.now())
-  
-    // Inicjalizacja gry
+
+  // Inicjalizacja gry
   useEffect(() => {
     const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black, level) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
     startGame(newGame)
@@ -251,6 +252,9 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number, leve
     setGameStatus(getGameStatus(game)) // Aktualizacja statusu gry
   }
 
+  const getNerdDataString = () => {
+    return getNerdData(game)
+  }
   /**
    * promoteFigure
    *
@@ -290,6 +294,7 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number, leve
     getPositionById: (id: number) => getPositionById(getBoard(game), id), // Pobieranie pozycji po ID
     setGameStatus, // Metoda ustawiania statusu gry
     aiMovePerform, // Metoda wywoływania ruchu AI
+    getNerdDataString,
   }
 }
 
