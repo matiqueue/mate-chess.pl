@@ -144,21 +144,32 @@ class ChessGame {
         this.board.forwardMove()
       }
     }
-    if (!this._isGameOn) return false
-    if (move.from.figure?.color === this.currentPlayer) {
-      if (this._board?.moveFigure(move)) {
-        const figures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
-        for (const figure of figures) {
-          if (figure instanceof Pawn) {
-            figure.isEnPassantPossible = false
-          }
-        }
-        this.switchCurrentPlayer()
-        this.board.initPreview()
-        return true
-      }
+
+    if (!this._isGameOn) {
+      console.log("Game is not active")
+      return false
     }
-    return false
+
+    if (move.from.figure?.color !== this.currentPlayer) {
+      console.log("Wrong current player")
+      return false
+    }
+
+    if (!this._board?.moveFigure(move)) {
+      console.log("moveFigure returned false")
+      return false
+    }
+
+    const opponentFigures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
+    opponentFigures.forEach((fig) => {
+      if (fig instanceof Pawn) {
+        fig.isEnPassantPossible = false
+      }
+    })
+
+    this.switchCurrentPlayer()
+    this.board.initPreview()
+    return true
   }
   /**
    * Undoes the last move made by the player using preview mode logic.
