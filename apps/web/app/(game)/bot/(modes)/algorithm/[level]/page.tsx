@@ -3,7 +3,7 @@
 import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { color } from "@chess-engine/types"
@@ -34,15 +34,15 @@ function ChessPageContent() {
 }
 
 export default function ChessPage() {
-  const searchParams = useSearchParams();
-  const selectedColor = searchParams.get("selectedColor") || "white"; 
-  
-  useEffect( () => {
-    console.error("ChessPage: ", selectedColor)
+  const searchParams = useSearchParams()
+  const selectedColor = searchParams.get("selectedColor") || "white"
+
+  useEffect(() => {
+    console.log("ChessPage: ", selectedColor)
   }, [])
 
   return (
-    <GameProvider ai={true} selectedColor={ selectedColor }>
+    <GameProvider ai={true} selectedColor={selectedColor}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
