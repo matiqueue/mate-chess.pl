@@ -29,7 +29,8 @@ const socket = io("http://localhost:4000")
  * @returns {JSX.Element} Element JSX reprezentujący nawigację.
  *
  * @remarks
- * Autor: nasakrator
+ * Autor: matiqueue (Szymon Góral)
+ * Source: Własna implementacja
  */
 function Navbar({ code }: { code: string }) {
   const { open, setOpen } = useSidebar()
