@@ -295,6 +295,7 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number, leve
     setGameStatus, // Metoda ustawiania statusu gry
     aiMovePerform, // Metoda wywoływania ruchu AI
     getNerdDataString,
+    aiColor: () => (game.aiColor ? game.aiColor : null),
   }
 }
 

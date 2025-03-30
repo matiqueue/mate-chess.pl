@@ -11,13 +11,17 @@ export function getNotation(rowIndex: number, colIndex: number): string {
 }
 
 export function useChessBoardInteractions() {
-  const { board, movePiece, getValidMoves, currentPlayer, isPreviewMode } = useGameContext()
+  const { board, movePiece, getValidMoves, currentPlayer, isPreviewMode, aiColor } = useGameContext()
   const [selectedSquare, setSelectedSquare] = useState<Position | null>(null)
   const [validMoves, setValidMoves] = useState<Position[]>([])
   const [showPreviewAlert, setShowPreviewAlert] = useState(false)
 
   const handleSquareClick = (rowIndex: number, colIndex: number) => {
     if (!board) return
+
+    // @ts-ignore
+    //it is intentional
+    if (currentPlayer === aiColor) return
 
     const notation = getNotation(rowIndex, colIndex)
     const square = board.getPositionByNotation(notation)
