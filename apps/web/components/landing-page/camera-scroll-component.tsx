@@ -14,7 +14,7 @@ import * as THREE from "three" // Import całej biblioteki Three.js do obsługi 
  * Komponent definiuje zestaw pozycji docelowych dla kamery i płynnie interpoluje między nimi
  * za pomocą metody `lerp`. Wykorzystuje zdarzenie przewijania (`wheel`) do zmiany sekcji
  * oraz `requestAnimationFrame` do ciągłej animacji kamery.
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral), Wojciech Piątek
  * @source Własna implementacja
  */
 const CameraScrollComponent = (camera: THREE.PerspectiveCamera): THREE.PerspectiveCamera => {

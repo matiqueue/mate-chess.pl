@@ -31,7 +31,7 @@ const fraunces = Fraunces({
  * Komponent ładuje model GLTF szachownicy, ustawia środowisko HDR i animuje kamerę między
  * predefiniowanymi pozycjami. Wykorzystuje `OrbitControls` z wyłączonymi funkcjami
  * obracania i zoomu dla uproszczenia interakcji.
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral), Wojciech Piątek
  * @source Własna implementacja
  */
 const Chessboard: React.FC = () => {
