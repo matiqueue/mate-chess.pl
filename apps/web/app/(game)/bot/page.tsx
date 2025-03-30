@@ -12,9 +12,8 @@ import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
-import { color } from "@chess-engine/types"
 import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
-import { createLucideIcon } from "lucide-react";
+
 
 /**
  * Obiekt animacji kontenera.
@@ -359,7 +358,3 @@ export default function GameModeSelector() {
     </ScrollArea>
   )
 }
-
-export const ChessPawn = createLucideIcon("ChessPawn", [
-  ["path", { d: "M12 2C9.79 2 8 3.79 8 6c0 1.47.8 2.75 2 3.45V11H8a1 1 0 0 0-1 1v2h10v-2a1 1 0 0 0-1-1h-2V9.45c1.2-.7 2-1.98 2-3.45 0-2.21-1.79-4-4-4Zm-4 14a2 2 0 0 0-2 2v2h12v-2a2 2 0 0 0-2-2H8Z", key: "1" }]
-]);
