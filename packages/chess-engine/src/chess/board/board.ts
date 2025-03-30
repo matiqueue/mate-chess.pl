@@ -4,7 +4,6 @@ import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import { figureType } from "@shared/types/figureType"
 import MoveRecord from "@shared/types/moveRecord"
-import { getPositionByNotation } from "@shared/destruct/mallocFunctions/positonMapping.js"
 
 /**
  * Class representing a chess board. <br>
@@ -21,7 +20,7 @@ class Board {
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
   private _moveHistory: MoveRecord[] = []
-  private _redoStack: MoveRecord[] = []
+
   private _previewIndex: number = 0
   private _previewMode: boolean = false
 

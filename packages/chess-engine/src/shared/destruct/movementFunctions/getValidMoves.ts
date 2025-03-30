@@ -1,4 +1,3 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Position, Board } from "@utils/boardUtils"
 import { Move } from "@shared/types/moveType"
 import { color } from "@shared/types/colorType"

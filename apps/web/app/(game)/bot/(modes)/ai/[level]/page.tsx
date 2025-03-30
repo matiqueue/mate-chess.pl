@@ -1,4 +1,6 @@
 "use client"
+/* eslint-disable @next/next/no-server-import-in-page */
+
 
 import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameProvider } from "@/contexts/GameContext"

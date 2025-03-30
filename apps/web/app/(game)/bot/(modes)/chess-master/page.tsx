@@ -1,11 +1,14 @@
 "use client"
 
+/* eslint-disable @next/next/no-server-import-in-page */
+
 import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 /**
  * ChessPageContent
@@ -55,14 +58,11 @@ function ChessPageContent() {
  * @remarks
  * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis).
  */
-export default function ChessPage() {
-  const searchParams = useSearchParams()
-  const selectedColor = searchParams.get("selectedColor") || "white"
-  const selectedTimer = searchParams.get("gameType") || "300"
 
-  useEffect(() => {
-    console.log("ChessPage: ", selectedColor)
-  }, [])
+function SearchParamsComponent() {
+  const searchParams = useSearchParams();
+  const selectedColor = searchParams.get("selectedColor") || "white";
+  const selectedTimer = searchParams.get("gameType") || "300";
 
   return (
     <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)}>
@@ -70,5 +70,13 @@ export default function ChessPage() {
         <ChessPageContent />
       </GameViewProvider>
     </GameProvider>
-  )
+  );
+}
+
+export default function ChessPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchParamsComponent />
+    </Suspense>
+  );
 }

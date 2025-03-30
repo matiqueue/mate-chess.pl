@@ -1,5 +1,3 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
-import chessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { color } from "@shared/types/colorType"
 import ChessGame from "@modules/chess/chessGame"
 

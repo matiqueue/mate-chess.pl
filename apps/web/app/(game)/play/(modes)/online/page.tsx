@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
@@ -83,6 +84,7 @@ function FloatingPaths({ position }: { position: number }) {
   )
 }
 
+/* eslint-disable @next/next/no-server-import-in-page */
 export default function OnlineLobby() {
   const { t } = useTranslation()
   const { isSignedIn, user } = useUser()

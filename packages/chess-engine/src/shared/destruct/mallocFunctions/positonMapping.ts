@@ -1,4 +1,3 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Board } from "@utils/boardUtils"
 import ChessGame from "@modules/chess/chessGame"
 
