@@ -90,8 +90,9 @@ export default function OnlineLobby() {
   const { isSignedIn, user } = useUser()
   const { theme } = useTheme()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const lobbyId = searchParams.get("lobbyId")
+  //const searchParams = useSearchParams()
+  //const lobbyId = searchParams.get("lobbyId")
+  const lobbyId = "notready"
 
   const [mounted, setMounted] = useState(false)
   const [lobby, setLobby] = useState<Player[]>([])
