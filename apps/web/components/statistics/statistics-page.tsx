@@ -15,15 +15,31 @@ import { motion } from "framer-motion"
 import { useTheme } from "next-themes"
 
 /**
- * @typedef {Object} Game
+ * Interfejs Game
+ *
+ * Definiuje strukturę obiektu reprezentującego pojedynczą grę.
+ *
  * @property {string} id - Unikalny identyfikator gry.
  * @property {string} result - Wynik gry.
  * @property {string} opponent - Nazwa przeciwnika.
  * @property {string} eloChange - Zmiana ratingu ELO.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
  */
+interface Game {
+  id: string
+  result: string
+  opponent: string
+  eloChange: string
+}
 
 /**
- * @typedef {Object} UserProfile
+ * Interfejs UserProfile
+ *
+ * Definiuje strukturę obiektu reprezentującego profil użytkownika.
+ *
  * @property {string} clerkUserId - Identyfikator użytkownika z systemu Clerk.
  * @property {number} gamesPlayed - Liczba rozegranych gier.
  * @property {number} winPercentage - Procent zwycięstw.
@@ -34,19 +50,37 @@ import { useTheme } from "next-themes"
  * @property {string} [joinDate] - Data dołączenia użytkownika.
  * @property {string} [avatar] - URL awatara użytkownika.
  * @property {string} [name] - Pełna nazwa użytkownika.
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
  */
+interface UserProfile {
+  clerkUserId: string
+  gamesPlayed: number
+  winPercentage: number
+  eloPoints: number
+  timePlayed: string
+  lastGames: Game[]
+  nickname?: string
+  joinDate?: string
+  avatar?: string
+  name?: string
+}
 
 /**
- * Komponent StatisticsPage
+ * StatisticsPage
  *
- * Renderuje stronę statystyk użytkownika, pokazując dane profilowe, postępy oraz listę ostatnich gier.
+ * Komponent renderujący stronę statystyk użytkownika. Wyświetla dane profilowe,
+ * postępy w grze oraz listę ostatnich gier z animacjami i responsywnym układem.
  *
  * @returns {JSX.Element} Element JSX reprezentujący stronę statystyk.
  *
  * @remarks
- * Autor: nasakrator (Kuba Batko)
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
  */
-export default function StatisticsPage() {
+export default function StatisticsPage(): JSX.Element {
   const { t } = useTranslation()
   const { user } = useUser()
   const [profile, setProfile] = useState<UserProfile | null>(null)
