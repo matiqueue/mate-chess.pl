@@ -13,6 +13,10 @@ const FIGURE_SYMBOLS: Record<figureType, string> = {
   [figureType.pawn]: "",
 }
 
+/**
+ * Class used to generate move history of game instance into various data types such as string or array of MoveRecord objects.
+ *
+ * */
 class MoveRecorder {
   private _game: ChessGame
   private _moveHistoryPublic: MovePair[]
@@ -22,6 +26,12 @@ class MoveRecorder {
     this._moveHistoryPublic = []
   }
 
+  /**
+   * Generates move history based on the input params.
+   *
+   * @param movesArray - moves array that generated Move History has to be based on
+   * @return MovePair - a pair of one white and (if exists) one black move.
+   * */
   public regenerateMoveHistory(movesArray: MoveRecord[]): MovePair[] {
     const moves = this.moveCleanup(movesArray)
     const result: MovePair[] = []
@@ -42,6 +52,12 @@ class MoveRecorder {
     return result
   }
 
+  /**
+   * Generates move history based on the input params.
+   *
+   * @param movesArray - moves array that generated Move History has to be based on
+   * @return a string in pgn notation of all the moves made in a game
+   * */
   public regenerateMoveString(movesArray: MoveRecord[]): string {
     const moves = this.moveCleanup(movesArray)
     let result = ""
@@ -62,20 +78,12 @@ class MoveRecorder {
     }
     return result
   }
-  // public recordMove(movesArray: MoveRecord[]): boolean {
-  //   const moves = this.moveCleanup(movesArray)
-  //   // Obecnie zapisano ruchy jako pary – każda para zajmuje dwa ruchy
-  //   const recordedMovesCount = this._moveHistoryPublic.length * 2
-  //
-  //   // Iterujemy tylko po nowych ruchach, które jeszcze nie zostały zapisane
-  //   for (let i = recordedMovesCount; i < moves.length; i += 2) {
-  //     const white = this.formatMove(moves[i])
-  //     const black = i + 1 < moves.length ? this.formatMove(moves[i + 1]) : ""
-  //     this._moveHistoryPublic.push({ white, black })
-  //   }
-  //   return true
-  // }
 
+  /**
+   * Method to format a MoveRecord into a string which is a singular move.
+   * @param record - MoveRecord to be formatted into a string
+   * @return string which is a singular move in pgn notation
+   * */
   private formatMove(record: MoveRecord): string {
     const delta = Math.abs(record.move.from.x - record.move.to.x)
     if (record.castleMove) {
@@ -127,7 +135,6 @@ class MoveRecorder {
         const rank = fromNotation.slice(1)
         const sameRow = candidates.some((p) => p.position.notation.slice(1) === rank)
         const sameColumn = candidates.some((p) => p.position.notation.charAt(0) === file)
-        // Jeśli inna figura na tym samym rzędzie – dodajemy oznaczenie plikiem, w przeciwnym wypadku ranką
         disambiguation = sameRow ? file : sameColumn ? rank : file
       }
 
@@ -136,6 +143,11 @@ class MoveRecorder {
     }
   }
 
+  /**
+   * Special method used internally to clean movesArray of weird moves such as castling.
+   * @param movesArray - array of moves to be cleaned
+   * @return a cleaned copy of movesArray.
+   * */
   private moveCleanup(movesArray: MoveRecord[]): MoveRecord[] {
     const cleanedMoves: MoveRecord[] = []
     for (const currentMove of movesArray) {
