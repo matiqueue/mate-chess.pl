@@ -1,12 +1,24 @@
-import React, { useRef, useEffect, useState } from "react"
-import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
-import { useGameContext } from "@/contexts/GameContext"
-import { useTheme } from "next-themes"
-import LoadingAnimation from "./loading/loading-animation"
+"use client" // Dyrektywa określająca, że komponent działa po stronie klienta
 
-// Typy (dostosuj do swojego GameContext)
+// Importy bibliotek i komponentów
+import React, { useRef, useEffect, useState } from "react" // React i hooki do efektów, referencji oraz stanu
+import * as THREE from "three" // Biblioteka Three.js do renderowania 3D
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js" // Kontroler orbity dla kamery
+import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js" // Loader modeli GLTF
+import { useGameContext } from "@/contexts/GameContext" // Kontekst gry szachowej
+import { useTheme } from "next-themes" // Hook do zarządzania motywem
+import LoadingAnimation from "./loading/loading-animation" // Komponent animacji ładowania
+
+/**
+ * Position
+ *
+ * Interfejs definiujący pozycję na szachownicy.
+ *
+ * @property {number} x - Współrzędna X (kolumna).
+ * @property {number} y - Współrzędna Y (rząd).
+ * @property {string} notation - Notacja szachowa pozycji (np. "e4").
+ * @property {{ type: string; color: string } | null} figure - Informacje o figurze na pozycji lub null.
+ */
 interface Position {
   x: number
   y: number
@@ -14,6 +26,18 @@ interface Position {
   figure: { type: string; color: string } | null
 }
 
+/**
+ * Pieces
+ *
+ * Interfejs definiujący modele figur szachowych w 3D.
+ *
+ * @property {THREE.Object3D} pawn - Model pionka.
+ * @property {THREE.Object3D} rook - Model wieży.
+ * @property {THREE.Object3D} knight - Model skoczka.
+ * @property {THREE.Object3D} bishop - Model gońca.
+ * @property {THREE.Object3D} queen - Model hetmana.
+ * @property {THREE.Object3D} king - Model króla.
+ */
 interface Pieces {
   pawn: THREE.Object3D
   rook: THREE.Object3D
@@ -23,16 +47,51 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-export function ChessBoard3D({ title , desc, selectedColor }: { title: string, desc: string, selectedColor: string}) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
-  const boardRef = useRef(board)
-  const movePieceRef = useRef(movePiece)
-  const currentPlayerRef = useRef(currentPlayer)
-  const getValidMovesRef = useRef(getValidMoves)
-  const { theme } = useTheme()
-  const [modelsLoaded, setModelsLoaded] = useState(false);
+/**
+ * ChessBoard3DProps
+ *
+ * Interfejs definiujący właściwości komponentu ChessBoard3D.
+ *
+ * @property {string} title - Tytuł wyświetlany podczas ładowania.
+ * @property {string} desc - Opis wyświetlany podczas ładowania.
+ * @property {string} selectedColor - Wybrany kolor gracza ("white" lub "black").
+ *
+ * @remarks
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
+interface ChessBoard3DProps {
+  title: string
+  desc: string
+  selectedColor: string
+}
 
+/**
+ * ChessBoard3D
+ *
+ * Komponent szachownicy 3D, renderujący interaktywną planszę szachową z modelami 3D figur.
+ * Obsługuje ruchy, animacje, podświetlenia i szach.
+ *
+ * @param {ChessBoard3DProps} props - Właściwości komponentu, w tym tytuł, opis i wybrany kolor.
+ * @returns {JSX.Element} Element JSX reprezentujący szachownicę 3D.
+ *
+ * @remarks
+ * Komponent używa Three.js do renderowania sceny 3D, z obsługą ładowania modeli GLTF, animacji figur
+ * i interakcji myszą. Stylizacja planszy zależy od motywu (jasny/ciemny), a kolory figur od wybranego
+ * koloru gracza. Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
+export function ChessBoard3D({ title, desc, selectedColor }: ChessBoard3DProps) {
+  const containerRef = useRef<HTMLDivElement>(null) // Referencja do kontenera renderera
+  const { board, movePiece, currentPlayer, getValidMoves } = useGameContext() // Dane gry z kontekstu
+  const boardRef = useRef(board) // Referencja do aktualnego stanu planszy
+  const movePieceRef = useRef(movePiece) // Referencja do funkcji przesuwania figur
+  const currentPlayerRef = useRef(currentPlayer) // Referencja do aktualnego gracza
+  const getValidMovesRef = useRef(getValidMoves) // Referencja do funkcji pobierania ruchów
+  const { theme } = useTheme() // Hook do pobierania motywu
+  const [modelsLoaded, setModelsLoaded] = useState(false) // Stan ładowania modeli
+
+  // Aktualizacja referencji przy zmianie kontekstu gry
   useEffect(() => {
     boardRef.current = board
     movePieceRef.current = movePiece
@@ -40,49 +99,57 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
     getValidMovesRef.current = getValidMoves
   }, [board, movePiece, currentPlayer, getValidMoves])
 
+  // Główny efekt konfigurujący scenę 3D
   useEffect(() => {
     if (!containerRef.current) return
 
-    const BOARD_SCALE = 14
-    const PIECE_SCALE = 15
-    const scene = new THREE.Scene()
+    const BOARD_SCALE = 14 // Skala modelu szachownicy
+    const PIECE_SCALE = 15 // Skala modeli figur
+    const scene = new THREE.Scene() // Nowa scena 3D
     const container = containerRef.current
     const width = container.clientWidth
     const height = container.clientHeight
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000)
-    camera.position.set(0, 10, -15) // Start od strony białych
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000) // Kamera perspektywiczna
+    camera.position.set(0, 10, -15) // Początkowa pozycja kamery (od strony białych)
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }) // Renderer WebGL
     renderer.setSize(width, height)
-    renderer.setClearColor(0x000000, 0)
+    renderer.setClearColor(0x000000, 0) // Przezroczyste tło
     container.appendChild(renderer.domElement)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5) // Światło ambientowe
     scene.add(ambientLight)
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1) // Światło kierunkowe
     directionalLight.position.set(10, 10, 5)
     scene.add(directionalLight)
 
-    const controls = new OrbitControls(camera, renderer.domElement)
+    const controls = new OrbitControls(camera, renderer.domElement) // Kontroler orbity
     controls.enableDamping = true
     controls.enablePan = false
     controls.target.set(0, 0, 0)
     controls.update()
     const initialDistance = camera.position.distanceTo(controls.target)
-    controls.maxDistance = initialDistance * 1.2
-    controls.minDistance = initialDistance * 0.7
+    controls.maxDistance = initialDistance * 1.2 // Maksymalny dystans kamery
+    controls.minDistance = initialDistance * 0.7 // Minimalny dystans kamery
     const distXZ = Math.sqrt(camera.position.x ** 2 + camera.position.z ** 2)
     const heightY = camera.position.y
     const startPolarAngle = Math.atan2(distXZ, heightY)
     const extraAngle = 15 * (Math.PI / 180)
-    controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle)
-    controls.maxPolarAngle = Math.PI / 2
+    controls.minPolarAngle = Math.max(0, startPolarAngle - extraAngle) // Minimalny kąt polarny
+    controls.maxPolarAngle = Math.PI / 2 // Maksymalny kąt polarny
     controls.mouseButtons = {
       LEFT: THREE.MOUSE.PAN,
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: THREE.MOUSE.ROTATE,
     }
 
-    const loader = new GLTFLoader()
+    const loader = new GLTFLoader() // Loader modeli GLTF
 
+    /**
+     * adjustPiecePivot
+     *
+     * Funkcja korygująca punkt obrotu figury, aby stała na powierzchni szachownicy.
+     *
+     * @param {THREE.Object3D} piece - Model figury 3D.
+     */
     function adjustPiecePivot(piece: THREE.Object3D): void {
       piece.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(piece)
@@ -90,10 +157,28 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       piece.position.y += deltaY
     }
 
+    /**
+     * easeInOutQuad
+     *
+     * Funkcja easingowa (kwadratowa) dla płynnych animacji.
+     *
+     * @param {number} t - Postęp animacji (0-1).
+     * @returns {number} Zmiękczony postęp animacji.
+     */
     function easeInOutQuad(t: number): number {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
     }
 
+    /**
+     * animatePieceMovement
+     *
+     * Funkcja animująca ruch figury do pozycji docelowej.
+     *
+     * @param {THREE.Object3D} piece - Model figury 3D.
+     * @param {THREE.Vector3} target - Docelowa pozycja.
+     * @param {number} duration - Czas trwania animacji (ms).
+     * @param {() => void} [onComplete] - Funkcja wywoływana po zakończeniu.
+     */
     function animatePieceMovement(piece: THREE.Object3D, target: THREE.Vector3, duration: number, onComplete?: () => void) {
       const initialPosition = piece.position.clone()
       const startTime = performance.now()
@@ -111,6 +196,15 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       requestAnimationFrame(animate)
     }
 
+    /**
+     * animatePieceY
+     *
+     * Funkcja animująca ruch figury w osi Y (np. podnoszenie).
+     *
+     * @param {THREE.Object3D} piece - Model figury 3D.
+     * @param {number} targetY - Docelowa wysokość Y.
+     * @param {number} duration - Czas trwania animacji (ms).
+     */
     function animatePieceY(piece: THREE.Object3D, targetY: number, duration: number) {
       const initialY = piece.position.y
       const startTime = performance.now()
@@ -124,16 +218,21 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       requestAnimationFrame(animate)
     }
 
-    let playableMinX = 0
-    let playableMinZ = 0
-    let cellSize = 1
-    const selectablePieces: THREE.Object3D[] = []
-    let boardBox: THREE.Box3 | null = null
-    let validMoves: Position[] = []
-    let originPosition: THREE.Vector3 | null = null
-    const highlightMeshes: THREE.Mesh[] = []
-    let checkHighlight: { plane: THREE.Mesh; border: THREE.Line } | null = null
+    let playableMinX = 0 // Minimalna granica X grywalnego obszaru
+    let playableMinZ = 0 // Minimalna granica Z grywalnego obszaru
+    let cellSize = 1 // Rozmiar komórki szachownicy
+    const selectablePieces: THREE.Object3D[] = [] // Lista figur, które można wybrać
+    let boardBox: THREE.Box3 | null = null // Bounding box szachownicy
+    let validMoves: Position[] = [] // Lista dostępnych ruchów
+    let originPosition: THREE.Vector3 | null = null // Początkowa pozycja wybranej figury
+    const highlightMeshes: THREE.Mesh[] = [] // Lista podświetleń pól
+    let checkHighlight: { plane: THREE.Mesh; border: THREE.Line } | null = null // Podświetlenie szacha
 
+    /**
+     * updateCheckHighlight
+     *
+     * Funkcja aktualizująca podświetlenie pola króla w szachu.
+     */
     function updateCheckHighlight() {
       if (checkHighlight) {
         scene.remove(checkHighlight.plane)
@@ -200,6 +299,13 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       }
     }
 
+    /**
+     * addHighlights
+     *
+     * Funkcja dodająca podświetlenia dla dostępnych ruchów.
+     *
+     * @param {Position[]} moves - Lista dostępnych ruchów.
+     */
     function addHighlights(moves: Position[]) {
       clearHighlights()
       moves.forEach((move) => {
@@ -244,6 +350,11 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       })
     }
 
+    /**
+     * clearHighlights
+     *
+     * Funkcja usuwająca wszystkie podświetlenia pól z sceny.
+     */
     function clearHighlights() {
       while (highlightMeshes.length) {
         const mesh = highlightMeshes.pop()
@@ -254,8 +365,10 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
         }
       }
     }
-    const boardModelPath = theme === "light" ? "/models/game/chessboards/white-game-chessboard.glb" : "/models/game/chessboards/dark-game-chessboard.glb"
 
+    const boardModelPath = theme === "light" ? "/models/game/chessboards/white-game-chessboard.glb" : "/models/game/chessboards/dark-game-chessboard.glb" // Ścieżka modelu szachownicy
+
+    // Ładowanie modelu szachownicy
     loader.load(
       boardModelPath,
       (gltf: GLTF) => {
@@ -288,6 +401,17 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       (error) => console.error("Błąd ładowania szachownicy:", error),
     )
 
+    /**
+     * loadPiecesFromBoard
+     *
+     * Funkcja ładująca modele figur na podstawie stanu planszy.
+     *
+     * @param {number} cellSize - Rozmiar komórki szachownicy.
+     * @param {number} playableMinX - Minimalna granica X grywalnego obszaru.
+     * @param {number} playableMinZ - Minimalna granica Z grywalnego obszaru.
+     * @param {THREE.Box3} boardBox - Bounding box szachownicy.
+     * @returns {Promise<void>} Obietnica zakończenia ładowania.
+     */
     async function loadPiecesFromBoard(cellSize: number, playableMinX: number, playableMinZ: number, boardBox: THREE.Box3): Promise<void> {
       const loadModel = (url: string): Promise<GLTF> => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject))
       const [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing] =
@@ -306,47 +430,47 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
           loadModel("/models/game/black-pawns/king_black.glb"),
         ])
 
-        let pieceModels: { white: Pieces; black: Pieces };
+      let pieceModels: { white: Pieces; black: Pieces }
 
-        if(selectedColor == "black"){
-          pieceModels = {
-            black: {
-              pawn: whitePawn.scene,
-              rook: whiteRook.scene,
-              knight: whiteKnight.scene,
-              bishop: whiteBishop.scene,
-              queen: whiteQueen.scene,
-              king: whiteKing.scene,
-            },
-            white: {
-              pawn: blackPawn.scene,
-              rook: blackRook.scene,
-              knight: blackKnight.scene,
-              bishop: blackBishop.scene,
-              queen: blackQueen.scene,
-              king: blackKing.scene,
-            }
-          }
-        }else{
-          pieceModels = {
-            white: {
-              pawn: whitePawn.scene,
-              rook: whiteRook.scene,
-              knight: whiteKnight.scene,
-              bishop: whiteBishop.scene,
-              queen: whiteQueen.scene,
-              king: whiteKing.scene,
-            },
-            black: {
-              pawn: blackPawn.scene,
-              rook: blackRook.scene,
-              knight: blackKnight.scene,
-              bishop: blackBishop.scene,
-              queen: blackQueen.scene,
-              king: blackKing.scene,
-            }
-          }
+      if (selectedColor === "black") {
+        pieceModels = {
+          black: {
+            pawn: whitePawn.scene,
+            rook: whiteRook.scene,
+            knight: whiteKnight.scene,
+            bishop: whiteBishop.scene,
+            queen: whiteQueen.scene,
+            king: whiteKing.scene,
+          },
+          white: {
+            pawn: blackPawn.scene,
+            rook: blackRook.scene,
+            knight: blackKnight.scene,
+            bishop: blackBishop.scene,
+            queen: blackQueen.scene,
+            king: blackKing.scene,
+          },
         }
+      } else {
+        pieceModels = {
+          white: {
+            pawn: whitePawn.scene,
+            rook: whiteRook.scene,
+            knight: whiteKnight.scene,
+            bishop: whiteBishop.scene,
+            queen: whiteQueen.scene,
+            king: whiteKing.scene,
+          },
+          black: {
+            pawn: blackPawn.scene,
+            rook: blackRook.scene,
+            knight: blackKnight.scene,
+            bishop: blackBishop.scene,
+            queen: blackQueen.scene,
+            king: blackKing.scene,
+          },
+        }
+      }
 
       const boardTopY = boardBox.max.y
       const letters = "abcdefgh"
@@ -354,7 +478,7 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       for (let id = 0; id < 64; id++) {
         const pos = boardRef.current?.getPositionById(id)
         if (!pos || !pos.figure) continue
-        
+
         const colorKey = pos.figure.color === "white" ? "white" : "black"
 
         let model: THREE.Object3D
@@ -394,13 +518,20 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
         selectablePieces.push(model)
       }
       updateCheckHighlight()
-      setModelsLoaded(true)
+      setModelsLoaded(true) // Ustawia flagę po załadowaniu modeli
     }
 
-    const raycaster = new THREE.Raycaster()
-    const pointer = new THREE.Vector2()
-    let selectedPiece: THREE.Object3D | null = null
+    const raycaster = new THREE.Raycaster() // Obiekt do wykrywania kliknięć
+    const pointer = new THREE.Vector2() // Współrzędne wskaźnika myszy
+    let selectedPiece: THREE.Object3D | null = null // Wybrana figura
 
+    /**
+     * handleClick
+     *
+     * Funkcja obsługująca kliknięcia myszą na figurach i polach.
+     *
+     * @param {MouseEvent} event - Zdarzenie kliknięcia myszą.
+     */
     function handleClick(event: MouseEvent) {
       const rect = renderer.domElement.getBoundingClientRect()
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
@@ -509,8 +640,9 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       }
     }
 
-    renderer.domElement.addEventListener("click", handleClick, false)
+    renderer.domElement.addEventListener("click", handleClick, false) // Dodanie nasłuchiwania kliknięć
 
+    // Funkcja animacji sceny
     const animate = () => {
       requestAnimationFrame(animate)
       controls.update()
@@ -518,6 +650,7 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
     }
     animate()
 
+    // Obsługa zmiany rozmiaru okna
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect
@@ -528,6 +661,7 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
     })
     resizeObserver.observe(container)
 
+    // Sprzątanie po odmontowaniu komponentu
     return () => {
       resizeObserver.disconnect()
       renderer.domElement.removeEventListener("click", handleClick)
@@ -535,13 +669,18 @@ export function ChessBoard3D({ title , desc, selectedColor }: { title: string, d
       controls.dispose()
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement)
     }
-  }, [])
+  }, []) // Puste zależności – uruchamia się raz przy montowaniu
 
+  // Renderowanie komponentu
   return (
     <div className="flex items-center justify-center h-full">
-      <div style={ {display: modelsLoaded ? "none" : "block"} }><LoadingAnimation title={title} desc={desc}></LoadingAnimation></div>
-      <div ref={containerRef} style={{ width: "100%", height: "100%", aspectRatio: "2", display: modelsLoaded ? "block" : "none"}} />
-
+      <div style={{ display: modelsLoaded ? "none" : "block" }}>
+        <LoadingAnimation title={title} desc={desc}></LoadingAnimation> {/* Animacja ładowania */}
+      </div>
+      <div
+        ref={containerRef}
+        style={{ width: "100%", height: "100%", aspectRatio: "2", display: modelsLoaded ? "block" : "none" }} // Kontener renderera
+      />
     </div>
   )
 }

@@ -6,6 +6,11 @@ import { figureType } from "@shared/types/figureType"
 
 import moveDB from "./moveDB/all_cleaned_games.json"
 
+/**
+ * Instance of a chessGame with ai included.
+ * Ai is currently very heavily work in progress. Currently it shouldn't play as whites because that might bug the hell out of the game <br>
+ * It uses a lot of asynchronus methods, and has a database of 622 chess games played by 12 real grandmasters. <br>If the AI is set to the Advanced level, it will try to play one of the games of those grandmasters. <br>If the game isn't simmilair to any game in database, it will use generic minimax with alphabeta pruning algorithm to play the rest of the game
+ * */
 class ChessAi extends ChessGame {
   private _aiColor: color
   private _opponentColor: color
@@ -45,10 +50,22 @@ class ChessAi extends ChessGame {
     }
   }
 
+  /**
+   * Helper method to create some delay in the code. without this delay, the ai might try to calculate the moves too soon causing it to either crash or memory leak lol
+   */
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
+  /**
+   * Main method to call the ai to find a good move in a game. <br>
+   * returns null if some of the criteria aren't met, such as <ul>
+   *   <li>The game isn't active
+   *   <li>Currently it isn't ai's turn
+   *   <li>No move has been found (the game should call checkmate before that happens)
+   * </ul>
+   * If the ai difficulty is set to advanced, it will first try to find the best move using database of 622 games played by 12 real grandmasters. If it doesn't find any, it will use minmax algorithm
+   * */
   public async callAiToFindMove(): Promise<Move | null> {
     if (this.currentPlayer !== this.aiColor) return null
     if (this.gameStatus !== "active") return null
@@ -88,6 +105,9 @@ class ChessAi extends ChessGame {
     return null
   }
 
+  /**
+   * Evaluates the material value of all figures on a chessboard
+   * */
   private evaluateBoard(): number {
     const aiValue = this.board.getAllMaterialValue(this._aiColor)
     const oppValue = this.board.getAllMaterialValue(this._opponentColor)
@@ -97,7 +117,10 @@ class ChessAi extends ChessGame {
 
     return baseMaterialDifference + exchangesScore
   }
-
+  /**
+   * Main method to find the move using math. It is minimax algorithm optimized with alpha beta pruning. <br>
+   * Unfortunately, slight inoptimization of board class, causes this algorithm to be very laggy when search depth is higher than 5
+   * */
   private minimax(depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
     if (depth === 0) return this.evaluateBoard()
 
@@ -129,6 +152,8 @@ class ChessAi extends ChessGame {
       return minEval
     }
   }
+  /**
+   * Evaluates the material value of a exchange of figures. This method should make the ai be less agressive with high value figures towards low value figures*/
   private evaluateExchanges(): number {
     let exchangeScore = 0
     const processCaptures = (captures: { capturingValue: number; capturedValue: number }[], factor: number) => {
@@ -142,6 +167,9 @@ class ChessAi extends ChessGame {
     return exchangeScore
   }
 
+  /**
+   * @return all moves that capture an enemy figure
+   */
   private getCapturingMoves(sideColor: color): { capturingValue: number; capturedValue: number }[] {
     const results: { capturingValue: number; capturedValue: number }[] = []
 
@@ -173,6 +201,8 @@ class ChessAi extends ChessGame {
     }
     return results
   }
+
+  /**Honestly, i have no idea what is it for*/
   private getPawnCapturedEnPassant(move: Move) {
     const fromFig = move.from.figure
     if (!fromFig || fromFig.type !== figureType.pawn) return null
@@ -188,6 +218,8 @@ class ChessAi extends ChessGame {
 
     return victim
   }
+  /**
+   * Wrapper method for all of the internal methods. It uses math and schizophrenia to find the best move on the board*/
   private aiDetermineBestMove(): Move[] {
     const allMoves = this.board.getLegalMoves(this._aiColor)
     if (!allMoves.length) return []
@@ -215,7 +247,10 @@ class ChessAi extends ChessGame {
     // console.log("Candidate moves: ", candidateMoves.slice(0, 6))
     return candidateMoves.slice(0, 3)
   }
-
+  /**
+   * Method used only by ai on the highest difficulty. <br>
+   * This method loads json file with 622 chessGames, then compares its own game with those games and returns an array of all next moves that grandmasters player, then emulates them.
+   * */
   private async findMoveInDatabase(): Promise<Move[]> {
     let arrayOfMoves: Move[] = []
 
@@ -228,18 +263,10 @@ class ChessAi extends ChessGame {
 
       const stringToCompare = this.getMoveHistoryString()
       // console.log(`Move history string: '${stringToCompare}'`)
-
-      // Filtrowanie gier pasujących do historii ruchów
       const arrayOfStringMoves = moveDB.games.filter((game) => game.moveString.startsWith(stringToCompare)).map((game) => game.moveString)
-
       // console.log("Array of stringified moves:", arrayOfStringMoves)
-
-      // Pobranie fragmentów ruchów po dopasowanym fragmencie
       const possibleMovesInNotation = arrayOfStringMoves.map((moveString) => moveString.split(stringToCompare)[1] || "")
-
       // console.log("Possible moves in notation:", possibleMovesInNotation)
-
-      // Ekstrakcja pierwszego ruchu do spacji
       const extractedMoves = [...new Set(possibleMovesInNotation.map((moveString) => moveString.split(" ")[0]))]
       // console.log("Extracted moves:", extractedMoves)
 
@@ -311,16 +338,10 @@ class ChessAi extends ChessGame {
     return arrayOfMoves
   }
 
+  /**
+   * @return color as which ai is playing*/
   get aiColor(): color {
     return this._aiColor
-  }
-
-  get aiDifficulty(): aiDifficulty {
-    return this._aiDifficulty
-  }
-
-  get searchDepth(): number {
-    return this._searchDepth
   }
 }
 export default ChessAi

@@ -135,8 +135,5 @@ abstract class Figure {
 
     return this._materialValue * bonus
   }
-  get rawMaterialValue(): number {
-    return this._materialValue
-  }
 }
 export default Figure

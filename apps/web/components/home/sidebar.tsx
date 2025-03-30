@@ -175,10 +175,18 @@ export function Sidebar() {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => {redirect("profile")}}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    redirect("profile")
+                  }}
+                >
                   <Link href="#">{t("profile")}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {redirect("profile/stats/" + user?.id)}}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    redirect("profile/stats/" + user?.id)
+                  }}
+                >
                   <Link href="#">{t("yourStatistics")}</Link>
                 </DropdownMenuItem>
 
