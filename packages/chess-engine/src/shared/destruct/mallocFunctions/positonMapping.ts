@@ -1,7 +1,7 @@
-import ChessGameExtraLayer from "@modules/chessGameExtraLayer"
 import { Board } from "@utils/boardUtils"
+import ChessGame from "@modules/chess/chessGame"
 
-export const getBoard = (game: ChessGameExtraLayer) => {
+export const getBoard = (game: ChessGame) => {
   return game.board
 }
 export const getPositionByCords = (board: Board, x: number, y: number) => {

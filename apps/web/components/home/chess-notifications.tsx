@@ -1,18 +1,32 @@
-"use client"
+"use client" // Dyrektywa określająca, że komponent działa po stronie klienta
 
-import { useState } from "react"
-import { Bell, Search, Filter, Check, CheckCheck, Trophy, Users, Clock, PuzzleIcon as Chess, Award, Star } from "lucide-react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@workspace/ui/components/sheet"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
+import { useState } from "react" // Hook React do zarządzania stanem
+import { Bell, Search, Filter, Check, CheckCheck, Trophy, Users, Clock, PuzzleIcon as Chess, Award, Star } from "lucide-react" // Ikony z biblioteki Lucide
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@workspace/ui/components/sheet" // Komponenty arkusza UI
+import { Button } from "@workspace/ui/components/button" // Komponent przycisku UI
+import { Input } from "@workspace/ui/components/input" // Komponent pola tekstowego UI
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs" // Komponenty zakładek UI
+import { Badge } from "@workspace/ui/components/badge" // Komponent odznaki UI
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { Badge } from "@workspace/ui/components/badge"
-
+/**
+ * ChessNotifications
+ *
+ * Komponent systemu powiadomień szachowych wyświetlający interaktywny panel boczny (Sheet)
+ * z powiadomieniami dotyczącymi gier, wyzwań, turniejów i innych wydarzeń. Obsługuje
+ * filtrowanie, wyszukiwanie oraz oznaczanie powiadomień jako przeczytane.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący system powiadomień szachowych.
+ *
+ * @remarks
+ * Komponent zawiera statyczną listę powiadomień jako dane przykładowe. W rzeczywistej
+ * aplikacji dane byłyby pobierane z backendu. Stylizacja i interaktywność opierają się
+ * na komponentach UI z biblioteki @workspace/ui.
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 export default function ChessNotifications() {
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -103,10 +117,8 @@ export default function ChessNotifications() {
   const unreadCount = notifications.filter((notif) => !notif.read).length
 
   const filteredNotifications = notifications.filter((notification) => {
-    // Filter by tab
     if (activeTab !== "all" && notification.type !== activeTab) return false
 
-    // Filter by search
     if (
       searchQuery &&
       !notification.content.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -125,8 +137,7 @@ export default function ChessNotifications() {
     setNotifications(notifications.map((notif) => ({ ...notif, read: true })))
   }
 
-  // Function to get notification type color
-  const getNotificationTypeColor = (type: string) => {
+  const getNotificationTypeColor = (type: string): string => {
     switch (type) {
       case "challenge":
         return "bg-amber-100 text-amber-800 border-amber-200"
@@ -176,7 +187,12 @@ export default function ChessNotifications() {
           </div>
           <div className="relative mt-2">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search notifications..." className="pl-8" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            <Input
+              placeholder="Search notifications..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </SheetHeader>
 
@@ -222,7 +238,9 @@ export default function ChessNotifications() {
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between items-center">
-                        <span className={`font-medium ${!notification.read ? "text-primary" : ""}`}>{notification.title}</span>
+                        <span className={`font-medium ${!notification.read ? "text-primary" : ""}`}>
+                          {notification.title}
+                        </span>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           {notification.read ? <CheckCheck className="h-3 w-3 text-primary" /> : <Check className="h-3 w-3" />}
                           <span>{notification.time}</span>
@@ -249,18 +267,6 @@ export default function ChessNotifications() {
                 <p>No notifications found</p>
               </div>
             )}
-          </TabsContent>
-
-          <TabsContent value="game" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Game notifications will be shown here through the filtered list */}
-          </TabsContent>
-
-          <TabsContent value="challenge" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Challenge notifications will be shown here through the filtered list */}
-          </TabsContent>
-
-          <TabsContent value="tournament" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-            {/* Tournament notifications will be shown here through the filtered list */}
           </TabsContent>
         </Tabs>
 

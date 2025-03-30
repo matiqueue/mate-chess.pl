@@ -25,8 +25,8 @@ export const metadata: Metadata = {
  */
 export default function TournamentsPage() {
   return (
-    <div className="flex flex-col h-screen">
-      <div className="grid h-screen w-full">
+    <div className="flex flex-col">
+      <div className="grid w-full">
         <ChessTournaments />
       </div>
     </div>

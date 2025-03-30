@@ -20,7 +20,7 @@ class Board {
   private _allFigures: Figure[] = []
   private positionsById: Position[] = []
   private _moveHistory: MoveRecord[] = []
-  private _redoStack: MoveRecord[] = []
+
   private _previewIndex: number = 0
   private _previewMode: boolean = false
 
@@ -82,7 +82,7 @@ class Board {
    * @returns {Position | null} The corresponding position, or null if not found.
    */
   public getPositionById(id: number): Position | null {
-    return this.positionsById[id] || null // Dostęp w O(1)
+    return this.positionsById[id] || null
   }
   /**
    * Returns a reference to position by its x and y coordinates.
@@ -148,6 +148,7 @@ class Board {
     let toPos = this.getPosition(move.to)
 
     if (!fromPos || !toPos) {
+      console.error("No positions were found")
       return false
     }
 
@@ -161,6 +162,7 @@ class Board {
     }
     //might help with optimization
     if (figure.type !== figureType.king && toPos.figure?.color === figure.color) {
+      console.log("tried moving onto friendly piece")
       return false
     }
 
@@ -169,6 +171,7 @@ class Board {
       const isLegal = legalMoves.some((legalMove) => legalMove.from.notation === fromPos.notation && legalMove.to.notation === toPos.notation)
 
       if (!isLegal) {
+        console.error("move not legal")
         return false
       }
     }
@@ -950,6 +953,25 @@ class Board {
     return legalMoves
   }
 
+  public getPseudoLegalMoves(colorType: color.White | color.Black): Move[] {
+    const figures = colorType === color.Black ? this._blackFigures : this._whiteFigures
+    const moves: Move[] = []
+
+    if (!figures) return []
+
+    for (const figure of figures) {
+      const pseudoLegalMoves = this.getValidMovesForPosition(figure.position)
+
+      for (const moveToVerify of pseudoLegalMoves) {
+        const move = {
+          from: figure.position,
+          to: moveToVerify,
+        }
+        moves.push(move)
+      }
+    }
+    return moves
+  }
   /**
    * Updates the internal array of all figures (white and black).
    * @private
@@ -1100,7 +1122,7 @@ class Board {
     let total = 0
     for (const piece of figureArray) {
       if (piece) {
-        total += piece.materialValue
+        total += piece.materialValueWithBonus
       }
     }
     return total
@@ -1170,6 +1192,41 @@ class Board {
    */
   get blackFigures(): Figure[] {
     return this._blackFigures
+  }
+
+  public findValidMovesWithGivenArguments(
+    figureColor: color,
+    performingFigureType: figureType.knight | figureType.king | figureType.queen | figureType.rook | figureType.bishop | figureType.pawn,
+    doesMoveCaptureFig: boolean,
+    targetPositionNotation: string,
+  ) {
+    const returnedArray = []
+    const figTable = figureColor === color.White ? this._whiteFigures : this._blackFigures
+    const validFigures = figTable.filter((fig) => fig.type === performingFigureType)
+
+    for (const validFigure of validFigures) {
+      const targetPosition = this.getPositionByNotation(targetPositionNotation)
+      if (!targetPosition) {
+        continue
+      }
+      const move = {
+        from: validFigure.position,
+        to: targetPosition,
+      }
+      if (!move) {
+        console.error("Cant find move in findValidMovesWithGivenArguments")
+        break
+      }
+      if (this.isLegalMove(move) && validFigure.isMoveValid(targetPosition)) {
+        if (this.getFigureAtPosition(targetPosition) && doesMoveCaptureFig) {
+          returnedArray.push(move)
+        } else if (!this.getFigureAtPosition(targetPosition) && !doesMoveCaptureFig) {
+          returnedArray.push(move)
+        }
+      }
+    }
+    console.log("returning: ", returnedArray)
+    return returnedArray
   }
 }
 export default Board

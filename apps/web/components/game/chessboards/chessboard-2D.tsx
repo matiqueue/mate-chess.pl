@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   FaChessRook as ChessRook,
   FaChessKnight as ChessKnight,
@@ -14,10 +14,14 @@ import clsx from "clsx"
 import { useGameContext } from "@/contexts/GameContext"
 import { Position, ArrowData } from "@/utils/chessboard/types"
 import { useChessBoardInteractions, useChessArrows, isBlackSquare, getNotation } from "@/utils/chessboard/chessBoardUtils"
+import LoadingAnimation from "./loading/loading-animation"
+import { motion } from "framer-motion"
 
-export function ChessBoard2D() {
+export function ChessBoard2D({ title , desc, selectedColor }: { title: string, desc: string, selectedColor: string}) {
   const { theme } = useTheme()
   const isDarkMode = theme === "dark"
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+
   const { board, currentPlayer, isMoveEnPassant: checkEnPassant } = useGameContext()
 
   const { selectedSquare, validMoves, handleSquareClick } = useChessBoardInteractions()
@@ -35,6 +39,12 @@ export function ChessBoard2D() {
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"],
   ]
+
+  useEffect( () => {
+    setTimeout(() => {
+      setModelsLoaded(true);
+    }, 1500);
+  }, [])
 
   const rawBoard = board ? board.getBoardArray() : initialBoard
   const boardRows = rawBoard.slice(rawBoard.length - 8)
@@ -56,7 +66,13 @@ export function ChessBoard2D() {
       if (square?.figure) {
         const piece = square.figure
         const isWhite = piece.color === "white"
-        const iconColor = isWhite ? "text-white" : "text-black"
+        let iconColor = "";
+        if(selectedColor == "black"){
+          iconColor = isWhite ? "text-black" : "text-white"
+        }else{
+          iconColor = isWhite ? "text-white" : "text-black"
+        }
+
         let IconComponent
         switch (piece.type) {
           case "pawn":
@@ -80,14 +96,26 @@ export function ChessBoard2D() {
           default:
             return null
         }
-        const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        //const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        let dropShadow;
+        if(selectedColor == "black"){
+          dropShadow = isWhite ? "drop-shadow(0 0 6px #fff))" : "drop-shadow(0 0 6px #000)"
+        }else{
+          dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+        }
+
         return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
       }
     }
 
     if (!symbol) return null
     const isWhite = symbol === symbol.toUpperCase()
-    const iconColor = isWhite ? "text-white" : "text-black"
+    let iconColor = "";
+    if(selectedColor == "black"){
+      iconColor = isWhite ? "text-black" : "text-white"
+    }else{
+      iconColor = isWhite ? "text-white" : "text-black"
+    }
     let IconComponent
     switch (symbol.toLowerCase()) {
       case "p":
@@ -111,7 +139,12 @@ export function ChessBoard2D() {
       default:
         return null
     }
-    const dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+    let dropShadow;
+    if(selectedColor == "black"){
+      dropShadow = isWhite ? "drop-shadow(0 0 6px #000)" : "drop-shadow(0 0 6px #fff)"
+    }else{
+      dropShadow = isWhite ? "drop-shadow(0 0 6px #fff))" : "drop-shadow(0 0 6px #000)"
+    }
     return <IconComponent className={clsx("w-[60%] h-[60%] z-10", iconColor)} style={{ filter: dropShadow }} />
   }
 
@@ -263,8 +296,9 @@ export function ChessBoard2D() {
   }
 
   return (
-    <div className="relative w-full max-w-[68vh] aspect-square">
-      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")}>
+    <div className={`w-full max-w-[68vh] aspect-square ${modelsLoaded ? "relative" : "flex justify-center items-center"}`}>
+      <div style={ {display: modelsLoaded ? "none" : "block"}}><LoadingAnimation title={title} desc={desc}></LoadingAnimation></div>
+      <div className={clsx("p-4 bg-white/30 rounded-3xl shadow-2xl", isDarkMode ? "bg-stone-600/30" : "bg-gray-300/30")} style={ {display: modelsLoaded ? "block" : "none"}}>
         <div className={clsx("relative z-10 w-full aspect-square rounded-xl shadow-2xl", isDarkMode ? "bg-stone-600" : "bg-gray-300")}>
           <div className="relative w-full h-full box-border">
             <div className="absolute inset-0 pointer-events-none">{renderArrows()}</div>

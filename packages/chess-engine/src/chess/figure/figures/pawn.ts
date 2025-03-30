@@ -10,7 +10,7 @@ class Pawn extends Figure {
   public isEnPassantPossible: boolean = false
 
   constructor(color: color.White | color.Black, position: Position, board: Board) {
-    super(figureType.pawn, color, position, board, 1, pawnMaterialTable)
+    super(figureType.pawn, color, position, board, 100, pawnMaterialTable)
     this._isFirstMove = position.y === 6 || position.y === 1
   }
 

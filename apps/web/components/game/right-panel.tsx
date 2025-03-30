@@ -2,7 +2,22 @@
 
 import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
-import { Eye, Layout, Settings2, ChevronDown, Clock, MessageCircle, Flag, X, Moon, Sun, PanelLeftClose, PanelLeftOpen, GripVertical } from "lucide-react"
+import {
+  Eye,
+  Layout,
+  Settings2,
+  ChevronDown,
+  Clock,
+  MessageCircle,
+  Flag,
+  X,
+  Moon,
+  Sun,
+  PanelLeftClose,
+  PanelLeftOpen,
+  GripVertical,
+  Terminal,
+} from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover"
 import { Separator } from "@workspace/ui/components/separator"
 import { Input } from "@workspace/ui/components/input"
@@ -18,14 +33,53 @@ import { useTranslation } from "react-i18next"
 import { figureType } from "@modules/types"
 import MoveRecordPublic from "@modules/chess/history/move"
 import { color } from "@modules/types"
+import { useSidebarContext } from "@/contexts/SidebarContext"
 
-export function RightPanel() {
+function ToggleSidebarButton({ isNarrow }: { isNarrow: boolean }) {
+  const { mode, setMode, logToSidebar } = useSidebarContext()
+
+  const toggleMode = () => {
+    setMode(mode === "default" ? "console" : "default")
+  }
+
+  const testLog = () => {
+    logToSidebar(`Log entry at ${new Date().toLocaleTimeString()}`)
+  }
+
+  const buttonClass = isNarrow
+    ? "w-fit p-2 flex items-center justify-center"
+    : "flex-1 min-w-[100px] text-sm whitespace-nowrap flex items-center justify-center"
+
+  return (
+    <>
+      <Button variant="outline" size="sm" className={buttonClass} onClick={toggleMode}>
+        <span className="flex-shrink-0">{mode === "default" ? <Terminal className="h-4 w-4" /> : <X className="h-4 w-4" />}</span>
+        {!isNarrow && (mode === "default" ? "Switch to Console" : "Default")}
+      </Button>
+      {mode === "console" && (
+        <Button variant="outline" size="sm" className={buttonClass} onClick={testLog}>
+          <span className="flex-shrink-0">
+            <Clock className="h-4 w-4" />
+          </span>
+          {!isNarrow && "Test Log"}
+        </Button>
+      )}
+    </>
+  )
+}
+
+interface RightPanelProps {
+  changeTheme: (theme: string) => void,
+  changeView: (view: string) => void
+}
+
+export function RightPanel({ changeTheme, changeView }: RightPanelProps) {
   const { t } = useTranslation()
   const [activePopover, setActivePopover] = useState<string | null>(null)
   const [notationStyle] = useState("algebraic")
   const [isChatOpen, setIsChatOpen] = useState(false)
 
-  // Lazy initial state – odczytujemy panelWidth z localStorage lub ustawiamy 320 domyślnie
+
   const [currentWidth, setCurrentWidth] = useState(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("panelWidth")
@@ -35,7 +89,7 @@ export function RightPanel() {
   })
 
   const { theme, setTheme } = useTheme()
-  const { moveHistory, promoteFigure, isAwaitingPromotion } = useGameContext()
+  const { moveHistory, promoteFigure, isAwaitingPromotion, timeLeft } = useGameContext()
   const { setViewMode } = useGameView()
 
   const isDark = theme === "dark"
@@ -46,12 +100,14 @@ export function RightPanel() {
 
   const isNarrow = currentWidth <= 220
 
-  // Aktualizujemy stan podczas zmiany rozmiaru
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
+  const timeDisplay = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
+
   const handleResize = (e: unknown, direction: unknown, ref: HTMLElement) => {
     setCurrentWidth(ref.offsetWidth)
   }
 
-  // Po zakończeniu zmiany rozmiaru zapisujemy nową szerokość do localStorage
   const handleResizeStop = (e: unknown, direction: unknown, ref: HTMLElement) => {
     const newWidth = ref.offsetWidth
     setCurrentWidth(newWidth)
@@ -60,9 +116,7 @@ export function RightPanel() {
 
   const renderMove = (moveRecord: MoveRecordPublic): string => {
     const playerTranslated = moveRecord.playerColor === color.White ? t("playerInfo.white") : t("playerInfo.black")
-
     let translatedMove = `${playerTranslated}: ${moveRecord.moveString}`
-
     switch (notationStyle) {
       case "algebraic":
         return translatedMove
@@ -89,9 +143,7 @@ export function RightPanel() {
     modeColor = "text-green-500"
   }
 
-  // Ustalamy, czy wyświetlać chat – nie pokazujemy go, gdy ścieżka to /play/local
   const showChat = !pathname.startsWith("/play/local")
-
   const { open, setOpen } = useSidebar()
 
   const bottomButtonClass = isNarrow
@@ -125,7 +177,7 @@ export function RightPanel() {
                   <div className="flex">
                     <div className={`flex items-center ${textColor}`}>
                       <Clock className="h-5 w-5 mr-2 flex-shrink-0" />
-                      <span>10:00</span>
+                      <span>{timeDisplay}</span>
                     </div>
                     <div className={`pl-[1rem] flex items-center ${textColor}`}>
                       <Flag className="h-5 w-5 mr-2 flex-shrink-0" />
@@ -140,44 +192,43 @@ export function RightPanel() {
               <div>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.gameOptions")}</h2>
                 <div className="space-y-2">
+                  {pathname.startsWith("/play/local") ? 
                   <Popover open={activePopover === "view"} onOpenChange={(open) => setActivePopover(open ? "view" : null)}>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-full justify-between">
-                        <span className="flex items-center">
-                          <Eye className="h-4 w-4 mr-2" /> {t("rightPanel.view")}
-                        </span>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
-                      <ul className="flex space-x-1">
-                        <li>
-                          <Button
-                            variant="ghost"
-                            className="justify-center"
-                            onClick={() => {
-                              setViewMode("2D")
-                              setActivePopover(null)
-                            }}
-                          >
-                            2D
-                          </Button>
-                        </li>
-                        <li>
-                          <Button
-                            variant="ghost"
-                            className="justify-center"
-                            onClick={() => {
-                              setViewMode("3D")
-                              setActivePopover(null)
-                            }}
-                          >
-                            3D
-                          </Button>
-                        </li>
-                      </ul>
-                    </PopoverContent>
-                  </Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-between">
+                      <span className="flex items-center">
+                        <Eye className="h-4 w-4 mr-2" /> {t("rightPanel.view")}
+                      </span>
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className={`w-fit p-2 rounded shadow ${isDark ? "bg-stone-950/90" : "bg-white/80"}`}>
+                    <ul className="flex space-x-1">
+                      <li>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            changeView("2D")
+                            setActivePopover(null)
+                          }}
+                        >
+                          2D
+                        </Button>
+                      </li>
+                      <li>
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            changeView("3D")
+                            setActivePopover(null)
+                          }}
+                        >
+                          3D
+                        </Button>
+                      </li>
+                    </ul>
+                  </PopoverContent>
+                </Popover>: ""}
 
                   <Popover open={activePopover === "layout"} onOpenChange={(open) => setActivePopover(open ? "layout" : null)}>
                     <PopoverTrigger asChild>
@@ -266,25 +317,13 @@ export function RightPanel() {
                 <div className="text-sm space-y-2 bg-secondary/50 rounded-lg p-3 max-h-[200px] overflow-y-auto">
                   {moveHistory && moveHistory.length > 0 ? (
                     moveHistory.map((movePair: any, index: any) => {
-                      // Numer ruchu dla białych = 2*index + 1
-                      // Numer ruchu dla czarnych = 2*index + 2
-                      const whiteMoveNumber = 2 * index + 1
-                      const blackMoveNumber = 2 * index + 2
-
+                      const moveNumber = index + 1
                       return (
                         <div key={index} className="flex items-center hover:bg-secondary rounded px-2 py-1 transition-colors whitespace-nowrap">
-                          {/* Ruch białych */}
                           <span>
-                            {whiteMoveNumber}. Biały: {movePair.white}
+                            {moveNumber}. Biały: {movePair.white}
                           </span>
-
-                          {/* Ruch czarnych */}
-                          {/* Jeżeli zdarzyłoby się, że czarny ruch jest pusty (np. nieparzysta liczba ruchów), można warunkowo wyświetlać */}
-                          {movePair.black && (
-                            <span className="ml-4">
-                              {blackMoveNumber}. Czarny: {movePair.black}
-                            </span>
-                          )}
+                          {movePair.black && <span className="ml-4">Czarny: {movePair.black}</span>}
                         </div>
                       )
                     })
@@ -299,35 +338,19 @@ export function RightPanel() {
               <div className={isAwaitingPromotion() ? "block" : "hidden"}>
                 <h2 className={`text-lg font-semibold mb-3 ${textColor}`}>{t("rightPanel.promotePawn")}</h2>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.rook)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.rook)}>
                     <ChessRook className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.rook")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.queen)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.queen)}>
                     <ChessQueen className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.queen")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.bishop)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.bishop)}>
                     <ChessBishop className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.bishop")}</span>
                   </Button>
-                  <Button
-                    variant="outline"
-                    className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "p-2"}
-                    onClick={() => promoteFigure(figureType.knight)}
-                  >
+                  <Button variant="outline" className={isNarrow ? "w-fit p-2" : "p-2"} onClick={() => promoteFigure(figureType.knight)}>
                     <ChessKnight className="h-6 w-6" />
                     <span className="sr-only">{t("rightPanel.knight")}</span>
                   </Button>
@@ -354,12 +377,7 @@ export function RightPanel() {
                   </div>
                 </div>
               ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={isNarrow ? "w-fit p-2 flex items-center justify-center" : "w-full p-2 flex items-center justify-center"}
-                  onClick={() => setIsChatOpen(true)}
-                >
+                <Button variant="outline" size="sm" className={isNarrow ? "w-fit p-2" : "w-full p-2"} onClick={() => setIsChatOpen(true)}>
                   <MessageCircle className="h-4 w-4 flex-shrink-0" />
                   {!isNarrow && <span className="ml-2">{t("rightPanel.openChat")}</span>}
                 </Button>
@@ -370,11 +388,11 @@ export function RightPanel() {
                 <span className="flex-shrink-0">{open ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}</span>
                 {!isNarrow && (open ? t("rightPanel.hideSidebar") : t("rightPanel.showSidebar"))}
               </Button>
-
-              <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => setTheme(isDark ? "light" : "dark")}>
+              <Button variant="outline" size="sm" className={bottomButtonClass} onClick={() => {changeTheme(theme == "dark" ? "light" : "dark")}}>
                 <span className="flex-shrink-0">{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</span>
                 {!isNarrow && (isDark ? t("rightPanel.lightMode") : t("rightPanel.darkMode"))}
               </Button>
+              <ToggleSidebarButton isNarrow={isNarrow} />
             </div>
           </div>
         </div>

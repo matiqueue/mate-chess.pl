@@ -1,7 +1,7 @@
 "use client"
 
 import { useUser } from "@clerk/nextjs"
-import { usePathname } from "next/navigation"
+import { redirect, usePathname } from "next/navigation"
 import Link from "next/link"
 import { Home, PlayCircle, PuzzleIcon as PuzzlePiece, Bot, GraduationCap, Trophy, Users, BookOpen, Activity, Settings } from "lucide-react"
 
@@ -127,18 +127,6 @@ export function Sidebar() {
               </NavItem>
             </div>
 
-            <div>
-              <div className="px-6 py-2">
-                <h2 className="text-xs font-semibold text-muted-foreground">{t("navCommunity")}</h2>
-              </div>
-              <NavItem href="/players" icon={Users}>
-                {t("players")}
-              </NavItem>
-              <NavItem href="/activity" icon={Activity}>
-                {t("activity")}
-              </NavItem>
-            </div>
-
             <Separator className="mx-6" />
 
             <div>
@@ -187,11 +175,11 @@ export function Sidebar() {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem>
-                  <Link href="/profile">{t("profile")}</Link>
+                <DropdownMenuItem onClick={() => {redirect("profile")}}>
+                  <Link href="#">{t("profile")}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={"profile/stats/" + user?.id}>{t("yourStatistics")}</Link>
+                <DropdownMenuItem onClick={() => {redirect("profile/stats/" + user?.id)}}>
+                  <Link href="#">{t("yourStatistics")}</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />

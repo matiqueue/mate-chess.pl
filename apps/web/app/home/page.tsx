@@ -9,6 +9,8 @@ import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 /**
  * Obiekt animacji fadeInUp.
@@ -48,6 +50,7 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
   const { t } = useTranslation()
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
@@ -126,16 +129,16 @@ export default function HomePage() {
       {/* Grid z trybami gry */}
       <motion.div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" variants={staggerContainer} initial="hidden" animate="visible">
         {[
-          { icon: Timer, title: t("bullet"), desc: t("oneMin"), bg: "bg-primary/10" },
-          { icon: Zap, title: t("blitz"), desc: t("threePlusTwo"), bg: "bg-primary/10" },
-          { icon: Bot, title: t("computer"), desc: t("vsAi"), bg: "bg-primary/10" },
-          { icon: Trophy, title: t("tournament"), desc: t("arena"), bg: "bg-primary/10" },
+          { icon: Timer, title: t("bullet"), desc: t("oneMin"), bg: "bg-primary/10", onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${60}`)},
+          { icon: Zap, title: t("blitz"), desc: t("threePlusTwo"), bg: "bg-primary/10", onClick: () => router.push(`/play/local?selectedColor=${"white"}&gameType=${300}`) },
+          { icon: Bot, title: t("computer"), desc: t("vsAi"), bg: "bg-primary/10", onClick: () => router.push(`/bot`) },
+          { icon: Trophy, title: t("tournament"), desc: t("arena"), bg: "bg-primary/10", onClick: () => router.push(`/tournaments`) },
         ].map((item, idx) => {
           const Icon = item.icon
           return (
             <motion.div key={idx} variants={fadeInUp} whileHover={{ scale: 1.05 }} className="w-full">
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-6" onClick={item.onClick}>
                   <div className="flex items-center gap-4 h-6">
                     <div className={`h-12 w-12 rounded-lg ${item.bg} flex items-center justify-center`}>
                       <Icon className="h-6 w-6 text-primary" />
@@ -165,7 +168,7 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("trainTacticalSkills")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button className="w-full">{t("startSolving")}</Button>
+                <Button onClick={() => {redirect(`/puzzles`)}} className="w-full">{t("startSolving")}</Button>
               </motion.div>
             </CardContent>
           </Card>
@@ -182,7 +185,7 @@ export default function HomePage() {
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{t("learnFromGrandmasters")}</p>
               <motion.div whileHover={{ scale: 1.05 }}>
-                <Button className="w-full">{t("startLearning")}</Button>
+                <Button onClick={() => {redirect(`/lessons`)}} className="w-full">{t("startLearning")}</Button>
               </motion.div>
             </CardContent>
           </Card>

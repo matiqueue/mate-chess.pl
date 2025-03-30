@@ -1,10 +1,14 @@
 "use client"
+/* eslint-disable @next/next/no-server-import-in-page */
+
 
 import ChessBoardContainer from "@/components/game/chessboard-container"
 import { GameProvider } from "@/contexts/GameContext"
 import { GameViewProvider } from "@/contexts/GameViewContext"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 /**
  * ChessPageContent
@@ -51,14 +55,26 @@ function ChessPageContent() {
  * @returns {JSX.Element} Element JSX reprezentujący stronę szachową.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral) & Jakub Batko
  */
 export default function ChessPage() {
   return (
-    <GameProvider ai={false}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchParamsComponent />
+    </Suspense>
+  );
+}
+
+function SearchParamsComponent() {
+  const searchParams = useSearchParams();
+  const selectedColor = searchParams.get("selectedColor") || "white";
+  const selectedTimer = searchParams.get("gameType") || "300";
+
+  return (
+    <GameProvider ai={false} selectedColor={selectedColor} timer={parseInt(selectedTimer)}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
     </GameProvider>
-  )
+  );
 }

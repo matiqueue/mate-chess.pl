@@ -10,6 +10,10 @@ import { useTheme } from "next-themes"
 import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@workspace/ui/components/dialog"
+import { Input } from "@workspace/ui/components/input"
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
+
 
 /**
  * Obiekt animacji kontenera.
@@ -67,6 +71,12 @@ export default function GameModeSelector() {
   const { user } = useUser()
   const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isColorDialogOpen, setIsColorDialogOpen] = useState(false)
+  const [botDifficulty, setBotDifficulty] = useState("")
+  const [selectedColor, setSelectedColor] = useState("white")
+  const [selectedGameType, setSelectedGameType] = useState("")
+  const [selectedTimer, setSelectedTimer] = useState(300)
 
   useEffect(() => {
     setMounted(true)
@@ -74,7 +84,6 @@ export default function GameModeSelector() {
 
   if (!mounted) return null
 
-  // Definicja trybów gry
   const gameModes = [
     {
       key: "beginner",
@@ -98,6 +107,44 @@ export default function GameModeSelector() {
       icon: Crown,
     },
   ]
+
+  const openAdvancedDialog = () => {
+    setIsDialogOpen(true)
+  }
+
+  const openColorDialog = () => {
+    setIsColorDialogOpen(true)
+  }
+
+  const handleDifficultyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBotDifficulty(event.target.value)
+  }
+
+  const handleGoButtonClick = () => {
+    console.log("Wybrany poziom trudności bota:", botDifficulty)
+
+    if(isDialogOpen){
+      if (botDifficulty === "1") {
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+      } else if (botDifficulty === "2") {
+        router.push(`/bot/ai/medium?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+      } else if (botDifficulty === "3") {
+        router.push(`/bot/ai/hard?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+      } else {
+        console.log("Nieprawidłowy poziom trudności bota")
+      }
+    }else if(isColorDialogOpen){
+      if(selectedGameType == "beginner"){
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+      }else{
+        router.push(`/bot/chess-master?selectedColor=${selectedColor}&gameType=${selectedTimer}`) 
+      }
+    }
+    
+
+    setIsColorDialogOpen(false)
+    setIsDialogOpen(false)
+  }
 
   return (
     <ScrollArea>
@@ -125,14 +172,14 @@ export default function GameModeSelector() {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mt-25 text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 py-10"
           >
             {t("selectGameMode")}
           </motion.h1>
 
           <motion.div variants={container} initial="hidden" animate="show" className="grid md:grid-cols-3 gap-6 w-full max-w-6xl">
             {gameModes.map((mode) => {
-              const isOnline = mode.key === "online" // (Nie jest używane, ale pozostawione dla spójności)
+              const isOnline = mode.key === "online"
               return (
                 <MotionCard
                   key={mode.key}
@@ -168,11 +215,11 @@ export default function GameModeSelector() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={
-                        mode.key === "beginner"
-                          ? () => router.push(`/bot/${mode.key.toLowerCase()}`)
-                          : mode.key === "advance"
-                            ? () => router.push(`/bot/${mode.key.toLowerCase()}`)
-                            : () => router.push(`/play/${mode.key.toLowerCase()}`)
+                        mode.key === "advance"
+                          ? openAdvancedDialog
+                          : mode.key === "beginner"
+                            ? () => { setSelectedGameType("beginner"); setIsColorDialogOpen(true) }
+                            : () => { setSelectedGameType("chess-master"); setIsColorDialogOpen(true) }
                       }
                       disabled={isOnline && !user}
                     >
@@ -190,6 +237,124 @@ export default function GameModeSelector() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Dialog for advanced mode */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+          <DialogHeader>
+            <DialogTitle>{t("selectBotDifficulty")}</DialogTitle>
+            <DialogDescription>{t("enterDifficultyLevel")}</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col space-y-4">
+            <Input type="number" value={botDifficulty} onChange={handleDifficultyChange} placeholder={t("difficultyLevel")} />
+
+            { /* Game type */}    
+            <DialogHeader>
+              <DialogTitle>{t("selectGameType")}</DialogTitle>
+              <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
+            </DialogHeader>
+
+            <RadioGroup
+              value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedTimer(parseInt(value));
+              }}
+              className="flex gap-4 justify-center"
+            >
+              <label htmlFor="time900" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 900 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="900" id="time900" className="sr-only" />
+                  <p>Classic</p>
+                </div>
+              </label>
+
+              <label htmlFor="time300" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 300 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="300" id="time300" className="sr-only" />
+                  <p>Rapid</p>
+                </div>
+              </label>
+
+              <label htmlFor="time120" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 120 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="120" id="time120" className="sr-only" />
+                    <p>Blitz</p>
+                </div>
+              </label>
+            </RadioGroup>
+
+            <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+          <div className="flex flex-col space-y-4">
+            
+            { /* Game type */}    
+            <DialogHeader>
+              <DialogTitle>{t("selectGameType")}</DialogTitle>
+              <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
+            </DialogHeader>
+
+            <RadioGroup
+              value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedTimer(parseInt(value));
+              }}
+              className="flex gap-4 justify-center"
+            >
+              <label htmlFor="time900" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 900 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="900" id="time900" className="sr-only" />
+                  <p>Classic</p>
+                </div>
+              </label>
+
+              <label htmlFor="time300" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 300 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="300" id="time300" className="sr-only" />
+                  <p>Rapid</p>
+                </div>
+              </label>
+
+              <label htmlFor="time120" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 120 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="120" id="time120" className="sr-only" />
+                    <p>Blitz</p>
+                </div>
+              </label>
+            </RadioGroup>
+
+            <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </ScrollArea>
   )
 }

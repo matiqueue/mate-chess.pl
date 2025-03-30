@@ -1,0 +1,38 @@
+name: Randomly Add File to Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write # Uprawnienia do zapisu w repozytorium (tworzenie release'ów)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Randomly include apps/server/src/index.ts
+        run: |
+          mkdir -p release-artifacts
+          if [ $((RANDOM % 2)) -eq 0 ]; then
+            cp apps/server/src/index.ts release-artifacts/index.ts
+            echo "File index.ts added to release"
+          else
+            echo "File index.ts skipped this time"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ github.run_number }}"
+          name: "Release ${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: |
+            release-artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,15 +10,26 @@ import ChessGameExtraAI from "@modules/chessGameExtraAI"
 import { promote, isAwaitingPromotion } from "@modules/shared/destruct/movementFunctions/extraMoves/promotion"
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
-import { color } from "@shared/types/colorType.js"
+import { color } from "@shared/types/colorType"
+import { callAiToPerformMove } from "@shared/destruct/aiFunctions/AIIOfunctions"
+import { setupFiguresStandard } from "@shared/destruct/mallocFunctions/figureSetup"
 
-const setupGame = () => {
+const setupGame = (fenNotation: string = "") => {
   const game = new ChessGameExtraLayer()
+  if (isValidFEN(fenNotation)) {
+    game.setupFigures(fenNotation)
+  } else setupFiguresStandard(game)
   return game
 }
 const setupAIGame = (aicolor: color) => {
   const game = new ChessGameExtraAI(aicolor)
+  setupFiguresStandard(game)
   return game
+}
+
+function isValidFEN(fen: string): boolean {
+  const fenRegex = /^([prnbqkPRNBQK1-8]{1,8}\/){7}[prnbqkPRNBQK1-8]{1,8} [wb] (K?Q?k?q?|-) ([a-h][36]|-) \d+ \d+$/
+  return fenRegex.test(fen)
 }
 
 export {
@@ -45,4 +56,5 @@ export {
   isMoveEnPassant,
   isAwaitingPromotion,
   isPreviewModeOn,
+  callAiToPerformMove,
 }

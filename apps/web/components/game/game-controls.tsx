@@ -17,6 +17,7 @@ import { useTheme } from "next-themes"
 import { usePathname } from "next/navigation"
 import { useGameContext } from "@/contexts/GameContext"
 import { useTranslation } from "react-i18next"
+import { gameStatusType } from "@modules/shared/types/gameStatusType"
 
 export function GameControls() {
   const { t } = useTranslation()
@@ -24,10 +25,10 @@ export function GameControls() {
   const isLocal = pathname.startsWith("/play/local")
   const isBot = pathname.startsWith("/bot")
   const { theme } = useTheme()
-  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState } = useGameContext() // pobieramy funkcję cofania ruchu
+  const { undoLastMove, reviewLastMove, forwardLastMove, returnToCurrentGameState, setGameStatus } = useGameContext() // pobieramy funkcję cofania ruchu
 
-  function confirmSurrender(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
-    throw new Error("Function not implemented.")
+  function confirmSurrender() {
+    setGameStatus(gameStatusType.blackWins)
   }
 
   function sendDrawOffer(): import("react").MouseEventHandler<HTMLButtonElement> | undefined {
@@ -38,11 +39,11 @@ export function GameControls() {
     <div className="w-full py-6 px-8">
       <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">
         {/* Przyciski sterujące (strzałki) widoczne wszędzie */}
-        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={undoLastMove}>
           <RotateCcw className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={reviewLastMove}>
+          <ChevronLeft className="h-6 w-6" />
         </Button>
         <Button variant="ghost" size="icon" className="text-white/70 hover:text-white hover:bg-white/10" onClick={forwardLastMove}>
           <ChevronRight className="h-6 w-6" />

@@ -1,5 +1,3 @@
-//
-//
 "use client"
 
 import { createContext, useContext, useEffect, useRef } from "react"
@@ -88,6 +86,6 @@ export function ErrorContextProvider({ children }: { children: React.ReactNode }
   const reportError = (data: any) => {
     sendToErrors(data)
   }
- // @ts-ignore
+
   return <ErrorContext.Provider value={reportError}>{children}</ErrorContext.Provider>
 }

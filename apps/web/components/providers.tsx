@@ -13,6 +13,8 @@ import { ClerkProvider } from "@clerk/nextjs"
 
 import { SidebarLayout } from "@/components/main/SidebarLayout" // dopasuj ścieżkę do lokalizacji pliku
 import { JSX } from "react"
+import { MinimalLayout } from "./main/minimalLayout"
+import path from "path"
 
 /**
  * Providers
@@ -41,12 +43,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/home") ||
     pathname.startsWith("/play") ||
     pathname.startsWith("/bot") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up") ||
+    pathname === "/profile" ||
+    pathname === "/profile/security" ||
     pathname.startsWith("/easter-egg") ||
-    pathname.startsWith("/activity") ||
-    pathname.startsWith("/settings")
+    pathname.startsWith("/activity")
   ) {
     return (
       <ClerkProvider>
@@ -59,6 +59,29 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </I18nextProvider>
         </ThemeProvider>
       </ClerkProvider>
+    )
+  }
+
+  // Minimal layout
+  if (
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/profile/stats/") ||
+    pathname.startsWith("/settings")
+  ){
+    return (
+      <ClerkProvider>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} enableColorScheme disableTransitionOnChange>
+        <I18nextProvider i18n={i18n}>
+          <Analytics />
+          <AudioProvider>
+            <ErrorContextProvider>
+              <MinimalLayout>{children}</MinimalLayout>
+            </ErrorContextProvider>
+          </AudioProvider>
+        </I18nextProvider>
+      </ThemeProvider>
+    </ClerkProvider>
     )
   }
 

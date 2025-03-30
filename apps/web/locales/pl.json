@@ -10,6 +10,10 @@
   "bullet": "Błyskawiczne",
   "oneMin": "1 minuta",
   "blitz": "Blitz",
+  "selectBotDifficulty": "Wybierz poziom trudności AI",
+  "enterDifficultyLevel": "Wpisz poziom trudności (1 - 3)",
+  "difficultyLevel": "Poziom trudności",
+  "goNext": "Przejdź dalej!",
   "threePlusTwo": "3+2",
   "computer": "Komputer",
   "vsAi": "Przeciwko AI",
@@ -25,6 +29,12 @@
   "brandName": "Mate Chess",
   "home": "Strona główna",
   "navPlay": "GRA",
+  "selectAction": "Wybierz akcję",
+  "createLobby": "Stwórz lobby",
+  "joinLobby2": "Dołącz do lobby",
+  "enterLobbyCode": "Wpisz kod do lobby",
+  "hide_code_input": "Ukryj pole kodu",
+  "join_with_code": "Dołącz za pomocą kodu",
   "live": "Na żywo",
   "tournaments": "Turnieje",
   "navLearn": "NAUKA",
@@ -43,8 +53,9 @@
   "logout": "Wyloguj się",
   "online": "Online",
   "selectGameMode": "Wybierz tryb gry",
+  "startLinkGame": "Zacznij grę przez Link",
   "gameModeLocal": "Lokalnie",
-  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze.",
+  "gameModeLocalDescription": "Graj z przyjacielem na tym samym komputerze. \n Wypróbuj tryb 3D!",
   "gameModeWithLink": "Poprzez link",
   "gameModeWithLinkDescription": "Utwórz pokój i udostępnij link znajomemu.",
   "gameModeOnline": "Online",
@@ -102,17 +113,17 @@
     "aiBotsHeading": "Boty AI",
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
-      "title": "Początkujący Bot",
+      "title": "Tryb Algorytm",
       "description": "Idealny dla nowicjuszy.",
       "buttonText": "Początkujący!"
     },
     "advancedBot": {
-      "title": "Zaawansowany Bot",
+      "title": "Tryb AI",
       "description": "Wyzwanie dla średnio zaawansowanych.",
       "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
-      "title": "Arcymistrz Szachowy",
+      "title": "Tryb Arcymistrz",
       "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi.",
       "buttonText": "Arcymistrz!"
     },
@@ -513,5 +524,73 @@
       "Składana szachownica została wynaleziona przez księdza, któremu zakazano gry w szachy.",
       "Nowa figura szachowa – królowa – została wprowadzona w XV wieku i początkowo była najsłabszą figurą."
     ]
-  }
+  },
+  "onLoad": {
+    "title": "Ładowanie planszy",
+    "desc": "Proszę czekać, ładujemy planszę..."
+  },
+  "onViewChange": {
+    "title2D": "Zmiana perspektywy na 2D",
+    "desc2D": "Proszę czekać, zmieniamy planszę...",
+    "title3D": "Zmiana perspektywy na 3D",
+    "desc3D": "Proszę czekać, zmieniamy planszę..."
+  },
+  "onThemeChange": {
+    "titleLight": "Ładowanie jasnego motywu",
+    "descLight": "Proszę czekać, malujemy planszę...",
+    "titleDark": "Ładowanie ciemnego motywu",
+    "descDark": "Proszę czekać, malujemy planszę..."
+  },
+  "auth": {
+    "noAccountTitle": "Nie znaleźliśmy twojego konta",
+    "redirectDescription": "Zaraz przekierujemy cię na stronie gdzie będziesz mógł/mogła się zarejestrować",
+    "redirectMessage": "Przekierowanie nastąpi za:",
+    "createAccount": "Stwórz swoje konto",
+    "fillData": "Wypełnij dane, aby rozpocząć.",
+    "defaultMessage": ""
+  },
+  "signUp.start.title": "Zarejestruj się",
+  "signUp.start.description": "Utwórz nowe konto",
+  "signUp.step1.email": "Adres email",
+  "signUp.step1.username": "Nazwa użytkownika",
+  "signUp.or": "lub",
+  "signUp.step1.firstName": "Imię",
+  "signUp.step1.lastName": "Nazwisko",
+  "signUp.step1.password": "Hasło",
+  "signUp.step2.username": "Nazwa użytkownika",
+  "signUp.step3.emailVerification": "Zweryfikuj swój email",
+  "signUp.step3.emailVerificationDescription": "Wprowadź kod weryfikacyjny wysłany na Twój email",
+  "signUp.continue": "Kontynuuj",
+  "signUp.completeRegistration": "Zakończ rejestrację",
+  "signUp.haveAccount": "Masz już konto? Zaloguj się",
+  "signUp.resendCode": "Nie otrzymałeś kodu? Wyślij ponownie",
+  "signUp.verificationCode": "Kod weryfikacyjny",
+  "signUp.afterSso1": "Zalogowano Cię za pomocą konta społecznościowego. Podaj nazwę użytkownika, aby ukończyć rejestrację.",
+  "signUp.afterSso2": "Podaj nazwę użytkownika, aby ukończyć tworzenie konta.",
+  "signUp.completeSignUp": "Uzupełnij rejestrację",
+  "signIn": {
+    "title": "Zaloguj się",
+    "welcomeMessage": "Witaj ponownie! Zaloguj się, aby kontynuować.",
+    "or": "lub",
+    "google": "Google",
+    "apple": "Apple",
+    "emailOrUsername": "Email lub nazwa użytkownika",
+    "continueButton": "Kontynuuj",
+    "signUpLink": "Nie masz konta? Zarejestruj się",
+    "chooseOtherMethod": "Użyj innej metody",
+    "verificationMessage": "Wprowadź kod weryfikacyjny wysłany na Twój email.",
+    "password": "Hasło",
+    "backButton": "Wróć",
+    "noCodeReceived": "Nie otrzymałeś kodu? Wyślij ponownie",
+    "redirectMessage": "Przekierowanie wkrótce...",
+    "resendCode": "Nie otrzymałeś kodu? Wyślij ponownie",
+    "noAccountTitle": "Nie znaleźliśmy twojego konta",
+    "redirectDescription": "Zaraz cie przeniesiemy na strone gdzie będziesz mógł je stworzyć"
+  },
+  "selectColorTitle": "Wybier kolor",
+  "selectColorDesc": "Wybierz którymi pionkami będziesz grał!",
+  "selectGameType": "Wybierz tryb gry!",
+  "selectGameTypeDesc": "Wybierz długość rozgrywki!"
 }
+
+

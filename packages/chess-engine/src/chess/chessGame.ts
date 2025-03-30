@@ -1,12 +1,11 @@
 import { Board } from "@utils/boardUtils"
-import { Bishop, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
+import { Bishop, Figure, King, Knight, Pawn, Queen, Rook } from "@utils/figureUtils"
 import { color } from "@shared/types/colorType"
 import { Move } from "@shared/types/moveType"
 import MoveRecord from "@shared/types/moveRecord"
-import { figureType } from "@shared/types/figureType"
 import MoveRecorder from "@modules/chess/history/moveRecorder"
 import { gameStatusType } from "@shared/types/gameStatusType"
-import { PromotionFigureType } from "@shared/types/promotionType.js"
+import { PromotionFigureType } from "@shared/types/promotionType"
 
 /**
  * Represents a basic chess game logic.
@@ -35,7 +34,6 @@ class ChessGame {
   constructor() {
     this._board = new Board()
     this._board.setupBoard()
-    this.setupFigures()
     this._currentPlayer = color.White
     this._moveRecorder = new MoveRecorder(this)
     this.promotionTo = this.promotionTo.bind(this)
@@ -50,7 +48,9 @@ class ChessGame {
   }
   /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
    * */
-  protected async process() {
+  public async process() {
+    if (this.gameStatus !== gameStatusType.active) return
+    console.log("processing...")
     this.stateProcessor()
 
     for (const figure of this._board.allFigures) {
@@ -145,21 +145,32 @@ class ChessGame {
         this.board.forwardMove()
       }
     }
-    if (!this._isGameOn) return false
-    if (move.from.figure?.color === this.currentPlayer) {
-      if (this._board?.moveFigure(move)) {
-        const figures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
-        for (const figure of figures) {
-          if (figure instanceof Pawn) {
-            figure.isEnPassantPossible = false
-          }
-        }
-        this.switchCurrentPlayer()
-        this.board.initPreview()
-        return true
-      }
+
+    if (!this._isGameOn) {
+      console.log("Game is not active")
+      return false
     }
-    return false
+
+    if (move.from.figure?.color !== this.currentPlayer) {
+      console.log("Wrong current player")
+      return false
+    }
+
+    if (!this._board?.moveFigure(move)) {
+      console.log("moveFigure returned false")
+      return false
+    }
+
+    const opponentFigures = this.currentPlayer === color.Black ? this.board.whiteFigures : this.board.blackFigures
+    opponentFigures.forEach((fig) => {
+      if (fig instanceof Pawn) {
+        fig.isEnPassantPossible = false
+      }
+    })
+
+    this.switchCurrentPlayer()
+    this.board.initPreview()
+    return true
   }
   /**
    * Undoes the last move made by the player using preview mode logic.
@@ -167,18 +178,26 @@ class ChessGame {
    * @returns true if move was undone, false if undo is not available
    */
   public undoMove(): boolean {
-    return this.board.previewLastMove()
+    const isSuccess = this.board.undoLastMove()
+    if (isSuccess) {
+      this.switchCurrentPlayer()
+    }
+    return isSuccess
   }
   /**
    * Regenerates and returns the move history using {@link MoveRecorder}.
    *
    * @returns formatted move history
    */
-  public getMoveHistory(): any {
-    console.log(this._moveRecorder.regenerateMoveHistory(this._moves))
+  public getMoveHistory() {
     return this._moveRecorder.regenerateMoveHistory(this._moves)
   }
 
+  public getMoveHistoryString(): string {
+    const moves = this._moveRecorder.regenerateMoveString(this._moves)
+
+    return moves
+  }
   public gameDraw() {
     this._gameStatus = gameStatusType.draw
     this._isGameOn = false
@@ -214,47 +233,86 @@ class ChessGame {
     return this._gameStatus
   }
 
-  protected setupFigures(): void {
-    const letters = "abcdefgh" // Corrected to include 'h'
+  public setupFigures(fenString: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"): void {
+    // Parse FEN string components
+    const fenParts = fenString.split(" ")
+    if (fenParts.length < 6) {
+      throw new Error("Invalid FEN string: missing required components")
+    }
 
-    // Place White Pawns
-    for (let i = 0; i < 8; i++) {
-      const position = this._board.getPositionByNotation(letters[i] + "2")
-      if (position) {
-        this._board.addFigureAtPosition(position, new Pawn(color.White, position, this._board))
+    const [boardStr, activeColor, castleRights, enPassant, halfmove, fullmove] = fenParts
+
+    // Helper function to create figure from FEN notation
+    const createFigureFromFEN = (char: string, x: number, y: number): Figure | null => {
+      const figColor = char === char.toUpperCase() ? color.Black : color.White
+      const position = this._board.getPositionByCords(x, 7 - y)
+
+      if (!position) return null
+
+      switch (char.toLowerCase()) {
+        case "k":
+          return new King(figColor, position, this._board)
+        case "q":
+          return new Queen(figColor, position, this._board)
+        case "r":
+          return new Rook(figColor, position, this._board)
+        case "b":
+          return new Bishop(figColor, position, this._board)
+        case "n":
+          return new Knight(figColor, position, this._board)
+        case "p":
+          return new Pawn(figColor, position, this._board)
+        default:
+          return null
       }
     }
 
-    // Place White Major Pieces
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("a1")!, new Rook(color.White, this._board.getPositionByNotation("a1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("h1")!, new Rook(color.White, this._board.getPositionByNotation("h1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("b1")!, new Knight(color.White, this._board.getPositionByNotation("b1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("g1")!, new Knight(color.White, this._board.getPositionByNotation("g1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("c1")!, new Bishop(color.White, this._board.getPositionByNotation("c1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("f1")!, new Bishop(color.White, this._board.getPositionByNotation("f1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("d1")!, new Queen(color.White, this._board.getPositionByNotation("d1")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("e1")!, new King(color.White, this._board.getPositionByNotation("e1")!, this._board))
+    // Parse board rows
+    let y = 0
+    if (!boardStr) {
+      console.error("setup figures failed: board string does not exist")
+      return
+    }
+    for (const row of boardStr.split("/")) {
+      let x = 0
+      for (const char of row) {
+        switch (char) {
+          case "1":
+          case "2":
+          case "3":
+          case "4":
+          case "5":
+          case "6":
+          case "7":
+          case "8":
+            // Empty squares
+            x += parseInt(char)
+            break
 
-    // Place Black Pawns
-    for (let i = 0; i < 8; i++) {
-      const position = this._board.getPositionByNotation(letters[i] + "7")
-      if (position) {
-        this._board.addFigureAtPosition(position, new Pawn(color.Black, position, this._board))
+          default:
+            // Place figure
+            const figure = createFigureFromFEN(char, x, y)
+            if (figure) {
+              this._board.addFigureAtPosition(this._board.getPositionByCords(x, 7 - y)!, figure)
+            }
+            x++
+            break
+        }
+        if (x > 8) break
       }
+      if (x !== 8) {
+        throw new Error(`Invalid FEN string: row ${y + 1} has incorrect length`)
+      }
+      y++
     }
 
-    // Place Black Major Pieces
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("a8")!, new Rook(color.Black, this._board.getPositionByNotation("a8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("h8")!, new Rook(color.Black, this._board.getPositionByNotation("h8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("b8")!, new Knight(color.Black, this._board.getPositionByNotation("b8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("g8")!, new Knight(color.Black, this._board.getPositionByNotation("g8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("c8")!, new Bishop(color.Black, this._board.getPositionByNotation("c8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("f8")!, new Bishop(color.Black, this._board.getPositionByNotation("f8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("d8")!, new Queen(color.Black, this._board.getPositionByNotation("d8")!, this._board))
-    this._board.addFigureAtPosition(this._board.getPositionByNotation("e8")!, new King(color.Black, this._board.getPositionByNotation("e8")!, this._board))
+    // Validate board state
+    if (y !== 8) {
+      throw new Error("Invalid FEN string: incorrect number of rows")
+    }
 
-    console.log(this.board.getBoardArray())
-    console.trace()
+    // Set current player
+    this.currentPlayer = activeColor === "w" ? color.White : color.Black
   }
 
   get awaitingPromotion(): boolean {

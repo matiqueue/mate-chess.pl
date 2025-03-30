@@ -9,7 +9,7 @@ import { kingMaterialTable } from "@shared/types/material"
 class King extends Figure {
   private _hasMoved: boolean
   constructor(color: color, position: Position, board: Board, hasMoved: boolean = false) {
-    super(figureType.king, color, position, board, 3000, kingMaterialTable)
+    super(figureType.king, color, position, board, 1500, kingMaterialTable)
     this._hasMoved = hasMoved
   }
 

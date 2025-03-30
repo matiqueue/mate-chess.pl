@@ -1,17 +1,35 @@
-"use client"
+"use client" // Dyrektywa określająca, że komponent działa po stronie klienta
 
-import { useState } from "react"
-import { MessageSquare, Search, Send, Check, CheckCheck, Filter, PuzzleIcon as Chess, Trophy } from "lucide-react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@workspace/ui/components/sheet"
-import { Button } from "@workspace/ui/components/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
-import { Input } from "@workspace/ui/components/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { Badge } from "@workspace/ui/components/badge"
-import { Textarea } from "@workspace/ui/components/textarea"
+import { useState } from "react" // Hook React do zarządzania stanem
+import { MessageSquare, Search, Send, Check, CheckCheck, Filter, PuzzleIcon as Chess, Trophy } from "lucide-react" // Ikony z biblioteki Lucide
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@workspace/ui/components/sheet" // Komponenty arkusza UI
+import { Button } from "@workspace/ui/components/button" // Komponent przycisku UI
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar" // Komponenty awatara UI
+import { Input } from "@workspace/ui/components/input" // Komponent pola tekstowego UI
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs" // Komponenty zakładek UI
+import { Badge } from "@workspace/ui/components/badge" // Komponent odznaki UI
+import { Textarea } from "@workspace/ui/components/textarea" // Komponent obszaru tekstowego UI
 
+/**
+ * ChessMessageSystem
+ *
+ * Komponent systemu wiadomości szachowych wyświetlający interaktywny panel boczny (Sheet)
+ * z wiadomościami od innych graczy. Obsługuje filtrowanie, wyszukiwanie, oznaczanie jako
+ * przeczytane i wysyłanie nowych wiadomości. Używa zakładek do kategoryzacji wiadomości.
+ *
+ * @returns {JSX.Element} Element JSX reprezentujący system wiadomości szachowych.
+ *
+ * @remarks
+ * Komponent zawiera statyczną listę wiadomości jako dane przykładowe. W rzeczywistej
+ * aplikacji dane byłyby pobierane z backendu. Stylizacja i interaktywność opierają się
+ * na komponentach UI z biblioteki @workspace/ui.
+ * Autor: matiqueue (Szymon Góral)
+ * @source Własna implementacja
+ */
 export default function ChessMessageSystem() {
+  // Stan określający aktywną zakładkę (all, active, challenges, friends)
   const [activeTab, setActiveTab] = useState("all")
+  // Stan przechowujący listę wiadomości
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -92,84 +110,118 @@ export default function ChessMessageSystem() {
     },
   ])
 
+  // Stan przechowujący treść nowej wiadomości
   const [newMessage, setNewMessage] = useState("")
+  // Stan przechowujący zapytanie wyszukiwania
   const [searchQuery, setSearchQuery] = useState("")
+  // Stan określający, czy aktywny jest tryb pisania wiadomości
   const [composeMode, setComposeMode] = useState(false)
 
+  // Obliczenie liczby nieprzeczytanych wiadomości
   const unreadCount = messages.filter((msg) => !msg.read).length
 
+  // Filtrowanie wiadomości na podstawie aktywnej zakładki i zapytania wyszukiwania
   const filteredMessages = messages.filter((message) => {
-    // Filter by tab
+    // Filtrowanie według zakładki
     if (activeTab !== "all" && message.category !== activeTab) return false
 
-    // Filter by search
+    // Filtrowanie według wyszukiwania (sender lub content)
     if (searchQuery && !message.content.toLowerCase().includes(searchQuery.toLowerCase()) && !message.sender.toLowerCase().includes(searchQuery.toLowerCase()))
       return false
 
-    return true
+    return true // Wiadomość spełnia kryteria
   })
 
+  /**
+   * markAsRead
+   *
+   * Oznacza wiadomość o podanym ID jako przeczytaną, aktualizując jej stan w tablicy wiadomości.
+   *
+   * @param {number} id - ID wiadomości do oznaczenia jako przeczytanej.
+   */
   const markAsRead = (id: number) => {
     setMessages(messages.map((msg) => (msg.id === id ? { ...msg, read: true } : msg)))
   }
 
+  /**
+   * handleSendMessage
+   *
+   * Obsługuje wysyłanie nowej wiadomości. W tej wersji wyświetla alert, ale w rzeczywistej
+   * aplikacji wywołałoby zapytanie do backendu.
+   */
   const handleSendMessage = () => {
-    if (!newMessage.trim()) return
+    if (!newMessage.trim()) return // Wyjście, jeśli wiadomość jest pusta
 
-    // In a real app, you would send this to your backend
-    alert(`Message sent: ${newMessage}`)
-    setNewMessage("")
-    setComposeMode(false)
+    alert(`Message sent: ${newMessage}`) // Tymczasowy alert zamiast wysyłki
+    setNewMessage("") // Reset treści wiadomości
+    setComposeMode(false) // Wyłączenie trybu pisania
   }
 
-  // Function to get rating color based on ELO
-  const getRatingColor = (rating: number) => {
-    if (rating >= 2200) return "text-amber-500 font-bold" // Gold for masters
-    if (rating >= 1900) return "text-emerald-500" // Green for experts
-    if (rating >= 1600) return "text-blue-500" // Blue for intermediate
-    return "text-gray-500" // Gray for beginners
+  /**
+   * getRatingColor
+   *
+   * Zwraca klasę CSS dla koloru tekstu na podstawie rankingu ELO gracza.
+   *
+   * @param {number} rating - Ranking ELO gracza.
+   * @returns {string} Klasa CSS określająca kolor tekstu.
+   */
+  const getRatingColor = (rating: number): string => {
+    if (rating >= 2200) return "text-amber-500 font-bold" // Złoty dla mistrzów
+    if (rating >= 1900) return "text-emerald-500" // Zielony dla ekspertów
+    if (rating >= 1600) return "text-blue-500" // Niebieski dla średniozaawansowanych
+    return "text-gray-500" // Szary dla początkujących
   }
 
+  // Renderowanie komponentu
   return (
     <Sheet>
+      {/* Przycisk otwierający panel wiadomości */}
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <MessageSquare className="h-5 w-5" />
-          <span className="sr-only">Chess Messages</span>
+          <MessageSquare className="h-5 w-5" /> {/* Ikona wiadomości */}
+          <span className="sr-only">Chess Messages</span> {/* Tekst dla czytników ekranu */}
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
-              {unreadCount}
+              {unreadCount} {/* Liczba nieprzeczytanych wiadomości */}
             </span>
           )}
         </Button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-md md:max-w-lg">
+        {/* Nagłówek panelu */}
         <SheetHeader className="border-b pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Chess className="h-5 w-5 text-primary" />
-              <SheetTitle className="text-xl">Mate-Chess Messages</SheetTitle>
+              <Chess className="h-5 w-5 text-primary" /> {/* Ikona szachów */}
+              <SheetTitle className="text-xl">Mate-Chess Messages</SheetTitle> {/* Tytuł panelu */}
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="icon" onClick={() => setComposeMode(true)}>
-                <Send className="h-4 w-4" />
+                <Send className="h-4 w-4" /> {/* Przycisk nowej wiadomości */}
               </Button>
               <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
+                <Filter className="h-4 w-4" /> {/* Przycisk filtrowania */}
               </Button>
             </div>
           </div>
+          {/* Pole wyszukiwania */}
           <div className="relative mt-2">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search players or messages..." className="pl-8" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Ikona wyszukiwania */}
+            <Input
+              placeholder="Search players or messages..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Aktualizacja zapytania wyszukiwania
+            />
           </div>
         </SheetHeader>
 
+        {/* Tryb pisania wiadomości */}
         {composeMode ? (
           <div className="mt-6 flex flex-col h-[calc(100vh-200px)]">
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">To Player:</label>
-              <Input placeholder="Enter username or search players" />
+              <Input placeholder="Enter username or search players" /> {/* Pole odbiorcy */}
             </div>
             <div className="flex-grow mb-4">
               <label className="text-sm font-medium mb-1 block">Message:</label>
@@ -177,63 +229,65 @@ export default function ChessMessageSystem() {
                 placeholder="Type your message here..."
                 className="h-[calc(100%-30px)]"
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
+                onChange={(e) => setNewMessage(e.target.value)} // Aktualizacja treści wiadomości
               />
             </div>
             <div className="flex gap-2 mb-4">
               <Button variant="outline" size="sm" className="flex-1">
                 <Chess className="mr-2 h-4 w-4" />
-                Send Game Invite
+                Send Game Invite {/* Przycisk zaproszenia do gry */}
               </Button>
               <Button variant="outline" size="sm" className="flex-1">
                 <Trophy className="mr-2 h-4 w-4" />
-                Share Game Analysis
+                Share Game Analysis {/* Przycisk udostępnienia analizy */}
               </Button>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setComposeMode(false)}>
-                Cancel
+                Cancel {/* Anulowanie pisania */}
               </Button>
-              <Button onClick={handleSendMessage}>Send Message</Button>
+              <Button onClick={handleSendMessage}>Send Message</Button> {/* Wysłanie wiadomości */}
             </div>
           </div>
         ) : (
           <>
+            {/* Zakładki wiadomości */}
             <Tabs defaultValue="all" className="mt-6" onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="all">
                   All
                   <Badge variant="secondary" className="ml-2">
-                    {messages.length}
+                    {messages.length} {/* Liczba wszystkich wiadomości */}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="active">
                   Active Games
                   <Badge variant="secondary" className="ml-2">
-                    {messages.filter((m) => m.category === "active").length}
+                    {messages.filter((m) => m.category === "active").length} {/* Liczba aktywnych gier */}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="challenges">
                   Challenges
                   <Badge variant="secondary" className="ml-2">
-                    {messages.filter((m) => m.category === "challenges").length}
+                    {messages.filter((m) => m.category === "challenges").length} {/* Liczba wyzwań */}
                   </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="friends">
                   Friends
                   <Badge variant="secondary" className="ml-2">
-                    {messages.filter((m) => m.category === "friends").length}
+                    {messages.filter((m) => m.category === "friends").length} {/* Liczba wiadomości od znajomych */}
                   </Badge>
                 </TabsTrigger>
               </TabsList>
 
+              {/* Zawartość zakładki "all" */}
               <TabsContent value="all" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
                 {filteredMessages.length > 0 ? (
                   filteredMessages.map((message) => (
                     <div
                       key={message.id}
                       className={`rounded-lg border p-4 transition-colors hover:bg-accent/50 cursor-pointer ${!message.read ? "border-primary bg-primary/5" : ""}`}
-                      onClick={() => markAsRead(message.id)}
+                      onClick={() => markAsRead(message.id)} // Oznaczanie jako przeczytane po kliknięciu
                     >
                       <div className="flex items-start gap-3">
                         <Avatar className="h-10 w-10 border-2 border-muted">
@@ -243,15 +297,21 @@ export default function ChessMessageSystem() {
                         <div className="flex-1 space-y-1">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <span className={`font-medium ${!message.read ? "text-primary" : ""}`}>{message.sender}</span>
-                              <span className={`text-xs ${getRatingColor(message.rating)}`}>{message.rating}</span>
+                              <span className={`font-medium ${!message.read ? "text-primary" : ""}`}>
+                                {message.sender} {/* Nazwa nadawcy */}
+                              </span>
+                              <span className={`text-xs ${getRatingColor(message.rating)}`}>
+                                {message.rating} {/* Ranking ELO */}
+                              </span>
                             </div>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               {message.read ? <CheckCheck className="h-3 w-3 text-primary" /> : <Check className="h-3 w-3" />}
-                              <span>{message.time}</span>
+                              <span>{message.time}</span> {/* Czas wiadomości */}
                             </div>
                           </div>
-                          <p className={`text-sm line-clamp-2 ${!message.read ? "font-medium" : "text-muted-foreground"}`}>{message.content}</p>
+                          <p className={`text-sm line-clamp-2 ${!message.read ? "font-medium" : "text-muted-foreground"}`}>
+                            {message.content} {/* Treść wiadomości (max 2 linie) */}
+                          </p>
                           <div className="flex justify-between items-center mt-2">
                             <Badge
                               variant="outline"
@@ -265,7 +325,7 @@ export default function ChessMessageSystem() {
                             >
                               {message.category === "challenges" ? "Challenge" : message.category === "active" ? "Active Game" : "Friend"}
                             </Badge>
-                            <span className="text-xs text-muted-foreground">{message.date}</span>
+                            <span className="text-xs text-muted-foreground">{message.date}</span> {/* Data wiadomości */}
                           </div>
                         </div>
                       </div>
@@ -273,33 +333,33 @@ export default function ChessMessageSystem() {
                   ))
                 ) : (
                   <div className="text-center py-10 text-muted-foreground">
-                    <Chess className="mx-auto h-10 w-10 mb-2 opacity-20" />
-                    <p>No chess messages found</p>
+                    <Chess className="mx-auto h-10 w-10 mb-2 opacity-20" /> {/* Ikona szachów */}
+                    <p>No chess messages found</p> {/* Komunikat o braku wiadomości */}
                   </div>
                 )}
               </TabsContent>
 
+              {/* Pozostałe zakładki - zawartość filtrowana przez filteredMessages */}
               <TabsContent value="active" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-                {/* Active game messages will be shown here through the filtered list */}
+                {/* Wiadomości dla aktywnych gier */}
               </TabsContent>
-
               <TabsContent value="challenges" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-                {/* Challenge messages will be shown here through the filtered list */}
+                {/* Wiadomości dla wyzwań */}
               </TabsContent>
-
               <TabsContent value="friends" className="mt-4 space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
-                {/* Friend messages will be shown here through the filtered list */}
+                {/* Wiadomości od znajomych */}
               </TabsContent>
             </Tabs>
 
+            {/* Stopka panelu */}
             <SheetFooter className="mt-6 border-t pt-4 flex-col sm:flex-row gap-2">
               <Button variant="outline" className="w-full sm:w-auto" onClick={() => setComposeMode(true)}>
                 <Send className="mr-2 h-4 w-4" />
-                New Message
+                New Message {/* Przycisk nowej wiadomości */}
               </Button>
               <Button variant="default" className="w-full sm:w-auto">
                 <Chess className="mr-2 h-4 w-4" />
-                Challenge to a Game
+                Challenge to a Game {/* Przycisk wyzwania */}
               </Button>
             </SheetFooter>
           </>

@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from "react"
+import React, { useRef, useEffect, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { useGameContext } from "@/contexts/GameContext"
 import { useTheme } from "next-themes"
+import LoadingAnimation from "./loading/loading-animation"
 
 // Typy (dostosuj do swojego GameContext)
 interface Position {
@@ -22,7 +23,7 @@ interface Pieces {
   king: THREE.Object3D
 }
 
-export function ChessBoard3D() {
+export function ChessBoard3D({ title , desc, selectedColor }: { title: string, desc: string, selectedColor: string}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { board, movePiece, currentPlayer, getValidMoves } = useGameContext()
   const boardRef = useRef(board)
@@ -30,6 +31,7 @@ export function ChessBoard3D() {
   const currentPlayerRef = useRef(currentPlayer)
   const getValidMovesRef = useRef(getValidMoves)
   const { theme } = useTheme()
+  const [modelsLoaded, setModelsLoaded] = useState(false);
 
   useEffect(() => {
     boardRef.current = board
@@ -288,7 +290,6 @@ export function ChessBoard3D() {
 
     async function loadPiecesFromBoard(cellSize: number, playableMinX: number, playableMinZ: number, boardBox: THREE.Box3): Promise<void> {
       const loadModel = (url: string): Promise<GLTF> => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject))
-
       const [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing] =
         await Promise.all([
           loadModel("/models/game/white-pawns/pawn_white.glb"),
@@ -305,24 +306,47 @@ export function ChessBoard3D() {
           loadModel("/models/game/black-pawns/king_black.glb"),
         ])
 
-      const pieceModels: { white: Pieces; black: Pieces } = {
-        white: {
-          pawn: whitePawn.scene,
-          rook: whiteRook.scene,
-          knight: whiteKnight.scene,
-          bishop: whiteBishop.scene,
-          queen: whiteQueen.scene,
-          king: whiteKing.scene,
-        },
-        black: {
-          pawn: blackPawn.scene,
-          rook: blackRook.scene,
-          knight: blackKnight.scene,
-          bishop: blackBishop.scene,
-          queen: blackQueen.scene,
-          king: blackKing.scene,
-        },
-      }
+        let pieceModels: { white: Pieces; black: Pieces };
+
+        if(selectedColor == "black"){
+          pieceModels = {
+            black: {
+              pawn: whitePawn.scene,
+              rook: whiteRook.scene,
+              knight: whiteKnight.scene,
+              bishop: whiteBishop.scene,
+              queen: whiteQueen.scene,
+              king: whiteKing.scene,
+            },
+            white: {
+              pawn: blackPawn.scene,
+              rook: blackRook.scene,
+              knight: blackKnight.scene,
+              bishop: blackBishop.scene,
+              queen: blackQueen.scene,
+              king: blackKing.scene,
+            }
+          }
+        }else{
+          pieceModels = {
+            white: {
+              pawn: whitePawn.scene,
+              rook: whiteRook.scene,
+              knight: whiteKnight.scene,
+              bishop: whiteBishop.scene,
+              queen: whiteQueen.scene,
+              king: whiteKing.scene,
+            },
+            black: {
+              pawn: blackPawn.scene,
+              rook: blackRook.scene,
+              knight: blackKnight.scene,
+              bishop: blackBishop.scene,
+              queen: blackQueen.scene,
+              king: blackKing.scene,
+            }
+          }
+        }
 
       const boardTopY = boardBox.max.y
       const letters = "abcdefgh"
@@ -330,7 +354,9 @@ export function ChessBoard3D() {
       for (let id = 0; id < 64; id++) {
         const pos = boardRef.current?.getPositionById(id)
         if (!pos || !pos.figure) continue
+        
         const colorKey = pos.figure.color === "white" ? "white" : "black"
+
         let model: THREE.Object3D
         switch (pos.figure.type) {
           case "pawn":
@@ -367,8 +393,8 @@ export function ChessBoard3D() {
         scene.add(model)
         selectablePieces.push(model)
       }
-
       updateCheckHighlight()
+      setModelsLoaded(true)
     }
 
     const raycaster = new THREE.Raycaster()
@@ -513,7 +539,9 @@ export function ChessBoard3D() {
 
   return (
     <div className="flex items-center justify-center h-full">
-      <div ref={containerRef} style={{ width: "100%", height: "100%", aspectRatio: "2" }} />
+      <div style={ {display: modelsLoaded ? "none" : "block"} }><LoadingAnimation title={title} desc={desc}></LoadingAnimation></div>
+      <div ref={containerRef} style={{ width: "100%", height: "100%", aspectRatio: "2", display: modelsLoaded ? "block" : "none"}} />
+
     </div>
   )
 }

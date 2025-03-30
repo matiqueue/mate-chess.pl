@@ -1,5 +1,9 @@
 "use client"
 
+/* eslint-disable @next/next/no-server-import-in-page */
+
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Link2, Server, ArrowRight, Users } from "lucide-react"
@@ -11,7 +15,8 @@ import { useUser } from "@clerk/nextjs"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from "uuid"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@workspace/ui/components/dialog" // Import komponentów dialogu z ShadCN
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@workspace/ui/components/dialog" // Import komponentów dialogu z ShadCN
+import { RadioGroup, RadioGroupItem } from "@workspace/ui/components/radio-group"
 
 /** Animacja kontenera */
 const container = {
@@ -48,6 +53,11 @@ export default function GameModeSelector() {
   const [showJoinInput, setShowJoinInput] = useState(false) // Stan do pokazywania inputu w dialogu
   const [joinCode, setJoinCode] = useState("")
   const [showOnlineTooltip, setShowOnlineTooltip] = useState(false)
+  const [isColorDialogOpen, setIsColorDialogOpen] = useState(false)
+  const [botDifficulty, setBotDifficulty] = useState("")
+  const [selectedColor, setSelectedColor] = useState("white")
+  const [selectedGameType, setSelectedGameType] = useState("")
+  const [selectedTimer, setSelectedTimer] = useState(300)
 
   useEffect(() => {
     setMounted(true)
@@ -101,6 +111,11 @@ export default function GameModeSelector() {
     }
   }
 
+  const handleGoButtonClick = () => {
+    router.push(`/play/local?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+    setIsColorDialogOpen(false)
+  }
+
   const handleJoinOnlineLobby = async () => {
     if (!user) {
       setShowOnlineTooltip(true)
@@ -142,7 +157,7 @@ export default function GameModeSelector() {
           initial={{ y: 30 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[15vh] overflow-hidden flex-grow"
+          className="relative z-10 text-foreground flex flex-col items-center justify-start p-4 pt-[10vh] overflow-hidden flex-grow"
         >
           <motion.h1
             initial={{ opacity: 0, y: -50 }}
@@ -191,7 +206,7 @@ export default function GameModeSelector() {
                             whileTap={{ scale: 0.95 }}
                           >
                             <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
-                              Rozpocznij grę link
+                              {t("startLinkGame")}
                             </motion.span>
                             <motion.div className="ml-2" initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
                               <ArrowRight className="w-4 h-4" />
@@ -204,7 +219,7 @@ export default function GameModeSelector() {
                       <DialogHeader>
                         <DialogTitle>
                           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: "easeOut" }}>
-                            Select an action
+                            {t("selectAction")}
                           </motion.div>
                         </DialogTitle>
                       </DialogHeader>
@@ -227,7 +242,7 @@ export default function GameModeSelector() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
                           >
-                            Create Lobby
+                            {t("createLobby")}
                           </MotionButton>
                           <MotionButton
                             onClick={() => setShowJoinInput((prev) => !prev)} // Przełączanie widoczności inputu
@@ -238,7 +253,7 @@ export default function GameModeSelector() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
                           >
-                            {showJoinInput ? "Hide Code Input" : "Join with Code"}
+                            {showJoinInput ? t("hide_code_input") : t("join_with_code")}
                           </MotionButton>
                         </div>
                         {showJoinInput && (
@@ -253,7 +268,7 @@ export default function GameModeSelector() {
                               type="text"
                               value={joinCode}
                               onChange={(e) => setJoinCode(e.target.value.slice(0, 6).toUpperCase())}
-                              placeholder="Enter lobby code"
+                              placeholder={t("enterLobbyCode")}
                               className="p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -271,7 +286,7 @@ export default function GameModeSelector() {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.3, delay: 0.2 }}
                             >
-                              Join Lobby
+                              {t("joinLobby2")}
                             </MotionButton>
                           </motion.div>
                         )}
@@ -313,7 +328,9 @@ export default function GameModeSelector() {
                       className="mt-auto w-full bg-popover-foreground hover:bg-primary border border-[hsla(var(--foreground),0.1)]"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={mode.key === "online" ? handleJoinOnlineLobby : () => router.push(`/play/${mode.key.toLowerCase()}`)}
+                      onClick={
+                        mode.key === "online" ? handleJoinOnlineLobby : mode.key === "local" ? () => setIsColorDialogOpen(true) : () => router.push(`/play/${mode.key.toLowerCase()}`)
+                      }
                       disabled={isOnline && !user}
                     >
                       <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
@@ -340,6 +357,62 @@ export default function GameModeSelector() {
           </motion.div>
         </motion.div>
       </div>
+
+      <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-lg shadow-xl bg-opacity-90 bg-background">
+          <div className="flex flex-col space-y-4">      
+            { /* Game type */}    
+            <DialogHeader>
+              <DialogTitle>{t("selectGameType")}</DialogTitle>
+              <DialogDescription>{t("selectGameTypeDesc")}</DialogDescription>
+            </DialogHeader>
+
+            <RadioGroup
+              value={selectedTimer.toString()} // Upewniamy się, że wartość jest poprawnie ustawiona
+              onValueChange={(value) => {
+                setSelectedTimer(parseInt(value));
+              }}
+              className="flex gap-4 justify-center"
+            >
+              <label htmlFor="time900" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 900 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="900" id="time900" className="sr-only" />
+                  <p>Classic</p>
+                </div>
+              </label>
+
+              <label htmlFor="time300" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 300 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="300" id="time300" className="sr-only" />
+                  <p>Rapid</p>
+                </div>
+              </label>
+
+              <label htmlFor="time120" className="cursor-pointer">
+                <div
+                  className={`relative h-24 w-24 flex items-center justify-center border-2 rounded-md bg-primary/10 ${
+                    selectedTimer === 120 ? "border-primary" : "border-input"
+                  }`}
+                >
+                  <RadioGroupItem value="120" id="time120" className="sr-only" />
+                    <p>Blitz</p>
+                </div>
+              </label>
+            </RadioGroup>
+
+            <Button onClick={handleGoButtonClick}>{t("goNext")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </ScrollArea>
   )
 }
+

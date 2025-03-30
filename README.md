@@ -271,22 +271,24 @@ Szymon pełni funkcję głównego implementatora i integratora rozwiązań techn
 
 ---
 
-### Jakub Batko (nasakrator) – **Specjalista ds. Baz Danych**
+### Jakub Batko (nasakrator) – **Specjalista ds. Baz Danych i FrontEnd'u**
 
 **Zakres odpowiedzialności:**
 
 - Projektowanie, optymalizacja i utrzymanie struktur baz danych 🏛️
 - Integracja baz danych z backendem (Prisma, MongoDB) 🔗
 - Wsparcie przy prezentacji danych 📊
+- Tworzenie interaktywnych nowoczesnych stron (NextJS, shadcn, Framer Motion, Tailwind, i18next)
+- Autoryzacja i bezpieczeństwo (ClerkAuth)
 
 **Elementy wspólne:**
 
-- Otrzymuje wsparcie od Szymona w zakresie integracji baz danych ⚡
+- Otrzymuje wsparcie od Szymona w zakresie integracji baz danych i używanych technologii na froncie⚡
 
 **Opis:**
 
 Jakub zajmuje się wydajnym zarządzaniem bazami danych oraz ich integracją z backendem. Współpracuje z Szymonem nad optymalizacją struktur i przepływu danych, zapewniając stabilność i szybkość działania systemu 🚀
-
+Dodatkowo w wolnym czasie tworzy brakujące elementy na froncie i upiększa obecne.
 ---
 
 ### Filip Serwatka (awres) – **Specjalista Frontend & Grafiki**
