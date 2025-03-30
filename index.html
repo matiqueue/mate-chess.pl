@@ -164,6 +164,30 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 1.5rem;
         }
+
+        /* New style for video section */
+        #instructional-video {
+            padding: 6rem 0;
+        }
+
+        .embed-responsive {
+            position: relative;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .embed-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +216,22 @@
             <h1>mate-chess</h1>
             <p>Minimalistyczna platforma szachowa dla pasjonatów</p>
             <a href="#installation" class="btn btn-primary mt-4">Rozpocznij</a>
+        </div>
+    </section>
+
+    <!-- Instructional Video Section -->
+    <section id="instructional-video" class="container my-5">
+        <h2 class="text-center mb-4">Instrukcja Obsługi</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="embed-responsive">
+                            <iframe class="embed-responsive-item" src="./public/tutorial.mp4" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
