@@ -49,18 +49,12 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
     startGame(newGame)
     setGame(newGame)
     setBoard(getBoard(newGame))
-
-    if(selectedColor == "black"){
-      setCurrentPlayer("black")
-    }else{
-      setCurrentPlayer("white")
-    }
+    setCurrentPlayer(whosTurn(newGame))
+    setMoveHistory(getMoveHistory(newGame))
+    setGameStatus(getGameStatus(newGame))
 
     setTimeStampWhite(Date.now())
     setTimeStampBlack(Date.now())
-    setCurrentPlayer("white")
-    setMoveHistory(getMoveHistory(newGame))
-    setGameStatus(getGameStatus(newGame))
 
     console.log("Initial game status:", getGameStatus(newGame))
     console.log("Initial current player:", whosTurn(newGame))
