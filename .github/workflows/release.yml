@@ -3,7 +3,7 @@ name: Build Tauri + Next.js Desktop App
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build-linux:
