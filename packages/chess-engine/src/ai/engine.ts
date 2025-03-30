@@ -39,8 +39,9 @@ class ChessAi extends ChessGame {
   }
 
   public async callAiToFindMove(): Promise<Move | null> {
+    if (this.currentPlayer !== this.aiColor) return null
     if (this.gameStatus !== "active") return null
-    if (super.awaitingPromotion) {
+    if (super.awaitingPromotion && this.currentPlayer === this.aiColor) {
       this.promotionTo(figureType.queen)
     }
 
@@ -58,7 +59,7 @@ class ChessAi extends ChessGame {
 
       const move = moveArray[Math.floor(Math.random() * (moveArray.length - 1))]
       if (move) {
-        console.log("move db ready!!!")
+        console.log("db move ready!!!")
         return move
       }
     }
