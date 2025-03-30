@@ -1,4 +1,6 @@
 "use client"
+/* eslint-disable @next/next/no-server-import-in-page */
+
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"

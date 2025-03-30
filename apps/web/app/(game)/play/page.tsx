@@ -1,5 +1,9 @@
 "use client"
 
+/* eslint-disable @next/next/no-server-import-in-page */
+
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Link2, Server, ArrowRight, Users } from "lucide-react"
