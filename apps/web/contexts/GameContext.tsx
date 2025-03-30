@@ -8,12 +8,13 @@ interface GameProviderProps {
   ai: boolean
   selectedColor: string
   timer: number
+  level: number
 }
 
 const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
 
-export const GameProvider = ({ children, ai, selectedColor, timer }: GameProviderProps) => {
-  const game = useGame(ai, selectedColor, timer)
+export const GameProvider = ({ children, ai, selectedColor, timer, level }: GameProviderProps) => {
+  const game = useGame(ai, selectedColor, timer, level)
 
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>
 }

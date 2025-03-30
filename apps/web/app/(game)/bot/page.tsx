@@ -125,11 +125,11 @@ export default function GameModeSelector() {
 
     if(isDialogOpen){
       if (botDifficulty === "1") {
-        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+        router.push(`/bot/ai/easy?selectedColor=${selectedColor}&gameType=${selectedTimer}&gameLevel=${botDifficulty}`)
       } else if (botDifficulty === "2") {
-        router.push(`/bot/ai/medium?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+        router.push(`/bot/ai/medium?selectedColor=${selectedColor}&gameType=${selectedTimer}&gameLevel=${botDifficulty}`)
       } else if (botDifficulty === "3") {
-        router.push(`/bot/ai/hard?selectedColor=${selectedColor}&gameType=${selectedTimer}`)
+        router.push(`/bot/ai/hard?selectedColor=${selectedColor}&gameType=${selectedTimer}&gameLevel=${botDifficulty}`)
       } else {
         console.log("Nieprawidłowy poziom trudności bota")
       }

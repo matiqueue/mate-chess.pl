@@ -2,8 +2,8 @@ import ChessAi from "@modules/ai/engine"
 import { color } from "@shared/types/colorType"
 
 class ChessGameExtraAI extends ChessAi {
-  constructor(aiColor: color) {
-    super(aiColor, 2)
+  constructor(aiColor: color, level: number) {
+    super(aiColor, level)
   }
 
   public override start() {
