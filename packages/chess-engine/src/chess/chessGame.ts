@@ -49,6 +49,7 @@ class ChessGame {
   /**Single iteration of the engine. Checks for checkmates and stalemates, promotions and updates move history.
    * */
   public async process() {
+    if (this.gameStatus !== gameStatusType.active) return
     console.log("processing...")
     this.stateProcessor()
 
