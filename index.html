@@ -231,21 +231,20 @@
 
     <!-- Sekcja Wideo Instruktażowego -->
     <!-- Sekcja z osadzonym wideo instruktażowym -->
-    <section id="instructional-video" class="container my-5">
-        <h2 class="text-center mb-4">Instrukcja Obsługi</h2> <!-- Nagłówek sekcji -->
+    <!-- <section id="instructional-video" class="container my-5">
+        <h2 class="text-center mb-4">Instrukcja Obsługi</h2> 
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-10">
                 <div class="card">
                     <div class="card-body">
-                        <!-- Kontener na wideo z proporcjami 16:9 -->
                         <div class="embed-responsive">
-                            <iframe class="embed-responsive-item" src="./public/tutorial.mp4" allowfullscreen></iframe> <!-- Osadzone wideo -->
+                            <iframe class="embed-responsive-item" src="./public/tutorial.mp4" allowfullscreen></iframe> 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </section>  -->
 
     <!-- Sekcja O Projekcie -->
     <!-- Informacje o projekcie mate-chess -->
@@ -259,7 +258,7 @@
                     <div class="card-body">
                         <h3><i class="bi bi-chess me-2"></i>Funkcjonalności</h3> <!-- Podtytuł z ikoną -->
                         <ul>
-                            <li>Gra z AI na poziomach: łatwy, średni, trudny.</li>
+                            <li>Gra z AI na poziomach: łatwy, średni, trudny (Arcymistrz).</li>
                             <li>Rozgrywki online z czatem i globalnymi rankingami.</li>
                             <li>Analiza partii: przegląd ruchów, wykrywanie błędów, sugestie.</li>
                             <li>Obsługa na web, desktopie i urządzeniach mobilnych.</li>
@@ -317,19 +316,30 @@
                         <div class="card-body">
                             <h3><i class="bi bi-terminal me-2"></i>Kroki Instalacji</h3> <!-- Podtytuł z ikoną -->
                             <ol>
+                                <li><strong>Wymagane:</strong> Node.js, Rustup, Git
+                                    <ul>
+                                        <li>Nodejs: <a href="https://nodejs.org/dist/v22.14.0/node-v22.14.0-x64.msi" target="_blank">Pobierz Node.js</a></li>
+                                        <li>Rustup: <a href="https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe" target="_blank">Pobierz Rustup</a></li>
+                                        <li>Git: <a href="https://git-scm.com/downloads/win" target="_blank">Pobierz Git</a></li>
+                                    </ul>
+                                </li>
+                                <li><pre><code>npm i -g pnpm@latest</code></pre></li> <!-- Instalacja pnpm -->
+                                <li><pre><code>npm i -g ts-node</code></pre></li> <!-- Instalacja ts-node -->
                                 <li><pre><code>git clone https://github.com/matiqueue/mate-chess.pl.git</code></pre></li> <!-- Klonowanie repozytorium -->
                                 <li><pre><code>cd mate-chess.pl</code></pre></li> <!-- Wejście do katalogu projektu -->
                                 <li><pre><code>pnpm install</code></pre></li> <!-- Instalacja zależności -->
-                                <li>Środowisko: <!-- Konfiguracja środowiska -->
+                                <li>Środowisko:
                                     <ul>
                                         <li>macOS: <code>pnpm env:mac</code></li>
                                         <li>Windows: <code>pnpm env:win</code></li>
                                         <li>Linux: <code>pnpm env:linux</code></li>
                                     </ul>
                                 </li>
+                                <li><pre><code>cargo install tauri-cli</code></pre></li> <!-- Instalacja Tauri CLI -->
                                 <li>Tryb deweloperski: <pre><code>pnpm dev</code></pre></li> <!-- Uruchomienie w trybie deweloperskim -->
                                 <li>Budowanie: <pre><code>pnpm build</code></pre></li> <!-- Budowanie projektu -->
-                                <li>Start (np. web): <pre><code>cd apps/web && pnpm start</code></pre></li> <!-- Uruchomienie aplikacji webowej -->
+                                <li>Start (np. web): <ul> <li> <pre><code>cd apps/web && pnpm start</code></pre></li></li>
+                                <li><pre><code>pnpm dev --filter web</code></pre></li> </ol><!-- Uruchomienie aplikacji webowej -->
                             </ol>
                             <p>Docker: <pre><code>docker run -p 3000:3000 matiqueue/mate-chess:latest</code></pre></p> <!-- Uruchomienie w Dockerze -->
                         </div>
