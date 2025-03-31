@@ -53,6 +53,8 @@ export default function Game({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="p-4">
+      <p className="text-center text-red-500 font-bold text-lg">Strona w przebudowie</p>
+      <p className="text-center text-gray-700">Jeżeli chcesz zagrać w trybie online, przełącz aplikację do trybu wstępnego.</p>
       <h1 className="text-2xl font-bold">Gra: {id}</h1>
       <div className="my-4 h-64 overflow-y-auto border p-2">
         {messages.map((msg, index) => (
