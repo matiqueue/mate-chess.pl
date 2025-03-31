@@ -1,5 +1,6 @@
 "use client"
 
+import ChessBoardContainer from "@/components/game/chessboard-container"
 import { useEffect, useState } from "react"
 import { use } from "react"
 import io from "socket.io-client"
@@ -51,6 +52,16 @@ export default function Game({ params }: { params: Promise<{ id: string }> }) {
     setMessage("")
   }
 
+  const fixedClerkDataFertcher = (): boolean => {
+    const response = fetch("http://localhost:4000/api/clerk", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    return false
+  }
+
   return (
     <div className="p-4">
       <p className="text-center text-red-500 font-bold text-lg">Strona w przebudowie</p>
@@ -65,6 +76,7 @@ export default function Game({ params }: { params: Promise<{ id: string }> }) {
       <button onClick={handleSendMessage} className="mt-2 p-2 bg-blue-500 text-white rounded">
         Wyślij
       </button>
+      {fixedClerkDataFertcher() ? <ChessBoardContainer /> : false} // TODO: Naprawić ten błąd, aby nie wywalało błędu z Clerk
     </div>
   )
 }
