@@ -30,6 +30,7 @@ import { usePathname } from "next/navigation" // Hook do pobierania ścieżki UR
  * Komponent integruje wiele kontekstów (widok gry, motyw, tłumaczenia) i synchronizuje tryb widoku
  * z localStorage. Obsługuje dwa układy (2D i 3D) z różnym pozycjonowaniem elementów.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export default function ChessBoardContainer() {

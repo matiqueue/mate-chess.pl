@@ -55,19 +55,20 @@ function ChessPageContent() {
  * @returns {JSX.Element} Element JSX reprezentujący stronę szachową.
  *
  * @remarks
- * Autorzy: maxicom0000 i matiqueue
+ * Autorzy: maxicom0000 i matiqueue i Nasakrator
  */
 export default function ChessPage() {
   const searchParams = useSearchParams()
   const selectedColor = searchParams.get("selectedColor") || "white"
   const selectedTimer = searchParams.get("gameType") || "300"
+  const selectedLevel = searchParams.get("gameLevel") || "1"
 
   useEffect(() => {
     console.log("ChessPage: ", selectedColor)
   }, [])
 
   return (
-    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)}>
+    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)} level={parseInt(selectedLevel)}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>

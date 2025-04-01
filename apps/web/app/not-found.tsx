@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next" // Import hooka tłumaczeń
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwartka)
  */
 const Circuit = () => {
   // Stan przechowujący informacje o wygenerowanych liniach (ścieżkach)

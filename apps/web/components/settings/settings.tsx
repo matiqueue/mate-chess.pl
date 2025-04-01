@@ -26,7 +26,7 @@ import { useUser } from "@clerk/nextjs"
  * @returns {JSX.Element} Element JSX reprezentujący stronę ustawień.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 export default function SettingsPage() {

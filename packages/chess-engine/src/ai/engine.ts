@@ -18,6 +18,8 @@ class ChessAi extends ChessGame {
   private _searchDepth: number
   private _canUseDatabase: boolean = true
 
+  private _nerdDataString: string = ""
+
   private readonly EXCHANGE_MULTIPLIER = 1.2
   constructor(aiColor: color, difficulty: aiDifficulty) {
     //TODO, zrobić tak żeby to ai w ogóle działało gdy gra białymi xddd
@@ -236,16 +238,20 @@ class ChessAi extends ChessGame {
       movesWithEval.push({ move, eval: evalValue })
       bestEval = evalValue > bestEval ? evalValue : bestEval
       alpha = Math.max(alpha, evalValue)
+      this.writeNerdData(String(bestEval), "Minimax loop is on...")
     }
 
     const TOLERANCE = 4
-    const candidateMoves = movesWithEval
+    let candidateMoves = movesWithEval
       .filter((item) => bestEval - item.eval <= TOLERANCE)
       .sort((a, b) => b.eval - a.eval)
       .map((item) => item.move)
 
+    candidateMoves = candidateMoves.slice(0, 3)
+
     // console.log("Candidate moves: ", candidateMoves.slice(0, 6))
-    return candidateMoves.slice(0, 3)
+    this.writeNerdData(String(Math.floor(bestEval)), "minimax algorithm is being used", candidateMoves.toString())
+    return candidateMoves
   }
   /**
    * Method used only by ai on the highest difficulty. <br>
@@ -324,13 +330,19 @@ class ChessAi extends ChessGame {
           this.board.findValidMovesWithGivenArguments(this.aiColor, performingFigureType, doesMoveCaptureFig, targetPositionNotation),
         )
         const possibleMoves = this.board.findValidMovesWithGivenArguments(this.aiColor, performingFigureType, doesMoveCaptureFig, targetPositionNotation)
-        console.log(possibleMoves)
-        console.log(arrayOfMoves)
+        // console.log(possibleMoves)
+        // console.log(arrayOfMoves)
         arrayOfMoves.push(...possibleMoves)
-        console.log(arrayOfMoves)
+        this.writeNerdData(
+          "database, no eval for that",
+          possibleMovesInNotation[Math.floor(Math.random() * extractedMoves.length - 1)],
+          extractedMoves[Math.floor(Math.random() * extractedMoves.length - 1)],
+        )
+        // console.log(arrayOfMoves)
         // console.log("Target notation is: ", targetPositionNotation)
       }
     } catch (error) {
+      this.writeNerdData("there was an error when fetching database data", "from now on, minmax algorithm will be used to lead the game", "no moves")
       console.error(error)
     }
 
@@ -342,6 +354,49 @@ class ChessAi extends ChessGame {
    * @return color as which ai is playing*/
   get aiColor(): color {
     return this._aiColor
+  }
+  private writeNerdData(bestEval: string = "", similairGames: string = "", gmNextMove: string = "", additionalString: string = ""): string {
+    const today = new Date()
+    const day = String(today.getDate()).padStart(2, "0")
+    const month = String(today.getMonth() + 1).padStart(2, "0")
+    const year = today.getFullYear()
+
+    const formattedDate = `${day}-${month}-${year}`
+    const output =
+      "Date: " +
+      formattedDate +
+      "\n" +
+      "====Ai info====\n" +
+      "\n    Ai difficulty: " +
+      this._aiDifficulty +
+      "\n    Ai playing as: " +
+      this._aiColor +
+      "\n    Ai search depth: " +
+      this._searchDepth +
+      "\n====Game info====" +
+      "\n    White material: " +
+      this.board.getAllMaterialValue(color.White) +
+      "\n    Black material: " +
+      this.board.getAllMaterialValue(color.Black) +
+      "\n    Comparator string: " +
+      this.getMoveHistoryString() +
+      " \n====Ai evals====" +
+      "" +
+      "\nBest eval: " +
+      bestEval +
+      "\nsimilairGames: " +
+      similairGames +
+      "\nGrandmaster's next move: " +
+      gmNextMove +
+      "\n" +
+      additionalString
+
+    this._nerdDataString = output
+    return output
+  }
+
+  get nerdDataString(): string {
+    return this._nerdDataString
   }
 }
 export default ChessAi

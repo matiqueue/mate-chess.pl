@@ -27,6 +27,7 @@ import { cn } from "@workspace/ui/lib/utils" // Util do łączenia klas CSS
  * aplikacji dane byłyby pobierane z backendu. Wyniki są ograniczone do 3 pozycji w każdej
  * kategorii dla lepszej czytelności.
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 export default function EnhancedSearch({ className }: { className?: string }) {

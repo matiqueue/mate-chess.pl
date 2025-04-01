@@ -11,7 +11,7 @@ import { promote, isAwaitingPromotion } from "@modules/shared/destruct/movementF
 import { forwardMove, rewindMove, returnToCurrentState } from "@shared/destruct/moveRewindForwardFunctions/rewinding&forwardingMoves"
 import { isMoveEnPassant } from "@shared/destruct/movementFunctions/extraMoves/enPassant"
 import { color } from "@shared/types/colorType"
-import { callAiToPerformMove } from "@shared/destruct/aiFunctions/AIIOfunctions"
+import { callAiToPerformMove, getNerdData } from "@shared/destruct/aiFunctions/AIIOfunctions"
 import { setupFiguresStandard } from "@shared/destruct/mallocFunctions/figureSetup"
 
 const setupGame = (fenNotation: string = "") => {
@@ -21,8 +21,8 @@ const setupGame = (fenNotation: string = "") => {
   } else setupFiguresStandard(game)
   return game
 }
-const setupAIGame = (aicolor: color) => {
-  const game = new ChessGameExtraAI(aicolor)
+const setupAIGame = (aicolor: color, level: number) => {
+  const game = new ChessGameExtraAI(aicolor, level)
   setupFiguresStandard(game)
   return game
 }
@@ -57,4 +57,5 @@ export {
   isAwaitingPromotion,
   isPreviewModeOn,
   callAiToPerformMove,
+  getNerdData,
 }

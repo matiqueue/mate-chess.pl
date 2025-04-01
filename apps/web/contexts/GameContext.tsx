@@ -23,6 +23,7 @@ interface GameProviderProps {
   ai: boolean
   selectedColor: string
   timer: number
+  level: number
 }
 
 // Tworzenie kontekstu gry z domyślną wartością null
@@ -39,11 +40,12 @@ const GameContext = createContext<ReturnType<typeof useGame> | null>(null)
  * @remarks
  * Komponent używa hooka useGame do zainicjalizowania logiki gry i dostarcza ją przez kontekst
  * do komponentów potomnych. Wymaga parametrów określających tryb gry (AI), kolor gracza i czas.
- * Autor: matiqueue (Szymon Góral)
+ * Autor: matiqueue (Szymon Góral) Jakub Batko
  * @source Własna implementacja
  */
-export const GameProvider = ({ children, ai, selectedColor, timer }: GameProviderProps) => {
-  const game = useGame(ai, selectedColor, timer) // Inicjalizacja stanu gry za pomocą hooka
+
+export const GameProvider = ({ children, ai, selectedColor, timer, level }: GameProviderProps) => {
+  const game = useGame(ai, selectedColor, timer, level)
 
   // Renderowanie providera kontekstu z wartością gry
   return <GameContext.Provider value={game}>{children}</GameContext.Provider>

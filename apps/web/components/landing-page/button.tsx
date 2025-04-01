@@ -24,6 +24,7 @@ const smooch_sans = Smooch_Sans({
  * Komponent wykorzystuje bibliotekę GSAP do płynnych animacji, zmieniając tło, cień,
  * rozmiar i pozycję przycisku. Po zakończeniu animacji następuje przekierowanie.
  * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 const Button = () => {

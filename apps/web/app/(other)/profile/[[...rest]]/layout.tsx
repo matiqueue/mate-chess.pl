@@ -12,7 +12,7 @@ import { ClerkProvider, useUser } from "@clerk/nextjs"
  * @returns {JSX.Element} Element JSX reprezentujący Layout.
  *
  * @remarks
- * Autor: nasakrator
+ * Autor: nasakrator (Jakub Batko)
  */
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user } = useUser()

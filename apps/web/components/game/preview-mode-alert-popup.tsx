@@ -13,6 +13,7 @@ import { useGameContext } from "@/contexts/GameContext" // Kontekst gry szachowe
  *
  * @remarks
  * Autor: matiqueue (Szymon Góral)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 interface PreviewModeAlertPopupProps {

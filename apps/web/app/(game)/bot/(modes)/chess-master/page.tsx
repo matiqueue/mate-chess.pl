@@ -20,7 +20,7 @@ import { Suspense } from "react"
  * @returns {JSX.Element | null} Element JSX reprezentujący zawartość strony lub null, jeśli komponent nie jest jeszcze zamontowany.
  *
  * @remarks
- * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis).
+ * Autorzy: matiqueue (Szymon Góral) i maxicom0000 (Mateusz Lis) i Jakub Batko.
  */
 function ChessPageContent() {
   const [mounted, setMounted] = useState(false)
@@ -65,7 +65,7 @@ function SearchParamsComponent() {
   const selectedTimer = searchParams.get("gameType") || "300";
 
   return (
-    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)}>
+    <GameProvider ai={true} selectedColor={selectedColor} timer={parseInt(selectedTimer)} level={3}>
       <GameViewProvider>
         <ChessPageContent />
       </GameViewProvider>
@@ -80,3 +80,4 @@ export default function ChessPage() {
     </Suspense>
   );
 }
+

@@ -37,7 +37,8 @@ import {
  * @property {string} author - Autor otwarcia.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
+ * Tłumaczenie: awres (Filip Serwatka)
  * @source Własna implementacja
  */
 interface ChessOpening {
@@ -59,7 +60,7 @@ interface ChessOpening {
  * @returns {JSX.Element} Element JSX reprezentujący stronę z otwarciami szachowymi.
  *
  * @remarks
- * Autor: matiqueue (Szymon Góral)
+ * Autor: Jakub Batko (Nasakrator)
  * @source Własna implementacja
  */
 export default function ChessOpenings() {

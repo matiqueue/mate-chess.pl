@@ -113,18 +113,18 @@
     "aiBotsHeading": "Boty AI",
     "chessMasterHeading": "Mistrz Szachowy",
     "beginnerBot": {
-      "title": "Tryb Algorytm",
-      "description": "Idealny dla nowicjuszy.",
+      "title": "Początkujący",
+      "description": "Proste ai,  które nie stanowi wyzwania dla doświadczonych graczy. idealne do nauki gry w szachy.",
       "buttonText": "Początkujący!"
     },
     "advancedBot": {
-      "title": "Tryb AI",
-      "description": "Wyzwanie dla średnio zaawansowanych.",
+      "title": "Średniozaawansowany",
+      "description": "Średnio zaawansowane ai, które poziomem dorównuje przeciętnemu szachiście.",
       "buttonText": "Zaawansowany!"
     },
     "chessGrandmaster": {
-      "title": "Tryb Arcymistrz",
-      "description": "Sprawdź swoje umiejętności przeciwko symulowanemu arcymistrzowi.",
+      "title": "Arcymistrz",
+      "description": "Ulepszone ai, wzbogacone o bazę rozgrywek szachowych 12 najlepszych graczy na świecie.",
       "buttonText": "Arcymistrz!"
     },
     "challengeGrandmaster": "Rzuć wyzwanie arcymistrzowi"

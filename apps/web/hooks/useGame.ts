@@ -25,14 +25,14 @@ import {
   undoMove,
   whosTurn,
   callAiToPerformMove,
+  getNerdData,
 } from "@modules/index" // Funkcje silnika szachowego
 import { color, figureType } from "@chess-engine/types" // Typy dla kolorów i figur
 import MovePair from "@shared/types/movePair" // Typ dla par ruchów
 import { gameStatusType } from "@shared/types/gameStatusType" // Typ statusu gry
 import ChessGameExtraAI from "@modules/chessGameExtraAI" // Klasa gry z AI
 import ChessGameExtraLayer from "@modules/chessGameExtraLayer" // Klasa gry bez AI
-
-/**
+/*
  * useGame
  *
  * Niestandardowy hook React zarządzający logiką gry szachowej, w tym stanem planszy,
@@ -49,8 +49,8 @@ import ChessGameExtraLayer from "@modules/chessGameExtraLayer" // Klasa gry bez 
  * Autor: matiqueue (Szymon Góral)
  * @source Własna implementacja
  */
-const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
-  // Stan przechowujący instancję gry
+
+const useGame = (ai: boolean = false, selectedColor: string, timer: number, level: number) => {
   const [game, setGame] = useState<any>(null)
   // Stan przechowujący aktualny stan planszy
   const [board, setBoard] = useState<any>(null)
@@ -75,11 +75,13 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
 
   // Inicjalizacja gry
   useEffect(() => {
-    // Tworzenie nowej gry: z AI (czarne) lub bez AI
-    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai
-      ? setupAIGame(color.Black) // Gra z AI, AI gra czarnymi
-      : setupGame() // Gra standardowa bez AI
-    // @TODO: Dodać obsługę notacji FEN z try-catch i podświetlaniem błędów zamiast crashowania aplikacji
+    const newGame: ChessGameExtraAI | ChessGameExtraLayer = ai ? setupAIGame(color.Black, level) : setupGame() //@TODO trzeba zrobić jakiegoś prompta żeby pobierało notacje fen i wklejało do setupGame. W tym promptcie musi być try catch, i jak złapie exception że nieprawidłowy fen to podświetlić na czerwono a nie crashować apke
+    startGame(newGame)
+    setGame(newGame)
+    setBoard(getBoard(newGame))
+    setCurrentPlayer(whosTurn(newGame))
+    setMoveHistory(getMoveHistory(newGame))
+    setGameStatus(getGameStatus(newGame))
 
     startGame(newGame) // Rozpoczęcie gry
     setGame(newGame) // Ustawienie instancji gry
@@ -250,6 +252,9 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
     setGameStatus(getGameStatus(game)) // Aktualizacja statusu gry
   }
 
+  const getNerdDataString = () => {
+    return getNerdData(game)
+  }
   /**
    * promoteFigure
    *
@@ -289,6 +294,8 @@ const useGame = (ai: boolean = false, selectedColor: string, timer: number) => {
     getPositionById: (id: number) => getPositionById(getBoard(game), id), // Pobieranie pozycji po ID
     setGameStatus, // Metoda ustawiania statusu gry
     aiMovePerform, // Metoda wywoływania ruchu AI
+    getNerdDataString,
+    aiColor: () => (game.aiColor ? game.aiColor : null),
   }
 }
 

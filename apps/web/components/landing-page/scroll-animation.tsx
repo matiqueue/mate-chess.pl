@@ -14,6 +14,8 @@ import styles from "@/styles/landing-page/scrollAnimation.module.css" // Import 
  * Komponent jest prosty i opiera się na stylach CSS dla efektu animacji. Nie zawiera
  * logiki interaktywnej w kodzie JS, a jedynie renderuje statyczny element.
  * Autor: matiqueue (Szymon Góral)
+ * Autor: awres (Filip Serwatka)
+ * Autor: Wojciech Piątek
  * @source Własna implementacja
  */
 const ScrollAnimation = () => {
