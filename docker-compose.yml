@@ -1,0 +1,26 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+    networks:
+      - mate-chess
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    ports:
+      - '4000:4000'
+    environment:
+      NODE_ENV: production
+    networks:
+      - mate-chess
+
+networks:
+  mate-chess:
+    driver: bridge

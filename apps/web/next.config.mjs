@@ -4,6 +4,6 @@ const nextConfig = {
   env: {
     NEXT_PRIVATE_IGNORE_ERRORS_DURING_BUILD: "true",
   },
+  output: "standalone",
 }
-
 export default nextConfig
