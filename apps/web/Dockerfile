@@ -1,34 +1,34 @@
 # Etap 1: Zainstaluj zależności i zbuduj aplikację
 FROM node:20 AS builder
 
-# Ustaw katalog roboczy
 WORKDIR /mate-chess
 
-# Skopiuj pliki niezbędne do instalacji zależności
-COPY . .
+# Skopiuj tylko niezbędne pliki do cache install
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web/package.json apps/web/
+COPY packages ./packages
 
-# Zainstaluj pnpm globalnie
+# Włącz i przygotuj pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Zainstaluj zależności w całym monorepo
+# Instaluj zależności (cache-friendly)
 RUN pnpm install
 
-# env
-RUN pnpm env:win
+# Skopiuj resztę projektu
+COPY . .
 
-# Zbuduj aplikację Next.js wewnątrz apps/web
-RUN pnpm dev --filter web
+# Zbuduj aplikację
+RUN pnpm --filter web build
 
-# Etap 2: Uproszczony obraz na potrzeby produkcji
+# Etap 2: Obraz produkcyjny
 FROM node:20-alpine AS runner
 
-# Ustaw katalog roboczy
 WORKDIR /mate-chess
 
 # Włącz pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Skopiuj tylko potrzebne pliki z etapu budowania
+# Skopiuj artefakty z buildera
 COPY --from=builder /mate-chess/apps/web/.next .next
 COPY --from=builder /mate-chess/apps/web/public public
 COPY --from=builder /mate-chess/apps/web/package.json package.json
@@ -37,8 +37,8 @@ COPY --from=builder /mate-chess/pnpm-lock.yaml pnpm-lock.yaml
 COPY --from=builder /mate-chess/apps/web/next.config.mjs next.config.mjs
 COPY --from=builder /mate-chess/apps/web/tsconfig.json tsconfig.json
 
-# Domyślny port
 EXPOSE 3000
 
 # Start aplikacji w trybie produkcyjnym
-CMD ["pnpm", "start"]
+CMD ["cd", "apps/web"]
+CMD ["pnpm", "dev"]
